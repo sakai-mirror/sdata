@@ -45,5 +45,10 @@ limitations under the License.
       <artifactId>sakai-sdata-impl</artifactId>
       <version>${sakai.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-tool-util</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
   </dependencies>
 </project>
