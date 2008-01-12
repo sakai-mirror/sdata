@@ -10,7 +10,7 @@
 	-->
 	<filter>
 		<filter-name>sakai.request</filter-name>
-		<filter-class>org.sakaiproject.util.RequestFilter</filter-class>
+		<filter-class>org.sakaiproject.sdata.tool.StreamRequestFilter</filter-class>
 	</filter>
 	
 	<!--

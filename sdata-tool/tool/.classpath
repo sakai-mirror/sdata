@@ -1,18 +1,23 @@
 <classpath>
   <classpathentry kind="output" path="target/classes"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-  <classpathentry kind="var" path="M2_REPO/velocity/velocity/1.4/velocity-1.4.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-component/SNAPSHOT/sakai-component-SNAPSHOT.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-tool-api/SNAPSHOT/sakai-tool-api-SNAPSHOT.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-util-api/SNAPSHOT/sakai-util-api-SNAPSHOT.jar"/>
-  <classpathentry kind="src" path="/sakai-sdata-impl"/>
-  <classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-tool-util/SNAPSHOT/sakai-tool-util-SNAPSHOT.jar"/>
-  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
-  <classpathentry kind="var" path="M2_REPO/javax/jcr/jcr/1.0/jcr-1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-fileupload/commons-fileupload/1.2/commons-fileupload-1.2.jar" sourcepath="M2_REPO/commons-fileupload/commons-fileupload/1.2/commons-fileupload-1.2-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-util/SNAPSHOT/sakai-util-SNAPSHOT.jar"/>
-  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/velocity/velocity/1.4/velocity-1.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-tool-api/SNAPSHOT/sakai-tool-api-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/velocity/velocity-dep/1.4/velocity-dep-1.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.1/commons-lang-2.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-jcr-api/SNAPSHOT/sakai-jcr-api-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/sf/json-lib/json-lib/2.2/json-lib-2.2-jdk15.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-tool-servlet/SNAPSHOT/sakai-tool-servlet-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar"/>
+  <classpathentry kind="src" path="/sakai-sdata-impl"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-component/SNAPSHOT/sakai-component-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/javax/jcr/jcr/1.0/jcr-1.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.1/commons-collections-3.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-util-api/SNAPSHOT/sakai-util-api-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/sf/ezmorph/ezmorph/1.0.4/ezmorph-1.0.4.jar"/>
 </classpath>
