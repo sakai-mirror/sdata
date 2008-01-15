@@ -28,19 +28,23 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.jcr.InvalidItemStateException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,6 +63,28 @@ import org.sakaiproject.jcr.support.api.JCRNodeFactoryService;
 import org.sakaiproject.tool.api.Tool;
 
 /**
+ * <p>
+ * JCR Service is a servlet that gives access to the JCR returning the content
+ * of files within the jcr or a json response (directories). The resource is
+ * pointed to using the URI/URL requested (the path info part), and the standard
+ * Http methods do what they are expected to in the http standard. GET gets the
+ * content of the file, PUT put puts a new file, the content comming from the
+ * stream of the PUT. DELETE deleted the file. HEAD gets the headers that would
+ * come from a full GET.
+ * </p>
+ * <p>
+ * The content type and content encodign headers are honored for GET,HEAD and
+ * PUT, but other headers are not honored completely at the moment (range-*)
+ * etc,
+ * </p>
+ * <p>
+ * POST takes multipart uploads of content, the URL pointing to a folder and
+ * each upload being the name of the file being uploaded to that folder. The
+ * upload uses a streaming api, and expects that form fields are ordered, such
+ * that a field starting with mimetype before the uplaod stream will specify the
+ * mimetype associated with the stream.
+ * </p>
+ * 
  * @author ieb
  */
 public class JCRServlet extends HttpServlet
@@ -73,7 +99,7 @@ public class JCRServlet extends HttpServlet
 
 	private static final String BASE_PATH_INIT = "basepath";
 
-	private static final String DEFAULT_BASE_PATH = "/sdata";
+	private static final String DEFAULT_BASE_PATH = "/sakai/sdata";
 
 	private static final String LAST_MODIFIED = "Last-Modified";
 
@@ -110,6 +136,11 @@ public class JCRServlet extends HttpServlet
 
 	/**
 	 * <p>
+	 * The http DELETE method delete the resource at pointed to by the request.
+	 * If sucessfull, it will 204 (no content), if not found 404, if error 500.
+	 * Extract from the RFC on delete follows.
+	 * </p>
+	 * <p>
 	 * The DELETE method requests that the origin server delete the resource
 	 * identified by the Request-URI. This method MAY be overridden by human
 	 * intervention (or other means) on the origin server. The client cannot be
@@ -141,6 +172,8 @@ public class JCRServlet extends HttpServlet
 
 			String path = request.getPathInfo();
 
+			snoopRequest(request);
+
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(path);
 			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
 			if (n == null)
@@ -148,18 +181,53 @@ public class JCRServlet extends HttpServlet
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				return;
 			}
+			Session s = n.getSession();
 			n.remove();
+			s.save();
 			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
 		}
 		catch (Exception e)
 		{
-			throw new ServletException(e);
+			response.reset();
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Failed with " + e.getMessage());
+			snoopRequest(request);
+			log.error("Failed  TO service Request ", e);
 		}
 		finally
 		{
 			request.removeAttribute(Tool.NATIVE_URL);
 		}
+	}
+
+	/**
+	 * @param request
+	 */
+	private void snoopRequest(HttpServletRequest request)
+	{
+		StringBuilder sb = new StringBuilder("SData Request :");
+		sb.append("\n\tRequest Path :").append(request.getPathInfo());
+		sb.append("\n\tMethod :").append(request.getMethod());
+		for (Enumeration<String> hnames = request.getHeaderNames(); hnames
+				.hasMoreElements();)
+		{
+			String name = hnames.nextElement();
+			sb.append("\n\tHeader :").append(name).append("=[").append(
+					request.getHeader(name)).append("]");
+		}
+		if (request.getCookies() != null)
+		{
+			for (Cookie c : request.getCookies())
+			{
+				sb.append("\n\tCookie:");
+				sb.append("name[").append(c.getName());
+				sb.append("]path[").append(c.getPath());
+				sb.append("]value[").append(c.getValue());
+			}
+		}
+		sb.append("]");
+		log.info(sb.toString());
 	}
 
 	/**
@@ -192,6 +260,7 @@ public class JCRServlet extends HttpServlet
 			request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
 
 			String path = request.getPathInfo();
+			snoopRequest(request);
 
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(path);
 			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
@@ -218,7 +287,11 @@ public class JCRServlet extends HttpServlet
 		}
 		catch (Exception e)
 		{
-			throw new ServletException(e);
+			response.reset();
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Failed with " + e.getMessage());
+			snoopRequest(request);
+			log.error("Failed  TO service Request ", e);
 		}
 		finally
 		{
@@ -295,6 +368,7 @@ public class JCRServlet extends HttpServlet
 			request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
 
 			String path = request.getPathInfo();
+			snoopRequest(request);
 
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(path);
 			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
@@ -304,6 +378,11 @@ public class JCRServlet extends HttpServlet
 				n = jcrNodeFactory.createNode(rp.getRepositoryPath(),
 						JCRConstants.NT_FILE);
 				created = true;
+				if (n == null)
+				{
+					throw new RuntimeException("Failed to create node at "
+							+ rp.getRepositoryPath() + " type " + JCRConstants.NT_FILE);
+				}
 			}
 			else
 			{
@@ -318,7 +397,15 @@ public class JCRServlet extends HttpServlet
 			}
 
 			GregorianCalendar gc = new GregorianCalendar();
-			gc.setTimeInMillis(request.getDateHeader(LAST_MODIFIED));
+			long lastMod = request.getDateHeader(LAST_MODIFIED);
+			if (lastMod > 0)
+			{
+				gc.setTimeInMillis(lastMod);
+			}
+			else
+			{
+				gc.setTime(new Date());
+			}
 			String mimeType = request.getContentType();
 			String charEncoding = request.getCharacterEncoding();
 
@@ -337,7 +424,11 @@ public class JCRServlet extends HttpServlet
 		}
 		catch (Exception e)
 		{
-			throw new ServletException(e);
+			response.reset();
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Failed with " + e.getMessage());
+			snoopRequest(request);
+			log.error("Failed  TO service Request ", e);
 		}
 		finally
 		{
@@ -425,6 +516,7 @@ public class JCRServlet extends HttpServlet
 			request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
 
 			String path = request.getPathInfo();
+			snoopRequest(request);
 
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(path);
 			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
@@ -509,7 +601,11 @@ public class JCRServlet extends HttpServlet
 		}
 		catch (Exception e)
 		{
-			throw new ServletException(e);
+			response.reset();
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Failed with " + e.getMessage());
+			snoopRequest(request);
+			log.error("Failed  TO service Request ", e);
 		}
 		finally
 		{
@@ -538,6 +634,7 @@ public class JCRServlet extends HttpServlet
 		request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
 
 		String path = request.getPathInfo();
+		snoopRequest(request);
 
 		ResourceDefinition rp = resourceDefinitionFactory.getSpec(path);
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
@@ -560,10 +657,11 @@ public class JCRServlet extends HttpServlet
 	 * @param path
 	 * @param rp
 	 * @throws ServletException
+	 * @throws IOException
 	 */
 	private void doMumtipartUpload(HttpServletRequest request,
 			HttpServletResponse response, String path, ResourceDefinition rp)
-			throws ServletException
+			throws ServletException, IOException
 	{
 		try
 		{
@@ -579,7 +677,12 @@ public class JCRServlet extends HttpServlet
 			}
 			catch (Exception ex)
 			{
-				throw new ServletException(ex);
+				response.reset();
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						"Failed with " + ex.getMessage());
+				snoopRequest(request);
+				log.error("Failed  TO service Request ", ex);
+				return;
 			}
 
 			// Check that we have a file upload request
@@ -659,7 +762,12 @@ public class JCRServlet extends HttpServlet
 		}
 		catch (Exception ex)
 		{
-			throw new ServletException(ex);
+			response.reset();
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Failed with " + ex.getMessage());
+			snoopRequest(request);
+			log.error("Failed  TO service Request ", ex);
+			return;
 		}
 	}
 }

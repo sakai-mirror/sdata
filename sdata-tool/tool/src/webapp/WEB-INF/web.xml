@@ -23,6 +23,13 @@
 		<dispatcher>FORWARD</dispatcher>
 		<dispatcher>INCLUDE</dispatcher>
 	</filter-mapping>
+	<filter-mapping>
+		<filter-name>sakai.request</filter-name>
+		<servlet-name>sdata2</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
 	
 	<!--
 	The Search Controller 
@@ -34,9 +41,20 @@
 		</servlet-class>
 		<load-on-startup>100</load-on-startup>
 	</servlet>
+	<servlet>
+		<servlet-name>sdata2</servlet-name>
+		<servlet-class>
+			org.sakaiproject.sdata.tool.JCRDumper
+		</servlet-class>
+		<load-on-startup>100</load-on-startup>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>sdata1</servlet-name>
 		<url-pattern>/f/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>sdata2</servlet-name>
+		<url-pattern>/d/*</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
