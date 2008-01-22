@@ -64,5 +64,6 @@
   
   <modules>
     <module>sdata-tool</module>
+    <module>commons-fileupload-1.2-sdata</module>
   </modules>
 </project>

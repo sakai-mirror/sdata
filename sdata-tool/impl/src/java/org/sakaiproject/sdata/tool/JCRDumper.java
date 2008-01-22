@@ -23,9 +23,6 @@ package org.sakaiproject.sdata.tool;
 
 import java.io.IOException;
 
-import javax.jcr.LoginException;
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -36,8 +33,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.jcr.api.JCRService;
-import org.sakaiproject.jcr.support.api.JCRNodeFactoryService;
-import org.sakaiproject.jcr.util.Dumper;
 import org.sakaiproject.tool.api.Tool;
 
 /**

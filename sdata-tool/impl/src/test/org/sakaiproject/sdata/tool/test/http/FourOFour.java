@@ -32,7 +32,9 @@ import org.apache.commons.logging.LogFactory;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.HttpInternalErrorException;
 import com.meterware.httpunit.HttpNotFoundException;
+import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.PutMethodWebRequest;
+import com.meterware.httpunit.UploadFileSpec;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
@@ -89,7 +91,6 @@ public class FourOFour extends TestCase
 	@Override
 	protected void tearDown() throws Exception
 	{
-		// TODO Auto-generated method stub
 		super.tearDown();
 	}
 
@@ -364,6 +365,74 @@ public class FourOFour extends TestCase
 		{
 			log.info("Tests Disabled, please start tomcat with sdata installed");
 		}
+	}
+	
+	public void testMultipartUpload() throws Exception {
+		if (enabled)
+		{
+			try
+			{
+					PostMethodWebRequest mreq = new PostMethodWebRequest(BASE_JCR_URL + "dirlist");
+					mreq.setMimeEncoded(true);
+					for ( int i = 0; i < 20; i++ ) {
+						ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
+						mreq.setParameter("multifile"+i, new UploadFileSpec[] {
+								new UploadFileSpec("OriginalFileName", bais, "text/html")
+						});
+					}
+					WebResponse resp = wc.getResponse(mreq);
+					int code = resp.getResponseCode();
+					assertTrue("Should have been a 200 ", (code == 200));
+					int contentL = resp.getContentLength();
+					log.info("Got " + contentL + " bytes ");
+					DataInputStream in = new DataInputStream(resp.getInputStream());
+					byte[] buffer2 = new byte[contentL];
+					in.readFully(buffer2);
+					String contentEncoding = resp.getCharacterSet();
+					String contentType = resp.getContentType();
+					log.info("Got ContentType:" + contentType + " ContentEncoding:"
+							+ contentEncoding);
+					String content = new String(buffer2, contentEncoding);
+					log.info("Content\n" + content);
+					for ( int i = 0; i < 20; i++ ) {
+						WebRequest req = new GetMethodWebRequest(BASE_JCR_URL + "dirlist/multifile"+i);
+						log.info("Trying " + "dirlist/multifile"+i);
+						resp = wc.getResponse(req);
+						assertEquals("Expected a 200 response ",200, resp.getResponseCode());
+						assertEquals("Content Lenght does not match  ",buffer.length, resp.getContentLength());
+						assertEquals("Content Type not correct  ","text/html", resp.getContentType());
+						contentL = resp.getContentLength();
+						log.info("Got " + contentL + " bytes ");
+						in = new DataInputStream(resp.getInputStream());
+						buffer2 = new byte[contentL];
+						in.readFully(buffer2);
+						assertEquals("Upload Size is not the same as download size ",
+								buffer.length, buffer2.length);
+						for (int j = 0; j < buffer2.length; j++)
+						{
+							assertEquals("Byte at Offset " + j + " corrupted ", buffer[j],
+									buffer2[j]);
+						}
+					}
+			}
+			catch (HttpNotFoundException nfex)
+			{
+				log.error("Failed ",nfex);
+				fail("Failed with " + nfex.getResponseCode() + " Cause: "
+						+ nfex.getResponseMessage());
+			}
+			catch (HttpInternalErrorException iex)
+			{
+				log.error("Failed ",iex);
+				fail("Failed with " + iex.getResponseCode() + " Cause: "
+						+ iex.getResponseMessage());
+			}
+		}
+		else
+		{
+			log.info("Tests Disabled, please start tomcat with sdata installed");
+		}
+		
 	}
 
 }

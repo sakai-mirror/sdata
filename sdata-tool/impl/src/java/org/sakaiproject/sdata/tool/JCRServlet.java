@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.jcr.InvalidItemStateException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
@@ -51,10 +50,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.fileupload.sdata.FileItemIterator;
+import org.apache.commons.fileupload.sdata.FileItemStream;
+import org.apache.commons.fileupload.sdata.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.sdata.util.Streams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.api.ComponentManager;
@@ -204,6 +203,7 @@ public class JCRServlet extends HttpServlet
 	/**
 	 * @param request
 	 */
+	@SuppressWarnings("unchecked")
 	private void snoopRequest(HttpServletRequest request)
 	{
 		StringBuilder sb = new StringBuilder("SData Request :");
@@ -637,15 +637,18 @@ public class JCRServlet extends HttpServlet
 		snoopRequest(request);
 
 		ResourceDefinition rp = resourceDefinitionFactory.getSpec(path);
+		log.info("Checking for Multipart");
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 
 		// multiparts are always streamed uploads
 		if (isMultipart)
 		{
+			log.info("Got Multipart");
 			doMumtipartUpload(request, response, path, rp);
 		}
 		else
 		{
+			log.info("Got Standard");
 
 		}
 
@@ -692,41 +695,29 @@ public class JCRServlet extends HttpServlet
 
 			// Parse the request
 			FileItemIterator iter = upload.getItemIterator(request);
-			String mimeType = "text/plain";
-			String charEncoding = "UTF-8";
 			Map<String, Map> uploads = new HashMap<String, Map>();
 			while (iter.hasNext())
 			{
 				FileItemStream item = iter.next();
+				log.info("Got Upload through Uploads");
 				String name = item.getFieldName();
+				log.info("    Name is "+name);
 				InputStream stream = item.openStream();
-				if (item.isFormField())
+				if (!item.isFormField())
 				{
-					if (name.startsWith("mime-type"))
-					{
-						mimeType = Streams.asString(stream);
-					}
-					else if (name.startsWith("encoding"))
-					{
-						charEncoding = Streams.asString(stream);
-					}
-				}
-				else
-				{
-
 					try
 					{
+						String mimeType = item.getContentType();
 						Node target = jcrNodeFactory.createNode(rp
 								.getRepositoryPath(name), JCRConstants.NT_FILE);
 						GregorianCalendar lastModified = new GregorianCalendar();
 						lastModified.setTime(new Date());
-						long size = saveStream(target, stream, mimeType, charEncoding,
+						long size = saveStream(target, stream, mimeType, "UTF-8",
 								lastModified);
 						Map<String, Object> uploadMap = new HashMap<String, Object>();
 						uploadMap.put("mimeType", mimeType);
-						uploadMap.put("encoding", charEncoding);
 						uploadMap.put("contentLength", size);
-						uploadMap.put("lastModified", lastModified);
+						uploadMap.put("lastModified", lastModified.getTime());
 						uploadMap.put("status", "ok");
 						uploads.put(name, uploadMap);
 						uploadMap = new HashMap<String, Object>();
@@ -734,8 +725,8 @@ public class JCRServlet extends HttpServlet
 					catch (Exception ex)
 					{
 						Map<String, Object> uploadMap = new HashMap<String, Object>();
-						uploadMap.put("mimeType", mimeType);
-						uploadMap.put("encoding", charEncoding);
+						uploadMap.put("mimeType", "text/plain");
+						uploadMap.put("encoding", "UTF-8");
 						uploadMap.put("contentLength", -1);
 						uploadMap.put("lastModified", 0);
 						uploadMap.put("status", "Failed");
@@ -750,23 +741,21 @@ public class JCRServlet extends HttpServlet
 						uploadMap = new HashMap<String, Object>();
 
 					}
-					mimeType = "text/plain";
-					charEncoding = "UTF-8";
 
 				}
 			}
 
 			JSONObject jsonobject = JSONObject.fromObject(uploads);
 			PrintWriter pw = response.getWriter();
+			log.info("Multipart Uplaod Complete "+jsonobject.toString());
 			pw.write(jsonobject.toString());
 		}
-		catch (Exception ex)
+		catch (Throwable ex)
 		{
+			log.error("Failed  TO service Request ", ex);
 			response.reset();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 					"Failed with " + ex.getMessage());
-			snoopRequest(request);
-			log.error("Failed  TO service Request ", ex);
 			return;
 		}
 	}

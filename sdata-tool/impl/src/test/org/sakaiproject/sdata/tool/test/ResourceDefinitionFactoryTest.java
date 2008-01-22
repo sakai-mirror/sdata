@@ -21,12 +21,10 @@
 
 package org.sakaiproject.sdata.tool.test;
 
+import junit.framework.TestCase;
+
 import org.sakaiproject.sdata.tool.ResourceDefinition;
 import org.sakaiproject.sdata.tool.ResourceDefinitionFactory;
-
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
-
-import junit.framework.TestCase;
 
 /**
  * @author ieb
