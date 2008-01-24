@@ -16,7 +16,9 @@
  */
 package org.apache.commons.fileupload.sdata;
 
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  *
@@ -36,13 +38,13 @@ public class TestAll extends TestCase {
      */
     public static Test suite() {
         TestSuite suite = new TestSuite();
-        suite.addTest(new TestSuite(DefaultFileItemTest.class));
-        suite.addTest(new TestSuite(DiskFileItemSerializeTest.class));
-        suite.addTest(new TestSuite(ParameterParserTest.class));
-        suite.addTest(new TestSuite(MultipartStreamTest.class));
-        suite.addTest(new TestSuite(ServletFileUploadTest.class));
-        suite.addTest(new TestSuite(StreamingTest.class));
-        suite.addTest(new TestSuite(ProgressListenerTest.class));
+        suite.addTest(new TestSuite(DefaultFileItemUnitT.class));
+        suite.addTest(new TestSuite(DiskFileItemSerializeUnitT.class));
+        suite.addTest(new TestSuite(ParameterParserUnitT.class));
+        suite.addTest(new TestSuite(MultipartStreamUnitT.class));
+        suite.addTest(new TestSuite(ServletFileUploadUnitT.class));
+        suite.addTest(new TestSuite(StreamingUnitT.class));
+        suite.addTest(new TestSuite(ProgressListenerUnitT.class));
         return suite;
     }
 

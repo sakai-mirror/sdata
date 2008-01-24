@@ -23,18 +23,13 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.fileupload.sdata.DefaultFileItem;
-import org.apache.commons.fileupload.sdata.DefaultFileItemFactory;
-import org.apache.commons.fileupload.sdata.FileItem;
-import org.apache.commons.fileupload.sdata.FileItemFactory;
-
 
 /**
  * Unit tests for {@link org.apache.commons.fileupload.sdata.DefaultFileItem}.
  *
  * @author <a href="mailto:martinc@apache.org">Martin Cooper</a>
  */
-public class DefaultFileItemTest extends TestCase
+public class DefaultFileItemUnitT extends TestCase
  {
 
     /**
@@ -57,7 +52,7 @@ public class DefaultFileItemTest extends TestCase
      *
      * @param name The name of the test case.
      */
-    public DefaultFileItemTest(String name)
+    public DefaultFileItemUnitT(String name)
     {
         super(name);
     }

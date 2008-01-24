@@ -16,19 +16,15 @@
  */
 package org.apache.commons.fileupload.sdata;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Arrays;
+import java.io.OutputStream;
 
 import junit.framework.TestCase;
-import org.apache.commons.fileupload.sdata.FileItem;
-import org.apache.commons.fileupload.sdata.FileItemFactory;
-import org.apache.commons.fileupload.sdata.disk.DiskFileItem;
+
 import org.apache.commons.fileupload.sdata.disk.DiskFileItemFactory;
 
 
@@ -36,7 +32,7 @@ import org.apache.commons.fileupload.sdata.disk.DiskFileItemFactory;
  * Serialization Unit tests for 
  *  {@link org.apache.commons.fileupload.sdata.disk.DiskFileItem}.
  */
-public class DiskFileItemSerializeTest extends TestCase
+public class DiskFileItemSerializeUnitT extends TestCase
  {
 
     /**
@@ -59,7 +55,7 @@ public class DiskFileItemSerializeTest extends TestCase
      *
      * @param name The name of the test case.
      */
-    public DiskFileItemSerializeTest(String name)
+    public DiskFileItemSerializeUnitT(String name)
     {
         super(name);
     }

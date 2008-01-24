@@ -19,12 +19,14 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sdata.tool;
+package org.sakaiproject.sdata.tool.util;
+
+import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 
 /**
  * @author ieb
  */
-public class ResourceDefinition
+public class ResourceDefinitionImpl implements ResourceDefinition
 {
 
 	private String path;
@@ -40,7 +42,7 @@ public class ResourceDefinition
 	 * @param path
 	 * @param version
 	 */
-	public ResourceDefinition(String inbasePath, String inpath, int inversion)
+	public ResourceDefinitionImpl(String inbasePath, String inpath, int inversion)
 	{
 		path = inpath;
 		version = inversion;

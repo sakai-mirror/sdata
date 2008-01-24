@@ -21,11 +21,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.sdata.FileUploadException;
+import junit.framework.TestCase;
+
 import org.apache.commons.fileupload.sdata.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.sdata.servlet.ServletFileUpload;
-
-import junit.framework.TestCase;
 
 
 /**

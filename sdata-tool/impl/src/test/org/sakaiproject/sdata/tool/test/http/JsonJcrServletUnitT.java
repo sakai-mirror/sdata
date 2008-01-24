@@ -44,9 +44,9 @@ import com.meterware.servletunit.ServletUnitClient;
  * @author ieb
  */
 
-public class FourOFour extends TestCase
+public class JsonJcrServletUnitT extends TestCase
 {
-	private static final Log log = LogFactory.getLog(FourOFour.class);
+	private static final Log log = LogFactory.getLog(JsonJcrServletUnitT.class);
 
 	private static final String BASE_URL = "http://localhost:8080/sdata/";
 

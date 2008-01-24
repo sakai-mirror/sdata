@@ -17,10 +17,10 @@
 package org.apache.commons.fileupload.sdata;
 
 
-import junit.framework.TestCase;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
-import org.apache.commons.fileupload.sdata.MultipartStream;
+import junit.framework.TestCase;
 
 
 /**
@@ -29,7 +29,7 @@ import org.apache.commons.fileupload.sdata.MultipartStream;
  * @author Sean C. Sullivan
  * 
  */
-public class MultipartStreamTest extends TestCase
+public class MultipartStreamUnitT extends TestCase
 {
 	static private final String BOUNDARY_TEXT = "myboundary";
 

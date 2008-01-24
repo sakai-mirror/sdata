@@ -21,10 +21,14 @@
 
 package org.sakaiproject.sdata.tool;
 
+import java.io.IOException;
 import java.security.Principal;
 
+import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,6 +61,21 @@ public class StreamRequestFilter extends RequestFilter
 		m_toolPlacement = false; // disable tool placement handelling on this
 									// request
 		m_uploadEnabled = false; // disable upload handling on this request
+	}
+	
+	/* (non-Javadoc)
+	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+	 */
+	public void doFilter(ServletRequest request, ServletResponse arg1, FilterChain arg2) throws IOException, ServletException
+	{
+		long start = System.currentTimeMillis();
+		try {
+		super.doFilter(request, arg1, arg2);
+		} finally {
+			long end = System.currentTimeMillis();
+			HttpServletRequest hrequest = (HttpServletRequest) request;
+			log.info("Request took "+hrequest.getMethod()+" "+hrequest.getPathInfo()+" "+(end-start)+" ms");
+		}
 	}
 
 	/*

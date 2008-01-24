@@ -18,8 +18,6 @@ package org.apache.commons.fileupload.sdata;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.sdata.FileUploadBase;
-
 /**
  *
  *

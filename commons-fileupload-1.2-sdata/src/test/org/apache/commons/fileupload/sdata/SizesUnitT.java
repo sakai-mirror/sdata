@@ -23,9 +23,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.sdata.FileItem;
-import org.apache.commons.fileupload.sdata.FileUploadBase;
-import org.apache.commons.fileupload.sdata.FileUploadException;
 import org.apache.commons.fileupload.sdata.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.sdata.servlet.ServletFileUpload;
 
@@ -33,7 +30,7 @@ import org.apache.commons.fileupload.sdata.servlet.ServletFileUpload;
 /**
  * Unit test for items with varying sizes.
  */
-public class SizesTest extends FileUploadTestCase
+public class SizesUnitT extends FileUploadTestCase
 {
 	/** Runs a test with varying file sizes.
 	 */

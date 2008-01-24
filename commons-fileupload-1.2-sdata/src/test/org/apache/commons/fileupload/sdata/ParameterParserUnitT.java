@@ -16,23 +16,22 @@
  */
 package org.apache.commons.fileupload.sdata;
 
+import java.util.Map;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import java.util.Map;
-
-import org.apache.commons.fileupload.sdata.ParameterParser;
 
 /**
  * Unit tests for {@link ParameterParser}.
  *
  * @author <a href="mailto:oleg@ural.ru">Oleg Kalnichevski</a>
  */
-public class ParameterParserTest extends TestCase
+public class ParameterParserUnitT extends TestCase
 {
 
     // ------------------------------------------------------------ Constructor
-    public ParameterParserTest(String testName)
+    public ParameterParserUnitT(String testName)
     {
         super(testName);
     }
@@ -40,7 +39,7 @@ public class ParameterParserTest extends TestCase
     // ------------------------------------------------------------------- Main
     public static void main(String args[])
     {
-        String[] testCaseName = { ParameterParserTest.class.getName()};
+        String[] testCaseName = { ParameterParserUnitT.class.getName()};
         junit.textui.TestRunner.main(testCaseName);
     }
 
@@ -48,7 +47,7 @@ public class ParameterParserTest extends TestCase
 
     public static Test suite()
     {
-        return new TestSuite(ParameterParserTest.class);
+        return new TestSuite(ParameterParserUnitT.class);
     }
 
     public void testParsing()

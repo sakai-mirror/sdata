@@ -22,11 +22,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.sdata.DiskFileUpload;
-import org.apache.commons.fileupload.sdata.FileItem;
-import org.apache.commons.fileupload.sdata.FileUploadBase;
-import org.apache.commons.fileupload.sdata.FileUploadException;
-
 /**
  * Unit tests {@link org.apache.commons.fileupload.sdata.DiskFileUpload}.
  *
@@ -34,7 +29,7 @@ import org.apache.commons.fileupload.sdata.FileUploadException;
  * @author Sean C. Sullivan
  *
  */
-public class ServletFileUploadTest extends FileUploadTestCase
+public class ServletFileUploadUnitT extends FileUploadTestCase
 {
 	public void testWithInvalidRequest()
     {

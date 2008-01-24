@@ -24,7 +24,6 @@ package org.sakaiproject.sdata.tool;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,23 +47,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONObject;
-
 import org.apache.commons.fileupload.sdata.FileItemIterator;
 import org.apache.commons.fileupload.sdata.FileItemStream;
 import org.apache.commons.fileupload.sdata.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.sdata.util.Streams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.jcr.api.JCRConstants;
 import org.sakaiproject.jcr.support.api.JCRNodeFactoryService;
+import org.sakaiproject.sdata.tool.api.ResourceDefinition;
+import org.sakaiproject.sdata.tool.api.ResourceDefinitionFactory;
+import org.sakaiproject.sdata.tool.api.SDataException;
+import org.sakaiproject.sdata.tool.util.ResourceDefinitionFactoryImpl;
 import org.sakaiproject.tool.api.Tool;
 
 /**
  * <p>
  * JCR Service is a servlet that gives access to the JCR returning the content
- * of files within the jcr or a json response (directories). The resource is
+ * of files within the jcr or a map response (directories). The resource is
  * pointed to using the URI/URL requested (the path info part), and the standard
  * Http methods do what they are expected to in the http standard. GET gets the
  * content of the file, PUT put puts a new file, the content comming from the
@@ -86,7 +86,7 @@ import org.sakaiproject.tool.api.Tool;
  * 
  * @author ieb
  */
-public class JCRServlet extends HttpServlet
+public abstract class JCRServlet extends HttpServlet
 {
 	private static final Log log = LogFactory.getLog(JCRServlet.class);
 
@@ -129,8 +129,19 @@ public class JCRServlet extends HttpServlet
 			basePath = DEFAULT_BASE_PATH;
 		}
 
-		resourceDefinitionFactory = new ResourceDefinitionFactory(basePath);
+		resourceDefinitionFactory = getResourceDefinitionFactory();
 
+	}
+
+	/**
+	 * Creates a resource definition factory suitable for controlling the
+	 * storage of items
+	 * 
+	 * @return
+	 */
+	protected ResourceDefinitionFactory getResourceDefinitionFactory()
+	{
+		return new ResourceDefinitionFactoryImpl(basePath);
 	}
 
 	/**
@@ -167,13 +178,10 @@ public class JCRServlet extends HttpServlet
 	{
 		try
 		{
-			request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
-
-			String path = request.getPathInfo();
 
 			snoopRequest(request);
 
-			ResourceDefinition rp = resourceDefinitionFactory.getSpec(path);
+			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
 			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
 			if (n == null)
 			{
@@ -188,9 +196,8 @@ public class JCRServlet extends HttpServlet
 		}
 		catch (Exception e)
 		{
-			response.reset();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Failed with " + e.getMessage());
+			sendError(request, response, e);
+
 			snoopRequest(request);
 			log.error("Failed  TO service Request ", e);
 		}
@@ -206,28 +213,31 @@ public class JCRServlet extends HttpServlet
 	@SuppressWarnings("unchecked")
 	private void snoopRequest(HttpServletRequest request)
 	{
-		StringBuilder sb = new StringBuilder("SData Request :");
-		sb.append("\n\tRequest Path :").append(request.getPathInfo());
-		sb.append("\n\tMethod :").append(request.getMethod());
-		for (Enumeration<String> hnames = request.getHeaderNames(); hnames
-				.hasMoreElements();)
+		if (log.isDebugEnabled())
 		{
-			String name = hnames.nextElement();
-			sb.append("\n\tHeader :").append(name).append("=[").append(
-					request.getHeader(name)).append("]");
-		}
-		if (request.getCookies() != null)
-		{
-			for (Cookie c : request.getCookies())
+			StringBuilder sb = new StringBuilder("SData Request :");
+			sb.append("\n\tRequest Path :").append(request.getPathInfo());
+			sb.append("\n\tMethod :").append(request.getMethod());
+			for (Enumeration<String> hnames = request.getHeaderNames(); hnames
+					.hasMoreElements();)
 			{
-				sb.append("\n\tCookie:");
-				sb.append("name[").append(c.getName());
-				sb.append("]path[").append(c.getPath());
-				sb.append("]value[").append(c.getValue());
+				String name = hnames.nextElement();
+				sb.append("\n\tHeader :").append(name).append("=[").append(
+						request.getHeader(name)).append("]");
 			}
+			if (request.getCookies() != null)
+			{
+				for (Cookie c : request.getCookies())
+				{
+					sb.append("\n\tCookie:");
+					sb.append("name[").append(c.getName());
+					sb.append("]path[").append(c.getPath());
+					sb.append("]value[").append(c.getValue());
+				}
+			}
+			sb.append("]");
+			log.info(sb.toString());
 		}
-		sb.append("]");
-		log.info(sb.toString());
 	}
 
 	/**
@@ -257,12 +267,9 @@ public class JCRServlet extends HttpServlet
 	{
 		try
 		{
-			request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
-
-			String path = request.getPathInfo();
 			snoopRequest(request);
 
-			ResourceDefinition rp = resourceDefinitionFactory.getSpec(path);
+			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
 			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
 			if (n == null)
 			{
@@ -287,9 +294,8 @@ public class JCRServlet extends HttpServlet
 		}
 		catch (Exception e)
 		{
-			response.reset();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Failed with " + e.getMessage());
+			sendError(request, response, e);
+
 			snoopRequest(request);
 			log.error("Failed  TO service Request ", e);
 		}
@@ -365,12 +371,9 @@ public class JCRServlet extends HttpServlet
 		OutputStream out = null;
 		try
 		{
-			request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
-
-			String path = request.getPathInfo();
 			snoopRequest(request);
 
-			ResourceDefinition rp = resourceDefinitionFactory.getSpec(path);
+			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
 			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
 			boolean created = false;
 			if (n == null)
@@ -424,9 +427,7 @@ public class JCRServlet extends HttpServlet
 		}
 		catch (Exception e)
 		{
-			response.reset();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Failed with " + e.getMessage());
+			sendError(request, response, e);
 			snoopRequest(request);
 			log.error("Failed  TO service Request ", e);
 		}
@@ -513,12 +514,9 @@ public class JCRServlet extends HttpServlet
 		InputStream in = null;
 		try
 		{
-			request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
-
-			String path = request.getPathInfo();
 			snoopRequest(request);
 
-			ResourceDefinition rp = resourceDefinitionFactory.getSpec(path);
+			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
 			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
 			if (n == null)
 			{
@@ -557,9 +555,9 @@ public class JCRServlet extends HttpServlet
 			}
 			else
 			{
-				Map<String, Object> jsonmap = new HashMap<String, Object>();
-				jsonmap.put("path", rp.getExternalPath(n.getPath()));
-				jsonmap.put("type", nt.getName());
+				Map<String, Object> outputMap = new HashMap<String, Object>();
+				outputMap.put("path", rp.getExternalPath(n.getPath()));
+				outputMap.put("type", nt.getName());
 				List<Map> nodes = new ArrayList<Map>();
 				NodeIterator ni = n.getNodes();
 				int i = 0;
@@ -590,20 +588,17 @@ public class JCRServlet extends HttpServlet
 					nodes.add(cnm);
 					i++;
 				}
-				jsonmap.put("nitems", nodes.size());
-				jsonmap.put("items", nodes);
+				outputMap.put("nitems", nodes.size());
+				outputMap.put("items", nodes);
 
-				JSONObject jsonObject = JSONObject.fromObject(jsonmap);
-				PrintWriter w = response.getWriter();
-				w.write(jsonObject.toString());
+				sendMap(request, response, outputMap);
 
 			}
 		}
 		catch (Exception e)
 		{
-			response.reset();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Failed with " + e.getMessage());
+			sendError(request, response, e);
+
 			snoopRequest(request);
 			log.error("Failed  TO service Request ", e);
 		}
@@ -631,24 +626,28 @@ public class JCRServlet extends HttpServlet
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
-		request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
-
-		String path = request.getPathInfo();
 		snoopRequest(request);
-
-		ResourceDefinition rp = resourceDefinitionFactory.getSpec(path);
-		log.info("Checking for Multipart");
-		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-
-		// multiparts are always streamed uploads
-		if (isMultipart)
+		try
 		{
-			log.info("Got Multipart");
-			doMumtipartUpload(request, response, path, rp);
+			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
+			log.info("Checking for Multipart");
+			boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+
+			// multiparts are always streamed uploads
+			if (isMultipart)
+			{
+				log.info("Got Multipart");
+				doMumtipartUpload(request, response, rp);
+			}
+			else
+			{
+				log.info("Got Standard");
+
+			}
 		}
-		else
+		catch (SDataException sde)
 		{
-			log.info("Got Standard");
+			sendError(request, response, sde);
 
 		}
 
@@ -663,26 +662,25 @@ public class JCRServlet extends HttpServlet
 	 * @throws IOException
 	 */
 	private void doMumtipartUpload(HttpServletRequest request,
-			HttpServletResponse response, String path, ResourceDefinition rp)
-			throws ServletException, IOException
+			HttpServletResponse response, ResourceDefinition rp) throws ServletException,
+			IOException
 	{
 		try
 		{
 			try
 			{
-				Node n = jcrNodeFactory.createNode(path, JCRConstants.NT_FOLDER);
+				Node n = jcrNodeFactory.createNode(rp.getRepositoryPath(),
+						JCRConstants.NT_FOLDER);
 				if (n == null)
 				{
 					response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-							"Unable to uplaod to location " + path);
+							"Unable to uplaod to location " + rp.getRepositoryPath());
 					return;
 				}
 			}
 			catch (Exception ex)
 			{
-				response.reset();
-				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-						"Failed with " + ex.getMessage());
+				sendError(request, response, ex);
 				snoopRequest(request);
 				log.error("Failed  TO service Request ", ex);
 				return;
@@ -695,13 +693,13 @@ public class JCRServlet extends HttpServlet
 
 			// Parse the request
 			FileItemIterator iter = upload.getItemIterator(request);
-			Map<String, Map> uploads = new HashMap<String, Map>();
+			Map<String, Object> uploads = new HashMap<String, Object>();
 			while (iter.hasNext())
 			{
 				FileItemStream item = iter.next();
 				log.info("Got Upload through Uploads");
 				String name = item.getFieldName();
-				log.info("    Name is "+name);
+				log.info("    Name is " + name);
 				InputStream stream = item.openStream();
 				if (!item.isFormField())
 				{
@@ -745,18 +743,47 @@ public class JCRServlet extends HttpServlet
 				}
 			}
 
-			JSONObject jsonobject = JSONObject.fromObject(uploads);
-			PrintWriter pw = response.getWriter();
-			log.info("Multipart Uplaod Complete "+jsonobject.toString());
-			pw.write(jsonobject.toString());
+			sendMap(request, response, uploads);
 		}
 		catch (Throwable ex)
 		{
 			log.error("Failed  TO service Request ", ex);
-			response.reset();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Failed with " + ex.getMessage());
+			sendError(request, response, ex);
 			return;
 		}
+	}
+
+	/**
+	 * @param ex
+	 * @throws IOException
+	 */
+	protected abstract void sendError(HttpServletRequest request,
+			HttpServletResponse response, Throwable ex) throws IOException;
+
+	/**
+	 * Serailize a Map strucutre to the output stream
+	 * 
+	 * @param uploads
+	 * @throws IOException
+	 */
+	protected abstract void sendMap(HttpServletRequest request,
+			HttpServletResponse response, Map<String, Object> contetMap)
+			throws IOException;
+
+	/**
+	 * @return the basePath
+	 */
+	public String getBasePath()
+	{
+		return basePath;
+	}
+
+	/**
+	 * @param basePath
+	 *        the basePath to set
+	 */
+	public void setBasePath(String basePath)
+	{
+		this.basePath = basePath;
 	}
 }

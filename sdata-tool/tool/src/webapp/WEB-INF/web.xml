@@ -18,44 +18,111 @@
 	-->
 	<filter-mapping>
 		<filter-name>sakai.request</filter-name>
-		<servlet-name>sdata1</servlet-name>
-		<dispatcher>REQUEST</dispatcher>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>INCLUDE</dispatcher>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>sakai.request</filter-name>
-		<servlet-name>sdata2</servlet-name>
+		<servlet-name>JsonJcrServlet</servlet-name>
 		<dispatcher>REQUEST</dispatcher>
 		<dispatcher>FORWARD</dispatcher>
 		<dispatcher>INCLUDE</dispatcher>
 	</filter-mapping>
 	
-	<!--
-	The Search Controller 
-	-->
+	<filter-mapping>
+		<filter-name>sakai.request</filter-name>
+		<servlet-name>JsonUserStorageServlet</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>sakai.request</filter-name>
+		<servlet-name>XmlRpcJcrServlet</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+	
+	
+	<filter-mapping>
+		<filter-name>sakai.request</filter-name>
+		<servlet-name>XmlRpcUserStorageServlet</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+	
+	
+	<filter-mapping>
+		<filter-name>sakai.request</filter-name>
+		<servlet-name>JCRDumper</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+
+	<!-- json servlets -->	
 	<servlet>
-		<servlet-name>sdata1</servlet-name>
+		<servlet-name>JsonJcrServlet</servlet-name>
 		<servlet-class>
-			org.sakaiproject.sdata.tool.JCRServlet
+			org.sakaiproject.sdata.tool.json.JsonJcrServlet
 		</servlet-class>
 		<load-on-startup>100</load-on-startup>
 	</servlet>
 	<servlet>
-		<servlet-name>sdata2</servlet-name>
+		<servlet-name>JsonUserStorageServlet</servlet-name>
+		<servlet-class>
+			org.sakaiproject.sdata.tool.json.JsonUserStorageServlet
+		</servlet-class>
+		<load-on-startup>100</load-on-startup>
+	</servlet>
+
+	<!-- xml-rpc servlets -->	
+	<servlet>
+		<servlet-name>XmlRpcJcrServlet</servlet-name>
+		<servlet-class>
+			org.sakaiproject.sdata.tool.xmlrpc.XmlRpcJcrServlet
+		</servlet-class>
+		<load-on-startup>100</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>XmlRpcUserStorageServlet</servlet-name>
+		<servlet-class>
+			org.sakaiproject.sdata.tool.xmlrpc.XmlRpcUserStorageServlet
+		</servlet-class>
+		<load-on-startup>100</load-on-startup>
+	</servlet>
+	
+	
+	<!-- xml dump -->
+	<servlet>
+		<servlet-name>JCRDumper</servlet-name>
 		<servlet-class>
 			org.sakaiproject.sdata.tool.JCRDumper
 		</servlet-class>
 		<load-on-startup>100</load-on-startup>
 	</servlet>
+	
 	<servlet-mapping>
-		<servlet-name>sdata1</servlet-name>
+		<servlet-name>JsonJcrServlet</servlet-name>
 		<url-pattern>/f/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>sdata2</servlet-name>
+		<servlet-name>JsonUserStorageServlet</servlet-name>
+		<url-pattern>/p/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>XmlRpcJcrServlet</servlet-name>
+		<url-pattern>/xf/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>XmlRpcUserStorageServlet</servlet-name>
+		<url-pattern>/xp/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>JCRDumper</servlet-name>
 		<url-pattern>/d/*</url-pattern>
 	</servlet-mapping>
+	
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>

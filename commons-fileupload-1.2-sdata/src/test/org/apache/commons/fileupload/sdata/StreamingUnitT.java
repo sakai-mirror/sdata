@@ -23,25 +23,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.sdata.FileItem;
-import org.apache.commons.fileupload.sdata.FileUploadBase;
-import org.apache.commons.fileupload.sdata.FileUploadException;
-import org.apache.commons.fileupload.sdata.MultipartStream;
-import org.apache.commons.fileupload.sdata.FileUploadBase.FileUploadIOException;
+import junit.framework.TestCase;
+
 import org.apache.commons.fileupload.sdata.FileUploadBase.IOFileUploadException;
 import org.apache.commons.fileupload.sdata.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.sdata.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.sdata.servlet.ServletRequestContext;
 
-import junit.framework.TestCase;
-
 
 /**
  * Unit test for items with varying sizes.
  */
-public class StreamingTest extends TestCase
+public class StreamingUnitT extends TestCase
 {
     /**
      * Tests a file upload with varying file sizes.

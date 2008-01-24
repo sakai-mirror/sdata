@@ -20,16 +20,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.fileupload.sdata.FileItemIterator;
-import org.apache.commons.fileupload.sdata.FileItemStream;
-import org.apache.commons.fileupload.sdata.FileUploadException;
-import org.apache.commons.fileupload.sdata.ProgressListener;
 import org.apache.commons.fileupload.sdata.servlet.ServletFileUpload;
 
 
 /** Tests the progress listener.
  */
-public class ProgressListenerTest extends FileUploadTestCase {
+public class ProgressListenerUnitT extends FileUploadTestCase {
 	private class ProgressListenerImpl implements ProgressListener {
 		private final long expectedContentLength;
 		private final int expectedItems;

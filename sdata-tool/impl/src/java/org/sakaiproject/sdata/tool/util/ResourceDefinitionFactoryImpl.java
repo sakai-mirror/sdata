@@ -19,20 +19,27 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sdata.tool;
+package org.sakaiproject.sdata.tool.util;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.sakaiproject.sdata.tool.api.ResourceDefinition;
+import org.sakaiproject.sdata.tool.api.ResourceDefinitionFactory;
+import org.sakaiproject.tool.api.Tool;
 
 /**
  * @author ieb
  */
-public class ResourceDefinitionFactory
+public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 {
 
+	
 	private String basePath;
 
 	/**
 	 * @param basePath
 	 */
-	public ResourceDefinitionFactory(String basePath)
+	public ResourceDefinitionFactoryImpl(String basePath)
 	{
 		this.basePath = basePath;
 	}
@@ -41,8 +48,13 @@ public class ResourceDefinitionFactory
 	 * @param path
 	 * @return
 	 */
-	public ResourceDefinition getSpec(String path)
+	public ResourceDefinition getSpec(HttpServletRequest request)
 	{
+		
+		request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
+
+		String path = request.getPathInfo();
+
 		if (path.endsWith("/"))
 		{
 			path = path.substring(0, path.length() - 1);
@@ -62,7 +74,7 @@ public class ResourceDefinitionFactory
 			}
 		}
 
-		return new ResourceDefinition(basePath, path, version);
+		return new ResourceDefinitionImpl(basePath, path, version);
 	}
 
 }
