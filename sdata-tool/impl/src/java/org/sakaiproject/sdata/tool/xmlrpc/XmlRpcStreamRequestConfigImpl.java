@@ -39,7 +39,7 @@ public class XmlRpcStreamRequestConfigImpl implements XmlRpcStreamRequestConfig
 	 */
 	public boolean isEnabledForExceptions()
 	{
-		return false;
+		return true;
 	}
 
 	/* (non-Javadoc)

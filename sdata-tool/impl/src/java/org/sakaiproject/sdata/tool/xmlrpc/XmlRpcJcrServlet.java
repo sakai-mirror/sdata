@@ -21,32 +21,26 @@
 
 package org.sakaiproject.sdata.tool.xmlrpc;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.Map;
-import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.ws.commons.util.NamespaceContextImpl;
-import org.apache.xmlrpc.XmlRpcConfigImpl;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.common.TypeFactory;
-import org.apache.xmlrpc.common.XmlRpcStreamConfig;
 import org.apache.xmlrpc.common.XmlRpcStreamRequestConfig;
-import org.apache.xmlrpc.parser.TypeParser;
 import org.apache.xmlrpc.serializer.DefaultXMLWriterFactory;
-import org.apache.xmlrpc.serializer.TypeSerializer;
 import org.apache.xmlrpc.serializer.XmlRpcWriter;
 import org.apache.xmlrpc.serializer.XmlWriterFactory;
 import org.sakaiproject.sdata.tool.JCRServlet;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-
-import net.sf.json.JSONObject;
 
 /**
  * A JCRServlet that serializes responses using JSON
@@ -55,6 +49,8 @@ import net.sf.json.JSONObject;
  */
 public class XmlRpcJcrServlet extends JCRServlet
 {
+
+	private static final Log log = LogFactory.getLog(XmlRpcJcrServlet.class);
 
 	private XmlWriterFactory writerFactory = new DefaultXMLWriterFactory();
 
@@ -80,20 +76,31 @@ public class XmlRpcJcrServlet extends JCRServlet
 	{
 
 		XmlRpcWriter xw;
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try
 		{
-			xw = getXmlRpcWriter(pConfig, response.getOutputStream());
+			xw = getXmlRpcWriter(pConfig, baos);
 		}
 		catch (XmlRpcException e)
 		{
+			log.error("Failed to get RpcWriter ",e);
 			throw new IOException("Failed to get RpcWriter  "+e.getMessage());
 		}
 		try
 		{
 			xw.write(pConfig, contentMap);
+			baos.flush();
+			byte[] out = baos.toByteArray();
+			baos.close();
+			
+			response.setContentLength(out.length);
+			response.setContentType("text/xml");
+			response.setCharacterEncoding("UTF-8");
+			response.getOutputStream().write(out);
 		}
 		catch (SAXException e)
 		{
+			log.error("Failed to write response ",e);
 			throw new IOException("Failed to write response "+e.getMessage());
 		}
 
@@ -119,20 +126,30 @@ public class XmlRpcJcrServlet extends JCRServlet
 		else
 		{
 			XmlRpcWriter xw;
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			try
 			{
-				xw = getXmlRpcWriter(pConfig, response.getOutputStream());
+				xw = getXmlRpcWriter(pConfig, baos);
 			}
 			catch (XmlRpcException e)
 			{
+				log.error("Failed to get RpcWriter ",e);
 				throw new IOException("Failed to get RpcWriter  "+e.getMessage());
 			}
 			try
 			{
 				xw.write(pConfig, 500, ex.getMessage(), ex);
+				baos.flush();
+				byte[] out = baos.toByteArray();
+				baos.close();
+				response.setContentLength(out.length);
+				response.setContentType("text/xml");
+				response.setCharacterEncoding("UTF-8");
+				response.getOutputStream().write(out);
 			}
 			catch (SAXException e)
 			{
+				log.error("Failed to write response ",e);
 				throw new IOException("Failed to write response "+e.getMessage());
 			}
 		}

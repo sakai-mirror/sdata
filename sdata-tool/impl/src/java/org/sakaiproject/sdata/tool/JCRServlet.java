@@ -213,7 +213,8 @@ public abstract class JCRServlet extends HttpServlet
 	@SuppressWarnings("unchecked")
 	private void snoopRequest(HttpServletRequest request)
 	{
-		if (log.isDebugEnabled())
+		boolean snoop = "1".equals(request.getParameter("snoop"));
+		if (snoop)
 		{
 			StringBuilder sb = new StringBuilder("SData Request :");
 			sb.append("\n\tRequest Path :").append(request.getPathInfo());
@@ -713,8 +714,15 @@ public abstract class JCRServlet extends HttpServlet
 						long size = saveStream(target, stream, mimeType, "UTF-8",
 								lastModified);
 						Map<String, Object> uploadMap = new HashMap<String, Object>();
+						if (size > Integer.MAX_VALUE)
+						{
+							uploadMap.put("contentLength", String.valueOf(size));
+						}
+						else
+						{
+							uploadMap.put("contentLength", (int) size);
+						}
 						uploadMap.put("mimeType", mimeType);
-						uploadMap.put("contentLength", size);
 						uploadMap.put("lastModified", lastModified.getTime());
 						uploadMap.put("status", "ok");
 						uploads.put(name, uploadMap);
@@ -722,6 +730,7 @@ public abstract class JCRServlet extends HttpServlet
 					}
 					catch (Exception ex)
 					{
+						log.error(ex);
 						Map<String, Object> uploadMap = new HashMap<String, Object>();
 						uploadMap.put("mimeType", "text/plain");
 						uploadMap.put("encoding", "UTF-8");

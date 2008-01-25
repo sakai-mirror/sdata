@@ -21,6 +21,7 @@
 
 package org.sakaiproject.sdata.tool.xmlrpc;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
@@ -64,9 +65,10 @@ public class XmlRpcUserStorageServlet extends UserStorageServlet
 	{
 
 		XmlRpcWriter xw;
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try
 		{
-			xw = getXmlRpcWriter(pConfig, response.getOutputStream());
+			xw = getXmlRpcWriter(pConfig, baos);
 		}
 		catch (XmlRpcException e)
 		{
@@ -75,6 +77,13 @@ public class XmlRpcUserStorageServlet extends UserStorageServlet
 		try
 		{
 			xw.write(pConfig, contentMap);
+			baos.flush();
+			byte[] out = baos.toByteArray();
+			baos.close();
+			response.setContentLength(out.length);
+			response.setContentType("text/xml");
+			response.setCharacterEncoding("UTF-8");
+			response.getOutputStream().write(out);
 		}
 		catch (SAXException e)
 		{
@@ -103,9 +112,10 @@ public class XmlRpcUserStorageServlet extends UserStorageServlet
 		else
 		{
 			XmlRpcWriter xw;
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			try
 			{
-				xw = getXmlRpcWriter(pConfig, response.getOutputStream());
+				xw = getXmlRpcWriter(pConfig, baos);
 			}
 			catch (XmlRpcException e)
 			{
@@ -114,6 +124,14 @@ public class XmlRpcUserStorageServlet extends UserStorageServlet
 			try
 			{
 				xw.write(pConfig, 500, ex.getMessage(), ex);
+				baos.flush();
+				byte[] out = baos.toByteArray();
+				baos.close();
+				response.setContentLength(out.length);
+				response.setContentType("text/xml");
+				response.setCharacterEncoding("UTF-8");
+				response.getOutputStream().write(out);
+
 			}
 			catch (SAXException e)
 			{
