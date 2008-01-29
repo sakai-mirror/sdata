@@ -69,7 +69,7 @@ public class JCRDumper extends HttpServlet
 	{
 		request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);	
 		String path = request.getPathInfo();
-		if ( path.length() == 0 ) {
+		if ( path == null || path.length() == 0 ) {
 			path = "/";
 		}
 

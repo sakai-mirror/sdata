@@ -19,35 +19,30 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sdata.tool.api;
+package org.sakaiproject.sdata.tool.test.http;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * @author ieb
  *
  */
-public interface ResourceDefinition
+public class WebUnitAll extends TestCase
 {
 
-	/**
-	 * @return
-	 */
-	String getRepositoryPath();
-
-	/**
-	 * @param path
-	 * @return
-	 */
-	String getExternalPath(String path);
-
-	/**
-	 * @param name
-	 * @return
-	 */
-	String getRepositoryPath(String name);
-
-	/**
-	 * @return
-	 */
-	boolean isPrivate();
+	public static Test suite()
+	{
+		TestSuite suite = new TestSuite("Test for org.sakaiproject.sdata.tool");
+		//$JUnit-BEGIN$
+		suite.addTestSuite(JsonJcrServletUnitT.class);
+		suite.addTestSuite(JsonUserStorageServletUnitT.class);
+		suite.addTestSuite(XmlRpcJcrServletUnitT.class);
+		suite.addTestSuite(XmlRpcUserStorageServletUnitT.class);
+		suite.addTestSuite(HttpRangeUnitT.class);
+		//$JUnit-END$
+        return suite;
+	}
 
 }

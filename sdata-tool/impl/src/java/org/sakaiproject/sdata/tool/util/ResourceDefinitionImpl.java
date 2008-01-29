@@ -109,4 +109,12 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 		return cleanPath(repoPath + "/" + name);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.api.ResourceDefinition#isPrivate()
+	 */
+	public boolean isPrivate()
+	{
+		return false;
+	}
+
 }

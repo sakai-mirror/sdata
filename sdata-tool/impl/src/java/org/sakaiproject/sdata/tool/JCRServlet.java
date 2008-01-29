@@ -188,6 +188,24 @@ public abstract class JCRServlet extends HttpServlet
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				return;
 			}
+			NodeType nt = n.getPrimaryNodeType();
+
+			long lastModifiedTime = -10;
+			if (JCRConstants.NT_FILE.equals(nt.getName()))
+			{
+
+				Node resource = n.getNode(JCRConstants.JCR_CONTENT);
+				Property lastModified = resource
+						.getProperty(JCRConstants.JCR_LASTMODIFIED);
+				lastModifiedTime = lastModified.getDate().getTimeInMillis();
+
+				if (!checkPreconditions(request, response, lastModifiedTime, String
+						.valueOf(lastModifiedTime)))
+				{
+					return;
+				}
+			}
+
 			Session s = n.getSession();
 			n.remove();
 			s.save();
@@ -268,6 +286,7 @@ public abstract class JCRServlet extends HttpServlet
 	{
 		try
 		{
+			log.info("Doing Head ");
 			snoopRequest(request);
 
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
@@ -503,8 +522,14 @@ public abstract class JCRServlet extends HttpServlet
 	 * requirements for HTTP caching described in section 13.
 	 * </p>
 	 * <p>
-	 * See section <a rel="xref" href="rfc2616-sec15.html#sec15.1.3">15.1.3</a>
+	 * See section <a
+	 * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec15.html#sec15.1.3">15.1.3</a>
 	 * for security considerations when used for forms.
+	 * </p>
+	 * <p>
+	 * Section <a
+	 * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9"
+	 * >14.9</a> specifies cache control headers.
 	 * </p>
 	 */
 	@Override
@@ -516,6 +541,9 @@ public abstract class JCRServlet extends HttpServlet
 		try
 		{
 			snoopRequest(request);
+
+			String range = request.getHeader("range");
+			boolean partialGet = (range != null && range.trim().length() != 0);
 
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
 			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
@@ -541,21 +569,79 @@ public abstract class JCRServlet extends HttpServlet
 				response.setCharacterEncoding(encoding.getString());
 				response.setDateHeader(LAST_MODIFIED, lastModified.getDate()
 						.getTimeInMillis());
-				// we need to do something about huge files
-				response.setContentLength((int) content.getLength());
+				setGetCacheControl(response, rp.isPrivate());
+
+				String currentEtag = String.valueOf(lastModified.getDate()
+						.getTimeInMillis());
+				response.setHeader("ETag", currentEtag);
+
+				boolean sendContent = true;
+				long lastModifiedTime = lastModified.getDate().getTimeInMillis();
+
+				if (!checkPreconditions(request, response, lastModifiedTime, currentEtag))
+				{
+					return;
+				}
+				long totallength = content.getLength();
+				long[] ranges = new long[2];
+				ranges[0] = 0;
+				ranges[1] = totallength;
+				if (!checkRanges(request, response, lastModifiedTime, currentEtag, ranges))
+				{
+					return;
+				}
+
+				long length = ranges[1] - ranges[0];
+
+				if (length > 1024 * 1024)
+				{
+					length = 1024 * 1024;
+					ranges[1] = ranges[0] + length;
+				}
+
+				if (totallength != length)
+				{
+					response.setHeader("Content-Range", "bytes " + ranges[0] + "-"
+							+ (ranges[1]-1) + "/" + totallength);
+					response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+				}
+				else
+				{
+					response.setStatus(HttpServletResponse.SC_OK);
+				}
+
+				response.setContentLength((int) length);
 
 				out = response.getOutputStream();
 
 				in = content.getStream();
+				in.skip(ranges[0]);
 				byte[] b = new byte[10240];
 				int nbytes = 0;
-				while ((nbytes = in.read(b)) > 0)
+				while ((nbytes = in.read(b)) > 0 && length > 0)
 				{
-					out.write(b, 0, nbytes);
+					if (nbytes < length)
+					{
+						out.write(b, 0, nbytes);
+						length = length - nbytes;
+					}
+					else
+					{
+						out.write(b, 0, (int) length);
+						length = 0;
+					}
 				}
 			}
 			else
 			{
+				setGetCacheControl(response, rp.isPrivate());
+
+				// Property lastModified =
+				// n.getProperty(JCRConstants.JCR_LASTMODIFIED);
+				// response.setHeader("ETag",
+				// String.valueOf(lastModified.getDate()
+				// .getTimeInMillis()));
+
 				Map<String, Object> outputMap = new HashMap<String, Object>();
 				outputMap.put("path", rp.getExternalPath(n.getPath()));
 				outputMap.put("type", nt.getName());
@@ -565,7 +651,7 @@ public abstract class JCRServlet extends HttpServlet
 				while (ni.hasNext())
 				{
 					Node cn = ni.nextNode();
-					Map<String, String> cnm = new HashMap<String, String>();
+					Map<String, Object> cnm = new HashMap<String, Object>();
 					cnm.put("path", rp.getExternalPath(cn.getName()));
 					NodeType cnt = cn.getPrimaryNodeType();
 					cnm.put("type", cnt.getName());
@@ -573,7 +659,7 @@ public abstract class JCRServlet extends HttpServlet
 					if (JCRConstants.NT_FILE.equals(nt.getName()))
 					{
 						Node resource = n.getNode(JCRConstants.JCR_CONTENT);
-						Property lastModified = resource
+						Property nodeLastModified = resource
 								.getProperty(JCRConstants.JCR_LASTMODIFIED);
 						Property mimeType = resource
 								.getProperty(JCRConstants.JCR_MIMETYPE);
@@ -584,6 +670,7 @@ public abstract class JCRServlet extends HttpServlet
 						cnm.put("mime-type", mimeType.getString());
 						cnm.put("encoding", encoding.getString());
 						cnm.put("length", String.valueOf(content.getLength()));
+						cnm.put("lastModified", nodeLastModified.getDate());
 
 					}
 					nodes.add(cnm);
@@ -593,8 +680,8 @@ public abstract class JCRServlet extends HttpServlet
 				outputMap.put("items", nodes);
 
 				sendMap(request, response, outputMap);
-
 			}
+
 		}
 		catch (Exception e)
 		{
@@ -624,6 +711,143 @@ public abstract class JCRServlet extends HttpServlet
 		}
 	}
 
+	/**
+	 * @param request
+	 * @param response
+	 * @param lastModifiedTime
+	 * @param currentEtag
+	 * @param ranges
+	 * @return
+	 * @throws IOException
+	 */
+	private boolean checkRanges(HttpServletRequest request, HttpServletResponse response,
+			long lastModifiedTime, String currentEtag, long[] ranges) throws IOException
+	{
+
+		String range = request.getHeader("range");
+		long ifRangeDate = request.getDateHeader("if-range");
+		String ifRangeEtag = request.getHeader("if-range");
+
+		if (ifRangeDate != -1 && lastModifiedTime > ifRangeDate)
+		{
+			// the entity has been modified, ignore and send the whole lot
+			return true;
+		}
+		if (ifRangeEtag != null && !currentEtag.equals(ifRangeEtag))
+		{
+			// the entity has been modified, ignore and send the whole lot
+			return true;
+		}
+
+		if (range != null)
+		{
+			String[] s = range.split("=");
+			if (!"bytes".equals(s[0]))
+			{
+				response
+						.sendError(416,
+								"System only supports single range responses, specified in bytes");
+				return false;
+			}
+			range = s[1];
+			String[] r = range.split(",");
+			if (r.length > 1)
+			{
+				response.sendError(416, "System only supports single range responses");
+				return false;
+			}
+			range = range.trim();
+			if (range.startsWith("-"))
+			{
+				ranges[1] = Long.parseLong(range.substring(1));
+			}
+			else if (range.endsWith("-"))
+			{
+				ranges[0] = Long.parseLong(range.substring(0, range.length() - 1));
+			}
+			else
+			{
+				r = range.split("-");
+				ranges[0] = Long.parseLong(r[0]);
+				ranges[1] = Long.parseLong(r[1]);
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
+	private boolean checkPreconditions(HttpServletRequest request,
+			HttpServletResponse response, long lastModifiedTime, String currentEtag)
+			throws IOException
+	{
+		lastModifiedTime = lastModifiedTime - (lastModifiedTime%1000);
+		long ifUnmodifiedSince = request.getDateHeader("if-unmodified-since");
+		if (ifUnmodifiedSince > 0 && (lastModifiedTime > ifUnmodifiedSince))
+		{
+			response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
+			return false;
+		}
+
+		String ifMatch = request.getHeader("if-match");
+		if (ifMatch != null && ifMatch.indexOf(currentEtag) < 0)
+		{
+			// ifMatch was present, but the currentEtag didnt match
+			response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
+			return false;
+		}
+		String ifNoneMatch = request.getHeader("if-none-match");
+		if (ifNoneMatch != null && ifNoneMatch.indexOf(currentEtag) >= 0)
+		{
+			response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
+			return false;
+		}
+		long ifModifiedSince = request.getDateHeader("if-modified-since");
+		if ((ifModifiedSince > 0) && (lastModifiedTime <= ifModifiedSince))
+		{
+			response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * @param range
+	 * @return
+	 */
+	private long[] parseRange(String range)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param response
+	 */
+	private void setGetCacheControl(HttpServletResponse response, boolean isprivate)
+	{
+		if (isprivate)
+		{
+			response.addHeader("Cache-Control", "must-revalidate");
+			response.addHeader("Cache-Control", "private");
+			response.addHeader("Cache-Control", "no-store");
+		}
+		else
+		{
+			// response.addHeader("Cache-Control", "must-revalidate");
+			response.addHeader("Cache-Control", "public");
+		}
+		response.addHeader("Cache-Control", "max-age=600");
+		response.addHeader("Cache-Control", "s-maxage=600");
+		response.setDateHeader("Date", System.currentTimeMillis());
+		response.setDateHeader("Expires", System.currentTimeMillis() + 600000);
+
+	}
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
@@ -631,13 +855,11 @@ public abstract class JCRServlet extends HttpServlet
 		try
 		{
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
-			log.info("Checking for Multipart");
 			boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 
 			// multiparts are always streamed uploads
 			if (isMultipart)
 			{
-				log.info("Got Multipart");
 				doMumtipartUpload(request, response, rp);
 			}
 			else
@@ -698,9 +920,9 @@ public abstract class JCRServlet extends HttpServlet
 			while (iter.hasNext())
 			{
 				FileItemStream item = iter.next();
-				log.info("Got Upload through Uploads");
+				log.debug("Got Upload through Uploads");
 				String name = item.getFieldName();
-				log.info("    Name is " + name);
+				log.debug("    Name is " + name);
 				InputStream stream = item.openStream();
 				if (!item.isFormField())
 				{

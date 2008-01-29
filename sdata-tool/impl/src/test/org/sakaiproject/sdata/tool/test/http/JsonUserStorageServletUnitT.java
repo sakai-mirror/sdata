@@ -269,6 +269,76 @@ public class JsonUserStorageServletUnitT extends TestCase
 		}
 	}
 
+	public void testUploadDownloadCache() throws Exception
+	{
+		if (enabled)
+		{
+			try
+			{
+				login();
+				ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
+				WebRequest req = new PutMethodWebRequest(BASE_JCR_URL + "putUpload",
+						bais, "UTF-8");
+				req.setParameter("snoop", "1");
+				req.setHeaderField("Content-Type", "text/html");
+				req.setHeaderField("Content-Encoding", "UTF-8");
+				WebResponse resp = wc.getResponse(req);
+				int code = resp.getResponseCode();
+				assertTrue("Should have been a 201 or 204 ", (code == 201)
+						|| (code == 204));
+
+				req = new GetMethodWebRequest(BASE_JCR_URL + "putUpload");
+				resp = wc.getResource(req);
+				code = resp.getResponseCode();
+				assertTrue("Should have been a 201 or 204 ", (code == 200));
+				int contentL = resp.getContentLength();
+				log.info("Got " + contentL + " bytes ");
+				DataInputStream in = new DataInputStream(resp.getInputStream());
+				byte[] buffer2 = new byte[contentL];
+				in.readFully(buffer2);
+				assertEquals("Upload Size is not the same as download size ",
+						buffer.length, buffer2.length);
+				for (int i = 0; i < buffer2.length; i++)
+				{
+					assertEquals("Byte at Offset " + i + " corrupted ", buffer[i],
+							buffer2[i]);
+				}
+				
+				String dateheader = resp.getHeaderField("last-modified");
+//				Date date = RFC1123Date.parseDate(resp.getHeaderField("date"));
+				
+				
+				
+				
+				// now test the 304 response
+				req = new GetMethodWebRequest(BASE_JCR_URL + "putUpload");
+				req.setHeaderField("if-modified-since", dateheader);
+				
+				
+				resp = wc.getResource(req);
+				code = resp.getResponseCode();
+				assertEquals("Should have been a 304 ",304,code);
+
+				
+				
+			}
+			catch (HttpNotFoundException nfex)
+			{
+				fail("Failed with " + nfex.getResponseCode() + " Cause: "
+						+ nfex.getResponseMessage());
+			}
+			catch (HttpInternalErrorException iex)
+			{
+				fail("Failed with " + iex.getResponseCode() + " Cause: "
+						+ iex.getResponseMessage());
+			}
+		}
+		else
+		{
+			log.info("Tests Disabled, please start tomcat with sdata installed");
+		}
+	}
+
 	public void testDirectory() throws Exception
 	{
 		if (enabled)
@@ -289,9 +359,12 @@ public class JsonUserStorageServletUnitT extends TestCase
 					assertTrue("Should have been a 201 or 204 ", (code == 201)
 							|| (code == 204));
 				}
+				long start = System.currentTimeMillis();
 				WebRequest req = new GetMethodWebRequest(BASE_JCR_URL + "dirlist");
 				WebResponse resp = wc.getResource(req);
 				int code = resp.getResponseCode();
+				log.info("Dir Method took:"+(System.currentTimeMillis()-start));
+
 				assertTrue("Should have been a 200 ", (code == 200));
 				int contentL = resp.getContentLength();
 				log.info("Got " + contentL + " bytes ");

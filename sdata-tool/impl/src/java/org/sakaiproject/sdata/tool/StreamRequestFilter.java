@@ -41,13 +41,15 @@ import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.util.RequestFilter;
 
 /**
- * An extension of the standard request filter to remove the parts that prevent the file
- * upload streaming api from working.
+ * An extension of the standard request filter to remove the parts that prevent
+ * the file upload streaming api from working.
+ * 
  * @author ieb
  */
 public class StreamRequestFilter extends RequestFilter
 {
 	private static final Log log = LogFactory.getLog(StreamRequestFilter.class);
+	private boolean timeOn = false;
 
 	/*
 	 * (non-Javadoc)
@@ -58,23 +60,40 @@ public class StreamRequestFilter extends RequestFilter
 	public void init(FilterConfig arg0) throws ServletException
 	{
 		super.init(arg0);
+		timeOn = "true".equals(arg0.getInitParameter("time-requests"));
 		m_toolPlacement = false; // disable tool placement handelling on this
-									// request
+		// request
 		m_uploadEnabled = false; // disable upload handling on this request
 	}
-	
-	/* (non-Javadoc)
-	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
+	 *      javax.servlet.ServletResponse, javax.servlet.FilterChain)
 	 */
-	public void doFilter(ServletRequest request, ServletResponse arg1, FilterChain arg2) throws IOException, ServletException
+	public void doFilter(ServletRequest request, ServletResponse arg1, FilterChain arg2)
+			throws IOException, ServletException
 	{
-		long start = System.currentTimeMillis();
-		try {
-		super.doFilter(request, arg1, arg2);
-		} finally {
-			long end = System.currentTimeMillis();
-			HttpServletRequest hrequest = (HttpServletRequest) request;
-			log.info("Request took "+hrequest.getMethod()+" "+hrequest.getPathInfo()+" "+(end-start)+" ms");
+		if (timeOn)
+		{
+			long start = System.currentTimeMillis();
+			try
+			{
+				super.doFilter(request, arg1, arg2);
+			}
+			finally
+			{
+				long end = System.currentTimeMillis();
+				HttpServletRequest hrequest = (HttpServletRequest) request;
+				log.info("Request took " + hrequest.getMethod() + " "
+						+ hrequest.getPathInfo() + " " + (end - start) + " ms");
+			}
+		}
+		else
+		{
+			super.doFilter(request, arg1, arg2);
+
 		}
 	}
 
