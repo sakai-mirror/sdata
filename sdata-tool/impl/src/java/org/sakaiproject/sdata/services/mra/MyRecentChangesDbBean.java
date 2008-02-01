@@ -16,6 +16,8 @@ public class MyRecentChangesDbBean implements ServletContextListener {
 
 	public void init() {
 
+		log.info("sData Widget Data Service Initializing ...");
+		
 		try {
 			boolean exist = false;
 			boolean exist2 = false;
@@ -31,24 +33,18 @@ public class MyRecentChangesDbBean implements ServletContextListener {
 				} else if (lsts.get(i).toString().equals("sdata_indexqueue")) {
 					exist2 = true;
 					//log.error("tables exist");
-				} else{
-					
-					exist = false;
-					//log.error("create the tables now");
-				}
-				
-		
+				} 		
 
 			}
 
-			if (exist = false) {
+			if (exist == false) {
 				org.sakaiproject.db.cover.SqlService
 						.dbWrite("create table sdata_lastlogin (userid varchar(255) not null, usereid varchar(255) not null, userdate timestamp not null, primary key(userid));");
 				// log.info("MySakai Login Table Added");
 				// log.info("MySakai Index Queue Table Added");
 
 			}
-			if (exist2 = false){
+			if (exist2 == false){
 				org.sakaiproject.db.cover.SqlService
 				.dbWrite("create table sdata_indexqueue (id int not null AUTO_INCREMENT, version timestamp not null, name varchar(255) not null, context varchar(255) not null, tool varchar(255) not null, primary key  (id));");
 		
