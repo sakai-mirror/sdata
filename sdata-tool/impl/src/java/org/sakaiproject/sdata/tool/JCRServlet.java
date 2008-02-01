@@ -398,8 +398,7 @@ public abstract class JCRServlet extends HttpServlet
 			boolean created = false;
 			if (n == null)
 			{
-				n = jcrNodeFactory.createNode(rp.getRepositoryPath(),
-						JCRConstants.NT_FILE);
+				n = jcrNodeFactory.createFile(rp.getRepositoryPath());
 				created = true;
 				if (n == null)
 				{
@@ -602,7 +601,7 @@ public abstract class JCRServlet extends HttpServlet
 				if (totallength != length)
 				{
 					response.setHeader("Content-Range", "bytes " + ranges[0] + "-"
-							+ (ranges[1]-1) + "/" + totallength);
+							+ (ranges[1] - 1) + "/" + totallength);
 					response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
 				}
 				else
@@ -785,7 +784,7 @@ public abstract class JCRServlet extends HttpServlet
 			HttpServletResponse response, long lastModifiedTime, String currentEtag)
 			throws IOException
 	{
-		lastModifiedTime = lastModifiedTime - (lastModifiedTime%1000);
+		lastModifiedTime = lastModifiedTime - (lastModifiedTime % 1000);
 		long ifUnmodifiedSince = request.getDateHeader("if-unmodified-since");
 		if (ifUnmodifiedSince > 0 && (lastModifiedTime > ifUnmodifiedSince))
 		{
@@ -892,8 +891,7 @@ public abstract class JCRServlet extends HttpServlet
 		{
 			try
 			{
-				Node n = jcrNodeFactory.createNode(rp.getRepositoryPath(),
-						JCRConstants.NT_FOLDER);
+				Node n = jcrNodeFactory.createFolder(rp.getRepositoryPath());
 				if (n == null)
 				{
 					response.sendError(HttpServletResponse.SC_BAD_REQUEST,
@@ -929,8 +927,8 @@ public abstract class JCRServlet extends HttpServlet
 					try
 					{
 						String mimeType = item.getContentType();
-						Node target = jcrNodeFactory.createNode(rp
-								.getRepositoryPath(name), JCRConstants.NT_FILE);
+						Node target = jcrNodeFactory.createFile(rp
+								.getRepositoryPath(name));
 						GregorianCalendar lastModified = new GregorianCalendar();
 						lastModified.setTime(new Date());
 						long size = saveStream(target, stream, mimeType, "UTF-8",
