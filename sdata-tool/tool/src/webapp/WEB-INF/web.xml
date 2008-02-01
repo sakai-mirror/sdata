@@ -57,6 +57,22 @@
 		<dispatcher>FORWARD</dispatcher>
 		<dispatcher>INCLUDE</dispatcher>
 	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>sakai.request</filter-name>
+		<servlet-name>MCP</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>sakai.request</filter-name>
+		<servlet-name>MRA</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
 
 	<!-- json servlets -->	
 	<servlet>
@@ -100,6 +116,22 @@
 		<load-on-startup>100</load-on-startup>
 	</servlet>
 	
+	<servlet>
+		<servlet-name>MCP</servlet-name>
+		<servlet-class>
+			org.sakaiproject.sdata.services.mcp.MyCoursesAndProjectsServlet
+		</servlet-class>
+		<load-on-startup>100</load-on-startup>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>MRA</servlet-name>
+		<servlet-class>
+			org.sakaiproject.sdata.services.mra.MyRecentChangesServlet
+		</servlet-class>
+		<load-on-startup>100</load-on-startup>
+	</servlet>
+	
 	<servlet-mapping>
 		<servlet-name>JsonJcrServlet</servlet-name>
 		<url-pattern>/f/*</url-pattern>
@@ -122,6 +154,20 @@
 		<servlet-name>JCRDumper</servlet-name>
 		<url-pattern>/d/*</url-pattern>
 	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>MCP</servlet-name>
+		<url-pattern>/mcp</url-pattern>
+	</servlet-mapping>
+	
+		<servlet-mapping>
+		<servlet-name>MRA</servlet-name>
+		<url-pattern>/mra</url-pattern>
+	</servlet-mapping>
+	
+	<listener>
+		<listener-class>org.sakaiproject.sdata.services.mra.MyRecentChangesDbBean</listener-class>
+	</listener>
 	
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
