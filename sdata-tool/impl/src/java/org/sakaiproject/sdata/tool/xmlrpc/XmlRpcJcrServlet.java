@@ -83,8 +83,8 @@ public class XmlRpcJcrServlet extends JCRServlet
 		}
 		catch (XmlRpcException e)
 		{
-			log.error("Failed to get RpcWriter ",e);
-			throw new IOException("Failed to get RpcWriter  "+e.getMessage());
+			log.error("Failed to get RpcWriter ", e);
+			throw new IOException("Failed to get RpcWriter  " + e.getMessage());
 		}
 		try
 		{
@@ -92,7 +92,7 @@ public class XmlRpcJcrServlet extends JCRServlet
 			baos.flush();
 			byte[] out = baos.toByteArray();
 			baos.close();
-			
+
 			response.setContentLength(out.length);
 			response.setContentType("text/xml");
 			response.setCharacterEncoding("UTF-8");
@@ -100,13 +100,12 @@ public class XmlRpcJcrServlet extends JCRServlet
 		}
 		catch (SAXException e)
 		{
-			log.error("Failed to write response ",e);
-			throw new IOException("Failed to write response "+e.getMessage());
+			log.error("Failed to write response ", e);
+			throw new IOException("Failed to write response " + e.getMessage());
 		}
 
 	}
-	
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -118,7 +117,7 @@ public class XmlRpcJcrServlet extends JCRServlet
 	{
 		if (ex instanceof SDataException)
 		{
-			
+
 			SDataException sde = (SDataException) ex;
 			response.reset();
 			response.sendError(sde.getCode(), sde.getMessage());
@@ -133,8 +132,8 @@ public class XmlRpcJcrServlet extends JCRServlet
 			}
 			catch (XmlRpcException e)
 			{
-				log.error("Failed to get RpcWriter ",e);
-				throw new IOException("Failed to get RpcWriter  "+e.getMessage());
+				log.error("Failed to get RpcWriter ", e);
+				throw new IOException("Failed to get RpcWriter  " + e.getMessage());
 			}
 			try
 			{
@@ -149,8 +148,8 @@ public class XmlRpcJcrServlet extends JCRServlet
 			}
 			catch (SAXException e)
 			{
-				log.error("Failed to write response ",e);
-				throw new IOException("Failed to write response "+e.getMessage());
+				log.error("Failed to write response ", e);
+				throw new IOException("Failed to write response " + e.getMessage());
 			}
 		}
 	}

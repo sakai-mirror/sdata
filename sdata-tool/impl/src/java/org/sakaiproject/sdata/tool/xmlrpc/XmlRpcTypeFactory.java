@@ -113,7 +113,6 @@ public class XmlRpcTypeFactory implements TypeFactory
 
 	private static final TypeSerializer CALENDAR_SERIALIZER = new CalendarSerializer();
 
-
 	private DateSerializer dateSerializer;
 
 	private XmlRpcStreamRequestConfig config;
@@ -128,7 +127,6 @@ public class XmlRpcTypeFactory implements TypeFactory
 	{
 		this.config = config;
 	}
-
 
 	public TypeSerializer getSerializer(XmlRpcStreamConfig pConfig, Object pObject)
 			throws SAXException

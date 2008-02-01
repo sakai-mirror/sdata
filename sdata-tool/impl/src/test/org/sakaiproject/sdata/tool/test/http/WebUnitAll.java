@@ -27,7 +27,6 @@ import junit.framework.TestSuite;
 
 /**
  * @author ieb
- *
  */
 public class WebUnitAll extends TestCase
 {
@@ -35,14 +34,14 @@ public class WebUnitAll extends TestCase
 	public static Test suite()
 	{
 		TestSuite suite = new TestSuite("Test for org.sakaiproject.sdata.tool");
-		//$JUnit-BEGIN$
+		// $JUnit-BEGIN$
 		suite.addTestSuite(JsonJcrServletUnitT.class);
 		suite.addTestSuite(JsonUserStorageServletUnitT.class);
 		suite.addTestSuite(XmlRpcJcrServletUnitT.class);
 		suite.addTestSuite(XmlRpcUserStorageServletUnitT.class);
 		suite.addTestSuite(HttpRangeUnitT.class);
-		//$JUnit-END$
-        return suite;
+		// $JUnit-END$
+		return suite;
 	}
 
 }

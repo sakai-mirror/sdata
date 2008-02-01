@@ -21,25 +21,20 @@
 
 package org.sakaiproject.sdata.tool.test;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sdata.tool.util.PathPrefix;
 
-import junit.framework.TestCase;
-
 /**
  * @author ieb
- *
  */
 public class PathPrefixUnitT extends TestCase
 {
 
-	private static final String[]testUsers = new String[] {
-		null,
-		"",
-		"~test",
-		"ieb236"
-	};
+	private static final String[] testUsers = new String[] { null, "", "~test", "ieb236" };
+
 	private static final Log log = LogFactory.getLog(PathPrefixUnitT.class);
 
 	/**
@@ -50,7 +45,9 @@ public class PathPrefixUnitT extends TestCase
 		super(arg0);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	protected void setUp() throws Exception
@@ -58,18 +55,22 @@ public class PathPrefixUnitT extends TestCase
 		super.setUp();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 */
 	protected void tearDown() throws Exception
 	{
 		super.tearDown();
 	}
-	
-	public void testGetPath() {
-		
-		for (String user : testUsers ) {
-			log.info("User:"+user+":"+PathPrefix.getPrefix(user));
+
+	public void testGetPath()
+	{
+
+		for (String user : testUsers)
+		{
+			log.info("User:" + user + ":" + PathPrefix.getPrefix(user));
 		}
 	}
 

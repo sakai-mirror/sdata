@@ -23,7 +23,6 @@ package org.sakaiproject.sdata.tool.api;
 
 /**
  * @author ieb
- *
  */
 public class SDataException extends Exception
 {

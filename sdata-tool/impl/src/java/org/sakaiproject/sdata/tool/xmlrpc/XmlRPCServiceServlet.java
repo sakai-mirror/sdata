@@ -3,12 +3,9 @@ package org.sakaiproject.sdata.tool.xmlrpc;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.Map;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,15 +22,14 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-import net.sf.json.JSONObject;
-
-public class XmlRPCServiceServlet extends ServiceServlet {
-
+public class XmlRPCServiceServlet extends ServiceServlet
+{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
 	private static final Log log = LogFactory.getLog(XmlRPCServiceServlet.class);
 
 	private XmlWriterFactory writerFactory = new DefaultXMLWriterFactory();
@@ -44,33 +40,31 @@ public class XmlRPCServiceServlet extends ServiceServlet {
 
 	@Override
 	protected ServiceDefinitionFactory getServiceDefinitionFactory()
-			throws ServletException {
+			throws ServletException
+	{
 		throw new ServletException("No Default ServiceDefinitionFactory");
 	}
 
 	@Override
-	protected void sendError(HttpServletRequest request,
-			HttpServletResponse response, Throwable ex) throws IOException {
-		/*if (ex instanceof SDataException)
-		{
-			SDataException sde = (SDataException) ex;
-			response.reset();
-			response.sendError(sde.getCode(), sde.getMessage());
-		}
-		else
-		{
-			response.reset();
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Failed with " + ex.getMessage());
-		}*/		
-		
+	protected void sendError(HttpServletRequest request, HttpServletResponse response,
+			Throwable ex) throws IOException
+	{
+		/*
+		 * if (ex instanceof SDataException) { SDataException sde =
+		 * (SDataException) ex; response.reset();
+		 * response.sendError(sde.getCode(), sde.getMessage()); } else {
+		 * response.reset();
+		 * response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+		 * "Failed with " + ex.getMessage()); }
+		 */
+
 		response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 	}
 
 	@Override
-	protected void sendMap(HttpServletRequest request,
-			HttpServletResponse response, Map<String, Object> contentMap)
-			throws IOException {
+	protected void sendMap(HttpServletRequest request, HttpServletResponse response,
+			Map<String, Object> contentMap) throws IOException
+	{
 		XmlRpcWriter xw;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try
@@ -79,8 +73,8 @@ public class XmlRPCServiceServlet extends ServiceServlet {
 		}
 		catch (XmlRpcException e)
 		{
-			log.error("Failed to get RpcWriter ",e);
-			throw new IOException("Failed to get RpcWriter  "+e.getMessage());
+			log.error("Failed to get RpcWriter ", e);
+			throw new IOException("Failed to get RpcWriter  " + e.getMessage());
 		}
 		try
 		{
@@ -88,7 +82,7 @@ public class XmlRPCServiceServlet extends ServiceServlet {
 			baos.flush();
 			byte[] out = baos.toByteArray();
 			baos.close();
-			
+
 			response.setContentLength(out.length);
 			response.setContentType("text/xml");
 			response.setCharacterEncoding("UTF-8");
@@ -96,12 +90,12 @@ public class XmlRPCServiceServlet extends ServiceServlet {
 		}
 		catch (SAXException e)
 		{
-			log.error("Failed to write response ",e);
-			throw new IOException("Failed to write response "+e.getMessage());
+			log.error("Failed to write response ", e);
+			throw new IOException("Failed to write response " + e.getMessage());
 		}
 
 	}
-	
+
 	protected XmlRpcWriter getXmlRpcWriter(XmlRpcStreamRequestConfig pConfig,
 			OutputStream pStream) throws XmlRpcException
 	{
@@ -118,6 +112,5 @@ public class XmlRPCServiceServlet extends ServiceServlet {
 	{
 		return typeFactory;
 	}
-	
 
 }

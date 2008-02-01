@@ -42,8 +42,8 @@ import org.xml.sax.SAXException;
 
 /**
  * Serializes the output of a UserStorageSevlet as json
+ * 
  * @author ieb
- *
  */
 public class XmlRpcUserStorageServlet extends UserStorageServlet
 {
@@ -52,7 +52,6 @@ public class XmlRpcUserStorageServlet extends UserStorageServlet
 	private XmlRpcStreamRequestConfig pConfig = new XmlRpcStreamRequestConfigImpl();
 
 	private TypeFactory typeFactory = new XmlRpcTypeFactory(pConfig);
-
 
 	/*
 	 * (non-Javadoc)
@@ -72,7 +71,7 @@ public class XmlRpcUserStorageServlet extends UserStorageServlet
 		}
 		catch (XmlRpcException e)
 		{
-			throw new IOException("Failed to get RpcWriter  "+e.getMessage());
+			throw new IOException("Failed to get RpcWriter  " + e.getMessage());
 		}
 		try
 		{
@@ -87,12 +86,11 @@ public class XmlRpcUserStorageServlet extends UserStorageServlet
 		}
 		catch (SAXException e)
 		{
-			throw new IOException("Failed to write response "+e.getMessage());
+			throw new IOException("Failed to write response " + e.getMessage());
 		}
 
 	}
-	
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -104,7 +102,7 @@ public class XmlRpcUserStorageServlet extends UserStorageServlet
 	{
 		if (ex instanceof SDataException)
 		{
-			
+
 			SDataException sde = (SDataException) ex;
 			response.reset();
 			response.sendError(sde.getCode(), sde.getMessage());
@@ -119,7 +117,7 @@ public class XmlRpcUserStorageServlet extends UserStorageServlet
 			}
 			catch (XmlRpcException e)
 			{
-				throw new IOException("Failed to get RpcWriter  "+e.getMessage());
+				throw new IOException("Failed to get RpcWriter  " + e.getMessage());
 			}
 			try
 			{
@@ -135,7 +133,7 @@ public class XmlRpcUserStorageServlet extends UserStorageServlet
 			}
 			catch (SAXException e)
 			{
-				throw new IOException("Failed to write response "+e.getMessage());
+				throw new IOException("Failed to write response " + e.getMessage());
 			}
 		}
 	}

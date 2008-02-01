@@ -28,15 +28,15 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONObject;
+
 import org.sakaiproject.sdata.tool.UserStorageServlet;
 import org.sakaiproject.sdata.tool.api.SDataException;
 
-import net.sf.json.JSONObject;
-
 /**
  * Serializes the output of a UserStorageSevlet as json
+ * 
  * @author ieb
- *
  */
 public class JsonUserStorageServlet extends UserStorageServlet
 {
@@ -48,8 +48,11 @@ public class JsonUserStorageServlet extends UserStorageServlet
 	{
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.JCRServlet#sendMap(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.util.Map)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.JCRServlet#sendMap(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse, java.util.Map)
 	 */
 	@Override
 	protected void sendMap(HttpServletRequest request, HttpServletResponse response,
@@ -59,7 +62,7 @@ public class JsonUserStorageServlet extends UserStorageServlet
 		PrintWriter w = response.getWriter();
 		w.write(jsonObject.toString());
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -82,6 +85,5 @@ public class JsonUserStorageServlet extends UserStorageServlet
 					"Failed with " + ex.getMessage());
 		}
 	}
-
 
 }

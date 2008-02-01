@@ -1,22 +1,13 @@
 package org.sakaiproject.sdata.services.mra;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Map;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONObject;
-
-import org.sakaiproject.sdata.tool.json.JSONServiceServlet;
-import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
+import org.sakaiproject.sdata.tool.json.JSONServiceServlet;
 
-public class MyRecentChangesServlet extends JSONServiceServlet {
-
+public class MyRecentChangesServlet extends JSONServiceServlet
+{
 
 	/**
 	 * 
@@ -25,13 +16,15 @@ public class MyRecentChangesServlet extends JSONServiceServlet {
 
 	@Override
 	protected ServiceDefinitionFactory getServiceDefinitionFactory()
-			throws ServletException {
+			throws ServletException
+	{
 		return new MyRecentChangesServiceDefinitionFactory();
 	}
-	
+
 	@Override
-	protected ServiceDefinitionFactory getServiceDefinitionFactory(
-			ServletConfig config) throws ServletException {
+	protected ServiceDefinitionFactory getServiceDefinitionFactory(ServletConfig config)
+			throws ServletException
+	{
 		return new MyRecentChangesServiceDefinitionFactory();
 	}
 

@@ -25,15 +25,14 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sdata.tool.RFC1123Date;
 
-import junit.framework.TestCase;
-
 /**
  * @author ieb
- *
  */
 public class RFC1123DateTest extends TestCase
 {
@@ -48,7 +47,9 @@ public class RFC1123DateTest extends TestCase
 		super(arg0);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	protected void setUp() throws Exception
@@ -56,7 +57,9 @@ public class RFC1123DateTest extends TestCase
 		super.setUp();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 */
 	protected void tearDown() throws Exception
@@ -64,12 +67,14 @@ public class RFC1123DateTest extends TestCase
 		super.tearDown();
 	}
 
-	public void testDate() throws ParseException {
+	public void testDate() throws ParseException
+	{
 		Calendar cal = Calendar.getInstance();
-		cal.set(2007,5, 5, 5, 5,0);
+		cal.set(2007, 5, 5, 5, 5, 0);
 		cal.set(Calendar.MILLISECOND, 0);
-		for (int i = 0; i < 100; i++ ) {
-			cal.add(Calendar.SECOND, i*3656*24);
+		for (int i = 0; i < 100; i++)
+		{
+			cal.add(Calendar.SECOND, i * 3656 * 24);
 			String dateString = RFC1123Date.formatDate(cal.getTime());
 			Date parsed = RFC1123Date.parseDate(dateString);
 			assertEquals("Dates didnt match ", cal.getTimeInMillis(), parsed.getTime());

@@ -3,7 +3,7 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright (c) 2003, 2004, 2005, 2006, 2007 The Sakai Foundation.
+ * Copyright (c)  2008 The Sakai Foundation.
  *
  * Licensed under the Educational Community License, Version 1.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,14 +27,15 @@ import org.apache.xmlrpc.common.XmlRpcStreamRequestConfig;
 
 /**
  * @author ieb
- *
  */
 public class XmlRpcStreamRequestConfigImpl implements XmlRpcStreamRequestConfig
 {
 
 	private TimeZone tz = TimeZone.getTimeZone("GMT");
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.xmlrpc.common.XmlRpcStreamRequestConfig#isEnabledForExceptions()
 	 */
 	public boolean isEnabledForExceptions()
@@ -42,7 +43,9 @@ public class XmlRpcStreamRequestConfigImpl implements XmlRpcStreamRequestConfig
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.xmlrpc.common.XmlRpcStreamRequestConfig#isGzipCompressing()
 	 */
 	public boolean isGzipCompressing()
@@ -50,7 +53,9 @@ public class XmlRpcStreamRequestConfigImpl implements XmlRpcStreamRequestConfig
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.xmlrpc.common.XmlRpcStreamRequestConfig#isGzipRequesting()
 	 */
 	public boolean isGzipRequesting()
@@ -58,7 +63,9 @@ public class XmlRpcStreamRequestConfigImpl implements XmlRpcStreamRequestConfig
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.xmlrpc.common.XmlRpcStreamConfig#getEncoding()
 	 */
 	public String getEncoding()
@@ -66,15 +73,19 @@ public class XmlRpcStreamRequestConfigImpl implements XmlRpcStreamRequestConfig
 		return "UTF-8";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.xmlrpc.XmlRpcConfig#getTimeZone()
 	 */
 	public TimeZone getTimeZone()
 	{
-		return tz ;
+		return tz;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.xmlrpc.XmlRpcConfig#isEnabledForExtensions()
 	 */
 	public boolean isEnabledForExtensions()

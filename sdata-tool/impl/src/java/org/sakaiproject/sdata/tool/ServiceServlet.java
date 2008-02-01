@@ -12,12 +12,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 
-public abstract class ServiceServlet extends HttpServlet {
+public abstract class ServiceServlet extends HttpServlet
+{
 
 	private ServiceDefinitionFactory serviceDefinitionFactory = null;
 
 	@Override
-	public void init(ServletConfig config) throws ServletException {
+	public void init(ServletConfig config) throws ServletException
+	{
 		super.init(config);
 		serviceDefinitionFactory = getServiceDefinitionFactory(config);
 	}
@@ -26,20 +28,28 @@ public abstract class ServiceServlet extends HttpServlet {
 			throws ServletException;
 
 	@SuppressWarnings("unchecked")
-	protected ServiceDefinitionFactory getServiceDefinitionFactory(
-			ServletConfig config) throws ServletException {
-		try {
+	protected ServiceDefinitionFactory getServiceDefinitionFactory(ServletConfig config)
+			throws ServletException
+	{
+		try
+		{
 			String factoryName = config.getInitParameter("factory-name");
 
 			Class<ServiceDefinitionFactory> c = (Class<ServiceDefinitionFactory>) this
 					.getClass().getClassLoader().loadClass(factoryName);
 			ServiceDefinitionFactory o = c.newInstance();
 			return o;
-		} catch (InstantiationException e) {
+		}
+		catch (InstantiationException e)
+		{
 			throw new ServletException(e);
-		} catch (IllegalAccessException e) {
+		}
+		catch (IllegalAccessException e)
+		{
 			throw new ServletException(e);
-		} catch (ClassNotFoundException e) {
+		}
+		catch (ClassNotFoundException e)
+		{
 			throw new ServletException(e);
 		}
 	}
@@ -47,18 +57,21 @@ public abstract class ServiceServlet extends HttpServlet {
 	/**
 	 * Respond to an HTTP GET request.
 	 */
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException
+	{
 
-		try {
-			ServiceDefinition serviceDefinition = serviceDefinitionFactory
-					.getSpec(request, response);
+		try
+		{
+			ServiceDefinition serviceDefinition = serviceDefinitionFactory.getSpec(
+					request, response);
 
-			Map<String, Object> responseMap = serviceDefinition
-					.getResponseMap();
+			Map<String, Object> responseMap = serviceDefinition.getResponseMap();
 
 			sendMap(request, response, responseMap);
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			sendError(request, response, ex);
 		}
 	}
@@ -80,8 +93,9 @@ public abstract class ServiceServlet extends HttpServlet {
 			HttpServletResponse response, Map<String, Object> contetMap)
 			throws IOException;
 
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException
+	{
 		// process(request,response);
 		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 	}

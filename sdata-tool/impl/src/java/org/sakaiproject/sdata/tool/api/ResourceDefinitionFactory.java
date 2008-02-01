@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author ieb
- *
  */
 public interface ResourceDefinitionFactory
 {
@@ -33,7 +32,7 @@ public interface ResourceDefinitionFactory
 	/**
 	 * @param path
 	 * @return
-	 * @throws SDataException 
+	 * @throws SDataException
 	 */
 	ResourceDefinition getSpec(HttpServletRequest request) throws SDataException;
 

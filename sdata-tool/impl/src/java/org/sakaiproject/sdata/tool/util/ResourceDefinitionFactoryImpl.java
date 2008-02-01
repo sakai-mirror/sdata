@@ -33,7 +33,6 @@ import org.sakaiproject.tool.api.Tool;
 public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 {
 
-	
 	private String basePath;
 
 	/**
@@ -50,7 +49,7 @@ public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 	 */
 	public ResourceDefinition getSpec(HttpServletRequest request)
 	{
-		
+
 		request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
 
 		String path = request.getPathInfo();

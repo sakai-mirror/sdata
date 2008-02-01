@@ -28,10 +28,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONObject;
+
 import org.sakaiproject.sdata.tool.JCRServlet;
 import org.sakaiproject.sdata.tool.api.SDataException;
-
-import net.sf.json.JSONObject;
 
 /**
  * A JCRServlet that serializes responses using JSON

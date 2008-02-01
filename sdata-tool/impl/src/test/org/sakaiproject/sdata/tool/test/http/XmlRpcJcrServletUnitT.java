@@ -216,7 +216,6 @@ public class XmlRpcJcrServletUnitT extends TestCase
 		}
 	}
 
-	
 	public void testUploadDownloadCache() throws Exception
 	{
 		if (enabled)
@@ -249,25 +248,19 @@ public class XmlRpcJcrServletUnitT extends TestCase
 					assertEquals("Byte at Offset " + i + " corrupted ", buffer[i],
 							buffer2[i]);
 				}
-				
-				
+
 				String dateheader = resp.getHeaderField("last-modified");
-//				Date date = RFC1123Date.parseDate(resp.getHeaderField("date"));
-				
-				
-				
-				
+				// Date date =
+				// RFC1123Date.parseDate(resp.getHeaderField("date"));
+
 				// now test the 304 response
 				req = new GetMethodWebRequest(BASE_JCR_URL + "putUpload");
 				req.setHeaderField("if-modified-since", dateheader);
-				
-				
+
 				resp = wc.getResource(req);
 				code = resp.getResponseCode();
-				assertEquals("Should have been a 304 ",304,code);
+				assertEquals("Should have been a 304 ", 304, code);
 
-				
-				
 			}
 			catch (HttpNotFoundException nfex)
 			{
@@ -308,7 +301,7 @@ public class XmlRpcJcrServletUnitT extends TestCase
 				WebRequest req = new GetMethodWebRequest(BASE_JCR_URL + "dirlist");
 				WebResponse resp = wc.getResource(req);
 				int code = resp.getResponseCode();
-				log.info("Dir Method took:"+(System.currentTimeMillis()-start));
+				log.info("Dir Method took:" + (System.currentTimeMillis() - start));
 				assertTrue("Should have been a 200 ", (code == 200));
 				int contentL = resp.getContentLength();
 				log.info("Got " + contentL + " bytes ");
@@ -353,13 +346,13 @@ public class XmlRpcJcrServletUnitT extends TestCase
 							+ "dirlist/file" + i);
 					WebResponse resp = wc.getResponse(req);
 					int code = resp.getResponseCode();
-					assertEquals("Should have been a 204 ",204,code);
+					assertEquals("Should have been a 204 ", 204, code);
 				}
 				{
 					WebRequest req = new DeleteMethodWebRequest(BASE_JCR_URL + "dirlist");
 					WebResponse resp = wc.getResponse(req);
 					int code = resp.getResponseCode();
-					assertEquals("Should have been a 204 ", 204,code);
+					assertEquals("Should have been a 204 ", 204, code);
 				}
 				try
 				{
@@ -377,13 +370,13 @@ public class XmlRpcJcrServletUnitT extends TestCase
 			}
 			catch (HttpNotFoundException nfex)
 			{
-				log.error("Failed ",nfex);
+				log.error("Failed ", nfex);
 				fail("Failed with " + nfex.getResponseCode() + " Cause: "
 						+ nfex.getResponseMessage());
 			}
 			catch (HttpInternalErrorException iex)
 			{
-				log.error("Failed ",iex);
+				log.error("Failed ", iex);
 				fail("Failed with " + iex.getResponseCode() + " Cause: "
 						+ iex.getResponseMessage());
 			}
@@ -411,7 +404,7 @@ public class XmlRpcJcrServletUnitT extends TestCase
 				{
 					WebRequest req = new GetMethodWebRequest(BASE_JCR_URL + "dirlist");
 					WebResponse resp = wc.getResource(req);
-					
+
 					assertEquals("Should have been a 404 ", 404, resp.getResponseCode());
 				}
 				catch (HttpNotFoundException nfex)
@@ -422,13 +415,13 @@ public class XmlRpcJcrServletUnitT extends TestCase
 			}
 			catch (HttpNotFoundException nfex)
 			{
-				log.error("Failed ",nfex);
+				log.error("Failed ", nfex);
 				fail("Failed with " + nfex.getResponseCode() + " Cause: "
 						+ nfex.getResponseMessage());
 			}
 			catch (HttpInternalErrorException iex)
 			{
-				log.error("Failed ",iex);
+				log.error("Failed ", iex);
 				fail("Failed with " + iex.getResponseCode() + " Cause: "
 						+ iex.getResponseMessage());
 			}
@@ -438,64 +431,71 @@ public class XmlRpcJcrServletUnitT extends TestCase
 			log.info("Tests Disabled, please start tomcat with sdata installed");
 		}
 	}
-	
-	public void testMultipartUpload() throws Exception {
+
+	public void testMultipartUpload() throws Exception
+	{
 		if (enabled)
 		{
 			try
 			{
-					PostMethodWebRequest mreq = new PostMethodWebRequest(BASE_JCR_URL + "dirlist");
-					mreq.setMimeEncoded(true);
-					for ( int i = 0; i < 20; i++ ) {
-						ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
-						mreq.setParameter("multifile"+i, new UploadFileSpec[] {
-								new UploadFileSpec("OriginalFileName", bais, "text/html")
-						});
-					}
-					WebResponse resp = wc.getResponse(mreq);
-					int code = resp.getResponseCode();
-					assertTrue("Should have been a 200 ", (code == 200));
-					int contentL = resp.getContentLength();
+				PostMethodWebRequest mreq = new PostMethodWebRequest(BASE_JCR_URL
+						+ "dirlist");
+				mreq.setMimeEncoded(true);
+				for (int i = 0; i < 20; i++)
+				{
+					ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
+					mreq.setParameter("multifile" + i,
+							new UploadFileSpec[] { new UploadFileSpec("OriginalFileName",
+									bais, "text/html") });
+				}
+				WebResponse resp = wc.getResponse(mreq);
+				int code = resp.getResponseCode();
+				assertTrue("Should have been a 200 ", (code == 200));
+				int contentL = resp.getContentLength();
+				log.info("Got " + contentL + " bytes ");
+				DataInputStream in = new DataInputStream(resp.getInputStream());
+				byte[] buffer2 = new byte[contentL];
+				in.readFully(buffer2);
+				String contentEncoding = resp.getCharacterSet();
+				String contentType = resp.getContentType();
+				log.info("Got ContentType:" + contentType + " ContentEncoding:"
+						+ contentEncoding);
+				String content = new String(buffer2, contentEncoding);
+				log.info("Content\n" + content);
+				for (int i = 0; i < 20; i++)
+				{
+					WebRequest req = new GetMethodWebRequest(BASE_JCR_URL
+							+ "dirlist/multifile" + i);
+					log.info("Trying " + "dirlist/multifile" + i);
+					resp = wc.getResponse(req);
+					assertEquals("Expected a 200 response ", 200, resp.getResponseCode());
+					assertEquals("Content Lenght does not match  ", buffer.length, resp
+							.getContentLength());
+					assertEquals("Content Type not correct  ", "text/html", resp
+							.getContentType());
+					contentL = resp.getContentLength();
 					log.info("Got " + contentL + " bytes ");
-					DataInputStream in = new DataInputStream(resp.getInputStream());
-					byte[] buffer2 = new byte[contentL];
+					in = new DataInputStream(resp.getInputStream());
+					buffer2 = new byte[contentL];
 					in.readFully(buffer2);
-					String contentEncoding = resp.getCharacterSet();
-					String contentType = resp.getContentType();
-					log.info("Got ContentType:" + contentType + " ContentEncoding:"
-							+ contentEncoding);
-					String content = new String(buffer2, contentEncoding);
-					log.info("Content\n" + content);
-					for ( int i = 0; i < 20; i++ ) {
-						WebRequest req = new GetMethodWebRequest(BASE_JCR_URL + "dirlist/multifile"+i);
-						log.info("Trying " + "dirlist/multifile"+i);
-						resp = wc.getResponse(req);
-						assertEquals("Expected a 200 response ",200, resp.getResponseCode());
-						assertEquals("Content Lenght does not match  ",buffer.length, resp.getContentLength());
-						assertEquals("Content Type not correct  ","text/html", resp.getContentType());
-						contentL = resp.getContentLength();
-						log.info("Got " + contentL + " bytes ");
-						in = new DataInputStream(resp.getInputStream());
-						buffer2 = new byte[contentL];
-						in.readFully(buffer2);
-						assertEquals("Upload Size is not the same as download size ",
-								buffer.length, buffer2.length);
-						for (int j = 0; j < buffer2.length; j++)
-						{
-							assertEquals("Byte at Offset " + j + " corrupted ", buffer[j],
-									buffer2[j]);
-						}
+					assertEquals("Upload Size is not the same as download size ",
+							buffer.length, buffer2.length);
+					for (int j = 0; j < buffer2.length; j++)
+					{
+						assertEquals("Byte at Offset " + j + " corrupted ", buffer[j],
+								buffer2[j]);
 					}
+				}
 			}
 			catch (HttpNotFoundException nfex)
 			{
-				log.error("Failed ",nfex);
+				log.error("Failed ", nfex);
 				fail("Failed with " + nfex.getResponseCode() + " Cause: "
 						+ nfex.getResponseMessage());
 			}
 			catch (HttpInternalErrorException iex)
 			{
-				log.error("Failed ",iex);
+				log.error("Failed ", iex);
 				fail("Failed with " + iex.getResponseCode() + " Cause: "
 						+ iex.getResponseMessage());
 			}
@@ -504,7 +504,7 @@ public class XmlRpcJcrServletUnitT extends TestCase
 		{
 			log.info("Tests Disabled, please start tomcat with sdata installed");
 		}
-		
+
 	}
 
 }

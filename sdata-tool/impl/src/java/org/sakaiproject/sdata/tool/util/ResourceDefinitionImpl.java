@@ -51,10 +51,12 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 		repoPath = basePath + path;
 		repoPath = cleanPath(repoPath);
 		repoPath = repoPath.replaceAll("//", "/");
-		if ( repoPath.length() > 1 && repoPath.endsWith("/") ) {
-			repoPath = repoPath.substring(0,repoPath.length()-1);
+		if (repoPath.length() > 1 && repoPath.endsWith("/"))
+		{
+			repoPath = repoPath.substring(0, repoPath.length() - 1);
 		}
-		if ( !repoPath.startsWith("/") ) {
+		if (!repoPath.startsWith("/"))
+		{
 			repoPath = "/" + repoPath;
 		}
 	}
@@ -66,14 +68,16 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 	private String cleanPath(String p)
 	{
 		p = p.replaceAll("//", "/");
-		if ( p.length() > 1 && p.endsWith("/") ) {
-			p = repoPath.substring(0,p.length()-1);
+		if (p.length() > 1 && p.endsWith("/"))
+		{
+			p = repoPath.substring(0, p.length() - 1);
 		}
-		if ( !p.startsWith("/") ) {
+		if (!p.startsWith("/"))
+		{
 			p = "/" + p;
 		}
 		return p;
-		
+
 	}
 
 	/**
@@ -90,7 +94,8 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 	 */
 	public String getExternalPath(String path)
 	{
-		if ( path == null ) {
+		if (path == null)
+		{
 			return null;
 		}
 		if (path.startsWith(basePath))
@@ -109,7 +114,9 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 		return cleanPath(repoPath + "/" + name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.api.ResourceDefinition#isPrivate()
 	 */
 	public boolean isPrivate()

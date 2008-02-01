@@ -27,7 +27,6 @@ import com.meterware.httpunit.GetMethodWebRequest;
 
 /**
  * @author ieb
- *
  */
 public class DeleteMethodWebRequest extends GetMethodWebRequest
 {
@@ -61,7 +60,10 @@ public class DeleteMethodWebRequest extends GetMethodWebRequest
 		super(arg0, arg1, arg2);
 		// TODO Auto-generated constructor stub
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.meterware.httpunit.GetMethodWebRequest#getMethod()
 	 */
 	@Override

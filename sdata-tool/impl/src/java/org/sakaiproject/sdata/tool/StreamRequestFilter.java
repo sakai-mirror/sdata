@@ -49,6 +49,7 @@ import org.sakaiproject.util.RequestFilter;
 public class StreamRequestFilter extends RequestFilter
 {
 	private static final Log log = LogFactory.getLog(StreamRequestFilter.class);
+
 	private boolean timeOn = false;
 
 	/*

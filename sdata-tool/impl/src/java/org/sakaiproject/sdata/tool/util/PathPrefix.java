@@ -49,11 +49,12 @@ public class PathPrefix
 			{
 				md = MessageDigest.getInstance("SHA-1");
 				byte[] userHash = md.digest(user.getBytes("UTF-8"));
-				
-				if ( user.length() == 0 ) {
+
+				if (user.length() == 0)
+				{
 					user = "anon";
 				}
-				
+
 				char[] chars = new char[8 + user.length()];
 				byte current = userHash[0];
 				int hi = (current & 0xF0) >> 4;
@@ -88,7 +89,8 @@ public class PathPrefix
 			{
 				log.error(e);
 			}
-			if ( user.length() == 0 ) {
+			if (user.length() == 0)
+			{
 				user = "anon";
 			}
 

@@ -37,12 +37,12 @@ import org.sakaiproject.tool.api.Tool;
 
 /**
  * @author ieb
- *
  */
 public class JCRDumper extends HttpServlet
 {
 
 	private ComponentManager componentManager;
+
 	private JCRService jcrService;
 
 	@Override
@@ -55,38 +55,46 @@ public class JCRDumper extends HttpServlet
 		componentManager = org.sakaiproject.component.cover.ComponentManager
 				.getInstance();
 
-		jcrService = (JCRService) componentManager
-				.get(JCRService.class.getName());
-
+		jcrService = (JCRService) componentManager.get(JCRService.class.getName());
 
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException
 	{
-		request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);	
+		request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
 		String path = request.getPathInfo();
-		if ( path == null || path.length() == 0 ) {
+		if (path == null || path.length() == 0)
+		{
 			path = "/";
 		}
 
 		response.setContentType("text/xml");
 		try
 		{
-			if ( path.startsWith("/sys" ) ) {
+			if (path.startsWith("/sys"))
+			{
 				path = path.substring("/sys".length());
-				jcrService.getSession().exportSystemView(path, response.getOutputStream(), true, false);
-			} else {
-				jcrService.getSession().exportDocumentView(path, response.getOutputStream(), true, false);
-				
+				jcrService.getSession().exportSystemView(path,
+						response.getOutputStream(), true, false);
+			}
+			else
+			{
+				jcrService.getSession().exportDocumentView(path,
+						response.getOutputStream(), true, false);
+
 			}
 		}
 		catch (RepositoryException e)
 		{
-			log("Failed",e);
+			log("Failed", e);
 		}
 	}
 }

@@ -38,9 +38,10 @@ import org.sakaiproject.tool.api.Tool;
  * directories in which to store the user preferences. We use the first 4
  * characters of a base16 encoded SHA-1 of the username to generate the path to
  * the users folder, and then append a path normalized folder of the username.
- * </p><p>
- * Taking this approach ensures that we dont have problems with too many users in each 
- * directory which would adversly effect performance.
+ * </p>
+ * <p>
+ * Taking this approach ensures that we dont have problems with too many users
+ * in each directory which would adversly effect performance.
  * </p>
  * 
  * @author ieb
