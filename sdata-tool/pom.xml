@@ -48,6 +48,72 @@
       <version>${sakai.version}</version>
       <type>jar</type>
     </dependency>
+    
+     <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-db-api</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    
+    
+     <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-event-api</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    
+        <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-search-api</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    
+     <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-site-api</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    
+       <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-authz-api</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    
+      <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-content-api</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    
+      <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-announcement-api</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    
+      <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-message-api</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    
+      <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-entity-api</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    
+    
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-util-api</artifactId>
