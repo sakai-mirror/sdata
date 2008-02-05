@@ -3,7 +3,7 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright (c) 2003, 2004, 2005, 2006, 2007 The Sakai Foundation.
+ * Copyright (c) 2008 Timefields Ltd
  *
  * Licensed under the Educational Community License, Version 1.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -154,6 +154,12 @@ public class XmlRpcJcrServlet extends JCRServlet
 		}
 	}
 
+	/**
+	 * @param pConfig
+	 * @param pStream
+	 * @return
+	 * @throws XmlRpcException
+	 */
 	protected XmlRpcWriter getXmlRpcWriter(XmlRpcStreamRequestConfig pConfig,
 			OutputStream pStream) throws XmlRpcException
 	{
@@ -161,11 +167,17 @@ public class XmlRpcJcrServlet extends JCRServlet
 		return new XmlRpcWriter(pConfig, w, getTypeFactory());
 	}
 
+	/**
+	 * @return
+	 */
 	protected XmlWriterFactory getXMLWriterFactory()
 	{
 		return writerFactory;
 	}
 
+	/**
+	 * @return
+	 */
 	protected TypeFactory getTypeFactory()
 	{
 		return typeFactory;

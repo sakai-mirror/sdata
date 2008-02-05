@@ -1,3 +1,24 @@
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/tfd/trunk/sdata/sdata-tool/impl/src/java/org/sakaiproject/sdata/tool/StreamRequestFilter.java $
+ * $Id: StreamRequestFilter.java 45207 2008-02-01 19:01:06Z ian@caret.cam.ac.uk $
+ ***********************************************************************************
+ *
+ * Copyright (c) 2008 Timefields Ltd
+ *
+ * Licensed under the Educational Community License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.opensource.org/licenses/ecl1.php
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ **********************************************************************************/
+
 package org.sakaiproject.sdata.tool.xmlrpc;
 
 import java.io.ByteArrayOutputStream;
@@ -22,6 +43,10 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+/**
+ * @author ieb
+ *
+ */
 public class XmlRPCServiceServlet extends ServiceServlet
 {
 
@@ -38,6 +63,9 @@ public class XmlRPCServiceServlet extends ServiceServlet
 
 	private TypeFactory typeFactory = new XmlRpcTypeFactory(pConfig);
 
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.ServiceServlet#getServiceDefinitionFactory()
+	 */
 	@Override
 	protected ServiceDefinitionFactory getServiceDefinitionFactory()
 			throws ServletException
@@ -45,6 +73,9 @@ public class XmlRPCServiceServlet extends ServiceServlet
 		throw new ServletException("No Default ServiceDefinitionFactory");
 	}
 
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.ServiceServlet#sendError(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Throwable)
+	 */
 	@Override
 	protected void sendError(HttpServletRequest request, HttpServletResponse response,
 			Throwable ex) throws IOException
@@ -61,6 +92,9 @@ public class XmlRPCServiceServlet extends ServiceServlet
 		response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.ServiceServlet#sendMap(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.util.Map)
+	 */
 	@Override
 	protected void sendMap(HttpServletRequest request, HttpServletResponse response,
 			Map<String, Object> contentMap) throws IOException
@@ -96,6 +130,12 @@ public class XmlRPCServiceServlet extends ServiceServlet
 
 	}
 
+	/**
+	 * @param pConfig
+	 * @param pStream
+	 * @return
+	 * @throws XmlRpcException
+	 */
 	protected XmlRpcWriter getXmlRpcWriter(XmlRpcStreamRequestConfig pConfig,
 			OutputStream pStream) throws XmlRpcException
 	{
@@ -103,11 +143,17 @@ public class XmlRPCServiceServlet extends ServiceServlet
 		return new XmlRpcWriter(pConfig, w, getTypeFactory());
 	}
 
+	/**
+	 * @return
+	 */
 	protected XmlWriterFactory getXMLWriterFactory()
 	{
 		return writerFactory;
 	}
 
+	/**
+	 * @return
+	 */
 	protected TypeFactory getTypeFactory()
 	{
 		return typeFactory;

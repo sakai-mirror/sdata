@@ -3,7 +3,7 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright (c) 2003, 2004, 2005, 2006, 2007 The Sakai Foundation.
+ * Copyright (c) 2008 Timefields Ltd
  *
  * Licensed under the Educational Community License, Version 1.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@
 package org.sakaiproject.sdata.tool.api;
 
 /**
+ * TODO javadoc
+ * 
  * @author ieb
  */
 public class SDataException extends Exception
@@ -30,14 +32,15 @@ public class SDataException extends Exception
 	private int code;
 
 	/**
-	 * 
+	 * TODO javadoc
 	 */
 	public SDataException()
 	{
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
+	 * TODO javadoc
+	 * 
 	 * @param arg0
 	 */
 	public SDataException(String arg0)
@@ -46,6 +49,8 @@ public class SDataException extends Exception
 	}
 
 	/**
+	 * TODO javadoc
+	 * 
 	 * @param arg0
 	 */
 	public SDataException(Throwable arg0)
@@ -61,10 +66,11 @@ public class SDataException extends Exception
 	public SDataException(String arg0, Throwable arg1)
 	{
 		super(arg0, arg1);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
+	 * TODO javadoc
+	 * 
 	 * @param sc_unauthorized
 	 * @param string
 	 */

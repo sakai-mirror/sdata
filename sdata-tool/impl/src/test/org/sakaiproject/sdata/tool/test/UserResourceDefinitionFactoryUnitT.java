@@ -69,6 +69,9 @@ public class UserResourceDefinitionFactoryUnitT extends TestCase
 		super.tearDown();
 	}
 
+	/**
+	 * 
+	 */
 	public void testCreation()
 	{
 		for (String basePath : basePaths)

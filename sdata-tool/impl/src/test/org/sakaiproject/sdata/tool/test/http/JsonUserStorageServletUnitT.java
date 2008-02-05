@@ -3,7 +3,7 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright (c) 2003, 2004, 2005, 2006, 2007 The Sakai Foundation.
+ * Copyright (c) 2008 Timefields Ltd
  *
  * Licensed under the Educational Community License, Version 1.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,10 @@ import com.meterware.servletunit.ServletUnitClient;
  * @author ieb
  */
 
+/**
+ * @author ieb
+ *
+ */
 public class JsonUserStorageServletUnitT extends TestCase
 {
 	private static final Log log = LogFactory.getLog(JsonUserStorageServletUnitT.class);
@@ -104,6 +108,9 @@ public class JsonUserStorageServletUnitT extends TestCase
 		super.tearDown();
 	}
 
+	/**
+	 * 
+	 */
 	public void testSinglePage()
 	{
 		if (enabled)
@@ -116,6 +123,9 @@ public class JsonUserStorageServletUnitT extends TestCase
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public void testGet401() throws Exception
 	{
 		if (enabled)
@@ -144,6 +154,9 @@ public class JsonUserStorageServletUnitT extends TestCase
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public void testGet404() throws Exception
 	{
 		if (enabled)
@@ -176,6 +189,11 @@ public class JsonUserStorageServletUnitT extends TestCase
 		}
 	}
 
+	/**
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 * @throws SAXException
+	 */
 	private void login() throws MalformedURLException, IOException, SAXException
 	{
 		PostMethodWebRequest postMethod = new PostMethodWebRequest(LOGIN_BASE_URL);
@@ -185,6 +203,9 @@ public class JsonUserStorageServletUnitT extends TestCase
 		WebResponse resp = wc.getResponse(postMethod);
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public void testUpload() throws Exception
 	{
 		if (enabled)
@@ -222,6 +243,9 @@ public class JsonUserStorageServletUnitT extends TestCase
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public void testUploadDownload() throws Exception
 	{
 		if (enabled)
@@ -274,6 +298,9 @@ public class JsonUserStorageServletUnitT extends TestCase
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public void testUploadDownloadCache() throws Exception
 	{
 		if (enabled)
@@ -339,6 +366,9 @@ public class JsonUserStorageServletUnitT extends TestCase
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public void testDirectory() throws Exception
 	{
 		if (enabled)
@@ -395,6 +425,9 @@ public class JsonUserStorageServletUnitT extends TestCase
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public void testDeleteOneByOne() throws Exception
 	{
 		if (enabled)
@@ -451,6 +484,9 @@ public class JsonUserStorageServletUnitT extends TestCase
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public void testDeleteAllAtOnce() throws Exception
 	{
 		if (enabled)
@@ -497,6 +533,9 @@ public class JsonUserStorageServletUnitT extends TestCase
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public void testMultipartUpload() throws Exception
 	{
 		if (enabled)

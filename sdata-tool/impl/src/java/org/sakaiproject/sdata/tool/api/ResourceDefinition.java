@@ -3,7 +3,7 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright (c) 2003, 2004, 2005, 2006, 2007 The Sakai Foundation.
+ * Copyright (c) 2008 Timefields Ltd
  *
  * Licensed under the Educational Community License, Version 1.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,29 +22,39 @@
 package org.sakaiproject.sdata.tool.api;
 
 /**
+ * TODO javadoc
+ * 
  * @author ieb
  */
 public interface ResourceDefinition
 {
 
 	/**
+	 * TODO javadoc
+	 * 
 	 * @return
 	 */
 	String getRepositoryPath();
 
 	/**
+	 * TODO javadoc
+	 * 
 	 * @param path
 	 * @return
 	 */
 	String getExternalPath(String path);
 
 	/**
+	 * TODO javadoc
+	 * 
 	 * @param name
 	 * @return
 	 */
 	String getRepositoryPath(String name);
 
 	/**
+	 * TODO javadoc
+	 * 
 	 * @return
 	 */
 	boolean isPrivate();

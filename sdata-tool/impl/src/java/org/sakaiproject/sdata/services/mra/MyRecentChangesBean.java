@@ -34,23 +34,15 @@ import org.sakaiproject.site.api.SiteService.SortType;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 
-//import net.sf.json.JSONObject;
-//import net.sf.json.JSONSerializer;
-
+/**
+ * @author
+ */
 public class MyRecentChangesBean implements ServiceDefinition
 {
-
-	private Session currentSession;
-
-	private String currentUser;
 
 	private EventTrackingService eventTrackingService;
 
 	private Event event;
-
-	private Date lastLogin = null;
-
-	private List<String> lstLastLogin;
 
 	private List<Site> mySites;
 
@@ -64,53 +56,43 @@ public class MyRecentChangesBean implements ServiceDefinition
 
 	private EntityManager entityManager;
 
-	private SearchList searchList;
-
-	private SearchResult searchResult = null;
-
 	private SiteService siteService;
 
 	private ComponentManager componentManager;
 
 	private SqlService sqlService;
 
-	private String currentpage;
-
-	private List<Map> myRecentResults = new ArrayList<Map>();
-
-	private Map<String, Object> map2 = new HashMap<String, Object>();
-
-	private Map<String, Object> map = new HashMap<String, Object>();
+	Map<String, Object> resultMap = new HashMap<String, Object>();
 
 	private SessionManager sessionManager;
 
-	private MessageChannel messageChannel;
-
-	private AnnouncementMessage announcementMessage;
-
-	private List<MyRecentChangesResult> results = new ArrayList<MyRecentChangesResult>();
-
 	private static final Log log = LogFactory.getLog(MyRecentChangesBean.class);
 
+	/**
+	 * @param sessionManager
+	 * @param siteService
+	 * @param componentManager
+	 * @param sqlService
+	 * @param searchService
+	 * @param contentHostingService
+	 * @param announcementService
+	 * @param entityManager
+	 * @param paging
+	 */
 	public MyRecentChangesBean(SessionManager sessionManager, SiteService siteService,
 			ComponentManager componentManager, SqlService sqlService,
 			SearchService searchService, ContentHostingService contentHostingService,
 			AnnouncementService announcementService, EntityManager entityManager,
 			int paging)
 	{
-		this.setAnnouncementService(announcementService);
-		this.setEntityManager(entityManager);
+		this.announcementService = announcementService;
+		this.entityManager = entityManager;
 		this.contentHostingService = contentHostingService;
-		this.setSearchService(searchService);
-		this.setSqlService(sqlService);
-		this.setComponentManager(componentManager);
-		this.setSiteService(siteService);
-		this.setSessionManager(sessionManager);
-		this.setCurrentSession(getSessionManager().getCurrentSession());
-		this.setCurrentUser(getCurrentSession().getUserId());
-
-		log.info("Sessie = " + currentSession);
-		log.info("User = " + currentUser);
+		this.searchService = searchService;
+		this.sqlService = sqlService;
+		this.componentManager = componentManager;
+		this.siteService = siteService;
+		this.sessionManager = sessionManager;
 
 		try
 		{
@@ -139,15 +121,31 @@ public class MyRecentChangesBean implements ServiceDefinition
 
 	} // END CONSTRUCTOR
 
-	public void search(int paging) throws PermissionException, IdUnusedException,
+	/**
+	 * @param paging
+	 * @throws PermissionException
+	 * @throws IdUnusedException
+	 * @throws TypeException
+	 * @throws ParseException
+	 */
+	private void search(int paging) throws PermissionException, IdUnusedException,
 			TypeException, ParseException
 	{
+
+		Date lastLogin = null;
+		List<String> lstLastLogin;
+		SearchResult searchResult = null;
+		String currentpage;
+
+		List<Map> myRecentResults = new ArrayList<Map>();
+
+		List<MyRecentChangesResult> results = new ArrayList<MyRecentChangesResult>();
 
 		try
 		{
 
-			currentSession = getSessionManager().getCurrentSession();
-			currentUser = currentSession.getUserId();
+			Session currentSession = sessionManager.getCurrentSession();
+			String currentUser = currentSession.getUserId();
 
 			// log.error(currentSession);
 			// log.error(currentUser);
@@ -163,7 +161,6 @@ public class MyRecentChangesBean implements ServiceDefinition
 			lstLastLogin = sqlService
 					.dbRead("select userdate from sdata_lastlogin where userid='"
 							+ currentSession.getUserId() + "'");
-
 			if (lstLastLogin.size() != 0)
 			{
 
@@ -207,62 +204,68 @@ public class MyRecentChangesBean implements ServiceDefinition
 		// ////////
 		// //////// DELETE INDEXED FILES FROM INDEX QUEUE
 		// ////////
-		searchList = searchService.search("tool:content tool:announcement", arlSiteId, 0,
-				50, null, "dateRelevanceSort");
-		// log.warn(getSearchService().toString());
-		// log.warn(searchList);
-
-		// this.setSearchResult( null );
-		int ii = -1, iii = 0;
-		do
+		SearchList searchList = null;
+		if (searchService != null)
 		{
-			ii += 1;
-			if (ii < searchList.size())
+			searchList = searchService.search("tool:content tool:announcement",
+					arlSiteId, 0, 50, null, "dateRelevanceSort");
+			// log.warn(getSearchService().toString());
+			// log.warn(searchList);
+
+			// this.setSearchResult( null );
+			int ii = -1, iii = 0;
+			do
 			{
-				if (searchList.get(ii) == null)
+				ii += 1;
+				if (ii < searchList.size())
 				{
-					break;
+					if (searchList.get(ii) == null)
+					{
+						break;
+					}
+					else
+					{
+						searchResult = ((SearchResult) searchList.get(ii));
+						if (searchResult.getId() != null
+								&& !searchResult.getId().equals(""))
+						{
+
+							for (int r = 0; r < searchResult.getFieldNames().length; r++)
+							{
+								String s = "";
+								if (searchResult.getFieldNames()[r].equals("indexdate"))
+								{
+									for (int y = 0; y < searchResult
+											.getValues(searchResult.getFieldNames()[r]).length; y++)
+									{
+										s += searchResult.getValues(searchResult
+												.getFieldNames()[r])[y];
+									}
+									long l = Long.parseLong(s);
+									s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+											.format(new java.util.Date(l));
+									sqlService
+											.dbWrite("delete from sdata_indexqueue where version<'"
+													+ s + "'");
+								}
+							}
+
+							break;
+						}
+					}
 				}
 				else
 				{
-					searchResult = ((SearchResult) searchList.get(ii));
-					if (searchResult.getId() != null && !searchResult.getId().equals(""))
-					{
 
-						for (int r = 0; r < searchResult.getFieldNames().length; r++)
-						{
-							String s = "";
-							if (searchResult.getFieldNames()[r].equals("indexdate"))
-							{
-								for (int y = 0; y < searchResult.getValues(searchResult
-										.getFieldNames()[r]).length; y++)
-								{
-									s += searchResult.getValues(searchResult
-											.getFieldNames()[r])[y];
-								}
-								long l = Long.parseLong(s);
-								s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-										.format(new java.util.Date(l));
-								sqlService
-										.dbWrite("delete from sdata_indexqueue where version<'"
-												+ s + "'");
-							}
-						}
+					break;
 
-						break;
-					}
 				}
-			}
-			else
-			{
-
-				break;
 
 			}
+
+			while ((searchResult.getId() == null || searchResult.getId().equals(""))
+					&& ii < 50);
 		}
-
-		while ((searchResult.getId() == null || searchResult.getId().equals(""))
-				&& ii < 50);
 
 		// ////////
 		// //////// GET INDEXED RESULTS FROM INDEXQUEUE
@@ -284,11 +287,9 @@ public class MyRecentChangesBean implements ServiceDefinition
 			}
 		}
 
-		List<MyRecentChangesSqlresult> lst = getSqlService()
-				.dbRead(
-						"select * from sdata_indexqueue where " + sites
-								+ "order by version desc", null,
-						new MyRecentChangesSqlreader());
+		List<MyRecentChangesSqlresult> lst = sqlService
+				.dbRead("select * from sdata_indexqueue where " + sites
+						+ "order by version desc", null, new MyRecentChangesSqlreader());
 
 		ArrayList<String> arlUsed = new ArrayList<String>();
 
@@ -302,10 +303,8 @@ public class MyRecentChangesBean implements ServiceDefinition
 			if (mres.getTool().equals("content"))
 			{
 				String eid = mres.getName().substring(8);
-				
 
 				log.info("eid is " + eid);
-				
 
 				log.info("contenthostingservice is " + contentHostingService.toString());
 				if (!contentHostingService.isCollection(eid))
@@ -328,7 +327,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 
 							for (Site s : mySites)
 							{
-								//TODO
+								// TODO
 								if (mres.getContext().equals(s.getId()))
 								{
 
@@ -356,7 +355,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 					}
 				}
 			}
-			else if (mres.getTool().equals("announcement"))
+			else if (mres.getTool().equals("announcement") && announcementService != null)
 			{
 
 				try
@@ -365,10 +364,10 @@ public class MyRecentChangesBean implements ServiceDefinition
 					if (!arlUsed.contains(mres.getName()))
 					{
 
-						messageChannel = announcementService
+						MessageChannel messageChannel = announcementService
 								.getChannel("/announcement/channel/" + mres.getContext()
 										+ "/main");
-						announcementMessage = (AnnouncementMessage) messageChannel
+						AnnouncementMessage announcementMessage = (AnnouncementMessage) messageChannel
 								.getMessage(mres.getName().substring(
 										mres.getName().lastIndexOf('/') + 1));
 
@@ -386,7 +385,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 
 								for (Site s : mySites)
 								{
-									//TODO
+									// TODO
 									if (mres.getContext().equals(s.getId()))
 									{
 
@@ -429,11 +428,11 @@ public class MyRecentChangesBean implements ServiceDefinition
 		// //////// FILL WITH INDEXED RESULTS
 		// ////////
 
-		if (totalrecordsshown < 50)
+		if (totalrecordsshown < 50 && searchList != null)
 		{
 
-			ii = -1;
-			iii = 0;
+			int ii = -1;
+			int iii = 0;
 			do
 			{
 				ii += 1;
@@ -609,272 +608,48 @@ public class MyRecentChangesBean implements ServiceDefinition
 		for (MyRecentChangesResult mrcsr : results)
 		{
 
-			Map map = new HashMap<String, Object>();
-			map.put("siteName", mrcsr.getSitename());
-			map.put("context", mrcsr.getContext());
-			map.put("name", mrcsr.getName());
-			map.put("tool", mrcsr.getTool());
-			map.put("version", mrcsr.getVersion());
-			map.put("reference", mrcsr.getReference());
-			myRecentResults.add(map);
+			Map<String, String> mrcsr_map = new HashMap<String, String>();
+			mrcsr_map.put("siteName", mrcsr.getSitename());
+			mrcsr_map.put("context", mrcsr.getContext());
+			mrcsr_map.put("name", mrcsr.getName());
+			mrcsr_map.put("tool", mrcsr.getTool());
+			mrcsr_map.put("version", mrcsr.getVersion());
+			mrcsr_map.put("reference", mrcsr.getReference());
+			myRecentResults.add(mrcsr_map);
 
 		}
-		
-		
-		if(lastLogin == null){
-			//TODO
-			map2.put("lastLogin", "NO USER LOGGED IN");
-			
-		}else{
-			
-			map2.put("lastLogin", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-			.format(lastLogin));
-		}
-		
-		map2.put("total", totalrecordsshown);
 
-		map2.put("items", myRecentResults);
+		if (lastLogin == null)
+		{
+			// TODO
+			resultMap.put("lastLogin", "NO USER LOGGED IN");
+
+		}
+		else
+		{
+
+			resultMap.put("lastLogin", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+					.format(lastLogin));
+		}
+
+		resultMap.put("total", totalrecordsshown);
+
+		resultMap.put("items", myRecentResults);
 
 		// JSONArray jsonArray = JSONArray.fromObject(lst);
 
 		// return jsonArray.toString();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinition#getResponseMap()
+	 */
 	public Map<String, Object> getResponseMap()
 	{
 		// TODO Auto-generated method stub
-		return map2;
-	}
-
-	// GETTERS AND SETTERS
-	public void setCurrentSession(Session currentSession)
-	{
-		this.currentSession = currentSession;
-	}
-
-	public Session getCurrentSession()
-	{
-		return currentSession;
-	}
-
-	public void setCurrentUser(String currentUser)
-	{
-		this.currentUser = currentUser;
-	}
-
-	public String getCurrentUser()
-	{
-		return currentUser;
-	}
-
-	public void setEventTrackingService(EventTrackingService eventTrackingService)
-	{
-		this.eventTrackingService = eventTrackingService;
-	}
-
-	public EventTrackingService getEventTrackingService()
-	{
-		return eventTrackingService;
-	}
-
-	public void setEvent(Event event)
-	{
-		this.event = event;
-	}
-
-	public Event getEvent()
-	{
-		return event;
-	}
-
-	public void setLastLogin(Date lastLogin)
-	{
-		this.lastLogin = lastLogin;
-	}
-
-	public Date getLastLogin()
-	{
-		return lastLogin;
-	}
-
-	public void setLstLastLogin(List<String> lstLastLogin)
-	{
-		this.lstLastLogin = lstLastLogin;
-	}
-
-	public List<String> getLstLastLogin()
-	{
-		return lstLastLogin;
-	}
-
-	public void setMySites(List<Site> mySites)
-	{
-		this.mySites = mySites;
-	}
-
-	public List<Site> getMySites()
-	{
-		return mySites;
-	}
-
-	public void setArlSiteId(ArrayList<String> arlSiteId)
-	{
-		this.arlSiteId = arlSiteId;
-	}
-
-	public ArrayList<String> getArlSiteId()
-	{
-		return arlSiteId;
-	}
-
-	public void setEntityManager(EntityManager entityManager)
-	{
-		entityManager = entityManager;
-	}
-
-	public EntityManager getEntityManager()
-	{
-		return entityManager;
-	}
-
-	public void setAnnouncementService(AnnouncementService announcementService)
-	{
-		announcementService = announcementService;
-	}
-
-	public AnnouncementService getAnnouncementService()
-	{
-		return announcementService;
-	}
-
-	public void setContentHostingService(ContentHostingService contentHostingService)
-	{
-		contentHostingService = contentHostingService;
-	}
-
-	public ContentHostingService getContentHostingService()
-	{
-		return contentHostingService;
-	}
-
-	public void setSearchService(SearchService searchService)
-	{
-		this.searchService = searchService;
-	}
-
-	public SearchService getSearchService()
-	{
-		return searchService;
-	}
-
-	public void setSearchList(SearchList searchList)
-	{
-		searchList = searchList;
-	}
-
-	public SearchList getSearchList()
-	{
-		return searchList;
-	}
-
-	public void setSearchResult(SearchResult searchResult)
-	{
-		this.searchResult = searchResult;
-	}
-
-	public SearchResult getSearchResult()
-	{
-		return searchResult;
-	}
-
-	public void setCurrentpage(String currentpage)
-	{
-		this.currentpage = currentpage;
-	}
-
-	public String getCurrentpage()
-	{
-		return currentpage;
-	}
-
-	public void setSessionManager(SessionManager sessionManager)
-	{
-		this.sessionManager = sessionManager;
-	}
-
-	public SessionManager getSessionManager()
-	{
-		return sessionManager;
-	}
-
-	public void setSiteService(SiteService siteService)
-	{
-		this.siteService = siteService;
-	}
-
-	public SiteService getSiteService()
-	{
-		return siteService;
-	}
-
-	public void setComponentManager(ComponentManager componentManager)
-	{
-		this.componentManager = componentManager;
-	}
-
-	public ComponentManager getComponentManager()
-	{
-		return componentManager;
-	}
-
-	public void setSqlService(SqlService sqlService)
-	{
-		this.sqlService = sqlService;
-	}
-
-	public SqlService getSqlService()
-	{
-		return sqlService;
-	}
-
-	public void setMyRecentResults(List<Map> myRecentResults)
-	{
-		this.myRecentResults = myRecentResults;
-	}
-
-	public List<Map> getMyRecentResults()
-	{
-		return myRecentResults;
-	}
-
-	public void setMessageChannel(MessageChannel messageChannel)
-	{
-		this.messageChannel = messageChannel;
-	}
-
-	public MessageChannel getMessageChannel()
-	{
-		return messageChannel;
-	}
-
-	public void setAnnouncementMessage(AnnouncementMessage announcementMessage)
-	{
-		this.announcementMessage = announcementMessage;
-	}
-
-	public AnnouncementMessage getAnnouncementMessage()
-	{
-		return announcementMessage;
-	}
-
-	public void setResults(List<MyRecentChangesResult> results)
-	{
-		this.results = results;
-	}
-
-	public List<MyRecentChangesResult> getResults()
-	{
-		return results;
+		return resultMap;
 	}
 
 }

@@ -3,7 +3,7 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright (c) 2003, 2004, 2005, 2006, 2007 The Sakai Foundation.
+ * Copyright (c) 2008 Timefields Ltd
  *
  * Licensed under the Educational Community License, Version 1.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,6 +94,9 @@ public class JsonJcrServletUnitT extends TestCase
 		super.tearDown();
 	}
 
+	/**
+	 * 
+	 */
 	public void testSinglePage()
 	{
 		if (enabled)
@@ -106,6 +109,9 @@ public class JsonJcrServletUnitT extends TestCase
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public void testGet404() throws Exception
 	{
 		if (enabled)
@@ -133,6 +139,9 @@ public class JsonJcrServletUnitT extends TestCase
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public void testUpload() throws Exception
 	{
 		if (enabled)
@@ -166,6 +175,9 @@ public class JsonJcrServletUnitT extends TestCase
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public void testUploadDownload() throws Exception
 	{
 		if (enabled)
@@ -216,6 +228,9 @@ public class JsonJcrServletUnitT extends TestCase
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public void testUploadDownloadCache() throws Exception
 	{
 		if (enabled)
@@ -297,6 +312,9 @@ public class JsonJcrServletUnitT extends TestCase
 		log.info("Headers " + sb.toString());
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public void testDirectory() throws Exception
 	{
 		if (enabled)
@@ -351,6 +369,9 @@ public class JsonJcrServletUnitT extends TestCase
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public void testDeleteOneByOne() throws Exception
 	{
 		if (enabled)
@@ -406,6 +427,9 @@ public class JsonJcrServletUnitT extends TestCase
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public void testDeleteAllAtOnce() throws Exception
 	{
 		if (enabled)

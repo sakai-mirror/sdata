@@ -3,7 +3,7 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright (c) 2003, 2004, 2005, 2006, 2007 The Sakai Foundation.
+ * Copyright (c) 2008 Timefields Ltd
  *
  * Licensed under the Educational Community License, Version 1.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,6 +103,11 @@ public class HttpRangeUnitT extends TestCase
 		super.tearDown();
 	}
 
+	/**
+	 * @param target
+	 * @param size
+	 * @return
+	 */
 	public byte[] uploadTestData(String target, final int size)
 	{
 		if (enabled)
@@ -159,6 +164,9 @@ public class HttpRangeUnitT extends TestCase
 		return null;
 	}
 
+	/**
+	 * @throws IOException
+	 */
 	public void testRangeDownload() throws IOException
 	{
 		if (enabled)

@@ -3,7 +3,7 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright (c) 2003, 2004, 2005, 2006, 2007 The Sakai Foundation.
+ * Copyright (c) 2008 Timefields Ltd
  *
  * Licensed under the Educational Community License, Version 1.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -128,6 +128,9 @@ public class XmlRpcTypeFactory implements TypeFactory
 		this.config = config;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.apache.xmlrpc.common.TypeFactory#getSerializer(org.apache.xmlrpc.common.XmlRpcStreamConfig, java.lang.Object)
+	 */
 	public TypeSerializer getSerializer(XmlRpcStreamConfig pConfig, Object pObject)
 			throws SAXException
 	{
@@ -315,6 +318,9 @@ public class XmlRpcTypeFactory implements TypeFactory
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.apache.xmlrpc.common.TypeFactory#getParser(org.apache.xmlrpc.common.XmlRpcStreamConfig, org.apache.ws.commons.util.NamespaceContextImpl, java.lang.String, java.lang.String)
+	 */
 	public TypeParser getParser(XmlRpcStreamConfig pConfig,
 			NamespaceContextImpl pContext, String pURI, String pLocalName)
 	{
