@@ -1,5 +1,6 @@
 package org.sakaiproject.sdata.services.mra;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,14 +10,19 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.announcement.api.AnnouncementMessage;
 import org.sakaiproject.announcement.api.AnnouncementService;
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.db.api.SqlService;
 import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.event.api.Event;
 import org.sakaiproject.event.api.EventTrackingService;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.message.api.MessageChannel;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.search.api.SearchList;
 import org.sakaiproject.search.api.SearchResult;
@@ -78,30 +84,64 @@ public class MyRecentChangesBean implements ServiceDefinition
 
 	private SessionManager sessionManager;
 
+	private MessageChannel messageChannel;
+
+	private AnnouncementMessage announcementMessage;
+
+	private List<MyRecentChangesResult> results = new ArrayList<MyRecentChangesResult>();
+
 	private static final Log log = LogFactory.getLog(MyRecentChangesBean.class);
 
 	public MyRecentChangesBean(SessionManager sessionManager, SiteService siteService,
-			ComponentManager componentManager, SqlService sqlService)
+			ComponentManager componentManager, SqlService sqlService,
+			SearchService searchService, ContentHostingService contentHostingService,
+			AnnouncementService announcementService, EntityManager entityManager,
+			int paging)
 	{
-
+		this.setAnnouncementService(announcementService);
+		this.setEntityManager(entityManager);
+		this.contentHostingService = contentHostingService;
+		this.setSearchService(searchService);
 		this.setSqlService(sqlService);
 		this.setComponentManager(componentManager);
 		this.setSiteService(siteService);
-		this.setSessionManager(sessionManager);// .getCurrentSession());
-		this.setCurrentSession(this.getSessionManager().getCurrentSession());
-		this.setCurrentUser(this.getCurrentSession().getUserId());
+		this.setSessionManager(sessionManager);
+		this.setCurrentSession(getSessionManager().getCurrentSession());
+		this.setCurrentUser(getCurrentSession().getUserId());
 
 		log.info("Sessie = " + currentSession);
 		log.info("User = " + currentUser);
 
-		search();
+		try
+		{
+			search(paging);
+		}
+		catch (PermissionException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IdUnusedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (TypeException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (ParseException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	} // END CONSTRUCTOR
 
-	public void search()
+	public void search(int paging) throws PermissionException, IdUnusedException,
+			TypeException, ParseException
 	{
-
-		// this.setArlSiteId(new ArrayList<String>());
 
 		try
 		{
@@ -109,8 +149,8 @@ public class MyRecentChangesBean implements ServiceDefinition
 			currentSession = getSessionManager().getCurrentSession();
 			currentUser = currentSession.getUserId();
 
-			log.error(currentSession);
-			log.error(currentUser);
+			// log.error(currentSession);
+			// log.error(currentUser);
 
 			// setEventTrackingService(org.sakaiproject.event.cover.EventTrackingService.getInstance());
 			// setEvent(getEventTrackingService().newEvent("octopus.recent.activity",
@@ -120,39 +160,37 @@ public class MyRecentChangesBean implements ServiceDefinition
 			// getEventTrackingService().post(getEvent());
 
 			// this.setLastLogin(null);
-			this.setLstLastLogin(this.getSqlService().dbRead(
-					"select userdate from sdata_lastlogin where userid='"
-							+ this.getCurrentSession().getUserId() + "'"));
+			lstLastLogin = sqlService
+					.dbRead("select userdate from sdata_lastlogin where userid='"
+							+ currentSession.getUserId() + "'");
 
-			if (getLstLastLogin().size() != 0)
+			if (lstLastLogin.size() != 0)
 			{
 
-				setLastLogin(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-						.parse(getLstLastLogin().get(0).substring(0, 19)));
+				lastLogin = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+						.parse(lstLastLogin.get(0).substring(0, 19));
 
 			}
 
-			this.setMySites(this.getSiteService().getSites(SelectionType.ACCESS, null,
-					null, null, SortType.TITLE_ASC, null));
+			mySites = siteService.getSites(SelectionType.ACCESS, null, null, null,
+					SortType.TITLE_ASC, null);
 
 			for (int i = 0; i < mySites.size(); i++)
 			{
-				getArlSiteId().add(mySites.get(i).getId());
+				arlSiteId.add(mySites.get(i).getId());
 			}
 
-			getArlSiteId().add(
-					this.getSiteService().getUserSiteId(
-							this.getCurrentSession().getUserId()).substring(1));
+			arlSiteId.add(siteService.getUserSiteId(currentSession.getUserId())
+					.substring(1));
 
-			this.setSearchService((SearchService) this.getComponentManager().get(
-					"org.sakaiproject.search.api.SearchService"));
-			this.setContentHostingService((ContentHostingService) this
-					.getComponentManager().get(
-							"org.sakaiproject.content.api.ContentHostingService"));
-			this.setAnnouncementService((AnnouncementService) this.getComponentManager()
-					.get("org.sakaiproject.announcement.api.AnnouncementService"));
-			this.setEntityManager((EntityManager) this.getComponentManager().get(
-					"org.sakaiproject.entity.api.EntityManager"));
+			// searchService = (SearchService) getComponentManager().get(
+			// "org.sakaiproject.search.api.SearchService");
+			// contentHostingService = (ContentHostingService) componentManager
+			// .get("org.sakaiproject.content.api.ContentHostingService");
+			// announcementService = (AnnouncementService) componentManager
+			// .get("org.sakaiproject.announcement.api.AnnouncementService");
+			// entityManager = (EntityManager) componentManager
+			// .get("org.sakaiproject.entity.api.EntityManager");
 
 		}
 		catch (Exception e)
@@ -160,54 +198,53 @@ public class MyRecentChangesBean implements ServiceDefinition
 			// TODO: handle exception
 			e.printStackTrace();
 		}
-		log.warn("blah "
-				+ this.getSearchService().search("tool:content tool:announcement",
-						this.getArlSiteId(), 0, 50, null, "dateRelevanceSort"));
+		/*
+		 * log.warn("blah " + this.getSearchService().search("tool:content
+		 * tool:announcement", this.getArlSiteId(), 0, 50, null,
+		 * "dateRelevanceSort"));
+		 */
 
 		// ////////
 		// //////// DELETE INDEXED FILES FROM INDEX QUEUE
 		// ////////
-
-		searchList = this.getSearchService().search("tool:content tool:announcement",
-				this.getArlSiteId(), 0, 50, null, "dateRelevanceSort");
-		log.warn(getSearchService().toString());
-		log.warn(searchList);
+		searchList = searchService.search("tool:content tool:announcement", arlSiteId, 0,
+				50, null, "dateRelevanceSort");
+		// log.warn(getSearchService().toString());
+		// log.warn(searchList);
 
 		// this.setSearchResult( null );
 		int ii = -1, iii = 0;
 		do
 		{
 			ii += 1;
-			if (ii < this.getSearchList().size())
+			if (ii < searchList.size())
 			{
-				if (this.getSearchList().get(ii) == null)
+				if (searchList.get(ii) == null)
 				{
 					break;
 				}
 				else
 				{
-					this.setSearchResult((SearchResult) this.getSearchList().get(ii));
-					if (this.getSearchResult().getId() != null
-							&& !this.getSearchResult().getId().equals(""))
+					searchResult = ((SearchResult) searchList.get(ii));
+					if (searchResult.getId() != null && !searchResult.getId().equals(""))
 					{
 
-						for (int r = 0; r < this.getSearchResult().getFieldNames().length; r++)
+						for (int r = 0; r < searchResult.getFieldNames().length; r++)
 						{
 							String s = "";
-							if (this.getSearchResult().getFieldNames()[r]
-									.equals("indexdate"))
+							if (searchResult.getFieldNames()[r].equals("indexdate"))
 							{
-								for (int y = 0; y < this.getSearchResult().getValues(
-										this.getSearchResult().getFieldNames()[r]).length; y++)
+								for (int y = 0; y < searchResult.getValues(searchResult
+										.getFieldNames()[r]).length; y++)
 								{
-									s += this.getSearchResult().getValues(
-											this.getSearchResult().getFieldNames()[r])[y];
+									s += searchResult.getValues(searchResult
+											.getFieldNames()[r])[y];
 								}
 								long l = Long.parseLong(s);
 								s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 										.format(new java.util.Date(l));
-								this.getSqlService().dbWrite(
-										"delete from sdata_indexqueue where version<'"
+								sqlService
+										.dbWrite("delete from sdata_indexqueue where version<'"
 												+ s + "'");
 							}
 						}
@@ -223,8 +260,8 @@ public class MyRecentChangesBean implements ServiceDefinition
 
 			}
 		}
-		while ((this.getSearchResult().getId() == null || this.getSearchResult().getId()
-				.equals(""))
+
+		while ((searchResult.getId() == null || searchResult.getId().equals(""))
 				&& ii < 50);
 
 		// ////////
@@ -233,27 +270,21 @@ public class MyRecentChangesBean implements ServiceDefinition
 
 		String finalResult = "";
 
-		int paging = 1;
-		if (this.getCurrentpage() != null)
-		{
-			paging = Integer.parseInt(this.getCurrentpage());
-		}
-
 		int totalrecordsshown = 0;
 		String sites = "";
-		for (int i = 0; i < this.getArlSiteId().size(); i++)
+		for (int i = 0; i < arlSiteId.size(); i++)
 		{
 			if (i == 0)
 			{
-				sites += "context='" + this.getArlSiteId().get(i) + "' ";
+				sites += "context='" + arlSiteId.get(i) + "' ";
 			}
 			else
 			{
-				sites += "OR context='" + this.getArlSiteId().get(i) + "' ";
+				sites += "OR context='" + arlSiteId.get(i) + "' ";
 			}
 		}
 
-		List<MyRecentChangesSqlresult> lst = this.getSqlService()
+		List<MyRecentChangesSqlresult> lst = getSqlService()
 				.dbRead(
 						"select * from sdata_indexqueue where " + sites
 								+ "order by version desc", null,
@@ -261,32 +292,346 @@ public class MyRecentChangesBean implements ServiceDefinition
 
 		ArrayList<String> arlUsed = new ArrayList<String>();
 
-		try
+		// BEGIN NEW STUFF
+
+		for (int i = 0; i < lst.size(); i++)
 		{
-			this.getMySites().add(
-					this.getSiteService().getSite(
-							this.getSiteService().getUserSiteId(
-									currentSession.getUserId())));
+
+			MyRecentChangesSqlresult mres = lst.get(i);
+
+			if (mres.getTool().equals("content"))
+			{
+				String eid = mres.getName().substring(8);
+				
+
+				log.info("eid is " + eid);
+				
+
+				log.info("contenthostingservice is " + contentHostingService.toString());
+				if (!contentHostingService.isCollection(eid))
+				{
+
+					if (contentHostingService.allowGetResource(eid)
+							&& !arlUsed.contains(mres.getName()))
+					{
+
+						if (totalrecordsshown >= (paging - 1) * 10
+								&& totalrecordsshown < (paging) * 10)
+						{
+
+							ContentResource cres = contentHostingService.getResource(eid);
+
+							Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+									.parse(mres.getVersion().substring(0, 19));
+
+							MyRecentChangesResult mrcs = new MyRecentChangesResult();
+
+							for (Site s : mySites)
+							{
+								//TODO
+								if (mres.getContext().equals(s.getId()))
+								{
+
+									mrcs.setSitename(s.getTitle());
+
+								}
+							}
+
+							mrcs.setTool(mres.getTool());
+							mrcs.setVersion(mres.getVersion());
+							mrcs.setContext(mres.getContext());
+							mrcs.setName(cres.getUrl());
+							mrcs.setReference(cres.getReference());
+							results.add(mrcs);
+
+						}
+
+						totalrecordsshown += 1;
+						arlUsed.add(mres.getName());
+						if (totalrecordsshown == 50)
+						{
+							break;
+						}
+
+					}
+				}
+			}
+			else if (mres.getTool().equals("announcement"))
+			{
+
+				try
+				{
+
+					if (!arlUsed.contains(mres.getName()))
+					{
+
+						messageChannel = announcementService
+								.getChannel("/announcement/channel/" + mres.getContext()
+										+ "/main");
+						announcementMessage = (AnnouncementMessage) messageChannel
+								.getMessage(mres.getName().substring(
+										mres.getName().lastIndexOf('/') + 1));
+
+						if (!announcementMessage.getAnnouncementHeader().getDraft())
+						{
+
+							if (totalrecordsshown >= (paging - 1) * 10
+									&& totalrecordsshown < (paging) * 10)
+							{
+
+								Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+										.parse(mres.getVersion().substring(0, 19));
+
+								MyRecentChangesResult mrcs = new MyRecentChangesResult();
+
+								for (Site s : mySites)
+								{
+									//TODO
+									if (mres.getContext().equals(s.getId()))
+									{
+
+										mrcs.setSitename(s.getTitle());
+
+									}
+								}
+
+								mrcs.setTool(mres.getTool());
+								mrcs.setVersion(mres.getVersion());
+								mrcs.setContext(mres.getContext());
+								mrcs.setName(announcementMessage.getUrl());
+								mrcs.setReference(announcementMessage.getReference());
+								results.add(mrcs);
+
+							}
+
+							totalrecordsshown += 1;
+							arlUsed.add(mres.getName());
+							if (totalrecordsshown == 50)
+							{
+								break;
+							}
+
+						}
+
+					}
+
+				}
+				catch (Exception ex)
+				{
+					ex.printStackTrace();
+				}
+
+			}
+
 		}
-		catch (IdUnusedException e)
+
+		// ////////
+		// //////// FILL WITH INDEXED RESULTS
+		// ////////
+
+		if (totalrecordsshown < 50)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			ii = -1;
+			iii = 0;
+			do
+			{
+				ii += 1;
+
+				if (ii < searchList.size())
+				{
+					if (searchList.get(ii) == null)
+					{
+						break;
+					}
+					else
+					{
+						SearchResult srl = (SearchResult) searchList.get(ii);
+
+						if (srl.getId() != null && !srl.getId().equals("")
+								&& !arlUsed.contains(srl.getReference()))
+						{
+							log.error("+++++ " + srl.getTool());
+							if (srl.getTool().equals("content"))
+							{
+
+								if (totalrecordsshown >= (paging - 1) * 10
+										&& totalrecordsshown < (paging) * 10)
+								{
+
+									long l = 0;
+									String s = "";
+									String s2 = "";
+									for (int r = 0; r < srl.getFieldNames().length; r++)
+									{
+										if (srl.getFieldNames()[r].equals("siteid"))
+										{
+											for (int y = 0; y < srl.getValues(srl
+													.getFieldNames()[r]).length; y++)
+											{
+												s += srl
+														.getValues(srl.getFieldNames()[r])[y];
+											}
+										}
+										else if (srl.getFieldNames()[r]
+												.equals("indexdate"))
+										{
+											for (int y = 0; y < srl.getValues(srl
+													.getFieldNames()[r]).length; y++)
+											{
+												s2 += srl
+														.getValues(srl.getFieldNames()[r])[y];
+											}
+											l = Long.parseLong(s2);
+											s2 = new SimpleDateFormat(
+													"yyyy-MM-dd HH:mm:ss")
+													.format(new java.util.Date(l));
+										}
+									}
+
+									Date d = new java.util.Date(l);
+
+									MyRecentChangesResult mrcs = new MyRecentChangesResult();
+
+									mrcs.setName(srl.getTitle());
+
+									for (Site ss : mySites)
+									{
+										// log.error("BIER :: " + s);
+										if (s.equals(ss.getId()))
+										{
+
+											mrcs.setSitename(ss.getTitle());
+											mrcs.setContext(ss.getId());
+										}
+									}
+
+									mrcs.setTool(srl.getTool());
+									mrcs.setVersion(s2);
+									mrcs.setReference(srl.getReference());
+									results.add(mrcs);
+
+								}
+
+								totalrecordsshown += 1;
+								arlUsed.add(srl.getReference());
+
+							}
+							else if (srl.getTool().equals("announcement"))
+							{
+
+								if (totalrecordsshown >= (paging - 1) * 10
+										&& totalrecordsshown < (paging) * 10)
+								{
+
+									long l = 0;
+									String s = "";
+									String s2 = "";
+									for (int r = 0; r < srl.getFieldNames().length; r++)
+									{
+										if (srl.getFieldNames()[r].equals("siteid"))
+										{
+											for (int y = 0; y < srl.getValues(srl
+													.getFieldNames()[r]).length; y++)
+											{
+												s += srl
+														.getValues(srl.getFieldNames()[r])[y];
+											}
+										}
+										else if (srl.getFieldNames()[r]
+												.equals("indexdate"))
+										{
+											for (int y = 0; y < srl.getValues(srl
+													.getFieldNames()[r]).length; y++)
+											{
+												s2 += srl
+														.getValues(srl.getFieldNames()[r])[y];
+											}
+											l = Long.parseLong(s2);
+											s2 = new SimpleDateFormat(
+													"yyyy-MM-dd HH:mm:ss")
+													.format(new java.util.Date(l));
+										}
+									}
+
+									Date d = new java.util.Date(l);
+
+									String[] arr = srl.getTitle().substring(9).split(
+											" From ");
+									String arrResult = "";
+									for (int i = 0; i < arr.length - 1; i++)
+									{
+										arrResult += arr[i];
+									}
+
+									MyRecentChangesResult mrcs = new MyRecentChangesResult();
+									mrcs.setContext(s);
+									mrcs.setName(srl.getTitle());
+
+									for (Site ss : mySites)
+									{
+										if (mrcs.getContext().equals(ss.getId()))
+										{
+
+											mrcs.setSitename(ss.getTitle());
+
+										}
+									}
+
+									mrcs.setTool(srl.getTool());
+									mrcs.setVersion(s2);
+									mrcs.setReference(srl.getReference());
+									results.add(mrcs);
+
+								}
+
+								totalrecordsshown += 1;
+								arlUsed.add(searchResult.getReference());
+
+							}
+
+						}
+					}
+				}
+				else
+				{
+
+					break;
+
+				}
+			}
+			while (totalrecordsshown < 50 && ii < 50);
+
 		}
 
-		// BUILD JSON AND RETURN HERE
+		// END NEW STUFF
 
-		// JSONSerializer jsl=new JSONSerializer();
-
-		for (MyRecentChangesSqlresult mrcsr : lst)
+		for (MyRecentChangesResult mrcsr : results)
 		{
-			log.error("den for lus of doom");
+
+			Map map = new HashMap<String, Object>();
+			map.put("siteName", mrcsr.getSitename());
 			map.put("context", mrcsr.getContext());
 			map.put("name", mrcsr.getName());
 			map.put("tool", mrcsr.getTool());
 			map.put("version", mrcsr.getVersion());
+			map.put("reference", mrcsr.getReference());
 			myRecentResults.add(map);
+
 		}
+		
+		
+		if(lastLogin == null){
+			//TODO
+			map2.put("lastLogin", "NO USER LOGGED IN");
+			
+		}else{
+			
+			map2.put("lastLogin", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+			.format(lastLogin));
+		}
+		
+		map2.put("total", totalrecordsshown);
 
 		map2.put("items", myRecentResults);
 
@@ -500,6 +845,36 @@ public class MyRecentChangesBean implements ServiceDefinition
 	public List<Map> getMyRecentResults()
 	{
 		return myRecentResults;
+	}
+
+	public void setMessageChannel(MessageChannel messageChannel)
+	{
+		this.messageChannel = messageChannel;
+	}
+
+	public MessageChannel getMessageChannel()
+	{
+		return messageChannel;
+	}
+
+	public void setAnnouncementMessage(AnnouncementMessage announcementMessage)
+	{
+		this.announcementMessage = announcementMessage;
+	}
+
+	public AnnouncementMessage getAnnouncementMessage()
+	{
+		return announcementMessage;
+	}
+
+	public void setResults(List<MyRecentChangesResult> results)
+	{
+		this.results = results;
+	}
+
+	public List<MyRecentChangesResult> getResults()
+	{
+		return results;
 	}
 
 }
