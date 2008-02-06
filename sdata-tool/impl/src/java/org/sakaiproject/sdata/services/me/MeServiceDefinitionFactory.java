@@ -52,7 +52,7 @@ public class MeServiceDefinitionFactory implements ServiceDefinitionFactory
 	{
 		componentManager = org.sakaiproject.component.cover.ComponentManager
 				.getInstance();
-		siteService = (SiteService) componentManager.get(SiteService.class.getName());
+		//siteService = (SiteService) componentManager.get(SiteService.class.getName());
 		sessionManager = (SessionManager) componentManager.get(SessionManager.class
 				.getName());
 		userDirectoryService = (UserDirectoryService) componentManager
@@ -68,7 +68,7 @@ public class MeServiceDefinitionFactory implements ServiceDefinitionFactory
 	public ServiceDefinition getSpec(HttpServletRequest request,
 			HttpServletResponse response)
 	{
-		return new MeBean(sessionManager, siteService, userDirectoryService, response);
+		return new MeBean(sessionManager, userDirectoryService, response);
 	}
 
 }

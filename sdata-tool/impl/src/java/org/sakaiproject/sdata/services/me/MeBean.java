@@ -57,7 +57,7 @@ public class MeBean implements ServiceDefinition
 	 * @param sessionManager
 	 * @param siteService
 	 */
-	public MeBean(SessionManager sessionManager, SiteService siteService,
+	public MeBean(SessionManager sessionManager, 
 			UserDirectoryService userDirectoryService, HttpServletResponse response)
 	{
 		User user = null;
