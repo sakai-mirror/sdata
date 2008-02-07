@@ -2,7 +2,7 @@
 <web-app id="SData" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-	<display-name>sakai-sdata</display-name>
+	<display-name>portal</display-name>
 	<description>Sakai SData</description>
 	
 	<!-- 
@@ -82,6 +82,22 @@
 		<dispatcher>INCLUDE</dispatcher>
 	</filter-mapping>
 	
+	<filter-mapping>
+		<filter-name>sakai.request</filter-name>
+		<servlet-name>MFF</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>sakai.request</filter-name>
+		<servlet-name>MOTD</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+	
 
 	<!-- json servlets -->	
 	<servlet>
@@ -149,6 +165,22 @@
 		<load-on-startup>100</load-on-startup>
 	</servlet>
 	
+	<servlet>
+		<servlet-name>MFF</servlet-name>
+		<servlet-class>
+			org.sakaiproject.sdata.services.mff.MyFileFinderServlet
+		</servlet-class>
+		<load-on-startup>100</load-on-startup>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>MOTD</servlet-name>
+		<servlet-class>
+			org.sakaiproject.sdata.services.motd.MessageOfTheDayServlet
+		</servlet-class>
+		<load-on-startup>100</load-on-startup>
+	</servlet>
+	
 	<servlet-mapping>
 		<servlet-name>JsonJcrServlet</servlet-name>
 		<url-pattern>/f/*</url-pattern>
@@ -185,6 +217,16 @@
 	<servlet-mapping>
 		<servlet-name>ME</servlet-name>
 		<url-pattern>/me</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>MFF</servlet-name>
+		<url-pattern>/mff</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>MOTD</servlet-name>
+		<url-pattern>/motd</url-pattern>
 	</servlet-mapping>
 	
 	<listener>
