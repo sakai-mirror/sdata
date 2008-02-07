@@ -50,7 +50,7 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 
 	private Map<String, Object> map2 = new HashMap<String, Object>();;
 
-	private Map<String, Object> map = new HashMap<String, Object>();
+	
 
 	/**
 	 * @param sessionManager
@@ -75,7 +75,7 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 
 		for (Site site : mysites)
 		{
-
+			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("title", site.getTitle());
 			map.put("id", site.getId());
 			map.put("url", site.getUrl());
