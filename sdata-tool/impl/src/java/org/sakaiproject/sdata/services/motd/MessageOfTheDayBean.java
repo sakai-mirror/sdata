@@ -70,6 +70,8 @@ public class MessageOfTheDayBean implements ServiceDefinition
 	private Map<String, Object> map = new HashMap<String, Object>();
 
 	private static final Log log = LogFactory.getLog(MessageOfTheDayBean.class);
+	
+	private List<Map> MyMotds = new ArrayList<Map>();
 
 	/**
 	 * @param sessionManager
@@ -93,16 +95,18 @@ public class MessageOfTheDayBean implements ServiceDefinition
 					1, false, false, false);
 			if (messages.size() <= 0)
 			{
-				map.put("motd_body", "No Message of the day set");
-				map.put("motd_url", "#");
-				map2.put("items", map);
+				map.put("motdBody", "No Message of the day set");
+				map.put("motdUrl", "#");
+				MyMotds.add(map);
+				map2.put("items", MyMotds);
 			}
 			else
 			{
 				Message motd = messages.get(0);
-				map.put("motd_body", motd.getBody());
-				map.put("motd_url", motd.getUrl());
-				map2.put("items", map);
+				map.put("motdBody", motd.getBody());
+				map.put("motdUrl", motd.getUrl());
+				MyMotds.add(map);
+				map2.put("items", MyMotds);
 
 			}
 		}
