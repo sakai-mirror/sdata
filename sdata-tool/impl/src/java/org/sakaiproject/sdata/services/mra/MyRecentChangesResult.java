@@ -30,6 +30,8 @@ public class MyRecentChangesResult extends MyRecentChangesSqlresult
 	private String sitename;
 
 	private String reference;
+	
+	private String cleanVersion;
 
 	/**
 	 * @param context
@@ -76,15 +78,25 @@ public class MyRecentChangesResult extends MyRecentChangesSqlresult
 	 */
 	public void setReference(String reference)
 	{
-		this.reference = reference;
+		this.reference = "/access" + reference;
 	}
-
+	
 	/**
 	 * @return
 	 */
 	public String getReference()
 	{
 		return reference;
+	}
+
+	public void setCleanVersion(String cleanVersion)
+	{
+		this.cleanVersion = cleanVersion;
+	}
+
+	public String getCleanVersion()
+	{
+		return cleanVersion;
 	}
 
 }

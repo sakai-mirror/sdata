@@ -399,6 +399,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 								mrcs.setContext(mres.getContext());
 								mrcs.setName(announcementMessage.getUrl());
 								mrcs.setReference(announcementMessage.getReference());
+								mrcs.setCleanVersion(mres.getVersion());
 								results.add(mrcs);
 
 							}
@@ -604,7 +605,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 		}
 
 		// END NEW STUFF
-
+		Date cleanDate = new Date();
 		for (MyRecentChangesResult mrcsr : results)
 		{
 
@@ -615,6 +616,28 @@ public class MyRecentChangesBean implements ServiceDefinition
 			mrcsr_map.put("tool", mrcsr.getTool());
 			mrcsr_map.put("version", mrcsr.getVersion());
 			mrcsr_map.put("reference", mrcsr.getReference());
+
+			// today in format brengen om te compairen
+			String tiday = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+			String cut = "leeg";
+			mrcsr.setCleanVersion(mrcsr.getVersion().substring(0, mrcsr.getVersion().lastIndexOf('-')+3));
+			
+			if (mrcsr.getVersion().substring(0, mrcsr.getVersion().lastIndexOf('-') + 3)
+					.equals(new SimpleDateFormat("yyyy-MM-dd").format(new Date())))
+			{
+
+				mrcsr.setCleanVersion("Today");
+
+			}
+			else
+			{
+				String test = mrcsr.getVersion();
+				Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(test);
+				mrcsr.setCleanVersion(new SimpleDateFormat("dd MMM yy HH:mm").format(d));
+
+			}
+
+			mrcsr_map.put("cleanVersion", mrcsr.getCleanVersion());
 			myRecentResults.add(mrcsr_map);
 
 		}
