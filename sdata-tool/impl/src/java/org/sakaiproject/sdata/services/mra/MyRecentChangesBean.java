@@ -339,7 +339,8 @@ public class MyRecentChangesBean implements ServiceDefinition
 							mrcs.setTool(mres.getTool());
 							mrcs.setVersion(mres.getVersion());
 							mrcs.setContext(mres.getContext());
-							mrcs.setName(cres.getUrl());
+							mrcs.setName(cres.getUrl().substring(
+									cres.getUrl().lastIndexOf("/") + 1));
 							mrcs.setReference(cres.getReference());
 							results.add(mrcs);
 
@@ -397,7 +398,8 @@ public class MyRecentChangesBean implements ServiceDefinition
 								mrcs.setTool(mres.getTool());
 								mrcs.setVersion(mres.getVersion());
 								mrcs.setContext(mres.getContext());
-								mrcs.setName(announcementMessage.getUrl());
+								mrcs.setName(announcementMessage.getAnnouncementHeader()
+										.getSubject());
 								mrcs.setReference(announcementMessage.getReference());
 								mrcs.setCleanVersion(mres.getVersion());
 								results.add(mrcs);
@@ -620,8 +622,9 @@ public class MyRecentChangesBean implements ServiceDefinition
 			// today in format brengen om te compairen
 			String tiday = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 			String cut = "leeg";
-			mrcsr.setCleanVersion(mrcsr.getVersion().substring(0, mrcsr.getVersion().lastIndexOf('-')+3));
-			
+			mrcsr.setCleanVersion(mrcsr.getVersion().substring(0,
+					mrcsr.getVersion().lastIndexOf('-') + 3));
+
 			if (mrcsr.getVersion().substring(0, mrcsr.getVersion().lastIndexOf('-') + 3)
 					.equals(new SimpleDateFormat("yyyy-MM-dd").format(new Date())))
 			{
