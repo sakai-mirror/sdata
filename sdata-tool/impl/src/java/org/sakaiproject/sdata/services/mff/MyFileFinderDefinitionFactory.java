@@ -32,6 +32,9 @@ import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.user.api.UserDirectoryService;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * @author
  */
@@ -69,22 +72,26 @@ public class MyFileFinderDefinitionFactory implements ServiceDefinitionFactory
 	public ServiceDefinition getSpec(HttpServletRequest request,
 			HttpServletResponse response)
 	{
-
+		//final Log log = LogFactory.getLog(MyFileFinderDefinitionFactory.class);
 		String search;
+		Boolean empty = false;
 		if (request.getParameter("search") != null
-				|| request.getParameter("search").equals(""))
+				&& !request.getParameter("search").equals(""))
+				
 		{
+			empty = false;
+			//log.error(request.getParameter("search"));
 			search = request.getParameter("search");
 		}
 		else
 		{
 
-			search = "no QueryString found";
-
+			search = "";
+			empty = true;
 		}
 
 		return new MyFileFinderBean(sessionManager, siteService, contentHostingService,
-				response, search);
+				response, search, empty);
 	}
 
 }
