@@ -149,7 +149,7 @@ public class MyGlobalSearchBean implements ServiceDefinition {
 					map2.put("totalResults", res.getFullSize());
 				}
 			} catch (Exception e) {
-				Map<String, Object> map2 = new HashMap<String, Object>();
+				
 				map2.put("status", "failed");
 			}
 		} else {
