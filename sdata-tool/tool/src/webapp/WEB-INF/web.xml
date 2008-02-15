@@ -98,6 +98,14 @@
 		<dispatcher>INCLUDE</dispatcher>
 	</filter-mapping>
 	
+	<filter-mapping>
+		<filter-name>sakai.request</filter-name>
+		<servlet-name>SITE</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+	
 
 	<!-- json servlets -->	
 	<servlet>
@@ -181,6 +189,14 @@
 		<load-on-startup>100</load-on-startup>
 	</servlet>
 	
+	<servlet>
+		<servlet-name>SITE</servlet-name>
+		<servlet-class>
+			org.sakaiproject.sdata.services.site.SiteServlet
+		</servlet-class>
+		<load-on-startup>100</load-on-startup>
+	</servlet>
+	
 	<servlet-mapping>
 		<servlet-name>JsonJcrServlet</servlet-name>
 		<url-pattern>/f/*</url-pattern>
@@ -227,6 +243,11 @@
 	<servlet-mapping>
 		<servlet-name>MOTD</servlet-name>
 		<url-pattern>/motd</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>SITE</servlet-name>
+		<url-pattern>/site</url-pattern>
 	</servlet-mapping>
 	
 	<listener>

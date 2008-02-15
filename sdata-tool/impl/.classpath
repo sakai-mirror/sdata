@@ -40,5 +40,9 @@
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-search-api/SNAPSHOT/sakai-search-api-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-user-api/SNAPSHOT/sakai-user-api-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-site-impl/SNAPSHOT/sakai-site-impl-SNAPSHOT.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/site-api"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/tool-api"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/tool-tool"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/tool-util"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
