@@ -52,7 +52,7 @@ import com.sun.java_cup.internal.parse_action;
  */
 public class MyFileFinderBean implements ServiceDefinition {
 	private List<Map> searchList = new ArrayList<Map>();
-	private Map<String, Object> map2 = new HashMap<String, Object>();;
+	private Map<String, Object> map2 = new HashMap<String, Object>();
 
 	List<String> arl = new ArrayList<String>();
 
@@ -88,6 +88,8 @@ public class MyFileFinderBean implements ServiceDefinition {
 		}
 		log.warn("is empty: " + empty);
 		if (!empty) {
+			
+			try {
 
 			SearchService search = (SearchService) ComponentManager
 					.get("org.sakaiproject.search.api.SearchService");
@@ -106,7 +108,7 @@ public class MyFileFinderBean implements ServiceDefinition {
 					search_result.put("title", bis.getTitle());
 					search_result.put("reference", bis.getReference());
 					search_result.put("url", bis.getUrl());
-					search_result.put("searchResult", bis.getSearchResult());
+					//search_result.put("searchResult", bis.getSearchResult());
 					search_result.put("score", String.valueOf(bis.getScore()));
 					searchList.add(search_result);
 
@@ -126,9 +128,14 @@ public class MyFileFinderBean implements ServiceDefinition {
 				map2.put("status","succes");
 
 			}
+			
+			} catch (Exception ex){
+				map2.put("status","failed");
+			}
 
 		}else{
 		
+			map2 = new HashMap<String, Object>();
 			map2.put("status","failed");
 		}
 
