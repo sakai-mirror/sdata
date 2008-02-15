@@ -54,7 +54,7 @@ import com.sun.java_cup.internal.parse_action;
 public class MyGlobalSearchBean implements ServiceDefinition {
 	private List<Map> searchList = new ArrayList<Map>();
 	private Map<String, Object> map2 = new HashMap<String, Object>();
-
+	private Integer resultsOnPage  = 5;
 	List<String> arl = new ArrayList<String>();
 
 	private Map<String, Object> map = new HashMap<String, Object>();
@@ -107,8 +107,8 @@ public class MyGlobalSearchBean implements ServiceDefinition {
 
 				SearchList res = null;
 
-				res = search.search(searchParam, arl, (currentPage - 1) * 10,
-						(currentPage * 10), null, null);
+				res = search.search(searchParam, arl, (currentPage - 1) * resultsOnPage,
+						(currentPage * resultsOnPage), null, null);
 
 				List<SearchResult> resBis = new ArrayList<SearchResult>();
 
