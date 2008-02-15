@@ -98,6 +98,15 @@
 		<dispatcher>INCLUDE</dispatcher>
 	</filter-mapping>
 	
+
+	<filter-mapping>
+		<filter-name>sakai.request</filter-name>
+		<servlet-name>MGS</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+	
 	<filter-mapping>
 		<filter-name>sakai.request</filter-name>
 		<servlet-name>SITE</servlet-name>
@@ -106,6 +115,7 @@
 		<dispatcher>INCLUDE</dispatcher>
 	</filter-mapping>
 	
+
 
 	<!-- json servlets -->	
 	<servlet>
@@ -189,6 +199,16 @@
 		<load-on-startup>100</load-on-startup>
 	</servlet>
 	
+
+	<servlet>
+		<servlet-name>MGS</servlet-name>
+		<servlet-class>
+			org.sakaiproject.sdata.services.mgs.MyGlobalSearchServlet
+		</servlet-class>
+		<load-on-startup>100</load-on-startup>
+	</servlet>
+	
+
 	<servlet>
 		<servlet-name>SITE</servlet-name>
 		<servlet-class>
@@ -197,6 +217,7 @@
 		<load-on-startup>100</load-on-startup>
 	</servlet>
 	
+
 	<servlet-mapping>
 		<servlet-name>JsonJcrServlet</servlet-name>
 		<url-pattern>/f/*</url-pattern>
@@ -245,11 +266,18 @@
 		<url-pattern>/motd</url-pattern>
 	</servlet-mapping>
 	
+
+	<servlet-mapping>
+		<servlet-name>MGS</servlet-name>
+		<url-pattern>/mgs</url-pattern>
+	</servlet-mapping>
+	
+
 	<servlet-mapping>
 		<servlet-name>SITE</servlet-name>
 		<url-pattern>/site</url-pattern>
 	</servlet-mapping>
-	
+
 	<listener>
 		<listener-class>org.sakaiproject.sdata.services.mra.MyRecentChangesDbBean</listener-class>
 	</listener>
