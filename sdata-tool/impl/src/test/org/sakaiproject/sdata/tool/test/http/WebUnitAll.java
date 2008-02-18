@@ -38,6 +38,7 @@ public class WebUnitAll extends TestCase
 	{
 		TestSuite suite = new TestSuite("Test for org.sakaiproject.sdata.tool");
 		// $JUnit-BEGIN$
+		suite.addTestSuite(JsonCHSServletUnitT.class);
 		suite.addTestSuite(JsonJcrServletUnitT.class);
 		suite.addTestSuite(JsonUserStorageServletUnitT.class);
 		suite.addTestSuite(XmlRpcJcrServletUnitT.class);

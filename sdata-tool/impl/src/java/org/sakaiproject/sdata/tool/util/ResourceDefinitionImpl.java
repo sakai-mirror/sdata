@@ -21,6 +21,8 @@
 
 package org.sakaiproject.sdata.tool.util;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 
 /**
@@ -28,6 +30,8 @@ import org.sakaiproject.sdata.tool.api.ResourceDefinition;
  */
 public class ResourceDefinitionImpl implements ResourceDefinition
 {
+
+	private static final Log log = LogFactory.getLog(ResourceDefinitionImpl.class);
 
 	private String path;
 
@@ -44,6 +48,7 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 	 */
 	public ResourceDefinitionImpl(String inbasePath, String inpath, int inversion)
 	{
+		log.info("ResourceDef: Base:"+inbasePath+": path:"+inpath+": version:"+inversion);
 		path = inpath;
 		version = inversion;
 		basePath = String.valueOf(inbasePath);

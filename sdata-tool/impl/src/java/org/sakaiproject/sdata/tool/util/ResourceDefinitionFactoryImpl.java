@@ -23,6 +23,8 @@ package org.sakaiproject.sdata.tool.util;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.ResourceDefinitionFactory;
 import org.sakaiproject.tool.api.Tool;
@@ -33,6 +35,8 @@ import org.sakaiproject.tool.api.Tool;
 public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 {
 
+	private static final Log log = LogFactory.getLog(ResourceDefinitionFactoryImpl.class);
+
 	private String basePath;
 
 	/**
@@ -41,6 +45,7 @@ public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 	public ResourceDefinitionFactoryImpl(String basePath)
 	{
 		this.basePath = basePath;
+		log.info("Definition Factory Created with base path as " + basePath);
 	}
 
 	/**

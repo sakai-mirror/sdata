@@ -23,15 +23,12 @@ package org.sakaiproject.sdata.services.site;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.sdata.services.mra.MyRecentChangesBean;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
@@ -42,8 +39,6 @@ import org.sakaiproject.site.api.SiteService.SortType;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.Tool;
-
-import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 
 /**
  * @author 
@@ -77,7 +72,7 @@ public class SiteBean implements ServiceDefinition
 		 */
 		
 		setCurrentSession(sessionManager.getCurrentSession());
-		setMysites((java.util.List<Site>) siteService.getSites(SelectionType.ACCESS,
+		setMysites((List<Site>) siteService.getSites(SelectionType.ACCESS,
 				null, null, null, SortType.TITLE_ASC, null));
 
 		try

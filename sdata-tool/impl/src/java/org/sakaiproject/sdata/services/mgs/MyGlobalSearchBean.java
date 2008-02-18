@@ -34,7 +34,6 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.sdata.services.mra.MyRecentChangesResult;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.search.api.SearchList;
 import org.sakaiproject.search.api.SearchResult;
@@ -43,10 +42,7 @@ import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.site.api.SiteService.SelectionType;
 import org.sakaiproject.site.api.SiteService.SortType;
-import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
-
-import com.sun.java_cup.internal.parse_action;
 
 /**
  * @author
@@ -71,7 +67,7 @@ public class MyGlobalSearchBean implements ServiceDefinition {
 			HttpServletResponse response, String page, String searchParam,
 			Boolean empty) {
 
-		java.util.List<Site> sites = (java.util.List<Site>) siteService
+		List<Site> sites = (List<Site>) siteService
 				.getSites(SelectionType.ACCESS, null, null, null,
 						SortType.TITLE_ASC, null);
 

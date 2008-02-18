@@ -18,6 +18,21 @@
 	-->
 	<filter-mapping>
 		<filter-name>sakai.request</filter-name>
+		<servlet-name>JsonCHSServlet</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>sakai.request</filter-name>
+		<servlet-name>XmlRpcCHSServlet</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>sakai.request</filter-name>
 		<servlet-name>JsonJcrServlet</servlet-name>
 		<dispatcher>REQUEST</dispatcher>
 		<dispatcher>FORWARD</dispatcher>
@@ -119,6 +134,13 @@
 
 	<!-- json servlets -->	
 	<servlet>
+		<servlet-name>JsonCHSServlet</servlet-name>
+		<servlet-class>
+			org.sakaiproject.sdata.tool.json.JsonCHSServlet
+		</servlet-class>
+		<load-on-startup>100</load-on-startup>
+	</servlet>
+	<servlet>
 		<servlet-name>JsonJcrServlet</servlet-name>
 		<servlet-class>
 			org.sakaiproject.sdata.tool.json.JsonJcrServlet
@@ -134,6 +156,13 @@
 	</servlet>
 
 	<!-- xml-rpc servlets -->	
+	<servlet>
+		<servlet-name>XmlRpcCHSServlet</servlet-name>
+		<servlet-class>
+			org.sakaiproject.sdata.tool.xmlrpc.XmlRpcCHSServlet
+		</servlet-class>
+		<load-on-startup>100</load-on-startup>
+	</servlet>
 	<servlet>
 		<servlet-name>XmlRpcJcrServlet</servlet-name>
 		<servlet-class>
@@ -219,6 +248,10 @@
 	
 
 	<servlet-mapping>
+		<servlet-name>JsonCHSServlet</servlet-name>
+		<url-pattern>/c/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>JsonJcrServlet</servlet-name>
 		<url-pattern>/f/*</url-pattern>
 	</servlet-mapping>
@@ -227,6 +260,10 @@
 		<url-pattern>/p/*</url-pattern>
 	</servlet-mapping>
 	
+	<servlet-mapping>
+		<servlet-name>XmlRpcCHSServlet</servlet-name>
+		<url-pattern>/xc/*</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>XmlRpcJcrServlet</servlet-name>
 		<url-pattern>/xf/*</url-pattern>

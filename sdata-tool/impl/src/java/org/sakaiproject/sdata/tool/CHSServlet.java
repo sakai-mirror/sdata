@@ -24,21 +24,20 @@ package org.sakaiproject.sdata.tool;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.nodetype.NodeType;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -53,20 +52,34 @@ import org.apache.commons.fileupload.sdata.servlet.ServletFileUpload;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.api.ComponentManager;
-import org.sakaiproject.jcr.api.JCRConstants;
-import org.sakaiproject.jcr.support.api.JCRNodeFactoryService;
+import org.sakaiproject.content.api.ContentCollection;
+import org.sakaiproject.content.api.ContentCollectionEdit;
+import org.sakaiproject.content.api.ContentEntity;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.content.api.ContentResourceEdit;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.exception.IdInvalidException;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.IdUsedException;
+import org.sakaiproject.exception.InconsistentException;
+import org.sakaiproject.exception.OverQuotaException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.ResourceDefinitionFactory;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.util.ResourceDefinitionFactoryImpl;
 import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.util.Validator;
 
 /**
  * <p>
- * JCR Service is a servlet that gives access to the JCR returning the content
- * of files within the jcr or a map response (directories). The resource is
- * pointed to using the URI/URL requested (the path info part), and the standard
- * Http methods do what they are expected to in the http standard. GET gets the
+ * CHSServlet is a servlet that gives access to the CHS returning the content of
+ * files within the chs or a map response (directories). The resource is pointed
+ * to using the URI/URL requested (the path info part), and the standard Http
+ * methods do what they are expected to in the http standard. GET gets the
  * content of the file, PUT put puts a new file, the content comming from the
  * stream of the PUT. DELETE deleted the file. HEAD gets the headers that would
  * come from a full GET.
@@ -86,9 +99,9 @@ import org.sakaiproject.tool.api.Tool;
  * 
  * @author ieb
  */
-public abstract class JCRServlet extends HttpServlet
+public abstract class CHSServlet extends HttpServlet
 {
-	private static final Log log = LogFactory.getLog(JCRServlet.class);
+	private static final Log log = LogFactory.getLog(CHSServlet.class);
 
 	/**
 	 * Required for serialization... also to stop eclipse from giving me a
@@ -98,7 +111,7 @@ public abstract class JCRServlet extends HttpServlet
 
 	private static final String BASE_PATH_INIT = "basepath";
 
-	private static final String DEFAULT_BASE_PATH = "/sakai/sdata";
+	private static final String DEFAULT_BASE_PATH = "/private/sdata";
 
 	private static final String LAST_MODIFIED = "Last-Modified";
 
@@ -106,11 +119,13 @@ public abstract class JCRServlet extends HttpServlet
 
 	private ComponentManager componentManager;
 
-	private JCRNodeFactoryService jcrNodeFactory;
+	private ContentHostingService contentHostingService;
 
 	private ResourceDefinitionFactory resourceDefinitionFactory;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
 	 */
 	@Override
@@ -123,8 +138,8 @@ public abstract class JCRServlet extends HttpServlet
 		componentManager = org.sakaiproject.component.cover.ComponentManager
 				.getInstance();
 
-		jcrNodeFactory = (JCRNodeFactoryService) componentManager
-				.get(JCRNodeFactoryService.class.getName());
+		contentHostingService = (ContentHostingService) componentManager
+				.get(ContentHostingService.class.getName());
 
 		basePath = servletConfig.getInitParameter(BASE_PATH_INIT);
 		if (basePath == null || basePath.trim().length() == 0)
@@ -185,35 +200,34 @@ public abstract class JCRServlet extends HttpServlet
 			snoopRequest(request);
 
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
-			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
-			if (n == null)
+			ContentEntity e = getEntity(rp.getRepositoryPath());
+			if (e == null)
 			{
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				return;
 			}
-			NodeType nt = n.getPrimaryNodeType();
 
-			long lastModifiedTime = -10;
-			if (JCRConstants.NT_FILE.equals(nt.getName()))
+			if (e instanceof ContentCollection)
+			{
+				contentHostingService.removeCollection(e.getReference());
+			}
+			else if (e instanceof ContentResource)
 			{
 
-				Node resource = n.getNode(JCRConstants.JCR_CONTENT);
-				Property lastModified = resource
-						.getProperty(JCRConstants.JCR_LASTMODIFIED);
-				lastModifiedTime = lastModified.getDate().getTimeInMillis();
+				long lastModifiedTime = -10;
+				ContentResource cr = (ContentResource) e;
+
+				Date lastModified = getLastModified(cr);
+				lastModifiedTime = lastModified.getTime();
 
 				if (!checkPreconditions(request, response, lastModifiedTime, String
 						.valueOf(lastModifiedTime)))
 				{
 					return;
 				}
+				contentHostingService.removeResource(e.getReference());
 			}
-
-			Session s = n.getSession();
-			n.remove();
-			s.save();
 			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-
 		}
 		catch (Exception e)
 		{
@@ -226,6 +240,93 @@ public abstract class JCRServlet extends HttpServlet
 		{
 			request.removeAttribute(Tool.NATIVE_URL);
 		}
+	}
+
+	/**
+	 * @param repositoryPath
+	 * @return
+	 * @throws PermissionException
+	 */
+	private ContentEntity getEntity(String repositoryPath) throws PermissionException
+	{
+		ContentEntity ce = null;
+		try
+		{
+			ce = contentHostingService.getResource(repositoryPath);
+		}
+		catch (IdUnusedException e)
+		{
+			if (log.isDebugEnabled())
+			{
+				log.debug("Resource Not Found " + repositoryPath + " " + e);
+			}
+		}
+		catch (TypeException e)
+		{
+			if (log.isDebugEnabled())
+			{
+				log.debug("Resource Not Found " + repositoryPath + " " + e);
+			}
+		}
+		if (ce == null)
+		{
+			if (!repositoryPath.endsWith("/"))
+			{
+				repositoryPath = repositoryPath + "/";
+			}
+			try
+			{
+				ce = contentHostingService.getCollection(repositoryPath);
+			}
+			catch (IdUnusedException e)
+			{
+				if (log.isDebugEnabled())
+				{
+					log.debug("Collection Not Found " + repositoryPath + " " + e);
+				}
+			}
+			catch (TypeException e)
+			{
+				if (log.isDebugEnabled())
+				{
+					log.debug("Collection Not Found " + repositoryPath + " " + e);
+				}
+			}
+		}
+		return ce;
+	}
+
+	/**
+	 * @param cr
+	 * @return
+	 */
+	private Date getLastModified(ContentResource cr)
+	{
+		String lastModified = cr.getProperties().getProperty(
+				ResourceProperties.PROP_MODIFIED_DATE);
+		DateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		try
+		{
+			return df.parse(lastModified);
+		}
+		catch (ParseException e)
+		{
+			return new Date();
+		}
+	}
+
+	/**
+	 * @param cre
+	 * @param lastModified
+	 */
+	private void setLastModified(ContentResourceEdit cre, Date lastModified)
+	{
+		DateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+		df.setTimeZone(TimeZone.getTimeZone("GMT"));
+		String lastModifiedString = df.format(lastModified);
+		cre.getPropertiesEdit().addProperty(ResourceProperties.PROP_MODIFIED_DATE,
+				lastModifiedString);
 	}
 
 	/**
@@ -293,26 +394,27 @@ public abstract class JCRServlet extends HttpServlet
 			snoopRequest(request);
 
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
-			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
-			if (n == null)
+			ContentEntity e = getEntity(rp.getRepositoryPath());
+			if (e == null)
 			{
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				return;
 			}
-
-			Node resource = n.getNode(JCRConstants.JCR_CONTENT);
-			Property lastModified = resource.getProperty(JCRConstants.JCR_LASTMODIFIED);
-			Property mimeType = resource.getProperty(JCRConstants.JCR_MIMETYPE);
-			Property encoding = resource.getProperty(JCRConstants.JCR_ENCODING);
-			Property content = resource.getProperty(JCRConstants.JCR_DATA);
-
-			response.setContentType(mimeType.getString());
-			response.setCharacterEncoding(encoding.getString());
-			response.setDateHeader(LAST_MODIFIED, lastModified.getDate()
-					.getTimeInMillis());
-			// we need to do something about huge files
-			response.setContentLength((int) content.getLength());
-			response.setStatus(HttpServletResponse.SC_OK);
+			if (e instanceof ContentResource)
+			{
+				ContentResource cr = (ContentResource) e;
+				response.setContentType(cr.getContentType());
+				response.setDateHeader(LAST_MODIFIED, getLastModified(cr).getTime());
+				// we need to do something about huge files
+				response.setContentLength((int) cr.getContentLength());
+				response.setStatus(HttpServletResponse.SC_OK);
+			}
+			else
+			{
+				ContentResource cr = (ContentResource) e;
+				response.setDateHeader(LAST_MODIFIED, new Date().getTime());
+				response.setStatus(HttpServletResponse.SC_OK);
+			}
 
 		}
 		catch (Exception e)
@@ -397,28 +499,38 @@ public abstract class JCRServlet extends HttpServlet
 			snoopRequest(request);
 
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
-			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
+			ContentEntity e = getEntity(rp.getRepositoryPath());
+			ContentResourceEdit cre = null;
 			boolean created = false;
-			if (n == null)
+			if (e == null)
 			{
-				n = jcrNodeFactory.createFile(rp.getRepositoryPath());
+				String s = rp.getRepositoryPath();
+				s = s.substring(0, s.lastIndexOf("/"));
+				getFolder(s);
+				cre = addFile(rp.getRepositoryPath());
+
 				created = true;
-				if (n == null)
+				if (cre == null)
 				{
 					throw new RuntimeException("Failed to create node at "
-							+ rp.getRepositoryPath() + " type " + JCRConstants.NT_FILE);
+							+ rp.getRepositoryPath() + " type ContentResource ");
 				}
+			}
+			else if (e instanceof ContentResource)
+			{
+				cre = contentHostingService.editResource(rp.getRepositoryPath());
+				if (cre == null)
+				{
+					throw new RuntimeException("Failed to create node at "
+							+ rp.getRepositoryPath() + " type ContentResource ");
+				}
+
 			}
 			else
 			{
-				NodeType nt = n.getPrimaryNodeType();
-				if (!JCRConstants.NT_FILE.equals(nt.getName()))
-				{
-					response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-							"Content Can only be put to a file, resource type is "
-									+ nt.getName());
-					return;
-				}
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+						"Content Can only be put to a file ");
+				return;
 			}
 
 			GregorianCalendar gc = new GregorianCalendar();
@@ -435,7 +547,8 @@ public abstract class JCRServlet extends HttpServlet
 			String charEncoding = request.getCharacterEncoding();
 
 			InputStream in = request.getInputStream();
-			saveStream(n, in, mimeType, charEncoding, gc);
+
+			saveStream(cre, in, mimeType, charEncoding, gc);
 
 			in.close();
 			if (created)
@@ -446,6 +559,8 @@ public abstract class JCRServlet extends HttpServlet
 			{
 				response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 			}
+			log.info("PUT Saved " + request.getContentLength() + " bytes to "
+					+ rp.getRepositoryPath());
 		}
 		catch (Exception e)
 		{
@@ -468,28 +583,114 @@ public abstract class JCRServlet extends HttpServlet
 	}
 
 	/**
+	 * @param repositoryPath
+	 * @return
+	 * @throws ServerOverloadException
+	 * @throws InconsistentException
+	 * @throws IdInvalidException
+	 * @throws IdUsedException
+	 * @throws PermissionException
+	 */
+	private ContentResourceEdit addFile(String repositoryPath)
+			throws PermissionException, IdUsedException, IdInvalidException,
+			InconsistentException, ServerOverloadException
+	{
+		String name = repositoryPath.substring(repositoryPath.lastIndexOf("/") + 1);
+		ContentResourceEdit cre = contentHostingService.addResource(repositoryPath);
+		cre.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME,
+				Validator.escapeResourceName(name));
+		return cre;
+	}
+
+	/**
+	 * @param s
+	 */
+	private ContentCollection getFolder(String path)
+	{
+		try
+		{
+			String[] parts = path.split("/");
+			StringBuilder sb = new StringBuilder();
+			ContentCollection cc = null;
+
+			for (String part : parts)
+			{
+				sb.append(part);
+				sb.append("/");
+				try
+				{
+					cc = contentHostingService.getCollection(sb.toString());
+				}
+				catch (IdUnusedException idu)
+				{
+					cc = null;
+				}
+				if (cc == null)
+				{
+
+					ContentCollectionEdit cce = contentHostingService.addCollection(sb
+							.toString());
+					cce.getPropertiesEdit().addProperty(
+							ResourceProperties.PROP_DISPLAY_NAME,
+							Validator.escapeResourceName(part));
+					contentHostingService.commitCollection(cce);
+					cc = contentHostingService.getCollection(sb.toString());
+					if (cc != null)
+					{
+						if (log.isDebugEnabled())
+						{
+							log.debug("Created " + sb.toString());
+						}
+					}
+				}
+				else
+				{
+					if (log.isDebugEnabled())
+					{
+						log.debug("Found " + cc + ":" + cc.getReference());
+					}
+
+				}
+				if (cc == null)
+				{
+					log.error("Failed to create " + sb.toString());
+					return null;
+				}
+			}
+			return cc;
+		}
+		catch (Exception inc)
+		{
+			log
+					.warn(
+							"Failed Creating folder " + path + " cause:"
+									+ inc.getMessage(), inc);
+		}
+		return null;
+	}
+
+	/**
 	 * @param n
 	 * @param in
 	 * @param mimeType
 	 * @param charEncoding
 	 * @param gc
+	 * @throws ServerOverloadException
+	 * @throws OverQuotaException
 	 * @throws
 	 * @throws RepositoryException
 	 */
-	private long saveStream(Node n, InputStream in, String mimeType, String charEncoding,
-			Calendar lastModified) throws RepositoryException
+	private long saveStream(ContentResourceEdit cre, InputStream in, String mimeType,
+			String charEncoding, Calendar lastModified) throws OverQuotaException,
+			ServerOverloadException
 	{
-		Node resource = n.getNode(JCRConstants.JCR_CONTENT);
-		resource.setProperty(JCRConstants.JCR_LASTMODIFIED, lastModified);
-		resource.setProperty(JCRConstants.JCR_MIMETYPE, mimeType);
-		resource.setProperty(JCRConstants.JCR_ENCODING, charEncoding);
 
-		Property content = resource.getProperty(JCRConstants.JCR_DATA);
-		content.setValue(in);
+		cre.setContentType(mimeType);
+		setLastModified(cre, lastModified.getTime());
+		cre.setContent(in);
+		contentHostingService.commitResource(cre);
 
-		n.save();
-
-		return content.getLength();
+		return cre.getContentLength();
 	}
 
 	/**
@@ -548,43 +749,32 @@ public abstract class JCRServlet extends HttpServlet
 			boolean partialGet = (range != null && range.trim().length() != 0);
 
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
-			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
-			if (n == null)
+			ContentEntity e = getEntity(rp.getRepositoryPath());
+			if (e == null)
 			{
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				return;
 			}
-
-			NodeType nt = n.getPrimaryNodeType();
-
-			if (JCRConstants.NT_FILE.equals(nt.getName()))
+			if (e instanceof ContentResource)
 			{
+				ContentResource cr = (ContentResource) e;
+				Date lastModified = getLastModified(cr);
 
-				Node resource = n.getNode(JCRConstants.JCR_CONTENT);
-				Property lastModified = resource
-						.getProperty(JCRConstants.JCR_LASTMODIFIED);
-				Property mimeType = resource.getProperty(JCRConstants.JCR_MIMETYPE);
-				Property encoding = resource.getProperty(JCRConstants.JCR_ENCODING);
-				Property content = resource.getProperty(JCRConstants.JCR_DATA);
-
-				response.setContentType(mimeType.getString());
-				response.setCharacterEncoding(encoding.getString());
-				response.setDateHeader(LAST_MODIFIED, lastModified.getDate()
-						.getTimeInMillis());
+				response.setContentType(cr.getContentType());
+				response.setDateHeader(LAST_MODIFIED, lastModified.getTime());
 				setGetCacheControl(response, rp.isPrivate());
 
-				String currentEtag = String.valueOf(lastModified.getDate()
-						.getTimeInMillis());
+				String currentEtag = String.valueOf(lastModified.getTime());
 				response.setHeader("ETag", currentEtag);
 
 				boolean sendContent = true;
-				long lastModifiedTime = lastModified.getDate().getTimeInMillis();
+				long lastModifiedTime = lastModified.getTime();
 
 				if (!checkPreconditions(request, response, lastModifiedTime, currentEtag))
 				{
 					return;
 				}
-				long totallength = content.getLength();
+				long totallength = cr.getContentLength();
 				long[] ranges = new long[2];
 				ranges[0] = 0;
 				ranges[1] = totallength;
@@ -616,7 +806,7 @@ public abstract class JCRServlet extends HttpServlet
 
 				out = response.getOutputStream();
 
-				in = content.getStream();
+				in = cr.streamContent();
 				in.skip(ranges[0]);
 				byte[] b = new byte[10240];
 				int nbytes = 0;
@@ -634,8 +824,9 @@ public abstract class JCRServlet extends HttpServlet
 					}
 				}
 			}
-			else
+			else if (e instanceof ContentCollection)
 			{
+				ContentCollection cc = (ContentCollection) e;
 				setGetCacheControl(response, rp.isPrivate());
 
 				// Property lastModified =
@@ -645,34 +836,31 @@ public abstract class JCRServlet extends HttpServlet
 				// .getTimeInMillis()));
 
 				Map<String, Object> outputMap = new HashMap<String, Object>();
-				outputMap.put("path", rp.getExternalPath(n.getPath()));
-				outputMap.put("type", nt.getName());
+				outputMap.put("path", rp.getExternalPath(e.getReference()));
+				outputMap.put("type", "collection");
 				List<Map> nodes = new ArrayList<Map>();
-				NodeIterator ni = n.getNodes();
-				int i = 0;
-				while (ni.hasNext())
-				{
-					Node cn = ni.nextNode();
-					Map<String, Object> cnm = new HashMap<String, Object>();
-					cnm.put("path", rp.getExternalPath(cn.getName()));
-					NodeType cnt = cn.getPrimaryNodeType();
-					cnm.put("type", cnt.getName());
-					cnm.put("position", String.valueOf(i));
-					if (JCRConstants.NT_FILE.equals(nt.getName()))
-					{
-						Node resource = n.getNode(JCRConstants.JCR_CONTENT);
-						Property nodeLastModified = resource
-								.getProperty(JCRConstants.JCR_LASTMODIFIED);
-						Property mimeType = resource
-								.getProperty(JCRConstants.JCR_MIMETYPE);
-						Property encoding = resource
-								.getProperty(JCRConstants.JCR_ENCODING);
-						Property content = resource.getProperty(JCRConstants.JCR_DATA);
+				Iterator members = cc.getMembers().iterator();
 
-						cnm.put("mime-type", mimeType.getString());
-						cnm.put("encoding", encoding.getString());
-						cnm.put("length", String.valueOf(content.getLength()));
-						cnm.put("lastModified", nodeLastModified.getDate());
+				int i = 0;
+				while (members.hasNext())
+				{
+					String memberId = (String) members.next();
+					ContentEntity ce = cc.getMember(memberId);
+					Map<String, Object> cnm = new HashMap<String, Object>();
+					cnm.put("path", rp.getExternalPath(ce.getReference()));
+					cnm.put("position", String.valueOf(i));
+					if (ce instanceof ContentCollection)
+					{
+						cnm.put("type", "folder");
+					}
+					else if (ce instanceof ContentResource)
+					{
+						ContentResource cr = (ContentResource) ce;
+						cnm.put("type", "file");
+
+						cnm.put("mime-type", cr.getContentType());
+						cnm.put("length", cr.getContentLength());
+						cnm.put("lastModified", getLastModified(cr));
 
 					}
 					nodes.add(cnm);
@@ -817,7 +1005,6 @@ public abstract class JCRServlet extends HttpServlet
 		return true;
 	}
 
-
 	/**
 	 * @param response
 	 */
@@ -841,8 +1028,11 @@ public abstract class JCRServlet extends HttpServlet
 
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
@@ -888,8 +1078,9 @@ public abstract class JCRServlet extends HttpServlet
 		{
 			try
 			{
-				Node n = jcrNodeFactory.createFolder(rp.getRepositoryPath());
-				if (n == null)
+
+				ContentCollection e = getFolder(rp.getRepositoryPath());
+				if (e == null)
 				{
 					response.sendError(HttpServletResponse.SC_BAD_REQUEST,
 							"Unable to uplaod to location " + rp.getRepositoryPath());
@@ -924,8 +1115,18 @@ public abstract class JCRServlet extends HttpServlet
 					try
 					{
 						String mimeType = item.getContentType();
-						Node target = jcrNodeFactory.createFile(rp
-								.getRepositoryPath(name));
+						String resourceName = rp.getRepositoryPath() + "/" + name;
+						ContentEntity ce = getEntity(resourceName);
+						ContentResourceEdit target = null;
+						if (ce != null)
+						{
+							target = contentHostingService.editResource(resourceName);
+						}
+						if (target == null)
+						{
+							target = addFile(resourceName);
+
+						}
 						GregorianCalendar lastModified = new GregorianCalendar();
 						lastModified.setTime(new Date());
 						long size = saveStream(target, stream, mimeType, "UTF-8",
@@ -947,7 +1148,7 @@ public abstract class JCRServlet extends HttpServlet
 					}
 					catch (Exception ex)
 					{
-						log.error(ex);
+						log.error("Failed to Add Item to " + ex);
 						Map<String, Object> uploadMap = new HashMap<String, Object>();
 						uploadMap.put("mimeType", "text/plain");
 						uploadMap.put("encoding", "UTF-8");

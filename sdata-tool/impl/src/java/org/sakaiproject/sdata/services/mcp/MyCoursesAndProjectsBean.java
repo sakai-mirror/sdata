@@ -59,7 +59,7 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 	public MyCoursesAndProjectsBean(SessionManager sessionManager, SiteService siteService)
 	{
 		setCurrentSession(sessionManager.getCurrentSession());
-		setMysites((java.util.List<Site>) siteService.getSites(SelectionType.ACCESS,
+		setMysites((List<Site>) siteService.getSites(SelectionType.ACCESS,
 				null, null, null, SortType.TITLE_ASC, null));
 
 		try
