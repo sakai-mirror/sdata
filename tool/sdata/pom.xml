@@ -24,9 +24,9 @@
   <packaging>war</packaging>
   <dependencies>
    <dependency>      
-      <groupId>org.sakaiproject</groupId>
+      <groupId>org.sakaiproject.sdata.tool</groupId>
       <artifactId>sakai-sdata-impl</artifactId>
-      <version>${sakai.version}</version>
+      <version>SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
