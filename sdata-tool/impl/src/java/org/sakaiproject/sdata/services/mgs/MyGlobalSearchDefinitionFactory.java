@@ -34,8 +34,8 @@ import org.sakaiproject.tool.api.SessionManager;
 /**
  * @author
  */
-public class MyGlobalSearchDefinitionFactory implements
-		ServiceDefinitionFactory {
+public class MyGlobalSearchDefinitionFactory implements ServiceDefinitionFactory
+{
 
 	private SessionManager sessionManager;
 
@@ -48,13 +48,13 @@ public class MyGlobalSearchDefinitionFactory implements
 	/**
 	 * 
 	 */
-	public MyGlobalSearchDefinitionFactory() {
+	public MyGlobalSearchDefinitionFactory()
+	{
 		componentManager = org.sakaiproject.component.cover.ComponentManager
 				.getInstance();
-		siteService = (SiteService) componentManager.get(SiteService.class
+		siteService = (SiteService) componentManager.get(SiteService.class.getName());
+		sessionManager = (SessionManager) componentManager.get(SessionManager.class
 				.getName());
-		sessionManager = (SessionManager) componentManager
-				.get(SessionManager.class.getName());
 		contentHostingService = (ContentHostingService) componentManager
 				.get(ContentHostingService.class.getName());
 	}
@@ -66,46 +66,84 @@ public class MyGlobalSearchDefinitionFactory implements
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	public ServiceDefinition getSpec(HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response)
+	{
 		// final Log log =
 		// LogFactory.getLog(MyFileFinderDefinitionFactory.class);
 
-		String searchParam;
+		String searchParam = null;
 		String page = request.getParameter("page");
 		Boolean empty = false;
+		String currentSiteSearch = null;
 
 		if (request.getParameter("search") != null
-				&& !request.getParameter("search").equals(""))
+				&& !request.getParameter("search").equals("")
+				&& request.getParameter("siteId") != null)
 
 		{
-			searchParam = request.getParameter("search");
-			searchParam = searchParam.replaceAll("[\\!]", "");
 
-			searchParam = searchParam.replaceAll("[\\^]", "");
+			if (!request.getParameter("siteId").equals("all"))
+			{
 
-			searchParam = searchParam.replaceAll("[\\(]", "");
+				// do a local search action
+				currentSiteSearch = request.getParameter("siteId");
 
-			searchParam = searchParam.replaceAll("[\\{]", "");
+				searchParam = request.getParameter("search");
 
-			searchParam = searchParam.replaceAll("[\\}]", "");
+				searchParam = searchParam.replaceAll("[\\!]", "");
 
-			searchParam = searchParam.replaceAll("[\\[]", "");
+				searchParam = searchParam.replaceAll("[\\^]", "");
 
-			searchParam = searchParam.replaceAll("[\\]]", "");
+				searchParam = searchParam.replaceAll("[\\(]", "");
 
-			searchParam = searchParam.replaceAll("[\\%]", "");
+				searchParam = searchParam.replaceAll("[\\{]", "");
 
-			empty = false;
-			
+				searchParam = searchParam.replaceAll("[\\}]", "");
 
-		} else {
+				searchParam = searchParam.replaceAll("[\\[]", "");
 
+				searchParam = searchParam.replaceAll("[\\]]", "");
+
+				searchParam = searchParam.replaceAll("[\\%]", "");
+
+			}
+			else
+			{
+
+				searchParam = request.getParameter("search");
+
+				searchParam = searchParam.replaceAll("[\\!]", "");
+
+				searchParam = searchParam.replaceAll("[\\^]", "");
+
+				searchParam = searchParam.replaceAll("[\\(]", "");
+
+				searchParam = searchParam.replaceAll("[\\{]", "");
+
+				searchParam = searchParam.replaceAll("[\\}]", "");
+
+				searchParam = searchParam.replaceAll("[\\[]", "");
+
+				searchParam = searchParam.replaceAll("[\\]]", "");
+
+				searchParam = searchParam.replaceAll("[\\%]", "");
+
+				empty = false;
+
+				currentSiteSearch = "all";
+
+			}
+
+		}
+		else
+		{
+			currentSiteSearch = "all";
 			searchParam = "";
 			empty = true;
 		}
 
-		return new MyGlobalSearchBean(sessionManager, siteService,
-				contentHostingService, response, page, searchParam, empty);
+		return new MyGlobalSearchBean(sessionManager, siteService, contentHostingService,
+				response, page, searchParam, empty, currentSiteSearch);
 	}
 
 }
