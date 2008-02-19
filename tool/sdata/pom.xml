@@ -5,13 +5,13 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>sakai-sdata-tool-base</artifactId>
-    <groupId>org.sakaiproject</groupId>
+    <artifactId>tool</artifactId>
+    <groupId>org.sakaiproject.sdata</groupId>
     <version>SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
+    <relativePath>..</relativePath>
   </parent>
   <name>SData Tool</name>
-  <groupId>org.sakaiproject</groupId>
+  <groupId>org.sakaiproject.sdata.tool</groupId>
   <artifactId>sdata</artifactId>
     <organization>
     <name>Timefields Ltd</name>

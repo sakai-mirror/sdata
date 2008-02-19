@@ -83,8 +83,8 @@
   </distributionManagement>
   
   <modules>
-    <module>sdata-tool</module>
-    <module>commons-fileupload-1.2-sdata</module>
+    <module>tool</module>
+    <module>commons-fileupload-sdata</module>
   </modules>
 
 
