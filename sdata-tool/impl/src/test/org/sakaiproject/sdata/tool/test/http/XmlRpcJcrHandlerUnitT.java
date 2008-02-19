@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/contrib/tfd/trunk/sdata/sdata-tool/impl/src/java/org/sakaiproject/sdata/tool/StreamRequestFilter.java $
- * $Id: StreamRequestFilter.java 45207 2008-02-01 19:01:06Z ian@caret.cam.ac.uk $
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2008 Timefields Ltd
@@ -19,33 +19,43 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sdata.tool.api;
+package org.sakaiproject.sdata.tool.test.http;
 
-import java.util.Map;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
- * TODO javadoc
- * 
  * @author ieb
  */
-public interface ServiceDefinitionFactory
+
+public class XmlRpcJcrHandlerUnitT extends XmlRpcHandlerUnitT
 {
+	private static final Log log = LogFactory.getLog(XmlRpcJcrHandlerUnitT.class);
 
-	/**
-	 * TODO javadoc
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	ServiceDefinition getSpec(HttpServletRequest request, HttpServletResponse response);
+	private static final String BASE_URL = "http://localhost:8080/sdata/";
 
-	/**
-	 * @param config
+	private static final String BASE_DATA_URL = BASE_URL + "xf/";
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.test.http.JsonUserStorageServletUnitT#getBaseUrl()
 	 */
-	void init(Map<String, String> config);
+	@Override
+	protected String getBaseUrl()
+	{
+		return BASE_URL;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.test.http.JsonUserStorageServletUnitT#getBaseDataUrl()
+	 */
+	@Override
+	protected String getBaseDataUrl()
+	{
+		return BASE_DATA_URL;
+	}
+
 
 }
+
+

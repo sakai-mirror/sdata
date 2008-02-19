@@ -22,7 +22,6 @@
 package org.sakaiproject.sdata.tool.json;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -31,14 +30,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-import org.sakaiproject.sdata.tool.ServiceServlet;
+import org.sakaiproject.sdata.tool.ServiceHandler;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 
 /**
  * @author ieb
  *
  */
-public class JSONServiceServlet extends ServiceServlet
+public class JSONServiceHandler extends ServiceHandler
 {
 
 	/**
@@ -84,8 +83,11 @@ public class JSONServiceServlet extends ServiceServlet
 			Map<String, Object> contentMap) throws IOException
 	{
 		JSONObject jsonObject = JSONObject.fromObject(contentMap);
-		PrintWriter w = response.getWriter();
-		w.write(jsonObject.toString());
+		byte[] b = jsonObject.toString().getBytes("UTF-8");
+		response.setContentType("text/json");
+		response.setCharacterEncoding("UTF-8");
+		response.setContentLength(b.length);
+		response.getOutputStream().write(b);
 
 	}
 

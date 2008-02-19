@@ -38,11 +38,14 @@ public class WebUnitAll extends TestCase
 	{
 		TestSuite suite = new TestSuite("Test for org.sakaiproject.sdata.tool");
 		// $JUnit-BEGIN$
-		suite.addTestSuite(JsonCHSServletUnitT.class);
-		suite.addTestSuite(JsonJcrServletUnitT.class);
-		suite.addTestSuite(JsonUserStorageServletUnitT.class);
-		suite.addTestSuite(XmlRpcJcrServletUnitT.class);
-		suite.addTestSuite(XmlRpcUserStorageServletUnitT.class);
+		suite.addTestSuite(JsonCHSHandlerUnitT.class);
+		suite.addTestSuite(XmlRpcCHSHandlerUnitT.class);
+		suite.addTestSuite(JsonCHSUserStorageHandlerUnitT.class);
+		suite.addTestSuite(XmlRpcCHSUserStorageHandlerUnitT.class);
+		suite.addTestSuite(JsonJcrHandlerUnitT.class);
+		suite.addTestSuite(XmlRpcJcrHandlerUnitT.class);
+		suite.addTestSuite(JsonJcrUserStorageHandlerUnitT.class);
+		suite.addTestSuite(XmlRpcJcrUserStorageHandlerUnitT.class);
 		suite.addTestSuite(HttpRangeUnitT.class);
 		// $JUnit-END$
 		return suite;

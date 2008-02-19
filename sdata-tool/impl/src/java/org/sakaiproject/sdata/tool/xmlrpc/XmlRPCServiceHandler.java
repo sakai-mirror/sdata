@@ -38,7 +38,7 @@ import org.apache.xmlrpc.common.XmlRpcStreamRequestConfig;
 import org.apache.xmlrpc.serializer.DefaultXMLWriterFactory;
 import org.apache.xmlrpc.serializer.XmlRpcWriter;
 import org.apache.xmlrpc.serializer.XmlWriterFactory;
-import org.sakaiproject.sdata.tool.ServiceServlet;
+import org.sakaiproject.sdata.tool.ServiceHandler;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -47,7 +47,7 @@ import org.xml.sax.SAXException;
  * @author ieb
  *
  */
-public class XmlRPCServiceServlet extends ServiceServlet
+public class XmlRPCServiceHandler extends ServiceHandler
 {
 
 	/**
@@ -55,7 +55,7 @@ public class XmlRPCServiceServlet extends ServiceServlet
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static final Log log = LogFactory.getLog(XmlRPCServiceServlet.class);
+	private static final Log log = LogFactory.getLog(XmlRPCServiceHandler.class);
 
 	private XmlWriterFactory writerFactory = new DefaultXMLWriterFactory();
 

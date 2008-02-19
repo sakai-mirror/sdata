@@ -24,16 +24,15 @@ package org.sakaiproject.sdata.tool;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 
-public abstract class ServiceServlet extends HttpServlet
+public abstract class ServiceHandler implements Handler
 {
 
 	private ServiceDefinitionFactory serviceDefinitionFactory = null;
@@ -41,10 +40,8 @@ public abstract class ServiceServlet extends HttpServlet
 	/* (non-Javadoc)
 	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
 	 */
-	@Override
-	public void init(ServletConfig config) throws ServletException
+	public void init(Map<String,String> config) throws ServletException
 	{
-		super.init(config);
 		serviceDefinitionFactory = getServiceDefinitionFactory(config);
 	}
 
@@ -61,16 +58,17 @@ public abstract class ServiceServlet extends HttpServlet
 	 * @throws ServletException
 	 */
 	@SuppressWarnings("unchecked")
-	protected ServiceDefinitionFactory getServiceDefinitionFactory(ServletConfig config)
+	protected ServiceDefinitionFactory getServiceDefinitionFactory(Map<String, String> config)
 			throws ServletException
 	{
 		try
 		{
-			String factoryName = config.getInitParameter("factory-name");
+			String factoryName = config.get("factory-name");
 
 			Class<ServiceDefinitionFactory> c = (Class<ServiceDefinitionFactory>) this
 					.getClass().getClassLoader().loadClass(factoryName);
 			ServiceDefinitionFactory o = c.newInstance();
+			o.init(config);
 			return o;
 		}
 		catch (InstantiationException e)
@@ -90,7 +88,7 @@ public abstract class ServiceServlet extends HttpServlet
 	/**
 	 * Respond to an HTTP GET request.
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
 
@@ -129,11 +127,39 @@ public abstract class ServiceServlet extends HttpServlet
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
 		// process(request,response);
 		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+	}
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.api.Handler#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);		
+	}
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.api.Handler#doHead(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	public void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);				
+	}
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.api.Handler#doPut(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);				
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.api.Handler#setHandlerHeaders(javax.servlet.http.HttpServletResponse)
+	 */
+	public void setHandlerHeaders(HttpServletResponse response ) {
+		response.setHeader("x-sdata-handler", this.getClass().getName());
 	}
 
 }

@@ -74,7 +74,7 @@ public class ResourceDefinitionFactoryUnitT extends TestCase
 	{
 		for (String basePath : basePaths)
 		{
-			ResourceDefinitionFactory rdf = new ResourceDefinitionFactoryImpl(basePath);
+			ResourceDefinitionFactory rdf = new ResourceDefinitionFactoryImpl("",basePath);
 			for (String testPath : testPaths)
 			{
 				MockResourceDefinitionRequest request = new MockResourceDefinitionRequest(

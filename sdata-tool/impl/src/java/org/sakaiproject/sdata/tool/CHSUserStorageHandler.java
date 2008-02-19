@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/contrib/tfd/trunk/sdata/sdata-tool/impl/src/java/org/sakaiproject/sdata/tool/StreamRequestFilter.java $
- * $Id: StreamRequestFilter.java 45207 2008-02-01 19:01:06Z ian@caret.cam.ac.uk $
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2008 Timefields Ltd
@@ -19,33 +19,39 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sdata.tool.api;
+package org.sakaiproject.sdata.tool;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.sakaiproject.sdata.tool.api.ResourceDefinitionFactory;
+import org.sakaiproject.sdata.tool.util.UserResourceDefinitionFactory;
 
 /**
- * TODO javadoc
+ * A user storage servlet performs storage based on the logged in user, as
+ * defined by the Sakai session. It uses the UserResourceDefinitionFactory to
+ * locate the location of the users storage within the underlying chs
+ * repository. This servlet extends the CHSServlet and uses its methods and
+ * handling to respond to the content.
  * 
  * @author ieb
  */
-public interface ServiceDefinitionFactory
+public abstract class CHSUserStorageHandler extends CHSHandler
 {
 
 	/**
-	 * TODO javadoc
 	 * 
-	 * @param request
-	 * @param response
-	 * @return
 	 */
-	ServiceDefinition getSpec(HttpServletRequest request, HttpServletResponse response);
+	public CHSUserStorageHandler()
+	{
+	}
 
-	/**
-	 * @param config
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.JCRServlet#getResourceDefinitionFactory()
 	 */
-	void init(Map<String, String> config);
+	@Override
+	protected ResourceDefinitionFactory getResourceDefinitionFactory()
+	{
+		return new UserResourceDefinitionFactory(getBasePath());
+	}
 
 }

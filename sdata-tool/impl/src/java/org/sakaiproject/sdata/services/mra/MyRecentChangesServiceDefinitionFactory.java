@@ -21,6 +21,8 @@
 
 package org.sakaiproject.sdata.services.mra;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -94,6 +96,13 @@ public class MyRecentChangesServiceDefinitionFactory implements ServiceDefinitio
 		}
 		return new MyRecentChangesBean(sessionManager, siteService, componentManager,
 				sqlService, searchService,contentHostingService,announcementService,entityManager,paging);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory#init(java.util.Map)
+	 */
+	public void init(Map<String, String> config)
+	{
 	}
 
 }

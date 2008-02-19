@@ -21,6 +21,8 @@
 
 package org.sakaiproject.sdata.services.mcp;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -63,6 +65,13 @@ public class MyCoursesAndProjectsServiceDefinitionFactory implements
 			HttpServletResponse response)
 	{
 		return new MyCoursesAndProjectsBean(sessionManager, siteService);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory#init(java.util.Map)
+	 */
+	public void init(Map<String, String> config)
+	{		
 	}
 
 }

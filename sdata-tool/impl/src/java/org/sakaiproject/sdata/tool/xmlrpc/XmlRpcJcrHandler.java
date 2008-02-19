@@ -37,7 +37,7 @@ import org.apache.xmlrpc.common.XmlRpcStreamRequestConfig;
 import org.apache.xmlrpc.serializer.DefaultXMLWriterFactory;
 import org.apache.xmlrpc.serializer.XmlRpcWriter;
 import org.apache.xmlrpc.serializer.XmlWriterFactory;
-import org.sakaiproject.sdata.tool.CHSServlet;
+import org.sakaiproject.sdata.tool.JCRHandler;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -47,10 +47,10 @@ import org.xml.sax.SAXException;
  * 
  * @author ieb
  */
-public class XmlRpcCHSServlet extends CHSServlet
+public class XmlRpcJcrHandler extends JCRHandler
 {
 
-	private static final Log log = LogFactory.getLog(XmlRpcCHSServlet.class);
+	private static final Log log = LogFactory.getLog(XmlRpcJcrHandler.class);
 
 	private XmlWriterFactory writerFactory = new DefaultXMLWriterFactory();
 
@@ -61,7 +61,7 @@ public class XmlRpcCHSServlet extends CHSServlet
 	/**
 	 * 
 	 */
-	public XmlRpcCHSServlet()
+	public XmlRpcJcrHandler()
 	{
 	}
 

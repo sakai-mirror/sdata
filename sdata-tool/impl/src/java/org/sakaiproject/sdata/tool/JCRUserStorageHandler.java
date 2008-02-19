@@ -3,7 +3,7 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright (c) 2003, 2004, 2005, 2006, 2007 The Sakai Foundation.
+ * Copyright (c) 2008 Timefields Ltd
  *
  * Licensed under the Educational Community License, Version 1.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,13 +33,13 @@ import org.sakaiproject.sdata.tool.util.UserResourceDefinitionFactory;
  * 
  * @author ieb
  */
-public abstract class UserStorageServlet extends JCRServlet
+public abstract class JCRUserStorageHandler extends JCRHandler
 {
 
 	/**
 	 * 
 	 */
-	public UserStorageServlet()
+	public JCRUserStorageHandler()
 	{
 	}
 

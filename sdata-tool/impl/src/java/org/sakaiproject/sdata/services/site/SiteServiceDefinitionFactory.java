@@ -21,6 +21,8 @@
 
 package org.sakaiproject.sdata.services.site;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -64,6 +66,13 @@ public class SiteServiceDefinitionFactory implements
 	{
 		String siteId = request.getParameter("siteid");
 		return new SiteBean(sessionManager, siteService, siteId);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory#init(java.util.Map)
+	 */
+	public void init(Map<String, String> config)
+	{
 	}
 
 }

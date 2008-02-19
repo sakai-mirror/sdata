@@ -39,11 +39,8 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -55,6 +52,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.jcr.api.JCRConstants;
 import org.sakaiproject.jcr.support.api.JCRNodeFactoryService;
+import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.ResourceDefinitionFactory;
 import org.sakaiproject.sdata.tool.api.SDataException;
@@ -86,9 +84,9 @@ import org.sakaiproject.tool.api.Tool;
  * 
  * @author ieb
  */
-public abstract class JCRServlet extends HttpServlet
+public abstract class JCRHandler implements Handler
 {
-	private static final Log log = LogFactory.getLog(JCRServlet.class);
+	private static final Log log = LogFactory.getLog(JCRHandler.class);
 
 	/**
 	 * Required for serialization... also to stop eclipse from giving me a
@@ -102,6 +100,10 @@ public abstract class JCRServlet extends HttpServlet
 
 	private static final String LAST_MODIFIED = "Last-Modified";
 
+	private static final String BASE_URL_INIT = "baseurl";
+
+	private static final String DEFAULT_BASE_URL = "";
+
 	private String basePath;
 
 	private ComponentManager componentManager;
@@ -110,27 +112,32 @@ public abstract class JCRServlet extends HttpServlet
 
 	private ResourceDefinitionFactory resourceDefinitionFactory;
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
-	 */
-	@Override
-	public void init(ServletConfig servletConfig) throws ServletException
-	{
-		super.init(servletConfig);
+	private String baseUrl;
 
-		ServletContext sc = servletConfig.getServletContext();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.Handler#init(java.util.Map)
+	 */
+	public void init(Map<String, String> config)
+	{
+		basePath = config.get(BASE_PATH_INIT);
+		if (basePath == null)
+		{
+			this.basePath = DEFAULT_BASE_PATH;
+		}
+
+		baseUrl = config.get(BASE_URL_INIT);
+		if (baseUrl == null)
+		{
+			this.baseUrl = DEFAULT_BASE_URL;
+		}
 
 		componentManager = org.sakaiproject.component.cover.ComponentManager
 				.getInstance();
 
 		jcrNodeFactory = (JCRNodeFactoryService) componentManager
 				.get(JCRNodeFactoryService.class.getName());
-
-		basePath = servletConfig.getInitParameter(BASE_PATH_INIT);
-		if (basePath == null || basePath.trim().length() == 0)
-		{
-			basePath = DEFAULT_BASE_PATH;
-		}
 
 		resourceDefinitionFactory = getResourceDefinitionFactory();
 
@@ -144,39 +151,16 @@ public abstract class JCRServlet extends HttpServlet
 	 */
 	protected ResourceDefinitionFactory getResourceDefinitionFactory()
 	{
-		return new ResourceDefinitionFactoryImpl(basePath);
+		return new ResourceDefinitionFactoryImpl(baseUrl,basePath);
 	}
 
-	/**
-	 * <p>
-	 * The http DELETE method delete the resource at pointed to by the request.
-	 * If sucessfull, it will 204 (no content), if not found 404, if error 500.
-	 * Extract from the RFC on delete follows.
-	 * </p>
-	 * <p>
-	 * The DELETE method requests that the origin server delete the resource
-	 * identified by the Request-URI. This method MAY be overridden by human
-	 * intervention (or other means) on the origin server. The client cannot be
-	 * guaranteed that the operation has been carried out, even if the status
-	 * code returned from the origin server indicates that the action has been
-	 * completed successfully. However, the server SHOULD NOT indicate success
-	 * unless, at the time the response is given, it intends to delete the
-	 * resource or move it to an inaccessible location.
-	 * </p>
-	 * <p>
-	 * A successful response SHOULD be 200 (OK) if the response includes an
-	 * entity describing the status, 202 (Accepted) if the action has not yet
-	 * been enacted, or 204 (No Content) if the action has been enacted but the
-	 * response does not include an entity.
-	 * </p>
-	 * <p>
-	 * If the request passes through a cache and the Request-URI identifies one
-	 * or more currently cached entities, those entries SHOULD be treated as
-	 * stale. Responses to this method are not cacheable.
-	 * </p>
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.Handler#doDelete(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
-	@Override
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+	public void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
 		try
@@ -262,29 +246,13 @@ public abstract class JCRServlet extends HttpServlet
 		}
 	}
 
-	/**
-	 * <a id="sec9.4">9.4</a> HEAD</h3>
-	 * <p>
-	 * The HEAD method is identical to GET except that the server MUST NOT
-	 * return a message-body in the response. The metainformation contained in
-	 * the HTTP headers in response to a HEAD request SHOULD be identical to the
-	 * information sent in response to a GET request. This method can be used
-	 * for obtaining metainformation about the entity implied by the request
-	 * without transferring the entity-body itself. This method is often used
-	 * for testing hypertext links for validity, accessibility, and recent
-	 * modification.
-	 * </p>
-	 * <p>
-	 * The response to a HEAD request MAY be cacheable in the sense that the
-	 * information contained in the response MAY be used to update a previously
-	 * cached entity from that resource. If the new field values indicate that
-	 * the cached entity differs from the current entity (as would be indicated
-	 * by a change in Content-Length, Content-MD5, ETag or Last-Modified), then
-	 * the cache MUST treat the cache entry as stale.
-	 * </p>
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.Handler#doHead(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
-	@Override
-	protected void doHead(HttpServletRequest request, HttpServletResponse response)
+	public void doHead(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
 		try
@@ -328,67 +296,13 @@ public abstract class JCRServlet extends HttpServlet
 		}
 	}
 
-	/**
-	 * <p>
-	 * The PUT method requests that the enclosed entity be stored under the
-	 * supplied Request-URI. If the Request-URI refers to an already existing
-	 * resource, the enclosed entity SHOULD be considered as a modified version
-	 * of the one residing on the origin server. If the Request-URI does not
-	 * point to an existing resource, and that URI is capable of being defined
-	 * as a new resource by the requesting user agent, the origin server can
-	 * create the resource with that URI. If a new resource is created, the
-	 * origin server MUST inform the user agent via the 201 (Created) response.
-	 * If an existing resource is modified, either the 200 (OK) or 204 (No
-	 * Content) response codes SHOULD be sent to indicate successful completion
-	 * of the request. If the resource could not be created or modified with the
-	 * Request-URI, an appropriate error response SHOULD be given that reflects
-	 * the nature of the problem. The recipient of the entity MUST NOT ignore
-	 * any Content-* (e.g. Content-Range) headers that it does not understand or
-	 * implement and MUST return a 501 (Not Implemented) response in such cases.
-	 * </p>
-	 * <p>
-	 * If the request passes through a cache and the Request-URI identifies one
-	 * or more currently cached entities, those entries SHOULD be treated as
-	 * stale. Responses to this method are not cacheable.
-	 * </p>
-	 * <p>
-	 * The fundamental difference between the POST and PUT requests is reflected
-	 * in the different meaning of the Request-URI. The URI in a POST request
-	 * identifies the resource that will handle the enclosed entity. That
-	 * resource might be a data-accepting process, a gateway to some other
-	 * protocol, or a separate entity that accepts annotations. In contrast, the
-	 * URI in a PUT request identifies the entity enclosed with the request --
-	 * the user agent knows what URI is intended and the server MUST NOT attempt
-	 * to apply the request to some other resource. If the server desires that
-	 * the request be applied to a different URI,
-	 * </p>
-	 * <p>
-	 * it MUST send a 301 (Moved Permanently) response; the user agent MAY then
-	 * make its own decision regarding whether or not to redirect the request.
-	 * </p>
-	 * <p>
-	 * A single resource MAY be identified by many different URIs. For example,
-	 * an article might have a URI for identifying "the current version" which
-	 * is separate from the URI identifying each particular version. In this
-	 * case, a PUT request on a general URI might result in several other URIs
-	 * being defined by the origin server.
-	 * </p>
-	 * <p>
-	 * HTTP/1.1 does not define how a PUT method affects the state of an origin
-	 * server.
-	 * </p>
-	 * <p>
-	 * PUT requests MUST obey the message transmission requirements set out in
-	 * section 8.2.
-	 * </p>
-	 * <p>
-	 * Unless otherwise specified for a particular entity-header, the
-	 * entity-headers in the PUT request SHOULD be applied to the resource
-	 * created or modified by the PUT.
-	 * </p>
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.Handler#doPut(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
-	@Override
-	protected void doPut(HttpServletRequest request, HttpServletResponse response)
+	public void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
 		OutputStream out = null;
@@ -492,50 +406,13 @@ public abstract class JCRServlet extends HttpServlet
 		return content.getLength();
 	}
 
-	/**
-	 * <p>
-	 * The GET method means retrieve whatever information (in the form of an
-	 * entity) is identified by the Request-URI. If the Request-URI refers to a
-	 * data-producing process, it is the produced data which shall be returned
-	 * as the entity in the response and not the source text of the process,
-	 * unless that text happens to be the output of the process.
-	 * </p>
-	 * <p>
-	 * The semantics of the GET method change to a "conditional GET" if the
-	 * request message includes an If-Modified-Since, If-Unmodified-Since,
-	 * If-Match, If-None-Match, or If-Range header field. A conditional GET
-	 * method requests that the entity be transferred only under the
-	 * circumstances described by the conditional header field(s). The
-	 * conditional GET method is intended to reduce unnecessary network usage by
-	 * allowing cached entities to be refreshed without requiring multiple
-	 * requests or transferring data already held by the client.
-	 * </p>
-	 * <p>
-	 * The semantics of the GET method change to a "partial GET" if the request
-	 * message includes a Range header field. A partial GET requests that only
-	 * part of the entity be transferred, as described in section <a rel="xref"
-	 * href="rfc2616-sec14.html#sec14.35">14.35</a>. The partial GET method is
-	 * intended to reduce unnecessary network usage by allowing
-	 * partially-retrieved entities to be completed without transferring data
-	 * already held by the client.
-	 * </p>
-	 * <p>
-	 * The response to a GET request is cacheable if and only if it meets the
-	 * requirements for HTTP caching described in section 13.
-	 * </p>
-	 * <p>
-	 * See section <a
-	 * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec15.html#sec15.1.3">15.1.3</a>
-	 * for security considerations when used for forms.
-	 * </p>
-	 * <p>
-	 * Section <a
-	 * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9"
-	 * >14.9</a> specifies cache control headers.
-	 * </p>
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.Handler#doGet(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
-	@Override
-	protected void doGet(final HttpServletRequest request, HttpServletResponse response)
+	public void doGet(final HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
 		OutputStream out = null;
@@ -817,7 +694,6 @@ public abstract class JCRServlet extends HttpServlet
 		return true;
 	}
 
-
 	/**
 	 * @param response
 	 */
@@ -841,10 +717,13 @@ public abstract class JCRServlet extends HttpServlet
 
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.Handler#doPost(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
 		snoopRequest(request);
@@ -1012,4 +891,12 @@ public abstract class JCRServlet extends HttpServlet
 	{
 		this.basePath = basePath;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.api.Handler#setHandlerHeaders(javax.servlet.http.HttpServletResponse)
+	 */
+	public void setHandlerHeaders(HttpServletResponse response ) {
+		response.setHeader("x-sdata-handler", this.getClass().getName());
+	}
+
 }

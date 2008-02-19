@@ -48,25 +48,17 @@ import com.meterware.servletunit.ServletUnitClient;
  * @author ieb
  */
 
-/**
- * @author ieb
- *
- */
-public class JsonUserStorageServletUnitT extends TestCase
+public abstract class XmlRpcUserStorageHandlerUnitT extends TestCase
 {
-	private static final Log log = LogFactory.getLog(JsonUserStorageServletUnitT.class);
+	private static final Log log = LogFactory.getLog(XmlRpcUserStorageHandlerUnitT.class);
 
 	private static final String LOGIN_BASE_URL = "http://localhost:8080/portal/relogin";
-
-	private static final String BASE_URL = "http://localhost:8080/sdata/";
-
-	private static final String BASE_JCR_URL = BASE_URL + "p/";
 
 	private static final String USERNAME = "admin";
 
 	private static final String PASSWORD = "admin";
 
-	ServletUnitClient client = null;
+	private ServletUnitClient client = null;
 
 	private WebConversation wc;
 
@@ -85,7 +77,7 @@ public class JsonUserStorageServletUnitT extends TestCase
 		try
 		{
 			wc = new WebConversation();
-			WebRequest req = new GetMethodWebRequest(BASE_URL + "testpage.html");
+			WebRequest req = new GetMethodWebRequest(getBaseUrl() + "checkRunning");
 			WebResponse resp = wc.getResponse(req);
 			DataInputStream inputStream = new DataInputStream(resp.getInputStream());
 			buffer = new byte[resp.getContentLength()];
@@ -107,6 +99,16 @@ public class JsonUserStorageServletUnitT extends TestCase
 	{
 		super.tearDown();
 	}
+
+	/**
+	 * @return
+	 */
+	protected abstract String getBaseDataUrl();
+	
+	/**
+	 * @return
+	 */
+	protected abstract String getBaseUrl();
 
 	/**
 	 * 
@@ -133,9 +135,11 @@ public class JsonUserStorageServletUnitT extends TestCase
 			WebResponse resp = null;
 			try
 			{
-				WebRequest req = new GetMethodWebRequest(BASE_JCR_URL + "testpage");
+				WebRequest req = new GetMethodWebRequest(getBaseDataUrl() + "testpage");
 
 				resp = wc.getResponse(req);
+				checkHandler(resp);
+
 				fail("Should have been a 401, got:" + resp.getResponseCode());
 			}
 			catch (HttpInternalErrorException iex)
@@ -165,8 +169,10 @@ public class JsonUserStorageServletUnitT extends TestCase
 			try
 			{
 				login();
-				WebRequest req = new GetMethodWebRequest(BASE_JCR_URL + "testpage");
+				WebRequest req = new GetMethodWebRequest(getBaseDataUrl() + "testpage");
 				resp = wc.getResponse(req);
+				checkHandler(resp);
+
 				fail("Should have been a 404, got:" + resp.getResponseCode());
 			}
 			catch (HttpNotFoundException nfex)
@@ -215,13 +221,15 @@ public class JsonUserStorageServletUnitT extends TestCase
 
 				login();
 				ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
-				WebRequest req = new PutMethodWebRequest(BASE_JCR_URL + "putUpload",
+				WebRequest req = new PutMethodWebRequest(getBaseDataUrl() + "putUpload",
 						bais, "UTF-8");
 				req.setParameter("snoop", "1");
 				req.setHeaderField("Content-Type", "text/html");
 				req.setHeaderField("Content-Encoding", "UTF-8");
 				wc.setAuthorization(USERNAME, PASSWORD);
 				WebResponse resp = wc.getResponse(req);
+				checkHandler(resp);
+
 				int code = resp.getResponseCode();
 				assertTrue("Should have been a 201 or 204 ", (code == 201)
 						|| (code == 204));
@@ -254,17 +262,19 @@ public class JsonUserStorageServletUnitT extends TestCase
 			{
 				login();
 				ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
-				WebRequest req = new PutMethodWebRequest(BASE_JCR_URL + "putUpload",
+				WebRequest req = new PutMethodWebRequest(getBaseDataUrl() + "putUpload",
 						bais, "UTF-8");
 				req.setParameter("snoop", "1");
 				req.setHeaderField("Content-Type", "text/html");
 				req.setHeaderField("Content-Encoding", "UTF-8");
 				WebResponse resp = wc.getResponse(req);
+				checkHandler(resp);
+
 				int code = resp.getResponseCode();
 				assertTrue("Should have been a 201 or 204 ", (code == 201)
 						|| (code == 204));
 
-				req = new GetMethodWebRequest(BASE_JCR_URL + "putUpload");
+				req = new GetMethodWebRequest(getBaseDataUrl() + "putUpload");
 				resp = wc.getResource(req);
 				code = resp.getResponseCode();
 				assertTrue("Should have been a 201 or 204 ", (code == 200));
@@ -309,17 +319,19 @@ public class JsonUserStorageServletUnitT extends TestCase
 			{
 				login();
 				ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
-				WebRequest req = new PutMethodWebRequest(BASE_JCR_URL + "putUpload",
+				WebRequest req = new PutMethodWebRequest(getBaseDataUrl() + "putUpload",
 						bais, "UTF-8");
 				req.setParameter("snoop", "1");
 				req.setHeaderField("Content-Type", "text/html");
 				req.setHeaderField("Content-Encoding", "UTF-8");
 				WebResponse resp = wc.getResponse(req);
+				checkHandler(resp);
+
 				int code = resp.getResponseCode();
 				assertTrue("Should have been a 201 or 204 ", (code == 201)
 						|| (code == 204));
 
-				req = new GetMethodWebRequest(BASE_JCR_URL + "putUpload");
+				req = new GetMethodWebRequest(getBaseDataUrl() + "putUpload");
 				resp = wc.getResource(req);
 				code = resp.getResponseCode();
 				assertTrue("Should have been a 201 or 204 ", (code == 200));
@@ -341,7 +353,7 @@ public class JsonUserStorageServletUnitT extends TestCase
 				// RFC1123Date.parseDate(resp.getHeaderField("date"));
 
 				// now test the 304 response
-				req = new GetMethodWebRequest(BASE_JCR_URL + "putUpload");
+				req = new GetMethodWebRequest(getBaseDataUrl() + "putUpload");
 				req.setHeaderField("if-modified-since", dateheader);
 
 				resp = wc.getResource(req);
@@ -379,18 +391,20 @@ public class JsonUserStorageServletUnitT extends TestCase
 				for (int i = 0; i < 20; i++)
 				{
 					ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
-					WebRequest req = new PutMethodWebRequest(BASE_JCR_URL
+					WebRequest req = new PutMethodWebRequest(getBaseDataUrl()
 							+ "dirlist/file" + i, bais, "UTF-8");
 					req.setParameter("snoop", "1");
 					req.setHeaderField("Content-Type", "text/html");
 					req.setHeaderField("Content-Encoding", "UTF-8");
 					WebResponse resp = wc.getResponse(req);
+					checkHandler(resp);
+
 					int code = resp.getResponseCode();
 					assertTrue("Should have been a 201 or 204 ", (code == 201)
 							|| (code == 204));
 				}
 				long start = System.currentTimeMillis();
-				WebRequest req = new GetMethodWebRequest(BASE_JCR_URL + "dirlist");
+				WebRequest req = new GetMethodWebRequest(getBaseDataUrl() + "dirlist");
 				WebResponse resp = wc.getResource(req);
 				int code = resp.getResponseCode();
 				log.info("Dir Method took:" + (System.currentTimeMillis() - start));
@@ -439,21 +453,25 @@ public class JsonUserStorageServletUnitT extends TestCase
 
 				for (int i = 0; i < 20; i++)
 				{
-					WebRequest req = new DeleteMethodWebRequest(BASE_JCR_URL
+					WebRequest req = new DeleteMethodWebRequest(getBaseDataUrl()
 							+ "dirlist/file" + i);
 					WebResponse resp = wc.getResponse(req);
+					checkHandler(resp);
+
 					int code = resp.getResponseCode();
 					assertEquals("Should have been a 204 ", 204, code);
 				}
 				{
-					WebRequest req = new DeleteMethodWebRequest(BASE_JCR_URL + "dirlist");
+					WebRequest req = new DeleteMethodWebRequest(getBaseDataUrl() + "dirlist");
 					WebResponse resp = wc.getResponse(req);
+					checkHandler(resp);
+
 					int code = resp.getResponseCode();
 					assertEquals("Should have been a 204 ", 204, code);
 				}
 				try
 				{
-					WebRequest req = new GetMethodWebRequest(BASE_JCR_URL + "dirlist");
+					WebRequest req = new GetMethodWebRequest(getBaseDataUrl() + "dirlist");
 					WebResponse resp = wc.getResource(req);
 					int code = resp.getResponseCode();
 					assertEquals("Should have been a 404 ", 404, code);
@@ -496,14 +514,16 @@ public class JsonUserStorageServletUnitT extends TestCase
 			try
 			{
 				{
-					WebRequest req = new DeleteMethodWebRequest(BASE_JCR_URL + "dirlist");
+					WebRequest req = new DeleteMethodWebRequest(getBaseDataUrl() + "dirlist");
 					WebResponse resp = wc.getResponse(req);
+					checkHandler(resp);
+
 					int code = resp.getResponseCode();
 					assertEquals("Should have been a 204 ", 204, resp.getResponseCode());
 				}
 				try
 				{
-					WebRequest req = new GetMethodWebRequest(BASE_JCR_URL + "dirlist");
+					WebRequest req = new GetMethodWebRequest(getBaseDataUrl() + "dirlist");
 					WebResponse resp = wc.getResource(req);
 
 					assertEquals("Should have been a 404 ", 404, resp.getResponseCode());
@@ -543,7 +563,7 @@ public class JsonUserStorageServletUnitT extends TestCase
 			login();
 			try
 			{
-				PostMethodWebRequest mreq = new PostMethodWebRequest(BASE_JCR_URL
+				PostMethodWebRequest mreq = new PostMethodWebRequest(getBaseDataUrl()
 						+ "dirlist");
 				mreq.setMimeEncoded(true);
 				for (int i = 0; i < 20; i++)
@@ -554,6 +574,8 @@ public class JsonUserStorageServletUnitT extends TestCase
 									bais, "text/html") });
 				}
 				WebResponse resp = wc.getResponse(mreq);
+				checkHandler(resp);
+
 				int code = resp.getResponseCode();
 				assertTrue("Should have been a 200 ", (code == 200));
 				int contentL = resp.getContentLength();
@@ -569,10 +591,12 @@ public class JsonUserStorageServletUnitT extends TestCase
 				log.info("Content\n" + content);
 				for (int i = 0; i < 20; i++)
 				{
-					WebRequest req = new GetMethodWebRequest(BASE_JCR_URL
+					WebRequest req = new GetMethodWebRequest(getBaseDataUrl()
 							+ "dirlist/multifile" + i);
 					log.info("Trying " + "dirlist/multifile" + i);
 					resp = wc.getResponse(req);
+					checkHandler(resp);
+
 					assertEquals("Expected a 200 response ", 200, resp.getResponseCode());
 					assertEquals("Content Lenght does not match  ", buffer.length, resp
 							.getContentLength());
@@ -612,4 +636,18 @@ public class JsonUserStorageServletUnitT extends TestCase
 
 	}
 
+	/**
+	 * @param resp
+	 */
+	private void checkHandler(WebResponse resp)
+	{
+		String className = this.getClass().getName();
+		className = className.substring(className.lastIndexOf('.'));
+		className = className.substring(0,className.length()-"UnitT".length());
+		String handler = resp.getHeaderField("x-sdata-handler");
+		assertNotNull("Handler Not found ",handler);
+		assertTrue("Handler Not found (no value)",handler.trim().length()>0);
+		handler = handler.substring(handler.lastIndexOf('.'));
+		assertEquals("Not the expected Handler Class",className,handler);
+	}
 }

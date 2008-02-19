@@ -21,6 +21,8 @@
 
 package org.sakaiproject.sdata.services.mgs;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -144,6 +146,13 @@ public class MyGlobalSearchDefinitionFactory implements ServiceDefinitionFactory
 
 		return new MyGlobalSearchBean(sessionManager, siteService, contentHostingService,
 				response, page, searchParam, empty, currentSiteSearch);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory#init(java.util.Map)
+	 */
+	public void init(Map<String, String> config)
+	{
 	}
 
 }

@@ -48,7 +48,7 @@ import com.meterware.servletunit.ServletUnitClient;
 public class HttpRangeUnitT extends TestCase
 {
 
-	private static final Log log = LogFactory.getLog(JsonJcrServletUnitT.class);
+	private static final Log log = LogFactory.getLog(JsonJcrHandlerUnitT.class);
 
 	private static final String BASE_URL = "http://localhost:8080/sdata/";
 
@@ -80,7 +80,7 @@ public class HttpRangeUnitT extends TestCase
 		try
 		{
 			wc = new WebConversation();
-			WebRequest req = new GetMethodWebRequest(BASE_URL + "testpage.html");
+			WebRequest req = new GetMethodWebRequest(BASE_URL + "checkRunning");
 			WebResponse resp = wc.getResponse(req);
 			DataInputStream inputStream = new DataInputStream(resp.getInputStream());
 			buffer = new byte[resp.getContentLength()];

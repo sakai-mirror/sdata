@@ -39,12 +39,16 @@ public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 
 	private String basePath;
 
+	private String baseUrl;
+
 	/**
 	 * @param basePath
+	 * @param basePath2 
 	 */
-	public ResourceDefinitionFactoryImpl(String basePath)
+	public ResourceDefinitionFactoryImpl(String baseUrl, String basePath)
 	{
 		this.basePath = basePath;
+		this.baseUrl = baseUrl;
 		log.info("Definition Factory Created with base path as " + basePath);
 	}
 
@@ -58,6 +62,7 @@ public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 		request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
 
 		String path = request.getPathInfo();
+		path = path.substring(baseUrl.length());
 
 		if (path.endsWith("/"))
 		{

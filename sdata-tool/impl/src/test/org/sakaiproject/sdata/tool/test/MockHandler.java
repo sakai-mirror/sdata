@@ -3,7 +3,7 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright (c) 2008 Timefields Ltd
+ * Copyright (c) 2003, 2004, 2005, 2006, 2007 The Sakai Foundation.
  *
  * Licensed under the Educational Community License, Version 1.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,96 +19,38 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sdata.tool;
+package org.sakaiproject.sdata.tool.test;
 
 import java.io.IOException;
 import java.util.Map;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.component.api.ComponentManager;
-import org.sakaiproject.jcr.api.JCRService;
 import org.sakaiproject.sdata.tool.api.Handler;
-import org.sakaiproject.tool.api.Tool;
 
 /**
  * @author ieb
+ *
  */
-public class JCRDumper implements Handler
+public class MockHandler implements Handler
 {
 
-	private static final Log log = LogFactory.getLog(JCRDumper.class);
-
-	private ComponentManager componentManager;
-
-	private JCRService jcrService;
-
-	/* (non-Javadoc)
-	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
-	 */
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.api.Handler#init(java.util.Map)
-	 */
-	public void init(Map<String, String> config) throws ServletException
-	{
-
-		componentManager = org.sakaiproject.component.cover.ComponentManager
-				.getInstance();
-
-		jcrService = (JCRService) componentManager.get(JCRService.class.getName());
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
-	 *      javax.servlet.http.HttpServletResponse)
-	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
-	{
-		request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
-		String path = request.getPathInfo();
-		if (path == null || path.length() == 0)
-		{
-			path = "/";
-		}
-
-		response.setContentType("text/xml");
-		try
-		{
-			if (path.startsWith("/sys"))
-			{
-				path = path.substring("/sys".length());
-				jcrService.getSession().exportSystemView(path,
-						response.getOutputStream(), true, false);
-			}
-			else
-			{
-				jcrService.getSession().exportDocumentView(path,
-						response.getOutputStream(), true, false);
-
-			}
-		}
-		catch (RepositoryException e)
-		{
-			log.error("Failed", e);
-		}
-	}
+	private String name;
 
 	/* (non-Javadoc)
 	 * @see org.sakaiproject.sdata.tool.api.Handler#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		// TODO Auto-generated method stub
-		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.api.Handler#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
 	}
 
 	/* (non-Javadoc)
@@ -116,8 +58,6 @@ public class JCRDumper implements Handler
 	 */
 	public void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		// TODO Auto-generated method stub
-		
 	}
 
 	/* (non-Javadoc)
@@ -125,8 +65,6 @@ public class JCRDumper implements Handler
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		// TODO Auto-generated method stub
-		
 	}
 
 	/* (non-Javadoc)
@@ -134,10 +72,24 @@ public class JCRDumper implements Handler
 	 */
 	public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		// TODO Auto-generated method stub
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.api.Handler#init(java.util.Map)
+	 */
+	public void init(Map<String, String> config) throws ServletException
+	{
+		name = config.get("name");
 		
 	}
-	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return name;
+	}
 	/* (non-Javadoc)
 	 * @see org.sakaiproject.sdata.tool.api.Handler#setHandlerHeaders(javax.servlet.http.HttpServletResponse)
 	 */

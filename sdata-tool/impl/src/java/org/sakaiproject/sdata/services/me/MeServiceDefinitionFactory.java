@@ -21,6 +21,8 @@
 
 package org.sakaiproject.sdata.services.me;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -69,6 +71,14 @@ public class MeServiceDefinitionFactory implements ServiceDefinitionFactory
 			HttpServletResponse response)
 	{
 		return new MeBean(sessionManager, userDirectoryService, response);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory#init(java.util.Map)
+	 */
+	public void init(Map<String, String> config)
+	{
+		
 	}
 
 }

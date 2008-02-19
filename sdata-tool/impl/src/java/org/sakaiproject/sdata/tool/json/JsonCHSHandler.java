@@ -22,7 +22,6 @@
 package org.sakaiproject.sdata.tool.json;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-import org.sakaiproject.sdata.tool.CHSServlet;
+import org.sakaiproject.sdata.tool.CHSHandler;
 import org.sakaiproject.sdata.tool.api.SDataException;
 
 /**
@@ -38,13 +37,13 @@ import org.sakaiproject.sdata.tool.api.SDataException;
  * 
  * @author ieb
  */
-public class JsonCHSServlet extends CHSServlet
+public class JsonCHSHandler extends CHSHandler
 {
 
 	/**
 	 * 
 	 */
-	public JsonCHSServlet()
+	public JsonCHSHandler()
 	{
 	}
 
@@ -58,9 +57,11 @@ public class JsonCHSServlet extends CHSServlet
 			Map<String, Object> contetMap) throws IOException
 	{
 		JSONObject jsonObject = JSONObject.fromObject(contetMap);
-		PrintWriter w = response.getWriter();
-		w.write(jsonObject.toString());
-
+		byte[] b = jsonObject.toString().getBytes("UTF-8");
+		response.setContentType("text/json");
+		response.setCharacterEncoding("UTF-8");
+		response.setContentLength(b.length);
+		response.getOutputStream().write(b);
 	}
 
 	/*

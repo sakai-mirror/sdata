@@ -19,19 +19,19 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sdata.services.site;
+package org.sakaiproject.sdata.services.motd;
 
-import javax.servlet.ServletConfig;
+import java.util.Map;
+
 import javax.servlet.ServletException;
 
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
-import org.sakaiproject.sdata.tool.json.JSONServiceServlet;
+import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 /**
- * @author 
- *
+ * @author
  */
-public class SiteServlet extends JSONServiceServlet
+public class MessageOfTheDayHandler extends JSONServiceHandler
 {
 
 	/**
@@ -39,24 +39,28 @@ public class SiteServlet extends JSONServiceServlet
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.json.JSONServiceServlet#getServiceDefinitionFactory()
 	 */
 	@Override
 	protected ServiceDefinitionFactory getServiceDefinitionFactory()
 			throws ServletException
 	{
-		return new SiteServiceDefinitionFactory();
+		return new MessageOfTheDayDefinitionFactory();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.ServiceServlet#getServiceDefinitionFactory(javax.servlet.ServletConfig)
 	 */
 	@Override
-	protected ServiceDefinitionFactory getServiceDefinitionFactory(ServletConfig config)
+	protected ServiceDefinitionFactory getServiceDefinitionFactory(Map<String, String> config)
 			throws ServletException
 	{
-		return new SiteServiceDefinitionFactory();
+		return new MessageOfTheDayDefinitionFactory();
 	}
 
 }

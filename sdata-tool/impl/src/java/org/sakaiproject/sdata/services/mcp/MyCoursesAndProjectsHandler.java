@@ -19,19 +19,20 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sdata.services.mra;
+package org.sakaiproject.sdata.services.mcp;
 
-import javax.servlet.ServletConfig;
+import java.util.Map;
+
 import javax.servlet.ServletException;
 
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
-import org.sakaiproject.sdata.tool.json.JSONServiceServlet;
+import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 /**
  * @author 
  *
  */
-public class MyRecentChangesServlet extends JSONServiceServlet
+public class MyCoursesAndProjectsHandler extends JSONServiceHandler
 {
 
 	/**
@@ -46,17 +47,17 @@ public class MyRecentChangesServlet extends JSONServiceServlet
 	protected ServiceDefinitionFactory getServiceDefinitionFactory()
 			throws ServletException
 	{
-		return new MyRecentChangesServiceDefinitionFactory();
+		return new MyCoursesAndProjectsServiceDefinitionFactory();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.sakaiproject.sdata.tool.ServiceServlet#getServiceDefinitionFactory(javax.servlet.ServletConfig)
 	 */
 	@Override
-	protected ServiceDefinitionFactory getServiceDefinitionFactory(ServletConfig config)
+	protected ServiceDefinitionFactory getServiceDefinitionFactory(Map<String, String> config)
 			throws ServletException
 	{
-		return new MyRecentChangesServiceDefinitionFactory();
+		return new MyCoursesAndProjectsServiceDefinitionFactory();
 	}
 
 }

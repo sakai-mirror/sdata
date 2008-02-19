@@ -19,18 +19,19 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sdata.services.motd;
+package org.sakaiproject.sdata.services.mff;
 
-import javax.servlet.ServletConfig;
+import java.util.Map;
+
 import javax.servlet.ServletException;
 
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
-import org.sakaiproject.sdata.tool.json.JSONServiceServlet;
+import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 /**
  * @author
  */
-public class MessageOfTheDayServlet extends JSONServiceServlet
+public class MyFileFinderHandler extends JSONServiceHandler
 {
 
 	/**
@@ -47,7 +48,7 @@ public class MessageOfTheDayServlet extends JSONServiceServlet
 	protected ServiceDefinitionFactory getServiceDefinitionFactory()
 			throws ServletException
 	{
-		return new MessageOfTheDayDefinitionFactory();
+		return new MyFileFinderDefinitionFactory();
 	}
 
 	/*
@@ -56,10 +57,10 @@ public class MessageOfTheDayServlet extends JSONServiceServlet
 	 * @see org.sakaiproject.sdata.tool.ServiceServlet#getServiceDefinitionFactory(javax.servlet.ServletConfig)
 	 */
 	@Override
-	protected ServiceDefinitionFactory getServiceDefinitionFactory(ServletConfig config)
+	protected ServiceDefinitionFactory getServiceDefinitionFactory(Map<String, String> config)
 			throws ServletException
 	{
-		return new MessageOfTheDayDefinitionFactory();
+		return new MyFileFinderDefinitionFactory();
 	}
 
 }

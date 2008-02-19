@@ -48,7 +48,11 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 	 */
 	public ResourceDefinitionImpl(String inbasePath, String inpath, int inversion)
 	{
-		log.info("ResourceDef: Base:"+inbasePath+": path:"+inpath+": version:"+inversion);
+		if (log.isDebugEnabled())
+		{
+			log.debug("ResourceDef: Base:" + inbasePath + ": path:" + inpath
+					+ ": version:" + inversion);
+		}
 		path = inpath;
 		version = inversion;
 		basePath = String.valueOf(inbasePath);

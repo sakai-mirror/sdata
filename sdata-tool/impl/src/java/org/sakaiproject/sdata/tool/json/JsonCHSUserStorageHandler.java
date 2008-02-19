@@ -22,7 +22,6 @@
 package org.sakaiproject.sdata.tool.json;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,37 +29,40 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-import org.sakaiproject.sdata.tool.JCRServlet;
+import org.sakaiproject.sdata.tool.CHSUserStorageHandler;
 import org.sakaiproject.sdata.tool.api.SDataException;
 
 /**
- * A JCRServlet that serializes responses using JSON
+ * Serializes the output of a UserStorageSevlet as json
  * 
  * @author ieb
  */
-public class JsonJcrServlet extends JCRServlet
+public class JsonCHSUserStorageHandler extends CHSUserStorageHandler
 {
 
 	/**
 	 * 
 	 */
-	public JsonJcrServlet()
+	public JsonCHSUserStorageHandler()
 	{
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.sakaiproject.sdata.tool.JCRServlet#sendMap(java.util.Map)
+	 * @see org.sakaiproject.sdata.tool.JCRServlet#sendMap(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse, java.util.Map)
 	 */
 	@Override
 	protected void sendMap(HttpServletRequest request, HttpServletResponse response,
 			Map<String, Object> contetMap) throws IOException
 	{
 		JSONObject jsonObject = JSONObject.fromObject(contetMap);
-		PrintWriter w = response.getWriter();
-		w.write(jsonObject.toString());
-
+		byte[] b = jsonObject.toString().getBytes("UTF-8");
+		response.setContentType("text/json");
+		response.setCharacterEncoding("UTF-8");
+		response.setContentLength(b.length);
+		response.getOutputStream().write(b);
 	}
 
 	/*
