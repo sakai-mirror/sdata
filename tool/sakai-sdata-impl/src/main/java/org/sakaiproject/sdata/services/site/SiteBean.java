@@ -69,6 +69,8 @@ public class SiteBean implements ServiceDefinition
 		boolean siteExists = true;
 		String status = "900";
 		ArrayList<HashMap<String, Object>> arlpages = new ArrayList<HashMap<String, Object>>();
+		
+		String curUser = sessionManager.getCurrentSessionUserId();
 
 		/*
 		 * Determine the sites the current user is a member of
@@ -119,15 +121,16 @@ public class SiteBean implements ServiceDefinition
 				}
 			}
 
-			if (theSite.isPubView())
-			{
-				status = "904";
-				member = true;
-			}
-
-			if (member == false)
-			{
+			if (member == false){
 				status = "902";
+				
+				if (theSite.isAllowed(curUser, "read")){
+					status = "904";
+					member = true;
+				} else if (theSite.isJoinable()){
+					status = "905";
+					
+				}
 			}
 
 			int number = 0;

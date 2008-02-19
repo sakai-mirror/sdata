@@ -62,6 +62,8 @@ public class MeServiceDefinitionFactory implements ServiceDefinitionFactory
 				.getName());
 		userDirectoryService = (UserDirectoryService) componentManager
 				.get(UserDirectoryService.class.getName());
+		siteService = (SiteService) componentManager.get(SiteService.class.getName());
+
 	}
 
 	/*
@@ -73,7 +75,7 @@ public class MeServiceDefinitionFactory implements ServiceDefinitionFactory
 	public ServiceDefinition getSpec(HttpServletRequest request,
 			HttpServletResponse response)
 	{
-		return new MeBean(sessionManager, userDirectoryService, response);
+		return new MeBean(siteService, sessionManager, userDirectoryService, response);
 	}
 
 	/*

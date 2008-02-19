@@ -23,13 +23,20 @@ package org.sakaiproject.sdata.services.me;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SitePage;
+import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
@@ -39,8 +46,7 @@ import org.sakaiproject.user.api.UserNotDefinedException;
  * 
  * @author
  */
-public class MeBean implements ServiceDefinition
-{
+public class MeBean implements ServiceDefinition {
 
 	private Session currentSession;
 
@@ -54,41 +60,67 @@ public class MeBean implements ServiceDefinition
 	 * @param sessionManager
 	 * @param siteService
 	 */
-	public MeBean(SessionManager sessionManager,
-			UserDirectoryService userDirectoryService, HttpServletResponse response)
-	{
+	public MeBean(SiteService siteService, SessionManager sessionManager,
+			UserDirectoryService userDirectoryService,
+			HttpServletResponse response) {
 		User user = null;
 		currentSession = sessionManager.getCurrentSession();
 
-		try
-		{
+		try {
 
 			user = userDirectoryService.getUser(currentSession.getUserId());
-		}
-		catch (UserNotDefinedException e)
-		{
+		} catch (UserNotDefinedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		// serialize user object
 
-		if (user == null)
-		{
+		if (user == null) {
 
-			try
-			{
+			try {
 				response.sendError(401);
-			}
-			catch (IOException e)
-			{
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-		}
-		else
-		{
+		} else {
+
+			try {
+
+				Site myWorkSite = (siteService.getSite(siteService
+						.getUserSiteId(currentSession.getUserId())));
+
+				map.put("workspace", myWorkSite.getId());
+
+				List<SitePage> pages = (List<SitePage>) myWorkSite
+						.getOrderedPages();
+
+				for (SitePage page : pages) {
+
+					List<ToolConfiguration> lst = (List<ToolConfiguration>) page
+							.getTools();
+
+					for (ToolConfiguration conf : lst) {
+
+						Tool t = conf.getTool();
+
+						if (t != null && t.getId() != null) {
+							if (t.getId().equals("sakai.membership")
+									|| t.getId().equals("sakai.sites")) {
+								map.put("cp", conf.getId());
+							}
+						}
+
+					}
+
+				}
+
+			} catch (IdUnusedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			map.put("userid", user.getId());
 			map.put("firstname", user.getFirstName());
@@ -111,8 +143,7 @@ public class MeBean implements ServiceDefinition
 	 * 
 	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinition#getResponseMap()
 	 */
-	public Map<String, Object> getResponseMap()
-	{
+	public Map<String, Object> getResponseMap() {
 
 		return map2;
 	}
