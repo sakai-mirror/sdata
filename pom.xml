@@ -9,7 +9,7 @@
   </parent>
   <name>Sakai SData Base</name>
   <groupId>org.sakaiproject</groupId>
-  <artifactId>sdata-base</artifactId>
+  <artifactId>sdata</artifactId>
   <packaging>pom</packaging>
   <organization>
     <name>CARET University of Cambridge</name>

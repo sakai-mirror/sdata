@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>sdata-base</artifactId>
+    <artifactId>sdata</artifactId>
     <groupId>org.sakaiproject</groupId>
     <version>SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
+    <relativePath>..</relativePath>
   </parent>
   <name>Sakai SData Tool</name>
-  <groupId>org.sakaiproject</groupId>
-  <artifactId>sakai-sdata-tool-base</artifactId>
+  <groupId>org.sakaiproject.sdata</groupId>
+  <artifactId>sdata-tool</artifactId>
     <organization>
     <name>Timefields Ltd</name>
     <url>http://www.tfd.co.uk/</url>

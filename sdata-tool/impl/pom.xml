@@ -22,13 +22,13 @@ limitations under the License.
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>sakai-sdata-tool-base</artifactId>
-    <groupId>org.sakaiproject</groupId>
+    <artifactId>tool</artifactId>
+    <groupId>org.sakaiproject.sdata</groupId>
     <version>SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
+    <relativePath>..</relativePath>
   </parent>
   <name>sakai-sdata-impl</name>
-  <groupId>org.sakaiproject</groupId>
+  <groupId>org.sakaiproject.sdata.tool</groupId>
   <artifactId>sakai-sdata-impl</artifactId>
     <organization>
     <name>Timefields Ltd</name>
