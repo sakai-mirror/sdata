@@ -29,6 +29,11 @@
   <artifactId>commons-fileupload-sdata</artifactId>
   <version>1.2</version>
   <name>FileUpload</name>
+  <organization>
+    <name>Apache Software Foundation</name>
+    <url>http://www.apache.org/</url>
+  </organization>
+
   <description>
     The FileUpload component provides a simple yet flexible means of adding support for multipart
     file upload functionality to servlets and web applications.
@@ -188,6 +193,7 @@
           </reportSet>
         </reportSets>
       </plugin>
+<!--
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -195,6 +201,7 @@
           <configLocation>src/checkstyle/fileupload_checks.xml</configLocation>
         </configuration>
       </plugin>
+-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
@@ -225,6 +232,7 @@
           </rulesets>
         </configuration>
       </plugin>
+<!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>clirr-maven-plugin</artifactId>
@@ -237,6 +245,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>rat-maven-plugin</artifactId>
       </plugin>
+-->
     </plugins>
   </reporting>
 
