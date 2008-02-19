@@ -59,9 +59,9 @@
         </license>
     </licenses>
    <scm>
-     <connection>scm:svn:https://source.sakaiproject.org/svn/kernel/trunk</connection>
-     <developerConnection>scm:svn:https://source.sakaiproject.org/svn/kernel/trunk</developerConnection>
-     <url>https://source.sakaiproject.org/svn/kernel/trunk</url>
+     <connection>scm:svn:https://source.sakaiproject.org/contrib/tfd/trunk/sdata</connection>
+     <developerConnection>scm:svn:https://source.sakaiproject.org/contrib/tfd/trunk/sdata</developerConnection>
+     <url>https://source.sakaiproject.org/contrib/tfd/trunk/sdata</url>
    </scm> 
   <properties>
 	<sakai.version>SNAPSHOT</sakai.version>
