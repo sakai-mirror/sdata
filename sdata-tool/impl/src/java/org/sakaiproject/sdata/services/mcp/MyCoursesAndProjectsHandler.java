@@ -29,18 +29,21 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 /**
- * @author 
- *
+ * TODO Javadoc
+ * 
+ * @author
  */
 public class MyCoursesAndProjectsHandler extends JSONServiceHandler
 {
 
 	/**
-	 * 
+	 * TODO Javadoc
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.json.JSONServiceServlet#getServiceDefinitionFactory()
 	 */
 	@Override
@@ -50,12 +53,14 @@ public class MyCoursesAndProjectsHandler extends JSONServiceHandler
 		return new MyCoursesAndProjectsServiceDefinitionFactory();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.ServiceServlet#getServiceDefinitionFactory(javax.servlet.ServletConfig)
 	 */
 	@Override
-	protected ServiceDefinitionFactory getServiceDefinitionFactory(Map<String, String> config)
-			throws ServletException
+	protected ServiceDefinitionFactory getServiceDefinitionFactory(
+			Map<String, String> config) throws ServletException
 	{
 		return new MyCoursesAndProjectsServiceDefinitionFactory();
 	}

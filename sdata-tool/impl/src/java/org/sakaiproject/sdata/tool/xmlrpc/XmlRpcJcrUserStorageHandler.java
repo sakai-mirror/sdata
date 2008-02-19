@@ -139,6 +139,8 @@ public class XmlRpcJcrUserStorageHandler extends JCRUserStorageHandler
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param pConfig
 	 * @param pStream
 	 * @return
@@ -152,6 +154,8 @@ public class XmlRpcJcrUserStorageHandler extends JCRUserStorageHandler
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @return
 	 */
 	protected XmlWriterFactory getXMLWriterFactory()
@@ -160,6 +164,8 @@ public class XmlRpcJcrUserStorageHandler extends JCRUserStorageHandler
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @return
 	 */
 	protected TypeFactory getTypeFactory()

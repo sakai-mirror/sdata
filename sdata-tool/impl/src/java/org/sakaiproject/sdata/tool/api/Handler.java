@@ -29,6 +29,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
+ * A Handler handles http method request, without the addional weight of a servlet.
+ * Implementaitons of this interface should obej rfc2616 and releated rfcs as closely as 
+ * possible. The relevant parts of the standard are listed against each method. 
  * @author ieb
  *
  */

@@ -36,9 +36,12 @@ import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
+ * TODO Javadoc
+ * 
  * @author
  */
-public class MyFileFinderDefinitionFactory implements ServiceDefinitionFactory {
+public class MyFileFinderDefinitionFactory implements ServiceDefinitionFactory
+{
 
 	private SessionManager sessionManager;
 
@@ -48,19 +51,18 @@ public class MyFileFinderDefinitionFactory implements ServiceDefinitionFactory {
 
 	private ContentHostingService contentHostingService;
 
-	private static final Log log = LogFactory
-			.getLog(MyFileFinderDefinitionFactory.class);
+	private static final Log log = LogFactory.getLog(MyFileFinderDefinitionFactory.class);
 
 	/**
-	 * 
+	 * TODO Javadoc
 	 */
-	public MyFileFinderDefinitionFactory() {
+	public MyFileFinderDefinitionFactory()
+	{
 		componentManager = org.sakaiproject.component.cover.ComponentManager
 				.getInstance();
-		siteService = (SiteService) componentManager.get(SiteService.class
+		siteService = (SiteService) componentManager.get(SiteService.class.getName());
+		sessionManager = (SessionManager) componentManager.get(SessionManager.class
 				.getName());
-		sessionManager = (SessionManager) componentManager
-				.get(SessionManager.class.getName());
 		contentHostingService = (ContentHostingService) componentManager
 				.get(ContentHostingService.class.getName());
 	}
@@ -72,7 +74,8 @@ public class MyFileFinderDefinitionFactory implements ServiceDefinitionFactory {
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	public ServiceDefinition getSpec(HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response)
+	{
 		// final Log log =
 		// LogFactory.getLog(MyFileFinderDefinitionFactory.class);
 		String search;
@@ -83,7 +86,6 @@ public class MyFileFinderDefinitionFactory implements ServiceDefinitionFactory {
 		{
 
 			search = request.getParameter("search");
-			
 
 			search = search.replaceAll("[\\!]", "");
 
@@ -98,23 +100,26 @@ public class MyFileFinderDefinitionFactory implements ServiceDefinitionFactory {
 			search = search.replaceAll("[\\[]", "");
 
 			search = search.replaceAll("[\\]]", "");
-			
+
 			search = search.replaceAll("[\\%]", "");
 			// / ! ^ ( { } [] "" %
 			empty = false;
 
-
-		} else {
+		}
+		else
+		{
 
 			search = "";
 			empty = true;
 		}
 
-		return new MyFileFinderBean(sessionManager, siteService,
-				contentHostingService, response, search, empty);
+		return new MyFileFinderBean(sessionManager, siteService, contentHostingService,
+				response, search, empty);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory#init(java.util.Map)
 	 */
 	public void init(Map<String, String> config)

@@ -24,7 +24,8 @@ package org.sakaiproject.sdata.tool.api;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * TODO javadoc
+ * A ResourceDefinitionFactory generates ResourceDefinition from the request
+ * object
  * 
  * @author ieb
  */
@@ -32,9 +33,11 @@ public interface ResourceDefinitionFactory
 {
 
 	/**
-	 * TODO javadoc
+	 * Create a ResourceDefinition from the request object. If there is a
+	 * problem with the reques, a SDataException should be thrown with the
+	 * correct http status code and message.
 	 * 
-	 * @param path
+	 * @param request
 	 * @return
 	 * @throws SDataException
 	 */

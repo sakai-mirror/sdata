@@ -59,7 +59,7 @@ public class XmlRpcCHSHandler extends CHSHandler
 	private TypeFactory typeFactory = new XmlRpcTypeFactory(pConfig);
 
 	/**
-	 * 
+	 * TODO Javadoc
 	 */
 	public XmlRpcCHSHandler()
 	{
@@ -155,6 +155,8 @@ public class XmlRpcCHSHandler extends CHSHandler
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param pConfig
 	 * @param pStream
 	 * @return
@@ -168,6 +170,8 @@ public class XmlRpcCHSHandler extends CHSHandler
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @return
 	 */
 	protected XmlWriterFactory getXMLWriterFactory()
@@ -176,6 +180,8 @@ public class XmlRpcCHSHandler extends CHSHandler
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @return
 	 */
 	protected TypeFactory getTypeFactory()

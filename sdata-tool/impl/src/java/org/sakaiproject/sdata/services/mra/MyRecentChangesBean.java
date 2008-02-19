@@ -35,6 +35,8 @@ import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
+ * TODO Javadoc
+ * 
  * @author
  */
 public class MyRecentChangesBean implements ServiceDefinition
@@ -69,6 +71,8 @@ public class MyRecentChangesBean implements ServiceDefinition
 	private static final Log log = LogFactory.getLog(MyRecentChangesBean.class);
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param sessionManager
 	 * @param siteService
 	 * @param componentManager
@@ -122,6 +126,8 @@ public class MyRecentChangesBean implements ServiceDefinition
 	} // END CONSTRUCTOR
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param paging
 	 * @throws PermissionException
 	 * @throws IdUnusedException
@@ -674,7 +680,6 @@ public class MyRecentChangesBean implements ServiceDefinition
 	 */
 	public Map<String, Object> getResponseMap()
 	{
-		// TODO Auto-generated method stub
 		return resultMap;
 	}
 

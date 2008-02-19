@@ -34,6 +34,8 @@ import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
+ * TODO Javadoc
+ * 
  * @author
  */
 public class MyGlobalSearchDefinitionFactory implements ServiceDefinitionFactory
@@ -48,7 +50,7 @@ public class MyGlobalSearchDefinitionFactory implements ServiceDefinitionFactory
 	private ContentHostingService contentHostingService;
 
 	/**
-	 * 
+	 * TODO Javadoc
 	 */
 	public MyGlobalSearchDefinitionFactory()
 	{
@@ -148,7 +150,9 @@ public class MyGlobalSearchDefinitionFactory implements ServiceDefinitionFactory
 				response, page, searchParam, empty, currentSiteSearch);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory#init(java.util.Map)
 	 */
 	public void init(Map<String, String> config)

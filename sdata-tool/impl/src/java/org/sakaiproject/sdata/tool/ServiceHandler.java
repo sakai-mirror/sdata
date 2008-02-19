@@ -32,20 +32,29 @@ import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 
+/**
+ * TODO Javadoc
+ * 
+ * @author ieb
+ */
 public abstract class ServiceHandler implements Handler
 {
 
 	private ServiceDefinitionFactory serviceDefinitionFactory = null;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
 	 */
-	public void init(Map<String,String> config) throws ServletException
+	public void init(Map<String, String> config) throws ServletException
 	{
 		serviceDefinitionFactory = getServiceDefinitionFactory(config);
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @return
 	 * @throws ServletException
 	 */
@@ -53,13 +62,15 @@ public abstract class ServiceHandler implements Handler
 			throws ServletException;
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param config
 	 * @return
 	 * @throws ServletException
 	 */
 	@SuppressWarnings("unchecked")
-	protected ServiceDefinitionFactory getServiceDefinitionFactory(Map<String, String> config)
-			throws ServletException
+	protected ServiceDefinitionFactory getServiceDefinitionFactory(
+			Map<String, String> config) throws ServletException
 	{
 		try
 		{
@@ -108,6 +119,8 @@ public abstract class ServiceHandler implements Handler
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param ex
 	 * @throws IOException
 	 */
@@ -124,8 +137,11 @@ public abstract class ServiceHandler implements Handler
 			HttpServletResponse response, Map<String, Object> contetMap)
 			throws IOException;
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
@@ -133,32 +149,50 @@ public abstract class ServiceHandler implements Handler
 		// process(request,response);
 		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 	}
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.api.Handler#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.Handler#doDelete(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
-	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	public void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException
 	{
-		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);		
-	}
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.api.Handler#doHead(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
-	public void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-	{
-		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);				
-	}
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.api.Handler#doPut(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
-	public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-	{
-		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);				
+		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.Handler#doHead(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
+	 */
+	public void doHead(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException
+	{
+		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.Handler#doPut(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
+	 */
+	public void doPut(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException
+	{
+		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.api.Handler#setHandlerHeaders(javax.servlet.http.HttpServletResponse)
 	 */
-	public void setHandlerHeaders(HttpServletResponse response ) {
+	public void setHandlerHeaders(HttpServletResponse response)
+	{
 		response.setHeader("x-sdata-handler", this.getClass().getName());
 	}
 

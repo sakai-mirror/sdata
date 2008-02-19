@@ -36,8 +36,9 @@ import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
- * @author 
- *
+ * TODO Javadoc
+ * 
+ * @author
  */
 public class MyCoursesAndProjectsBean implements ServiceDefinition
 {
@@ -50,17 +51,17 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 
 	private Map<String, Object> map2 = new HashMap<String, Object>();;
 
-	
-
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param sessionManager
 	 * @param siteService
 	 */
 	public MyCoursesAndProjectsBean(SessionManager sessionManager, SiteService siteService)
 	{
 		setCurrentSession(sessionManager.getCurrentSession());
-		setMysites((List<Site>) siteService.getSites(SelectionType.ACCESS,
-				null, null, null, SortType.TITLE_ASC, null));
+		setMysites((List<Site>) siteService.getSites(SelectionType.ACCESS, null, null,
+				null, SortType.TITLE_ASC, null));
 
 		try
 		{
@@ -89,6 +90,8 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param mysites
 	 */
 	public void setMysites(List<Site> mysites)
@@ -97,6 +100,8 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @return
 	 */
 	public List<Site> getMysites()
@@ -105,6 +110,8 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param currentSession
 	 */
 	public void setCurrentSession(Session currentSession)
@@ -113,6 +120,8 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @return
 	 */
 	public Session getCurrentSession()
@@ -120,7 +129,9 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 		return currentSession;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinition#getResponseMap()
 	 */
 	public Map<String, Object> getResponseMap()
@@ -130,6 +141,8 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param myMappedSites
 	 */
 	public void setMyMappedSites(List<Map> myMappedSites)
@@ -138,6 +151,8 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @return
 	 */
 	public List<Map> getMyMappedSites()

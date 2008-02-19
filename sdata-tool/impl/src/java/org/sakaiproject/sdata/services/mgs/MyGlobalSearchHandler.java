@@ -29,13 +29,15 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 /**
+ * TODO Javadoc
+ * 
  * @author
  */
 public class MyGlobalSearchHandler extends JSONServiceHandler
 {
 
 	/**
-	 * 
+	 * TODO Javadoc
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -57,8 +59,8 @@ public class MyGlobalSearchHandler extends JSONServiceHandler
 	 * @see org.sakaiproject.sdata.tool.ServiceServlet#getServiceDefinitionFactory(javax.servlet.ServletConfig)
 	 */
 	@Override
-	protected ServiceDefinitionFactory getServiceDefinitionFactory(Map<String, String> config)
-			throws ServletException
+	protected ServiceDefinitionFactory getServiceDefinitionFactory(
+			Map<String, String> config) throws ServletException
 	{
 		return new MyGlobalSearchDefinitionFactory();
 	}

@@ -33,11 +33,11 @@ import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
- * @author 
- *
+ * TODO Javadoc
+ * 
+ * @author
  */
-public class SiteServiceDefinitionFactory implements
-		ServiceDefinitionFactory
+public class SiteServiceDefinitionFactory implements ServiceDefinitionFactory
 {
 
 	private SessionManager sessionManager;
@@ -47,7 +47,7 @@ public class SiteServiceDefinitionFactory implements
 	private ComponentManager componentManager;
 
 	/**
-	 * 
+	 * TODO Javadoc
 	 */
 	public SiteServiceDefinitionFactory()
 	{
@@ -58,8 +58,11 @@ public class SiteServiceDefinitionFactory implements
 				.getName());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory#getSpec(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory#getSpec(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	public ServiceDefinition getSpec(HttpServletRequest request,
 			HttpServletResponse response)
@@ -68,7 +71,9 @@ public class SiteServiceDefinitionFactory implements
 		return new SiteBean(sessionManager, siteService, siteId);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory#init(java.util.Map)
 	 */
 	public void init(Map<String, String> config)

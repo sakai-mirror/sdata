@@ -26,6 +26,8 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 
 /**
+ * TODO Javadoc
+ * 
  * @author ieb
  */
 public class ResourceDefinitionImpl implements ResourceDefinition
@@ -42,6 +44,8 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 	private String repoPath;
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param path
 	 * @param path
 	 * @param version
@@ -71,6 +75,8 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param repoPath2
 	 * @return
 	 */
@@ -90,6 +96,8 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @return
 	 */
 	public String getRepositoryPath()
@@ -98,6 +106,8 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param path2
 	 * @return
 	 */
@@ -115,6 +125,8 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param name
 	 * @return
 	 */

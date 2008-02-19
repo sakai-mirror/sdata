@@ -29,14 +29,17 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.db.api.SqlReader;
 
 /**
- * @author 
- *
+ * TODO Javadoc
+ * 
+ * @author
  */
 public class MyRecentChangesSqlreader implements SqlReader
 {
 	private static final Log log = LogFactory.getLog(MyRecentChangesSqlreader.class);
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.db.api.SqlReader#readSqlResultRecord(java.sql.ResultSet)
 	 */
 	public MyRecentChangesSqlresult readSqlResultRecord(ResultSet result)

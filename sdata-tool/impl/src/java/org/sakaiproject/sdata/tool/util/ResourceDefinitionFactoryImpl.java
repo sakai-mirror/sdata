@@ -30,6 +30,8 @@ import org.sakaiproject.sdata.tool.api.ResourceDefinitionFactory;
 import org.sakaiproject.tool.api.Tool;
 
 /**
+ * TODO Javadoc
+ * 
  * @author ieb
  */
 public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
@@ -42,8 +44,10 @@ public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 	private String baseUrl;
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param basePath
-	 * @param basePath2 
+	 * @param basePath2
 	 */
 	public ResourceDefinitionFactoryImpl(String baseUrl, String basePath)
 	{
@@ -53,6 +57,8 @@ public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param path
 	 * @return
 	 */

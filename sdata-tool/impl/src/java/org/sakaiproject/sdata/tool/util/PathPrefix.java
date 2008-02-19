@@ -29,6 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ * TODO Javadoc
  * @author ieb
  */
 public class PathPrefix
@@ -37,6 +38,7 @@ public class PathPrefix
 	private static final Log log = LogFactory.getLog(PathPrefix.class);
 
 	/**
+ * TODO Javadoc
 	 * @param user
 	 * @return
 	 */

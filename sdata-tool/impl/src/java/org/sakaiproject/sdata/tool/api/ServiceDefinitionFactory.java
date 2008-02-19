@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * TODO javadoc
+ * A service definiton factory generated Service Definitions
  * 
  * @author ieb
  */
@@ -35,7 +35,7 @@ public interface ServiceDefinitionFactory
 {
 
 	/**
-	 * TODO javadoc
+	 * Create a service definition spec from the request
 	 * 
 	 * @param request
 	 * @param response
@@ -44,6 +44,8 @@ public interface ServiceDefinitionFactory
 	ServiceDefinition getSpec(HttpServletRequest request, HttpServletResponse response);
 
 	/**
+	 * Configure the service definition factory
+	 * 
 	 * @param config
 	 */
 	void init(Map<String, String> config);

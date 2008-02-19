@@ -52,6 +52,8 @@ public class UserResourceDefinitionFactory implements ResourceDefinitionFactory
 	private String basePath;
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param basePath
 	 */
 	public UserResourceDefinitionFactory(String basePath)
@@ -60,6 +62,8 @@ public class UserResourceDefinitionFactory implements ResourceDefinitionFactory
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param path
 	 * @return
 	 * @throws SDataException

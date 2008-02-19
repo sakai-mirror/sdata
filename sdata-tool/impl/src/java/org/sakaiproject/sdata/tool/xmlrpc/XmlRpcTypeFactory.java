@@ -80,6 +80,8 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 /**
+ * TODO Javadoc
+ * 
  * @author ieb
  */
 public class XmlRpcTypeFactory implements TypeFactory
@@ -128,8 +130,11 @@ public class XmlRpcTypeFactory implements TypeFactory
 		this.config = config;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.apache.xmlrpc.common.TypeFactory#getSerializer(org.apache.xmlrpc.common.XmlRpcStreamConfig, java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.apache.xmlrpc.common.TypeFactory#getSerializer(org.apache.xmlrpc.common.XmlRpcStreamConfig,
+	 *      java.lang.Object)
 	 */
 	public TypeSerializer getSerializer(XmlRpcStreamConfig pConfig, Object pObject)
 			throws SAXException
@@ -318,8 +323,12 @@ public class XmlRpcTypeFactory implements TypeFactory
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.apache.xmlrpc.common.TypeFactory#getParser(org.apache.xmlrpc.common.XmlRpcStreamConfig, org.apache.ws.commons.util.NamespaceContextImpl, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.apache.xmlrpc.common.TypeFactory#getParser(org.apache.xmlrpc.common.XmlRpcStreamConfig,
+	 *      org.apache.ws.commons.util.NamespaceContextImpl, java.lang.String,
+	 *      java.lang.String)
 	 */
 	public TypeParser getParser(XmlRpcStreamConfig pConfig,
 			NamespaceContextImpl pContext, String pURI, String pLocalName)

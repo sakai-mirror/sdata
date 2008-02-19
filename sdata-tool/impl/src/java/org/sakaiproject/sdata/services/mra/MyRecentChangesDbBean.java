@@ -30,8 +30,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * @author 
- *
+ * TODO Javadoc
+ * 
+ * @author
  */
 public class MyRecentChangesDbBean implements ServletContextListener
 {
@@ -41,7 +42,7 @@ public class MyRecentChangesDbBean implements ServletContextListener
 	private static final Log log = LogFactory.getLog(MyRecentChangesDbBean.class);
 
 	/**
-	 * 
+	 * TODO Javadoc
 	 */
 	public void init()
 	{
@@ -103,7 +104,9 @@ public class MyRecentChangesDbBean implements ServletContextListener
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
 	 */
 	public void contextDestroyed(ServletContextEvent arg0)
@@ -111,7 +114,9 @@ public class MyRecentChangesDbBean implements ServletContextListener
 		org.sakaiproject.event.cover.EventTrackingService.deleteObserver(obs);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
 	 */
 	public void contextInitialized(ServletContextEvent arg0)

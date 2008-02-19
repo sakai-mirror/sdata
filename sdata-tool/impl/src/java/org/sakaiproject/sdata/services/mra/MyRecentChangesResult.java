@@ -22,6 +22,8 @@
 package org.sakaiproject.sdata.services.mra;
 
 /**
+ * TODO Javadoc
+ * 
  * @author
  */
 public class MyRecentChangesResult extends MyRecentChangesSqlresult
@@ -30,10 +32,12 @@ public class MyRecentChangesResult extends MyRecentChangesSqlresult
 	private String sitename;
 
 	private String reference;
-	
+
 	private String cleanVersion;
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param context
 	 * @param name
 	 * @param tool
@@ -50,7 +54,7 @@ public class MyRecentChangesResult extends MyRecentChangesSqlresult
 	}
 
 	/**
-	 * 
+	 * TODO Javadoc
 	 */
 	public MyRecentChangesResult()
 	{
@@ -58,6 +62,8 @@ public class MyRecentChangesResult extends MyRecentChangesSqlresult
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param sitename
 	 */
 	public void setSitename(String sitename)
@@ -66,6 +72,8 @@ public class MyRecentChangesResult extends MyRecentChangesSqlresult
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @return
 	 */
 	public String getSitename()
@@ -74,14 +82,18 @@ public class MyRecentChangesResult extends MyRecentChangesSqlresult
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param reference
 	 */
 	public void setReference(String reference)
 	{
 		this.reference = "/access" + reference;
 	}
-	
+
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @return
 	 */
 	public String getReference()
@@ -89,11 +101,21 @@ public class MyRecentChangesResult extends MyRecentChangesSqlresult
 		return reference;
 	}
 
+	/**
+	 * TODO Javadoc
+	 * 
+	 * @param cleanVersion
+	 */
 	public void setCleanVersion(String cleanVersion)
 	{
 		this.cleanVersion = cleanVersion;
 	}
 
+	/**
+	 * TODO Javadoc
+	 * 
+	 * @return
+	 */
 	public String getCleanVersion()
 	{
 		return cleanVersion;

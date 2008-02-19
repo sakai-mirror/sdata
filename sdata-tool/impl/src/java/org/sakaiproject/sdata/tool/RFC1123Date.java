@@ -29,6 +29,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
+ * TODO Javadoc
+ * 
  * @author ieb
  */
 public class RFC1123Date
@@ -51,6 +53,8 @@ public class RFC1123Date
 	public static final String PATTERN_RFC1123 = "EEE, dd MMM yyyy HHmmss zzz";
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param dateValue
 	 * @return
 	 * @throws ParseException
@@ -79,6 +83,8 @@ public class RFC1123Date
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param date
 	 * @return
 	 */

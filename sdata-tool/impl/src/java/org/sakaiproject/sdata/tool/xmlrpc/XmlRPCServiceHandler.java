@@ -44,14 +44,15 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 /**
+ * TODO Javadoc
+ * 
  * @author ieb
- *
  */
 public class XmlRPCServiceHandler extends ServiceHandler
 {
 
 	/**
-	 * 
+	 * TODO Javadoc
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -63,7 +64,9 @@ public class XmlRPCServiceHandler extends ServiceHandler
 
 	private TypeFactory typeFactory = new XmlRpcTypeFactory(pConfig);
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.ServiceServlet#getServiceDefinitionFactory()
 	 */
 	@Override
@@ -73,8 +76,11 @@ public class XmlRPCServiceHandler extends ServiceHandler
 		throw new ServletException("No Default ServiceDefinitionFactory");
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.ServiceServlet#sendError(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Throwable)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.ServiceServlet#sendError(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse, java.lang.Throwable)
 	 */
 	@Override
 	protected void sendError(HttpServletRequest request, HttpServletResponse response,
@@ -92,8 +98,11 @@ public class XmlRPCServiceHandler extends ServiceHandler
 		response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.ServiceServlet#sendMap(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.util.Map)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.ServiceServlet#sendMap(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse, java.util.Map)
 	 */
 	@Override
 	protected void sendMap(HttpServletRequest request, HttpServletResponse response,
@@ -131,6 +140,8 @@ public class XmlRPCServiceHandler extends ServiceHandler
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param pConfig
 	 * @param pStream
 	 * @return
@@ -144,6 +155,8 @@ public class XmlRPCServiceHandler extends ServiceHandler
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @return
 	 */
 	protected XmlWriterFactory getXMLWriterFactory()
@@ -152,6 +165,8 @@ public class XmlRPCServiceHandler extends ServiceHandler
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @return
 	 */
 	protected TypeFactory getTypeFactory()

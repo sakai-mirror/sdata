@@ -37,6 +37,7 @@ public abstract class CHSUserStorageHandler extends CHSHandler
 {
 
 	/**
+ * TODO Javadoc
 	 * 
 	 */
 	public CHSUserStorageHandler()

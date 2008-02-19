@@ -38,8 +38,9 @@ import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
- * @author 
- *
+ * TODO Javadoc
+ * 
+ * @author
  */
 public class MyRecentChangesServiceDefinitionFactory implements ServiceDefinitionFactory
 {
@@ -61,7 +62,7 @@ public class MyRecentChangesServiceDefinitionFactory implements ServiceDefinitio
 	private SearchService searchService;
 
 	/**
-	 * 
+	 * TODO Javadoc
 	 */
 	public MyRecentChangesServiceDefinitionFactory()
 	{
@@ -83,8 +84,11 @@ public class MyRecentChangesServiceDefinitionFactory implements ServiceDefinitio
 		sqlService = (SqlService) componentManager.get(SqlService.class.getName());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory#getSpec(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory#getSpec(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	public ServiceDefinition getSpec(HttpServletRequest request,
 			HttpServletResponse response)
@@ -95,10 +99,13 @@ public class MyRecentChangesServiceDefinitionFactory implements ServiceDefinitio
 			paging = Integer.parseInt(request.getParameter("page"));
 		}
 		return new MyRecentChangesBean(sessionManager, siteService, componentManager,
-				sqlService, searchService,contentHostingService,announcementService,entityManager,paging);
+				sqlService, searchService, contentHostingService, announcementService,
+				entityManager, paging);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory#init(java.util.Map)
 	 */
 	public void init(Map<String, String> config)

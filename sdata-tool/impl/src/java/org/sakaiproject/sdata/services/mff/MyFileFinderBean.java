@@ -44,95 +44,115 @@ import org.sakaiproject.site.api.SiteService.SortType;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
+ * TODO Javadoc
+ * 
  * @author
  */
-public class MyFileFinderBean implements ServiceDefinition {
+public class MyFileFinderBean implements ServiceDefinition
+{
 	private List<Map> searchList = new ArrayList<Map>();
+
 	private Map<String, Object> map2 = new HashMap<String, Object>();
 
-	List<String> arl = new ArrayList<String>();
+	private List<String> arl = new ArrayList<String>();
 
 	private Map<String, Object> map = new HashMap<String, Object>();
 
 	private static final Log log = LogFactory.getLog(MyFileFinderBean.class);
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param sessionManager
 	 * @param siteService
 	 */
-	public MyFileFinderBean(SessionManager sessionManager,
-			SiteService siteService,
-			ContentHostingService contentHostingService,
-			HttpServletResponse response, String searchParam, Boolean empty) {
-			List<Site> sites = (List<Site>) siteService
-				.getSites(SelectionType.ACCESS, null, null, null,
-						SortType.TITLE_ASC, null);
+	public MyFileFinderBean(SessionManager sessionManager, SiteService siteService,
+			ContentHostingService contentHostingService, HttpServletResponse response,
+			String searchParam, Boolean empty)
+	{
+		List<Site> sites = (List<Site>) siteService.getSites(SelectionType.ACCESS, null,
+				null, null, SortType.TITLE_ASC, null);
 
-		try {
-			sites.add(0, (siteService.getSite(siteService
-					.getUserSiteId(sessionManager.getCurrentSession()
-							.getUserId()))));
-		} catch (IdUnusedException e) {
+		try
+		{
+			sites.add(0, (siteService.getSite(siteService.getUserSiteId(sessionManager
+					.getCurrentSession().getUserId()))));
+		}
+		catch (IdUnusedException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		for (Site s : sites) {
+		for (Site s : sites)
+		{
 
 			arl.add(s.getId());
 
 		}
 		log.warn("is empty: " + empty);
-		if (!empty) {
-			
-			try {
+		if (!empty)
+		{
 
-			SearchService search = (SearchService) ComponentManager
-					.get("org.sakaiproject.search.api.SearchService");
-			SearchList res = search.search(searchParam + " && tool:content",
-					arl, 0, 50, null, null);
-			List<SearchResult> resBis = new ArrayList<SearchResult>();
+			try
+			{
 
-			int totalfilesshown = 0;
-			for (int ii = 0; ii < res.size(); ii++) {
+				SearchService search = (SearchService) ComponentManager
+						.get("org.sakaiproject.search.api.SearchService");
+				SearchList res = search.search(searchParam + " && tool:content", arl, 0,
+						50, null, null);
+				List<SearchResult> resBis = new ArrayList<SearchResult>();
 
-				SearchResult bis = (SearchResult) res.get(ii);
+				int totalfilesshown = 0;
+				for (int ii = 0; ii < res.size(); ii++)
+				{
 
-				if (bis.getId() != null && !bis.getId().equals("")) {
-					totalfilesshown += 1;
-					Map<String, String> search_result = new HashMap<String, String>();
-					search_result.put("title", bis.getTitle());
-					search_result.put("reference", bis.getReference());
-					search_result.put("url", bis.getUrl());
-					//search_result.put("searchResult", bis.getSearchResult());
-					search_result.put("score", String.valueOf(bis.getScore()));
-					searchList.add(search_result);
+					SearchResult bis = (SearchResult) res.get(ii);
 
-					resBis.add((SearchResult) res.get(ii));
+					if (bis.getId() != null && !bis.getId().equals(""))
+					{
+						totalfilesshown += 1;
+						Map<String, String> search_result = new HashMap<String, String>();
+						search_result.put("title", bis.getTitle());
+						search_result.put("reference", bis.getReference());
+						search_result.put("url", bis.getUrl());
+						// search_result.put("searchResult",
+						// bis.getSearchResult());
+						search_result.put("score", String.valueOf(bis.getScore()));
+						searchList.add(search_result);
+
+						resBis.add((SearchResult) res.get(ii));
+					}
 				}
+
+				if (resBis.size() <= 0)
+				{
+
+					map2.put("total", totalfilesshown);
+					map2.put("items", searchList);
+
+				}
+				else
+				{
+					map2.put("searchString", searchParam);
+					map2.put("total", totalfilesshown);
+					map2.put("items", searchList);
+					map2.put("status", "succes");
+
+				}
+
+			}
+			catch (Exception ex)
+			{
+				map2.put("status", "failed");
 			}
 
-			if (resBis.size() <= 0) {
+		}
+		else
+		{
 
-				map2.put("total", totalfilesshown);
-				map2.put("items", searchList);
-
-			} else {
-				map2.put("searchString", searchParam);
-				map2.put("total", totalfilesshown);
-				map2.put("items", searchList);
-				map2.put("status","succes");
-
-			}
-			
-			} catch (Exception ex){
-				map2.put("status","failed");
-			}
-
-		}else{
-		
 			map2 = new HashMap<String, Object>();
-			map2.put("status","failed");
+			map2.put("status", "failed");
 		}
 
 	}
@@ -142,13 +162,10 @@ public class MyFileFinderBean implements ServiceDefinition {
 	 * 
 	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinition#getResponseMap()
 	 */
-	public Map<String, Object> getResponseMap() {
+	public Map<String, Object> getResponseMap()
+	{
 
 		return map2;
 	}
-
-	/**
-	 * @param myMappedSites
-	 */
 
 }

@@ -151,7 +151,7 @@ public abstract class JCRHandler implements Handler
 	 */
 	protected ResourceDefinitionFactory getResourceDefinitionFactory()
 	{
-		return new ResourceDefinitionFactoryImpl(baseUrl,basePath);
+		return new ResourceDefinitionFactoryImpl(baseUrl, basePath);
 	}
 
 	/*
@@ -213,6 +213,8 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param request
 	 */
 	@SuppressWarnings("unchecked")
@@ -382,6 +384,8 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param n
 	 * @param in
 	 * @param mimeType
@@ -591,6 +595,8 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param request
 	 * @param response
 	 * @param lastModifiedTime
@@ -655,6 +661,8 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param request
 	 * @param response
 	 * @return
@@ -695,6 +703,8 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param response
 	 */
 	private void setGetCacheControl(HttpServletResponse response, boolean isprivate)
@@ -752,6 +762,8 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param request
 	 * @param response
 	 * @param path
@@ -859,6 +871,8 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param ex
 	 * @throws IOException
 	 */
@@ -876,6 +890,8 @@ public abstract class JCRHandler implements Handler
 			throws IOException;
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @return the basePath
 	 */
 	public String getBasePath()
@@ -884,6 +900,8 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param basePath
 	 *        the basePath to set
 	 */
@@ -891,11 +909,14 @@ public abstract class JCRHandler implements Handler
 	{
 		this.basePath = basePath;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.api.Handler#setHandlerHeaders(javax.servlet.http.HttpServletResponse)
 	 */
-	public void setHandlerHeaders(HttpServletResponse response ) {
+	public void setHandlerHeaders(HttpServletResponse response)
+	{
 		response.setHeader("x-sdata-handler", this.getClass().getName());
 	}
 

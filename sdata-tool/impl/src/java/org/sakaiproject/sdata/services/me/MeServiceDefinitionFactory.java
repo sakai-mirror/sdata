@@ -34,6 +34,8 @@ import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.user.api.UserDirectoryService;
 
 /**
+ * TODO Javadoc
+ * 
  * @author
  */
 public class MeServiceDefinitionFactory implements ServiceDefinitionFactory
@@ -48,13 +50,14 @@ public class MeServiceDefinitionFactory implements ServiceDefinitionFactory
 	private UserDirectoryService userDirectoryService;
 
 	/**
-	 * 
+	 * TODO Javadoc
 	 */
 	public MeServiceDefinitionFactory()
 	{
 		componentManager = org.sakaiproject.component.cover.ComponentManager
 				.getInstance();
-		//siteService = (SiteService) componentManager.get(SiteService.class.getName());
+		// siteService = (SiteService)
+		// componentManager.get(SiteService.class.getName());
 		sessionManager = (SessionManager) componentManager.get(SessionManager.class
 				.getName());
 		userDirectoryService = (UserDirectoryService) componentManager
@@ -73,12 +76,14 @@ public class MeServiceDefinitionFactory implements ServiceDefinitionFactory
 		return new MeBean(sessionManager, userDirectoryService, response);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory#init(java.util.Map)
 	 */
 	public void init(Map<String, String> config)
 	{
-		
+
 	}
 
 }

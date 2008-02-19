@@ -45,6 +45,7 @@ import org.sakaiproject.site.api.SiteService.SortType;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
+ * TODO Javadoc
  * @author
  */
 public class MyGlobalSearchBean implements ServiceDefinition
@@ -66,6 +67,7 @@ public class MyGlobalSearchBean implements ServiceDefinition
 	private Site currentSite = null;
 
 	/**
+ * TODO Javadoc
 	 * @param sessionManager
 	 * @param siteService
 	 */
@@ -289,8 +291,5 @@ public class MyGlobalSearchBean implements ServiceDefinition
 		return map2;
 	}
 
-	/**
-	 * @param myMappedSites
-	 */
 
 }

@@ -24,7 +24,8 @@ package org.sakaiproject.sdata.tool.api;
 import java.util.Map;
 
 /**
- * TODO javadoc
+ * A service defintion is a definiton of a service request created by a
+ * ServiceDefinitionFactory
  * 
  * @author ieb
  */
@@ -32,7 +33,7 @@ public interface ServiceDefinition
 {
 
 	/**
-	 * TODO javadoc
+	 * Get the response map for the request
 	 * 
 	 * @return
 	 */

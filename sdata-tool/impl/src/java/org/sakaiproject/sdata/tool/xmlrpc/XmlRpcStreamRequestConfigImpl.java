@@ -26,6 +26,8 @@ import java.util.TimeZone;
 import org.apache.xmlrpc.common.XmlRpcStreamRequestConfig;
 
 /**
+ * TODO Javadoc
+ * 
  * @author ieb
  */
 public class XmlRpcStreamRequestConfigImpl implements XmlRpcStreamRequestConfig

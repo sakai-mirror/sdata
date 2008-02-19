@@ -22,8 +22,9 @@
 package org.sakaiproject.sdata.services.mra;
 
 /**
- * @author 
- *
+ * TODO Javadoc
+ * 
+ * @author
  */
 public class MyRecentChangesSqlresult
 {
@@ -37,6 +38,8 @@ public class MyRecentChangesSqlresult
 	private String tool;
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param version
 	 */
 	public void setVersion(String version)
@@ -45,6 +48,8 @@ public class MyRecentChangesSqlresult
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @return
 	 */
 	public String getVersion()
@@ -53,6 +58,8 @@ public class MyRecentChangesSqlresult
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param context
 	 */
 	public void setContext(String context)
@@ -61,6 +68,8 @@ public class MyRecentChangesSqlresult
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @return
 	 */
 	public String getContext()
@@ -68,12 +77,19 @@ public class MyRecentChangesSqlresult
 		return context;
 	}
 
+	/**
+	 * TODO Javadoc
+	 * 
+	 * @param name
+	 */
 	public void setName(String name)
 	{
 		this.name = name;
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @return
 	 */
 	public String getName()
@@ -82,6 +98,8 @@ public class MyRecentChangesSqlresult
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param tool
 	 */
 	public void setTool(String tool)
@@ -90,6 +108,8 @@ public class MyRecentChangesSqlresult
 	}
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @return
 	 */
 	public String getTool()

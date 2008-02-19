@@ -22,7 +22,8 @@
 package org.sakaiproject.sdata.tool.api;
 
 /**
- * TODO javadoc
+ * Represents an exception with the SData server, that should be propagated back
+ * to the client application
  * 
  * @author ieb
  */
@@ -31,46 +32,10 @@ public class SDataException extends Exception
 
 	private int code;
 
-	/**
-	 * TODO javadoc
-	 */
-	public SDataException()
-	{
-	}
+
 
 	/**
-	 * TODO javadoc
-	 * 
-	 * @param arg0
-	 */
-	public SDataException(String arg0)
-	{
-		super(arg0);
-	}
-
-	/**
-	 * TODO javadoc
-	 * 
-	 * @param arg0
-	 */
-	public SDataException(Throwable arg0)
-	{
-		super(arg0);
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @param arg0
-	 * @param arg1
-	 */
-	public SDataException(String arg0, Throwable arg1)
-	{
-		super(arg0, arg1);
-	}
-
-	/**
-	 * TODO javadoc
-	 * 
+	 * Construct an exception with code and message
 	 * @param sc_unauthorized
 	 * @param string
 	 */
@@ -80,6 +45,10 @@ public class SDataException extends Exception
 		this.code = code;
 	}
 
+	/**
+	 * The status code of the exception (http)
+	 * @return
+	 */
 	public int getCode()
 	{
 		return code;

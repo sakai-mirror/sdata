@@ -37,6 +37,8 @@ import org.sakaiproject.time.api.TimeService;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
+ * TODO Javadoc
+ * 
  * @author
  */
 public class MessageOfTheDayDefinitionFactory implements ServiceDefinitionFactory
@@ -57,7 +59,7 @@ public class MessageOfTheDayDefinitionFactory implements ServiceDefinitionFactor
 	private TimeService timeService;
 
 	/**
-	 * 
+	 * TODO Javadoc
 	 */
 	public MessageOfTheDayDefinitionFactory()
 	{
@@ -73,10 +75,8 @@ public class MessageOfTheDayDefinitionFactory implements ServiceDefinitionFactor
 
 		messageService = (MessageService) componentManager.get(AnnouncementService.class
 				.getName());
-		
-		
-		timeService = (TimeService) componentManager.get(TimeService.class
-				.getName());
+
+		timeService = (TimeService) componentManager.get(TimeService.class.getName());
 	}
 
 	/*
@@ -89,11 +89,13 @@ public class MessageOfTheDayDefinitionFactory implements ServiceDefinitionFactor
 			HttpServletResponse response)
 	{
 
-		
-		return new MessageOfTheDayBean(sessionManager, messageService, timeService, siteService,response);
+		return new MessageOfTheDayBean(sessionManager, messageService, timeService,
+				siteService, response);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory#init(java.util.Map)
 	 */
 	public void init(Map<String, String> config)

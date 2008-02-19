@@ -33,8 +33,9 @@ import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
- * @author 
- *
+ * TODO Javadoc
+ * 
+ * @author
  */
 public class MyCoursesAndProjectsServiceDefinitionFactory implements
 		ServiceDefinitionFactory
@@ -47,7 +48,7 @@ public class MyCoursesAndProjectsServiceDefinitionFactory implements
 	private ComponentManager componentManager;
 
 	/**
-	 * 
+	 * TODO Javadoc
 	 */
 	public MyCoursesAndProjectsServiceDefinitionFactory()
 	{
@@ -58,8 +59,11 @@ public class MyCoursesAndProjectsServiceDefinitionFactory implements
 				.getName());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory#getSpec(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory#getSpec(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	public ServiceDefinition getSpec(HttpServletRequest request,
 			HttpServletResponse response)
@@ -67,11 +71,13 @@ public class MyCoursesAndProjectsServiceDefinitionFactory implements
 		return new MyCoursesAndProjectsBean(sessionManager, siteService);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory#init(java.util.Map)
 	 */
 	public void init(Map<String, String> config)
-	{		
+	{
 	}
 
 }

@@ -37,7 +37,7 @@ public abstract class JCRUserStorageHandler extends JCRHandler
 {
 
 	/**
-	 * 
+	 * TODO Javadoc
 	 */
 	public JCRUserStorageHandler()
 	{

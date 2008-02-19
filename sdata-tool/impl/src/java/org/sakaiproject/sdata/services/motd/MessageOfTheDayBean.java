@@ -40,6 +40,8 @@ import org.sakaiproject.time.api.TimeService;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
+ * TODO Javadoc
+ * 
  * @author
  */
 public class MessageOfTheDayBean implements ServiceDefinition
@@ -48,17 +50,19 @@ public class MessageOfTheDayBean implements ServiceDefinition
 
 	private Map<String, Object> map2 = new HashMap<String, Object>();;
 
-	List<String> arl = new ArrayList<String>();
+	private List<String> arl = new ArrayList<String>();
 
-	ArrayList<Message> Mes = new ArrayList<Message>();
+	private ArrayList<Message> Mes = new ArrayList<Message>();
 
 	private Map<String, Object> map = new HashMap<String, Object>();
 
 	private static final Log log = LogFactory.getLog(MessageOfTheDayBean.class);
-	
+
 	private List<Map> MyMotds = new ArrayList<Map>();
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param sessionManager
 	 * @param siteService
 	 */
@@ -73,7 +77,7 @@ public class MessageOfTheDayBean implements ServiceDefinition
 
 			// hardcoded because there does not seem to be a good way to do it
 			String ref = "/announcement/channel/!site/motd"; // messageservice.channelReference("!site",
-																// SiteService.MAIN_CONTAINER);
+			// SiteService.MAIN_CONTAINER);
 			// making up a date that is wayyy in the past
 			Time reallyLongTimeAgo = timeService.newTime(0);
 			List<Message> messages = messageservice.getMessages(ref, reallyLongTimeAgo,
@@ -112,9 +116,5 @@ public class MessageOfTheDayBean implements ServiceDefinition
 
 		return map2;
 	}
-
-	/**
-	 * @param myMappedSites
-	 */
 
 }

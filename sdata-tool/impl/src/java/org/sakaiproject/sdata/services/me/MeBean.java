@@ -35,6 +35,8 @@ import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 
 /**
+ * TODO Javadoc
+ * 
  * @author
  */
 public class MeBean implements ServiceDefinition
@@ -47,10 +49,12 @@ public class MeBean implements ServiceDefinition
 	private Map<String, Object> map = new HashMap<String, Object>();
 
 	/**
+	 * TODO Javadoc
+	 * 
 	 * @param sessionManager
 	 * @param siteService
 	 */
-	public MeBean(SessionManager sessionManager, 
+	public MeBean(SessionManager sessionManager,
 			UserDirectoryService userDirectoryService, HttpServletResponse response)
 	{
 		User user = null;
@@ -112,9 +116,5 @@ public class MeBean implements ServiceDefinition
 
 		return map2;
 	}
-
-	/**
-	 * @param myMappedSites
-	 */
 
 }
