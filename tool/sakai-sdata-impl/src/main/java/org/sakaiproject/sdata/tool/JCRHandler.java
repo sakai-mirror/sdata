@@ -32,6 +32,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -47,6 +48,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.sdata.FileItemIterator;
 import org.apache.commons.fileupload.sdata.FileItemStream;
 import org.apache.commons.fileupload.sdata.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.sdata.util.Streams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.api.ComponentManager;
@@ -351,7 +353,7 @@ public abstract class JCRHandler implements Handler
 			String charEncoding = request.getCharacterEncoding();
 
 			InputStream in = request.getInputStream();
-			saveStream(n, in, mimeType, charEncoding, gc);
+			saveStream(n, in, mimeType, charEncoding, gc, null);
 
 			in.close();
 			if (created)
@@ -390,12 +392,13 @@ public abstract class JCRHandler implements Handler
 	 * @param in
 	 * @param mimeType
 	 * @param charEncoding
+	 * @param progressID
 	 * @param gc
 	 * @throws
 	 * @throws RepositoryException
 	 */
 	private long saveStream(Node n, InputStream in, String mimeType, String charEncoding,
-			Calendar lastModified) throws RepositoryException
+			Calendar lastModified, String progressID) throws RepositoryException
 	{
 		Node resource = n.getNode(JCRConstants.JCR_CONTENT);
 		resource.setProperty(JCRConstants.JCR_LASTMODIFIED, lastModified);
@@ -403,11 +406,37 @@ public abstract class JCRHandler implements Handler
 		resource.setProperty(JCRConstants.JCR_ENCODING, charEncoding);
 
 		Property content = resource.getProperty(JCRConstants.JCR_DATA);
-		content.setValue(in);
+		ProgressInputStream progressStream = new ProgressInputStream(in,
+				createProgressMap(progressID));
+
+		content.setValue(progressStream);
 
 		n.save();
 
 		return content.getLength();
+	}
+
+	/**
+	 * @param progressID
+	 * @return
+	 */
+	private Map<String, Object> createProgressMap(String progressID)
+	{
+		if (progressID == null)
+		{
+			return null;
+		}
+		Map<String, Object> progressMap = new ConcurrentHashMap<String, Object>();
+		ProgressHandler.setMap(progressID, progressMap);
+		return progressMap;
+	}
+
+	/**
+	 * @param progressID
+	 */
+	private void clearProgress(String progressID)
+	{
+		ProgressHandler.setMap(progressID, null);
 	}
 
 	/*
@@ -799,6 +828,9 @@ public abstract class JCRHandler implements Handler
 
 			// Create a new file upload handler
 			ServletFileUpload upload = new ServletFileUpload();
+			String progressID = null;
+			List<String> progressIDs = new ArrayList<String>();
+			List<String> errors = new ArrayList<String>();
 
 			// Parse the request
 			FileItemIterator iter = upload.getItemIterator(request);
@@ -807,38 +839,46 @@ public abstract class JCRHandler implements Handler
 			{
 				FileItemStream item = iter.next();
 				log.debug("Got Upload through Uploads");
-				String name = item.getFieldName();
-				log.debug("    Name is " + name);
+				String name = item.getName();
+				String fieldName = item.getFieldName();
+				log.info("    Name is " + name + " field Name " + fieldName);
 				InputStream stream = item.openStream();
 				if (!item.isFormField())
 				{
 					try
 					{
-						String mimeType = item.getContentType();
-						Node target = jcrNodeFactory.createFile(rp
-								.getRepositoryPath(name));
-						GregorianCalendar lastModified = new GregorianCalendar();
-						lastModified.setTime(new Date());
-						long size = saveStream(target, stream, mimeType, "UTF-8",
-								lastModified);
-						Map<String, Object> uploadMap = new HashMap<String, Object>();
-						if (size > Integer.MAX_VALUE)
+						if (name != null && name.trim().length() > 0)
 						{
-							uploadMap.put("contentLength", String.valueOf(size));
+							String mimeType = item.getContentType();
+							Node target = jcrNodeFactory.createFile(rp
+									.getRepositoryPath(name));
+							GregorianCalendar lastModified = new GregorianCalendar();
+							lastModified.setTime(new Date());
+							long size = saveStream(target, stream, mimeType, "UTF-8",
+									lastModified, progressID);
+							Map<String, Object> uploadMap = new HashMap<String, Object>();
+							if (size > Integer.MAX_VALUE)
+							{
+								uploadMap.put("contentLength", String.valueOf(size));
+							}
+							else
+							{
+								uploadMap.put("contentLength", (int) size);
+							}
+							uploadMap.put("name", name);
+							uploadMap.put("url", rp.getExternalPath(rp
+									.getRepositoryPath(name)));
+							uploadMap.put("mimeType", mimeType);
+							uploadMap.put("lastModified", lastModified.getTime());
+							uploadMap.put("status", "ok");
+
+							uploads.put(fieldName, uploadMap);
+							uploadMap = new HashMap<String, Object>();
 						}
-						else
-						{
-							uploadMap.put("contentLength", (int) size);
-						}
-						uploadMap.put("mimeType", mimeType);
-						uploadMap.put("lastModified", lastModified.getTime());
-						uploadMap.put("status", "ok");
-						uploads.put(name, uploadMap);
-						uploadMap = new HashMap<String, Object>();
 					}
 					catch (Exception ex)
 					{
-						log.error(ex);
+						log.error("Failed to Upload Content", ex);
 						Map<String, Object> uploadMap = new HashMap<String, Object>();
 						uploadMap.put("mimeType", "text/plain");
 						uploadMap.put("encoding", "UTF-8");
@@ -852,15 +892,32 @@ public abstract class JCRHandler implements Handler
 							stackTrace.add(ste.toString());
 						}
 						uploadMap.put("stacktrace", stackTrace);
-						uploads.put(name, uploadMap);
+						uploads.put(fieldName, uploadMap);
+						errors.add(progressID);
 						uploadMap = new HashMap<String, Object>();
 
 					}
 
 				}
+				else
+				{
+					if ("progress-id".equals(fieldName))
+					{
+						progressID = Streams.asString(stream);
+						clearProgress(progressID);
+					}
+
+				}
 			}
 
+			uploads.put("success", true);
+			uploads.put("errors", errors.toArray(new String[1]));
 			sendMap(request, response, uploads);
+			log.info("Response Complete");
+			for (String id : progressIDs)
+			{
+				ProgressHandler.setMap(id, null);
+			}
 		}
 		catch (Throwable ex)
 		{
@@ -871,7 +928,7 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Sends an error to the client
 	 * 
 	 * @param ex
 	 * @throws IOException

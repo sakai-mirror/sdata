@@ -1042,7 +1042,8 @@ public abstract class CHSHandler implements Handler
 			{
 				FileItemStream item = iter.next();
 				log.debug("Got Upload through Uploads");
-				String name = item.getFieldName();
+				String name = item.getName();
+				String fieldName = item.getFieldName();
 				log.debug("    Name is " + name);
 				InputStream stream = item.openStream();
 				if (!item.isFormField())
@@ -1075,10 +1076,12 @@ public abstract class CHSHandler implements Handler
 						{
 							uploadMap.put("contentLength", (int) size);
 						}
+						uploadMap.put("name",name);
+						uploadMap.put("url",rp.getExternalPath(rp.getRepositoryPath(name)));
 						uploadMap.put("mimeType", mimeType);
 						uploadMap.put("lastModified", lastModified.getTime());
 						uploadMap.put("status", "ok");
-						uploads.put(name, uploadMap);
+						uploads.put(fieldName, uploadMap);
 						uploadMap = new HashMap<String, Object>();
 					}
 					catch (Exception ex)
@@ -1097,7 +1100,7 @@ public abstract class CHSHandler implements Handler
 							stackTrace.add(ste.toString());
 						}
 						uploadMap.put("stacktrace", stackTrace);
-						uploads.put(name, uploadMap);
+						uploads.put(fieldName, uploadMap);
 						uploadMap = new HashMap<String, Object>();
 
 					}

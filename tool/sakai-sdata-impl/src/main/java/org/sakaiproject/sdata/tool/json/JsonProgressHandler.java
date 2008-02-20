@@ -29,22 +29,26 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-import org.sakaiproject.sdata.tool.CHSHandler;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.sdata.tool.ProgressHandler;
 import org.sakaiproject.sdata.tool.api.SDataException;
 
 /**
- * A JCRServlet that serializes responses using JSON
+ * A ProgressHandler that serializes responses using JSON
  * 
  * @author ieb
  */
-public class JsonCHSHandler extends CHSHandler
+public class JsonProgressHandler extends ProgressHandler
 {
 
+	private static final Log log = LogFactory.getLog(JsonProgressHandler.class);
+
 	/**
- * TODO Javadoc
+	 * Build a Json progress handler
 	 * 
 	 */
-	public JsonCHSHandler()
+	public JsonProgressHandler()
 	{
 	}
 
@@ -58,6 +62,7 @@ public class JsonCHSHandler extends CHSHandler
 			Map<String, Object> contetMap) throws IOException
 	{
 		JSONObject jsonObject = JSONObject.fromObject(contetMap);
+		log.info(jsonObject.toString());
 		byte[] b = jsonObject.toString().getBytes("UTF-8");
 		response.setContentType("text/javascript");
 		response.setCharacterEncoding("UTF-8");

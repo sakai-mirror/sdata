@@ -60,7 +60,7 @@ public class JsonCHSUserStorageHandler extends CHSUserStorageHandler
 	{
 		JSONObject jsonObject = JSONObject.fromObject(contetMap);
 		byte[] b = jsonObject.toString().getBytes("UTF-8");
-		response.setContentType("text/json");
+		response.setContentType("text/javascript");
 		response.setCharacterEncoding("UTF-8");
 		response.setContentLength(b.length);
 		response.getOutputStream().write(b);

@@ -93,7 +93,7 @@ public class JSONServiceHandler extends ServiceHandler
 	{
 		JSONObject jsonObject = JSONObject.fromObject(contentMap);
 		byte[] b = jsonObject.toString().getBytes("UTF-8");
-		response.setContentType("text/json");
+		response.setContentType("text/javascript");
 		response.setCharacterEncoding("UTF-8");
 		response.setContentLength(b.length);
 		response.getOutputStream().write(b);
