@@ -834,6 +834,7 @@ public abstract class JCRHandler implements Handler
 
 			// Parse the request
 			FileItemIterator iter = upload.getItemIterator(request);
+			Map<String,Object> responseMap = new HashMap<String, Object>();
 			Map<String, Object> uploads = new HashMap<String, Object>();
 			while (iter.hasNext())
 			{
@@ -909,10 +910,11 @@ public abstract class JCRHandler implements Handler
 
 				}
 			}
-
-			uploads.put("success", true);
-			uploads.put("errors", errors.toArray(new String[1]));
-			sendMap(request, response, uploads);
+				
+			responseMap.put("success", true);
+			responseMap.put("errors", errors.toArray(new String[1]));
+			responseMap.put("uploads", uploads);
+			sendMap(request, response, responseMap);
 			log.info("Response Complete");
 			for (String id : progressIDs)
 			{

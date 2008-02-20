@@ -75,36 +75,33 @@ public class ProgressInputStream extends InputStream
 	}
 
 	/**
-	 * time_start: 'time_start',
-		time_last: 'time_last',
-		speed_average: 'speed_average',
-		speed_last: 'speed_last',
-		bytes_uploaded: 'bytes_uploaded',
-		bytes_total: 'bytes_total',
-		files_uploaded: 'files_uploaded',
-		est_sec: 'est_sec'
-
-	 * 
+	 * time_start: 'time_start', time_last: 'time_last', speed_average:
+	 * 'speed_average', speed_last: 'speed_last', bytes_uploaded:
+	 * 'bytes_uploaded', bytes_total: 'bytes_total', files_uploaded:
+	 * 'files_uploaded', est_sec: 'est_sec'
 	 */
 	private void updateProgress(int v)
 	{
 		long now = System.currentTimeMillis();
 		long nread_interval = nread - lastnread;
-		long time_interval = now - lasttime+1;
-		long overall = now - start+1;
+		long time_interval = now - lasttime + 1;
+		long overall = now - start + 1;
 		lastnread = nread;
 		lasttime = now;
 
 		long overall_bps = (1000 * nread) / (overall);
 		long current_bps = (1000 * nread_interval) / (time_interval);
-		progressMap.put("time_start", start);
-		progressMap.put("time_last", now);
-		progressMap.put("speed_average", overall_bps);
-		progressMap.put("speed_last", current_bps);
-		progressMap.put("bytes_uploaded", nread);
-		if (v < 0)
+		if (progressMap != null)
 		{
-			progressMap.put("complete", "true");
+			progressMap.put("time_start", start);
+			progressMap.put("time_last", now);
+			progressMap.put("speed_average", overall_bps);
+			progressMap.put("speed_last", current_bps);
+			progressMap.put("bytes_uploaded", nread);
+			if (v < 0)
+			{
+				progressMap.put("complete", "true");
+			}
 		}
 	}
 
