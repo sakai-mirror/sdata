@@ -46,6 +46,7 @@ import org.sakaiproject.tool.api.SessionManager;
 
 /**
  * TODO Javadoc
+ * 
  * @author
  */
 public class MyGlobalSearchBean implements ServiceDefinition
@@ -54,7 +55,7 @@ public class MyGlobalSearchBean implements ServiceDefinition
 
 	private Map<String, Object> map2 = new HashMap<String, Object>();
 
-	private Integer resultsOnPage = 2;
+	private Integer resultsOnPage = 5;
 
 	List<String> arl = new ArrayList<String>();
 
@@ -67,7 +68,8 @@ public class MyGlobalSearchBean implements ServiceDefinition
 	private Site currentSite = null;
 
 	/**
- * TODO Javadoc
+	 * TODO Javadoc
+	 * 
 	 * @param sessionManager
 	 * @param siteService
 	 */
@@ -146,22 +148,41 @@ public class MyGlobalSearchBean implements ServiceDefinition
 							search_result.put("reference", bis.getReference());
 							search_result.put("url", bis.getUrl());
 							search_result.put("tool", bis.getTool());
-
-							bis.getSearchResult();
-							// String test="";
-							/*
-							 * for(int term=0;term <
-							 * bis.getFieldNames().length;term++) {
-							 * log.warn("fieldname " + term + " :--: " +
-							 * bis.getFieldNames()[term]); }
-							 */
-							log.warn(bis.getSearchResult());
 							search_result.put("searchResult", bis.getSearchResult());
 
+							String context = "";
+							String[] str = (String[]) bis.getValueMap().get("context");
+							for (String s : str)
+							{
+								context += s;
+							}
+							Site resultsite = siteService.getSite(context);
+							search_result.put("site", resultsite.getTitle());
+							search_result.put("siteId",context);
 							search_result.put("score", String.valueOf(bis.getScore()));
 							searchList.add(search_result);
 
 							resBis.add(bis);
+						}
+
+						else
+						{
+							totalfilesshown += 1;
+							log.error("access denied to file");
+							// access denied to file
+							Map<String, String> search_result = new HashMap<String, String>();
+							search_result
+									.put(
+											"title",
+											"You do not have permission to view this search result, please contact the worksite administrator");
+							search_result.put("reference", "#");
+							search_result.put("url", "#");
+							search_result.put("tool", "");
+							search_result.put("searchResult", "");
+							search_result.put("score", "");
+							search_result.put("siteId","");
+							search_result.put("site", "");
+							searchList.add(search_result);
 						}
 					}
 
@@ -245,9 +266,38 @@ public class MyGlobalSearchBean implements ServiceDefinition
 						search_result.put("tool", bis.getTool());
 						search_result.put("searchResult", bis.getSearchResult());
 						search_result.put("score", String.valueOf(bis.getScore()));
+						search_result.put("siteId",context);
+						String context = "";
+						String[] str = (String[]) bis.getValueMap().get("context");
+						for (String s : str)
+						{
+							context += s;
+						}
+						Site resultsite = siteService.getSite(context);
+						search_result.put("site", resultsite.getTitle());
 						searchList.add(search_result);
 
 						resBis.add(bis);
+					}
+					else
+					{
+						totalfilesshown += 1;
+						log.error("access denied to file");
+						// access denied to file
+						Map<String, String> search_result = new HashMap<String, String>();
+						search_result
+								.put(
+										"title",
+										"You do not have permission to view this search result, please contact the worksite administrator");
+						search_result.put("reference", "#");
+						search_result.put("url", "#");
+						search_result.put("tool", "");
+						search_result.put("searchResult", "");
+						search_result.put("score", "");
+						search_result.put("siteId","");
+						search_result.put("site", "");
+
+						searchList.add(search_result);
 					}
 				}
 
@@ -290,6 +340,5 @@ public class MyGlobalSearchBean implements ServiceDefinition
 
 		return map2;
 	}
-
 
 }
