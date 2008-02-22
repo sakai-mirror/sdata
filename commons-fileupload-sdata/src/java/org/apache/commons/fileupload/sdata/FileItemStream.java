@@ -94,4 +94,18 @@ public interface FileItemStream {
      *         field; <code>false</code> if it represents an uploaded file.
      */
     boolean isFormField();
+
+	/**
+	 * Get the header field from the multipart boundary
+	 * @param key
+	 * @return the value of the header or null if there are no headers or the 
+	 * 			header does not exist.
+	 */
+	String getHeader(String key);
+
+	/**
+	 * Gets a list of all header names
+	 * @return all the header names or an empty array if there are no headers.
+	 */
+	String[] getHeaderNames();
 }

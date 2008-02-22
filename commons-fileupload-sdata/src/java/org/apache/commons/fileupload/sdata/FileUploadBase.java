@@ -623,6 +623,10 @@ public abstract class FileUploadBase {
             /** Whether the file item was already opened.
              */
             private boolean opened;
+            
+            /** The headers associated with the upload
+             */
+			private Map<String, String> headers;
 
             /**
              * CReates a new instance.
@@ -632,11 +636,12 @@ public abstract class FileUploadBase {
              * @param pFormField Whether the item is a form field.
              */
             FileItemStreamImpl(String pName, String pFieldName,
-                    String pContentType, boolean pFormField) {
+                    String pContentType, boolean pFormField, Map<String,String> pHeaders) {
                 name = pName;
                 fieldName = pFieldName;
                 contentType = pContentType;
                 formField = pFormField;
+                headers = pHeaders;
                 InputStream istream = multi.newInputStream();
                 if (fileSizeMax != -1) {
                     istream = new LimitedInputStream(istream, fileSizeMax) {
@@ -670,6 +675,20 @@ public abstract class FileUploadBase {
              */
             public String getFieldName() {
                 return fieldName;
+            }
+            
+            public String getHeader(String key) {
+            	if ( headers != null ) {
+            		return headers.get(key);
+            	}
+            	return null;
+            }
+            
+            public String[] getHeaderNames() {
+            	if ( headers != null ) {
+            		return headers.keySet().toArray(new String[0]);
+            	}
+            	return new String[0];
             }
 
             /**
@@ -876,7 +895,7 @@ public abstract class FileUploadBase {
                         String fileName = getFileName(headers);
                         currentItem = new FileItemStreamImpl(fileName,
                                 fieldName, getHeader(headers, CONTENT_TYPE),
-                                fileName == null);
+                                fileName == null,headers);
                         notifier.noteItem();
                         itemValid = true;
                         return true;
@@ -887,7 +906,7 @@ public abstract class FileUploadBase {
                         currentItem = new FileItemStreamImpl(fileName,
                                 currentFieldName,
                                 getHeader(headers, CONTENT_TYPE),
-                                false);
+                                false,null);
                         notifier.noteItem();
                         itemValid = true;
                         return true;

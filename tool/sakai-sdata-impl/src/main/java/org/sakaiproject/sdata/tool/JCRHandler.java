@@ -351,9 +351,10 @@ public abstract class JCRHandler implements Handler
 			}
 			String mimeType = request.getContentType();
 			String charEncoding = request.getCharacterEncoding();
+			long contentLength = request.getContentLength();
 
 			InputStream in = request.getInputStream();
-			saveStream(n, in, mimeType, charEncoding, gc, null);
+			saveStream(n, in, mimeType, charEncoding, gc, null,null,contentLength);
 
 			in.close();
 			if (created)
@@ -393,12 +394,14 @@ public abstract class JCRHandler implements Handler
 	 * @param mimeType
 	 * @param charEncoding
 	 * @param progressID
+	 * @param fieldName 
+	 * @param contentLength 
 	 * @param gc
 	 * @throws
 	 * @throws RepositoryException
 	 */
 	private long saveStream(Node n, InputStream in, String mimeType, String charEncoding,
-			Calendar lastModified, String progressID) throws RepositoryException
+			Calendar lastModified, String progressID, String fieldName, long contentLength) throws RepositoryException
 	{
 		Node resource = n.getNode(JCRConstants.JCR_CONTENT);
 		resource.setProperty(JCRConstants.JCR_LASTMODIFIED, lastModified);
@@ -407,7 +410,7 @@ public abstract class JCRHandler implements Handler
 
 		Property content = resource.getProperty(JCRConstants.JCR_DATA);
 		ProgressInputStream progressStream = new ProgressInputStream(in,
-				createProgressMap(progressID));
+				createProgressMap(progressID), fieldName);
 
 		content.setValue(progressStream);
 
@@ -436,8 +439,18 @@ public abstract class JCRHandler implements Handler
 	 */
 	private void clearProgress(String progressID)
 	{
-		ProgressHandler.setMap(progressID, null);
+		ProgressHandler.clearMap(progressID);
 	}
+	
+	/**
+	 * @param progressID
+	 * @return
+	 */
+	private Map<String, Object> getProgress(String progressID)
+	{
+		return ProgressHandler.getMap(progressID);
+	}
+
 
 	/*
 	 * (non-Javadoc)
@@ -829,8 +842,9 @@ public abstract class JCRHandler implements Handler
 			// Create a new file upload handler
 			ServletFileUpload upload = new ServletFileUpload();
 			String progressID = null;
-			List<String> progressIDs = new ArrayList<String>();
 			List<String> errors = new ArrayList<String>();
+			
+			long contentLength = request.getContentLength();
 
 			// Parse the request
 			FileItemIterator iter = upload.getItemIterator(request);
@@ -843,6 +857,9 @@ public abstract class JCRHandler implements Handler
 				String name = item.getName();
 				String fieldName = item.getFieldName();
 				log.info("    Name is " + name + " field Name " + fieldName);
+				for ( String headerName : item.getHeaderNames() ) {
+					log.info("Header "+headerName+" is "+item.getHeader(headerName));
+				}
 				InputStream stream = item.openStream();
 				if (!item.isFormField())
 				{
@@ -856,7 +873,7 @@ public abstract class JCRHandler implements Handler
 							GregorianCalendar lastModified = new GregorianCalendar();
 							lastModified.setTime(new Date());
 							long size = saveStream(target, stream, mimeType, "UTF-8",
-									lastModified, progressID);
+									lastModified, progressID, fieldName, contentLength);
 							Map<String, Object> uploadMap = new HashMap<String, Object>();
 							if (size > Integer.MAX_VALUE)
 							{
@@ -902,24 +919,21 @@ public abstract class JCRHandler implements Handler
 				}
 				else
 				{
-					if ("progress-id".equals(fieldName))
+					if ("submitid".equals(fieldName))
 					{
 						progressID = Streams.asString(stream);
-						clearProgress(progressID);
+						log.info("Progress ID is "+progressID);
 					}
 
 				}
 			}
-				
+			responseMap.put("progress", getProgress(progressID));	
 			responseMap.put("success", true);
 			responseMap.put("errors", errors.toArray(new String[1]));
 			responseMap.put("uploads", uploads);
 			sendMap(request, response, responseMap);
 			log.info("Response Complete");
-			for (String id : progressIDs)
-			{
-				ProgressHandler.setMap(id, null);
-			}
+			clearProgress(progressID);
 		}
 		catch (Throwable ex)
 		{
@@ -928,6 +942,7 @@ public abstract class JCRHandler implements Handler
 			return;
 		}
 	}
+
 
 	/**
 	 * Sends an error to the client

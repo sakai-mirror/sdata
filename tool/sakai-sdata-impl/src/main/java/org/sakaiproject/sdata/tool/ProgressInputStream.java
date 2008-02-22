@@ -24,6 +24,7 @@ package org.sakaiproject.sdata.tool;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author ieb
@@ -43,14 +44,32 @@ public class ProgressInputStream extends InputStream
 
 	private Map<String, Object> progressMap;
 
+	private Map<String, Object> itemMap;
+
+	private String fieldName;
+
 	/**
 	 * @param in
+	 * @param fieldName
 	 * @param progressID
 	 */
-	public ProgressInputStream(InputStream in, Map<String, Object> progressMap)
+	public ProgressInputStream(InputStream in, Map<String, Object> progressMap,
+			String fieldName)
 	{
 		this.in = in;
-		this.progressMap = progressMap;
+		if (progressMap != null)
+		{
+			this.progressMap = progressMap;
+			if (fieldName != null)
+			{
+				this.itemMap = (Map<String, Object>) progressMap.get(fieldName);
+				if (this.itemMap == null)
+				{
+					this.itemMap = new ConcurrentHashMap<String, Object>();
+					this.progressMap.put(fieldName, this.itemMap);
+				}
+			}
+		}
 		nread = 0;
 		start = System.currentTimeMillis();
 		lasttime = start;
@@ -91,16 +110,33 @@ public class ProgressInputStream extends InputStream
 
 		long overall_bps = (1000 * nread) / (overall);
 		long current_bps = (1000 * nread_interval) / (time_interval);
-		if (progressMap != null)
+		if (itemMap != null)
 		{
-			progressMap.put("time_start", start);
-			progressMap.put("time_last", now);
-			progressMap.put("speed_average", overall_bps);
-			progressMap.put("speed_last", current_bps);
-			progressMap.put("bytes_uploaded", nread);
+			itemMap.put("time_start", start);
+			itemMap.put("time_last", now);
+			itemMap.put("speed_average", overall_bps);
+			itemMap.put("speed_last", current_bps);
+			itemMap.put("bytes_uploaded", nread);
 			if (v < 0)
 			{
-				progressMap.put("complete", "true");
+				itemMap.put("complete", "true");
+				boolean complete = true;
+				for (String key : progressMap.keySet())
+				{
+					Object o = progressMap.get(key);
+					if (o instanceof Map)
+					{
+						Map<String, Object> im = (Map<String, Object>) o;
+						if (!"true".equals(im.get("complete")))
+						{
+							complete = false;
+						}
+					}
+				}
+				if (complete)
+				{
+					progressMap.put("all-completed", "true");
+				}
 			}
 		}
 	}
