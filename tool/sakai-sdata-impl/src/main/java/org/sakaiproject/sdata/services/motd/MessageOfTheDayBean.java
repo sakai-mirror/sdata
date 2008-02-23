@@ -80,23 +80,34 @@ public class MessageOfTheDayBean implements ServiceDefinition
 			// SiteService.MAIN_CONTAINER);
 			// making up a date that is wayyy in the past
 			Time reallyLongTimeAgo = timeService.newTime(0);
-			List<Message> messages = messageservice.getMessages(ref, reallyLongTimeAgo,
-					1, false, false, false);
-			if (messages.size() <= 0)
+			if (messageservice == null)
 			{
-				map.put("motdBody", "No Message of the day set");
+				map.put("motdBody", "No Announcement Service Available on this server");
 				map.put("motdUrl", "#");
 				MyMotds.add(map);
 				map2.put("items", MyMotds);
+
 			}
 			else
 			{
-				Message motd = messages.get(0);
-				map.put("motdBody", motd.getBody());
-				map.put("motdUrl", motd.getUrl());
-				MyMotds.add(map);
-				map2.put("items", MyMotds);
+				List<Message> messages = messageservice.getMessages(ref,
+						reallyLongTimeAgo, 1, false, false, false);
+				if (messages.size() <= 0)
+				{
+					map.put("motdBody", "No Message of the day set");
+					map.put("motdUrl", "#");
+					MyMotds.add(map);
+					map2.put("items", MyMotds);
+				}
+				else
+				{
+					Message motd = messages.get(0);
+					map.put("motdBody", motd.getBody());
+					map.put("motdUrl", motd.getUrl());
+					MyMotds.add(map);
+					map2.put("items", MyMotds);
 
+				}
 			}
 		}
 		catch (PermissionException e)
