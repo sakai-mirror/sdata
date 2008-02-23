@@ -110,6 +110,9 @@ public class MeBean implements ServiceDefinition {
 							if (t.getId().equals("sakai.membership")
 									|| t.getId().equals("sakai.sites")) {
 								map.put("cp", conf.getId());
+							} else if (t.getId().equals("sakai.preferences") 
+									|| t.getId().equals("sakai.preference")){
+								map.put("pref", conf.getId());
 							}
 						}
 
