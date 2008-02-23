@@ -837,6 +837,7 @@ public abstract class JCRHandler implements Handler
 				return;
 			}
 
+			
 			// Check that we have a file upload request
 
 			// Create a new file upload handler
@@ -932,7 +933,7 @@ public abstract class JCRHandler implements Handler
 			responseMap.put("errors", errors.toArray(new String[1]));
 			responseMap.put("uploads", uploads);
 			sendMap(request, response, responseMap);
-			log.info("Response Complete");
+			log.info("Response Complete Saved to "+rp.getRepositoryPath());
 			clearProgress(progressID);
 		}
 		catch (Throwable ex)

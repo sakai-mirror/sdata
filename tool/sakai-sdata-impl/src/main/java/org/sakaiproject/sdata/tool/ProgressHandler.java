@@ -202,12 +202,15 @@ public abstract class ProgressHandler implements Handler
 	 */
 	public static void clearMap(String progressID)
 	{
-		Map<String, Object> m = progressStore.get(progressID);
-		if (m != null)
+		if (progressID != null)
 		{
-			if (m.get("all-completed") != null)
+			Map<String, Object> m = progressStore.get(progressID);
+			if (m != null)
 			{
-				progressStore.remove(progressID);
+				if (m.get("all-completed") != null)
+				{
+					progressStore.remove(progressID);
+				}
 			}
 		}
 
@@ -219,6 +222,13 @@ public abstract class ProgressHandler implements Handler
 	 */
 	public static Map<String, Object> getMap(String progressID)
 	{
-		return progressStore.get(progressID);
+		if (progressID == null)
+		{
+			return null;
+		}
+		else
+		{
+			return progressStore.get(progressID);
+		}
 	}
 }
