@@ -26,11 +26,16 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * @author ieb
  */
 public class ProgressInputStream extends InputStream
 {
+
+	private static final Log log = LogFactory.getLog(ProgressInputStream.class);
 
 	private InputStream in;
 
@@ -48,13 +53,15 @@ public class ProgressInputStream extends InputStream
 
 	private String fieldName;
 
+	private long contentLength;
+
 	/**
 	 * @param in
 	 * @param fieldName
 	 * @param progressID
 	 */
 	public ProgressInputStream(InputStream in, Map<String, Object> progressMap,
-			String fieldName)
+			String fieldName, long contentLength)
 	{
 		this.in = in;
 		if (progressMap != null)
@@ -74,6 +81,8 @@ public class ProgressInputStream extends InputStream
 		start = System.currentTimeMillis();
 		lasttime = start;
 		lastnread = 0;
+		this.contentLength = contentLength;
+		updateProgress(1);
 	}
 
 	/*
@@ -101,6 +110,20 @@ public class ProgressInputStream extends InputStream
 	 */
 	private void updateProgress(int v)
 	{
+		ProgressHandler.clearComplete(progressMap);
+		if (false)
+		{
+			// use this to emulate a line at T1
+			try
+			{
+				Thread.sleep(10);
+			}
+			catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		long now = System.currentTimeMillis();
 		long nread_interval = nread - lastnread;
 		long time_interval = now - lasttime + 1;
@@ -108,8 +131,10 @@ public class ProgressInputStream extends InputStream
 		lastnread = nread;
 		lasttime = now;
 
-		long overall_bps = (1000 * nread) / (overall);
-		long current_bps = (1000 * nread_interval) / (time_interval);
+		long overall_bps = (nread) / ((overall / 1000) + 1);
+		long current_bps = (nread_interval) / ((time_interval / 1000) + 1);
+		// log.info("speed_average:"+overall_bps+"
+		// bytes_uploaded:"+nread+"/"+contentLength+" "+overall);
 		if (itemMap != null)
 		{
 			itemMap.put("time_start", start);
@@ -117,6 +142,7 @@ public class ProgressInputStream extends InputStream
 			itemMap.put("speed_average", overall_bps);
 			itemMap.put("speed_last", current_bps);
 			itemMap.put("bytes_uploaded", nread);
+			itemMap.put("contentLength", contentLength);
 			if (v < 0)
 			{
 				itemMap.put("complete", "true");
@@ -135,7 +161,8 @@ public class ProgressInputStream extends InputStream
 				}
 				if (complete)
 				{
-					progressMap.put("all-completed", "true");
+					ProgressHandler.markComplete(progressMap);
+
 				}
 			}
 		}

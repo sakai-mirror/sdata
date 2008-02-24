@@ -83,7 +83,7 @@ public abstract class ProgressHandler implements Handler
 			Map m = progressStore.get(progressID);
 			if (m != null)
 			{
-
+				m.put("servertime", System.currentTimeMillis());
 				sendMap(request, response, m);
 			}
 			else
@@ -200,20 +200,32 @@ public abstract class ProgressHandler implements Handler
 	/**
 	 * @param progressID
 	 */
-	public static void clearMap(String progressID)
+	public static void clearMap()
 	{
-		if (progressID != null)
-		{
-			Map<String, Object> m = progressStore.get(progressID);
-			if (m != null)
+		long now = System.currentTimeMillis();
+		for ( String key : progressStore.keySet() ) {
+			Object o = progressStore.get(key);
+			if ( o instanceof Map )
 			{
-				if (m.get("all-completed") != null)
+				Map<String, Object> m = (Map<String, Object>)o;
+				if (m.get("all-completed-at") != null)
 				{
-					progressStore.remove(progressID);
+					long t = Long.parseLong(String.valueOf(m.get("all-completed-at")));
+					if ( (now - t) > 60000 ) {
+						progressStore.remove(key);
+					}
 				}
+				
 			}
 		}
-
+	}
+	public static void markComplete(Map<String, Object> progressMap) {
+		progressMap.put("all-completed", "true");
+		progressMap.put("all-completed-at", String.valueOf(System.currentTimeMillis()));
+	}
+	public static void clearComplete(Map<String, Object> progressMap) {
+		progressMap.remove("all-completed");
+		progressMap.remove("all-completed-at");
 	}
 
 	/**

@@ -116,6 +116,8 @@ public abstract class JCRHandler implements Handler
 
 	private String baseUrl;
 
+	private Object newProgressMapMutex = new Object();
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -410,7 +412,7 @@ public abstract class JCRHandler implements Handler
 
 		Property content = resource.getProperty(JCRConstants.JCR_DATA);
 		ProgressInputStream progressStream = new ProgressInputStream(in,
-				createProgressMap(progressID), fieldName);
+				createProgressMap(progressID), fieldName,contentLength);
 
 		content.setValue(progressStream);
 
@@ -429,17 +431,26 @@ public abstract class JCRHandler implements Handler
 		{
 			return null;
 		}
-		Map<String, Object> progressMap = new ConcurrentHashMap<String, Object>();
-		ProgressHandler.setMap(progressID, progressMap);
+		Map<String, Object> progressMap = ProgressHandler.getMap(progressID);
+		if ( progressMap == null ) {
+			synchronized (newProgressMapMutex )
+			{
+				progressMap = ProgressHandler.getMap(progressID);
+				if ( progressMap == null ) {
+					progressMap = new ConcurrentHashMap<String, Object>();
+					ProgressHandler.setMap(progressID, progressMap);
+				}
+			}
+		}
 		return progressMap;
 	}
 
 	/**
 	 * @param progressID
 	 */
-	private void clearProgress(String progressID)
+	private void clearProgress()
 	{
-		ProgressHandler.clearMap(progressID);
+		ProgressHandler.clearMap();
 	}
 	
 	/**
@@ -928,13 +939,15 @@ public abstract class JCRHandler implements Handler
 
 				}
 			}
-			responseMap.put("progress", getProgress(progressID));	
+			Map<String, Object> progress = getProgress(progressID);
+			progress.put("servertime", System.currentTimeMillis());
+			responseMap.put("progress", progress);	
 			responseMap.put("success", true);
 			responseMap.put("errors", errors.toArray(new String[1]));
 			responseMap.put("uploads", uploads);
 			sendMap(request, response, responseMap);
 			log.info("Response Complete Saved to "+rp.getRepositoryPath());
-			clearProgress(progressID);
+			clearProgress();
 		}
 		catch (Throwable ex)
 		{
