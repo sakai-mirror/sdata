@@ -67,8 +67,6 @@
 			16.baseurl=site;
 			17.classname=org.sakaiproject.sdata.tool.SnoopHandler;
 			17.baseurl=snoop;
-			18.classname=org.sakaiproject.sdata.tool.json.JsonProgressHandler;
-			18.baseurl=progress;
 
 				</param-value>
             </init-param>

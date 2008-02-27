@@ -356,7 +356,7 @@ public abstract class JCRHandler implements Handler
 			long contentLength = request.getContentLength();
 
 			InputStream in = request.getInputStream();
-			saveStream(n, in, mimeType, charEncoding, gc, null,null,contentLength);
+			saveStream(n, in, mimeType, charEncoding, gc);
 
 			in.close();
 			if (created)
@@ -395,15 +395,14 @@ public abstract class JCRHandler implements Handler
 	 * @param in
 	 * @param mimeType
 	 * @param charEncoding
-	 * @param progressID
-	 * @param fieldName 
-	 * @param contentLength 
+	 * @param fieldName
+	 * @param contentLength
 	 * @param gc
 	 * @throws
 	 * @throws RepositoryException
 	 */
 	private long saveStream(Node n, InputStream in, String mimeType, String charEncoding,
-			Calendar lastModified, String progressID, String fieldName, long contentLength) throws RepositoryException
+			Calendar lastModified) throws RepositoryException
 	{
 		Node resource = n.getNode(JCRConstants.JCR_CONTENT);
 		resource.setProperty(JCRConstants.JCR_LASTMODIFIED, lastModified);
@@ -411,58 +410,26 @@ public abstract class JCRHandler implements Handler
 		resource.setProperty(JCRConstants.JCR_ENCODING, charEncoding);
 
 		Property content = resource.getProperty(JCRConstants.JCR_DATA);
-		ProgressInputStream progressStream = new ProgressInputStream(in,
-				createProgressMap(progressID), fieldName,contentLength);
 
-		content.setValue(progressStream);
+		content.setValue(in);
 
 		n.save();
 
 		return content.getLength();
 	}
 
-	/**
-	 * @param progressID
-	 * @return
+	/*
+	 * private Map<String, Object> createProgressMap(String progressID) { if
+	 * (progressID == null) { return null; } Map<String, Object> progressMap =
+	 * ProgressHandler.getMap(progressID); if ( progressMap == null ) {
+	 * synchronized (newProgressMapMutex ) { progressMap =
+	 * ProgressHandler.getMap(progressID); if ( progressMap == null ) {
+	 * progressMap = new ConcurrentHashMap<String, Object>();
+	 * ProgressHandler.setMap(progressID, progressMap); } } } return
+	 * progressMap; } private void clearProgress() { ProgressHandler.clearMap(); }
+	 * private Map<String, Object> getProgress(String progressID) { return
+	 * ProgressHandler.getMap(progressID); }
 	 */
-	private Map<String, Object> createProgressMap(String progressID)
-	{
-		if (progressID == null)
-		{
-			return null;
-		}
-		Map<String, Object> progressMap = ProgressHandler.getMap(progressID);
-		if ( progressMap == null ) {
-			synchronized (newProgressMapMutex )
-			{
-				progressMap = ProgressHandler.getMap(progressID);
-				if ( progressMap == null ) {
-					progressMap = new ConcurrentHashMap<String, Object>();
-					ProgressHandler.setMap(progressID, progressMap);
-				}
-			}
-		}
-		return progressMap;
-	}
-
-	/**
-	 * @param progressID
-	 */
-	private void clearProgress()
-	{
-		ProgressHandler.clearMap();
-	}
-	
-	/**
-	 * @param progressID
-	 * @return
-	 */
-	private Map<String, Object> getProgress(String progressID)
-	{
-		return ProgressHandler.getMap(progressID);
-	}
-
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -848,19 +815,17 @@ public abstract class JCRHandler implements Handler
 				return;
 			}
 
-			
 			// Check that we have a file upload request
 
 			// Create a new file upload handler
 			ServletFileUpload upload = new ServletFileUpload();
-			String progressID = null;
 			List<String> errors = new ArrayList<String>();
-			
+
 			long contentLength = request.getContentLength();
 
 			// Parse the request
 			FileItemIterator iter = upload.getItemIterator(request);
-			Map<String,Object> responseMap = new HashMap<String, Object>();
+			Map<String, Object> responseMap = new HashMap<String, Object>();
 			Map<String, Object> uploads = new HashMap<String, Object>();
 			while (iter.hasNext())
 			{
@@ -869,8 +834,11 @@ public abstract class JCRHandler implements Handler
 				String name = item.getName();
 				String fieldName = item.getFieldName();
 				log.info("    Name is " + name + " field Name " + fieldName);
-				for ( String headerName : item.getHeaderNames() ) {
-					log.info("Header "+headerName+" is "+item.getHeader(headerName));
+				for (String headerName : item.getHeaderNames())
+				{
+					log
+							.info("Header " + headerName + " is "
+									+ item.getHeader(headerName));
 				}
 				InputStream stream = item.openStream();
 				if (!item.isFormField())
@@ -885,7 +853,7 @@ public abstract class JCRHandler implements Handler
 							GregorianCalendar lastModified = new GregorianCalendar();
 							lastModified.setTime(new Date());
 							long size = saveStream(target, stream, mimeType, "UTF-8",
-									lastModified, progressID, fieldName, contentLength);
+									lastModified);
 							Map<String, Object> uploadMap = new HashMap<String, Object>();
 							if (size > Integer.MAX_VALUE)
 							{
@@ -923,31 +891,17 @@ public abstract class JCRHandler implements Handler
 						}
 						uploadMap.put("stacktrace", stackTrace);
 						uploads.put(fieldName, uploadMap);
-						errors.add(progressID);
 						uploadMap = new HashMap<String, Object>();
 
 					}
 
 				}
-				else
-				{
-					if ("submitid".equals(fieldName))
-					{
-						progressID = Streams.asString(stream);
-						log.info("Progress ID is "+progressID);
-					}
-
-				}
 			}
-			Map<String, Object> progress = getProgress(progressID);
-			progress.put("servertime", System.currentTimeMillis());
-			responseMap.put("progress", progress);	
 			responseMap.put("success", true);
 			responseMap.put("errors", errors.toArray(new String[1]));
 			responseMap.put("uploads", uploads);
 			sendMap(request, response, responseMap);
-			log.info("Response Complete Saved to "+rp.getRepositoryPath());
-			clearProgress();
+			log.info("Response Complete Saved to " + rp.getRepositoryPath());
 		}
 		catch (Throwable ex)
 		{
@@ -956,7 +910,6 @@ public abstract class JCRHandler implements Handler
 			return;
 		}
 	}
-
 
 	/**
 	 * Sends an error to the client
