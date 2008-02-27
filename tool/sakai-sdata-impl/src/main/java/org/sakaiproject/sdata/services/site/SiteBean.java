@@ -107,6 +107,7 @@ public class SiteBean implements ServiceDefinition
 			boolean member = false;
 
 			map2.put("title", theSite.getTitle());
+			map2.put("id", siteId);
 
 			if (!theSite.isPublished())
 			{
@@ -150,7 +151,8 @@ public class SiteBean implements ServiceDefinition
 					mpages.put("name", page.getTitle());
 					mpages.put("layout", page.getLayoutTitle());
 					mpages.put("number", number);
-
+					mpages.put("popup", page.isPopUp());
+					
 					ArrayList<HashMap<String, Object>> arltools = new ArrayList<HashMap<String, Object>>();
 					List<ToolConfiguration> lst = (List<ToolConfiguration>) page
 							.getTools();
