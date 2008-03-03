@@ -147,7 +147,20 @@ public abstract class ServiceHandler implements Handler
 			throws ServletException, IOException
 	{
 		// process(request,response);
-		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+		//response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+		try
+		{
+			ServiceDefinition serviceDefinition = serviceDefinitionFactory.getSpec(
+					request, response);
+
+			Map<String, Object> responseMap = serviceDefinition.getResponseMap();
+
+			sendMap(request, response, responseMap);
+		}
+		catch (Exception ex)
+		{
+			sendError(request, response, ex);
+		}
 	}
 
 	/*

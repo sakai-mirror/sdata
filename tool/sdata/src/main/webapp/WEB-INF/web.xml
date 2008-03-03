@@ -67,6 +67,8 @@
 			16.baseurl=site;
 			17.classname=org.sakaiproject.sdata.tool.SnoopHandler;
 			17.baseurl=snoop;
+			18.classname=org.sakaiproject.sdata.services.qa.QaHandler;
+			18.baseurl=qa;
 
 				</param-value>
             </init-param>
