@@ -574,7 +574,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 
 									MyRecentChangesResult mrcs = new MyRecentChangesResult();
 									mrcs.setContext(s);
-									mrcs.setName(srl.getTitle());
+									mrcs.setName(arrResult);
 
 									for (Site ss : mySites)
 									{
