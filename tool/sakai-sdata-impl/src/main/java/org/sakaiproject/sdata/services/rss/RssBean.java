@@ -33,8 +33,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.memory.api.MemoryService;
-import org.sakaiproject.memory.cover.MemoryServiceLocator;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
@@ -56,8 +54,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import sun.misc.Cache;
 
 /**
  * TODO Javadoc
