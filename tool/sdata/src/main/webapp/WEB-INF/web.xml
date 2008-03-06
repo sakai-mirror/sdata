@@ -69,6 +69,8 @@
 			17.baseurl=snoop;
 			18.classname=org.sakaiproject.sdata.services.qa.QaHandler;
 			18.baseurl=qa;
+			19.classname=org.sakaiproject.sdata.services.rss.RssHandler;
+			19.baseurl=rss;
 
 				</param-value>
             </init-param>
