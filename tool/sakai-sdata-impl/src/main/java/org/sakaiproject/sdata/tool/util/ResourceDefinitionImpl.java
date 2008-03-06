@@ -21,9 +21,13 @@
 
 package org.sakaiproject.sdata.tool.util;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
+import org.sakaiproject.sdata.tool.api.SDataException;
+import org.sakaiproject.sdata.tool.api.SecurityAssertion;
 
 /**
  * TODO Javadoc
@@ -45,12 +49,15 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 
 	/**
 	 * TODO Javadoc
+	 * @param request 
 	 * 
-	 * @param path
-	 * @param path
-	 * @param version
+	 * @param inbasePath the base path of the resource in the repository
+	 * @param inpath the path reference in the request
+	 * @param method the method bein applied
+	 * @param version the version being requested.
+	 * @throws SDataException 
 	 */
-	public ResourceDefinitionImpl(String inbasePath, String inpath, int inversion)
+	public ResourceDefinitionImpl(String method, String inbasePath, String inpath, int inversion, SecurityAssertion assertion ) throws SDataException
 	{
 		if (log.isDebugEnabled())
 		{
@@ -72,7 +79,10 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 		{
 			repoPath = "/" + repoPath;
 		}
+		
+		assertion.check(method,repoPath);
 	}
+
 
 	/**
 	 * TODO Javadoc

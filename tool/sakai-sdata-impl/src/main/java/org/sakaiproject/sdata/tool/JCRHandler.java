@@ -32,7 +32,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -48,7 +47,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.sdata.FileItemIterator;
 import org.apache.commons.fileupload.sdata.FileItemStream;
 import org.apache.commons.fileupload.sdata.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.sdata.util.Streams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.api.ComponentManager;
@@ -143,19 +141,20 @@ public abstract class JCRHandler implements Handler
 		jcrNodeFactory = (JCRNodeFactoryService) componentManager
 				.get(JCRNodeFactoryService.class.getName());
 
-		resourceDefinitionFactory = getResourceDefinitionFactory();
+		resourceDefinitionFactory = getResourceDefinitionFactory(config);
 
 	}
 
 	/**
 	 * Creates a resource definition factory suitable for controlling the
 	 * storage of items
+	 * @param config 
 	 * 
 	 * @return
 	 */
-	protected ResourceDefinitionFactory getResourceDefinitionFactory()
+	protected ResourceDefinitionFactory getResourceDefinitionFactory(Map<String, String> config)
 	{
-		return new ResourceDefinitionFactoryImpl(baseUrl, basePath);
+		return new ResourceDefinitionFactoryImpl(config, baseUrl, basePath);
 	}
 
 	/*
@@ -217,8 +216,8 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
-	 * 
+	 * Snoop on the request if the request parameter snoop=1
+	 * output appears in the log,  at level INFO
 	 * @param request
 	 */
 	@SuppressWarnings("unchecked")
@@ -368,6 +367,11 @@ public abstract class JCRHandler implements Handler
 				response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 			}
 		}
+		catch (SDataException e ) 
+		{
+			sendError(request, response, e);
+			log.error("Failed  To service Request "+e.getMessage());			
+		}
 		catch (Exception e)
 		{
 			sendError(request, response, e);
@@ -389,16 +393,12 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
-	 * 
-	 * @param n
-	 * @param in
-	 * @param mimeType
-	 * @param charEncoding
-	 * @param fieldName
-	 * @param contentLength
-	 * @param gc
-	 * @throws
+	 * Save the input stream into the JCR storage, 
+	 * @param n the target node
+	 * @param in the input stream from the request.
+	 * @param mimeType the mime type of the content
+	 * @param charEncoding the character encoding of the content
+	 * @param lastModified the time when the content was last modified
 	 * @throws RepositoryException
 	 */
 	private long saveStream(Node n, InputStream in, String mimeType, String charEncoding,
@@ -586,6 +586,11 @@ public abstract class JCRHandler implements Handler
 			}
 
 		}
+		catch (SDataException e ) 
+		{
+			sendError(request, response, e);
+			log.error("Failed  To service Request "+e.getMessage());			
+		}
 		catch (Exception e)
 		{
 			sendError(request, response, e);
@@ -615,14 +620,17 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Check the ranges requested in the request headers, this conforms to the RFC on
+	 * the range, if-range headers. On return, it the request is to be processed, true will
+	 * be returned, and ranges[0] will the the start byte of the response stream and ranges[1] 
+	 * will be the end byte.
 	 * 
-	 * @param request
-	 * @param response
-	 * @param lastModifiedTime
-	 * @param currentEtag
-	 * @param ranges
-	 * @return
+	 * @param request the request object from the Servlet Container.
+	 * @param response the response object from the servlet container.
+	 * @param lastModifiedTime the last modified time from target object
+	 * @param currentEtag the Etag
+	 * @param ranges ranges setup to contain the start and end byte offsets
+	 * @return true if the response is to contain data, false if not.
 	 * @throws IOException
 	 */
 	private boolean checkRanges(HttpServletRequest request, HttpServletResponse response,
@@ -681,7 +689,7 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Evaluate pre-conditions, based on the request, as per the http rfc.
 	 * 
 	 * @param request
 	 * @param response

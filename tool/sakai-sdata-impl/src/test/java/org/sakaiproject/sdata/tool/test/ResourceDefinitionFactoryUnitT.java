@@ -21,8 +21,13 @@
 
 package org.sakaiproject.sdata.tool.test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.ResourceDefinitionFactory;
 import org.sakaiproject.sdata.tool.api.SDataException;
@@ -33,6 +38,8 @@ import org.sakaiproject.sdata.tool.util.ResourceDefinitionFactoryImpl;
  */
 public class ResourceDefinitionFactoryUnitT extends TestCase
 {
+
+	private static final Log log = LogFactory.getLog(ResourceDefinitionFactoryUnitT.class);
 
 	private String[] basePaths = { "/", "/sakai", "/sakai/", null, "" };
 
@@ -74,7 +81,9 @@ public class ResourceDefinitionFactoryUnitT extends TestCase
 	{
 		for (String basePath : basePaths)
 		{
-			ResourceDefinitionFactory rdf = new ResourceDefinitionFactoryImpl("",basePath);
+			Map<String, String> config = new HashMap<String, String>();
+			config.put("testmode", "testmode");
+			ResourceDefinitionFactory rdf = new ResourceDefinitionFactoryImpl(config,"",basePath);
 			for (String testPath : testPaths)
 			{
 				MockResourceDefinitionRequest request = new MockResourceDefinitionRequest(
@@ -131,6 +140,7 @@ public class ResourceDefinitionFactoryUnitT extends TestCase
 				}
 				catch (SDataException sde)
 				{
+					log.info("Failed ",sde);
 					fail("Problem with dispatcher " + sde.getMessage());
 				}
 

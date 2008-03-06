@@ -46,7 +46,8 @@ import org.sakaiproject.user.api.UserNotDefinedException;
  * 
  * @author
  */
-public class MeBean implements ServiceDefinition {
+public class MeBean implements ServiceDefinition
+{
 
 	private Session currentSession;
 
@@ -61,57 +62,72 @@ public class MeBean implements ServiceDefinition {
 	 * @param siteService
 	 */
 	public MeBean(SiteService siteService, SessionManager sessionManager,
-			UserDirectoryService userDirectoryService,
-			HttpServletResponse response) {
+			UserDirectoryService userDirectoryService, HttpServletResponse response)
+	{
 		User user = null;
 		currentSession = sessionManager.getCurrentSession();
 
-		try {
+		try
+		{
 
 			user = userDirectoryService.getUser(currentSession.getUserId());
-		} catch (UserNotDefinedException e) {
+		}
+		catch (UserNotDefinedException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		// serialize user object
 
-		if (user == null) {
+		if (user == null)
+		{
 
-			try {
+			try
+			{
 				response.sendError(401);
-			} catch (IOException e) {
+			}
+			catch (IOException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-		} else {
+		}
+		else
+		{
 
-			try {
+			try
+			{
 
 				Site myWorkSite = (siteService.getSite(siteService
 						.getUserSiteId(currentSession.getUserId())));
 
 				map.put("workspace", myWorkSite.getId());
 
-				List<SitePage> pages = (List<SitePage>) myWorkSite
-						.getOrderedPages();
+				List<SitePage> pages = (List<SitePage>) myWorkSite.getOrderedPages();
 
-				for (SitePage page : pages) {
+				for (SitePage page : pages)
+				{
 
 					List<ToolConfiguration> lst = (List<ToolConfiguration>) page
 							.getTools();
 
-					for (ToolConfiguration conf : lst) {
+					for (ToolConfiguration conf : lst)
+					{
 
 						Tool t = conf.getTool();
 
-						if (t != null && t.getId() != null) {
+						if (t != null && t.getId() != null)
+						{
 							if (t.getId().equals("sakai.membership")
-									|| t.getId().equals("sakai.sites")) {
+									|| t.getId().equals("sakai.sites"))
+							{
 								map.put("cp", conf.getId());
-							} else if (t.getId().equals("sakai.preferences") 
-									|| t.getId().equals("sakai.preference")){
+							}
+							else if (t.getId().equals("sakai.preferences")
+									|| t.getId().equals("sakai.preference"))
+							{
 								map.put("pref", conf.getId());
 							}
 						}
@@ -120,7 +136,9 @@ public class MeBean implements ServiceDefinition {
 
 				}
 
-			} catch (IdUnusedException e) {
+			}
+			catch (IdUnusedException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -130,8 +148,23 @@ public class MeBean implements ServiceDefinition {
 			map.put("lastname", user.getLastName());
 			map.put("displayId", user.getDisplayId());
 			map.put("email", user.getEmail());
-			map.put("createdBy", user.getCreatedBy().getDisplayName());
-			map.put("createdTime", user.getCreatedTime().toStringLocalFull());
+			try
+			{
+				map.put("createdBy", user.getCreatedBy().getDisplayName());
+			}
+			catch (NullPointerException npe)
+			{
+				map.put("createdTime", "na");
+			}
+			try
+			{
+				map.put("createdTime", user.getCreatedTime().toStringLocalFull());
+			}
+			catch (NullPointerException npe)
+			{
+				map.put("createdTime", "na");
+
+			}
 			map.put("userEid", user.getEid());
 
 			// map2.put("items", user);
@@ -146,7 +179,8 @@ public class MeBean implements ServiceDefinition {
 	 * 
 	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinition#getResponseMap()
 	 */
-	public Map<String, Object> getResponseMap() {
+	public Map<String, Object> getResponseMap()
+	{
 
 		return map2;
 	}

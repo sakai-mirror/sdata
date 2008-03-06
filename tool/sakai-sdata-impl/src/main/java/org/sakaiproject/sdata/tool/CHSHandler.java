@@ -153,19 +153,20 @@ public abstract class CHSHandler implements Handler
 		contentHostingService = (ContentHostingService) componentManager
 				.get(ContentHostingService.class.getName());
 
-		resourceDefinitionFactory = getResourceDefinitionFactory();
+		resourceDefinitionFactory = getResourceDefinitionFactory(config);
 
 	}
 
 	/**
 	 * Creates a resource definition factory suitable for controlling the
 	 * storage of items
+	 * @param config 
 	 * 
 	 * @return
 	 */
-	protected ResourceDefinitionFactory getResourceDefinitionFactory()
+	protected ResourceDefinitionFactory getResourceDefinitionFactory(Map<String, String> config)
 	{
-		return new ResourceDefinitionFactoryImpl(baseUrl, basePath);
+		return new ResourceDefinitionFactoryImpl(config,baseUrl, basePath);
 	}
 
 	/*

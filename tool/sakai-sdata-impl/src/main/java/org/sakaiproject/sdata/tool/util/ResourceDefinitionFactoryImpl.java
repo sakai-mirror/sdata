@@ -21,12 +21,16 @@
 
 package org.sakaiproject.sdata.tool.util;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.ResourceDefinitionFactory;
+import org.sakaiproject.sdata.tool.api.SDataException;
+import org.sakaiproject.sdata.tool.api.SecurityAssertion;
 import org.sakaiproject.tool.api.Tool;
 
 /**
@@ -43,26 +47,32 @@ public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 
 	private String baseUrl;
 
+	private SecurityAssertion pathSecurityAssertion;
+
 	/**
-	 * TODO Javadoc
+	 * construct a resource definition factory with a base URL and a base Path.
+	 * @param config 
 	 * 
 	 * @param basePath
 	 * @param basePath2
 	 */
-	public ResourceDefinitionFactoryImpl(String baseUrl, String basePath)
+	public ResourceDefinitionFactoryImpl(Map<String, String> config, String baseUrl, String basePath)
 	{
 		this.basePath = basePath;
 		this.baseUrl = baseUrl;
+		pathSecurityAssertion = new PathSecurityAssertion(config);
 		log.info("Definition Factory Created with base path as " + basePath);
 	}
+
 
 	/**
 	 * TODO Javadoc
 	 * 
 	 * @param path
 	 * @return
+	 * @throws SDataException 
 	 */
-	public ResourceDefinition getSpec(HttpServletRequest request)
+	public ResourceDefinition getSpec(final HttpServletRequest request) throws SDataException
 	{
 
 		request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
@@ -89,7 +99,7 @@ public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 			}
 		}
 
-		return new ResourceDefinitionImpl(basePath, path, version);
+		return new ResourceDefinitionImpl(request.getMethod(), basePath, path, version, pathSecurityAssertion);
 	}
 
 }

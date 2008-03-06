@@ -21,6 +21,8 @@
 
 package org.sakaiproject.sdata.tool;
 
+import java.util.Map;
+
 import org.sakaiproject.sdata.tool.api.ResourceDefinitionFactory;
 import org.sakaiproject.sdata.tool.util.UserResourceDefinitionFactory;
 
@@ -49,7 +51,7 @@ public abstract class JCRUserStorageHandler extends JCRHandler
 	 * @see org.sakaiproject.sdata.tool.JCRServlet#getResourceDefinitionFactory()
 	 */
 	@Override
-	protected ResourceDefinitionFactory getResourceDefinitionFactory()
+	protected ResourceDefinitionFactory getResourceDefinitionFactory(Map<String, String> config)
 	{
 		return new UserResourceDefinitionFactory(getBasePath());
 	}
