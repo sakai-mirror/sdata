@@ -571,7 +571,7 @@ public abstract class JsonUserStorageHandlerUnitT extends TestCase
 				{
 					ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
 					mreq.setParameter("multifile" + i,
-							new UploadFileSpec[] { new UploadFileSpec("OriginalFileName",
+							new UploadFileSpec[] { new UploadFileSpec("multifile" + i,
 									bais, "text/html") });
 				}
 				WebResponse resp = wc.getResponse(mreq);
@@ -595,7 +595,7 @@ public abstract class JsonUserStorageHandlerUnitT extends TestCase
 					WebRequest req = new GetMethodWebRequest(getBaseDataUrl()
 							+ "dirlist/multifile" + i);
 					log.info("Trying " + "dirlist/multifile" + i);
-					resp = wc.getResponse(req);
+					resp = wc.getResource(req);
 					checkHandler(resp);
 
 					assertEquals("Expected a 200 response ", 200, resp.getResponseCode());

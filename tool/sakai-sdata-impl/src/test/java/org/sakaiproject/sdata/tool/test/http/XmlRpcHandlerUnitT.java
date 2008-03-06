@@ -527,7 +527,7 @@ public abstract class XmlRpcHandlerUnitT extends TestCase
 				{
 					ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
 					mreq.setParameter("multifile" + i,
-							new UploadFileSpec[] { new UploadFileSpec("OriginalFileName",
+							new UploadFileSpec[] { new UploadFileSpec("multifile" + i,
 									bais, "text/html") });
 				}
 				WebResponse resp = wc.getResponse(mreq);

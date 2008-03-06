@@ -21,6 +21,8 @@
 
 package org.sakaiproject.sdata.tool.test.http;
 
+import com.meterware.httpunit.parsing.HTMLParserFactory;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
