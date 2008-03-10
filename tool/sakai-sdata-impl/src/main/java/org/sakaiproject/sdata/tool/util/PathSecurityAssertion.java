@@ -188,7 +188,7 @@ public class PathSecurityAssertion implements SecurityAssertion
 		String resourceLock = getResourceLock(method);
 		try
 		{
-			if (!securityService.unlock(resourceReference, resourceLock))
+			if (!securityService.unlock(resourceLock,resourceReference))
 			{
 				log.info("Denied " + method + ":" + resourceLock + " on "
 						+ resourceLocation + " ref  " + resourceReference);

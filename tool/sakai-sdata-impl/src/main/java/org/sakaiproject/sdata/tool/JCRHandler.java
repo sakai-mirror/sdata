@@ -148,11 +148,12 @@ public abstract class JCRHandler implements Handler
 	/**
 	 * Creates a resource definition factory suitable for controlling the
 	 * storage of items
-	 * @param config 
 	 * 
+	 * @param config
 	 * @return
 	 */
-	protected ResourceDefinitionFactory getResourceDefinitionFactory(Map<String, String> config)
+	protected ResourceDefinitionFactory getResourceDefinitionFactory(
+			Map<String, String> config)
 	{
 		return new ResourceDefinitionFactoryImpl(config, baseUrl, basePath);
 	}
@@ -216,8 +217,9 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
-	 * Snoop on the request if the request parameter snoop=1
-	 * output appears in the log,  at level INFO
+	 * Snoop on the request if the request parameter snoop=1 output appears in
+	 * the log, at level INFO
+	 * 
 	 * @param request
 	 */
 	@SuppressWarnings("unchecked")
@@ -280,7 +282,10 @@ public abstract class JCRHandler implements Handler
 			Property content = resource.getProperty(JCRConstants.JCR_DATA);
 
 			response.setContentType(mimeType.getString());
-			response.setCharacterEncoding(encoding.getString());
+			if (mimeType.getString().startsWith("text"))
+			{
+				response.setCharacterEncoding(encoding.getString());
+			}
 			response.setDateHeader(LAST_MODIFIED, lastModified.getDate()
 					.getTimeInMillis());
 			// we need to do something about huge files
@@ -350,8 +355,13 @@ public abstract class JCRHandler implements Handler
 			{
 				gc.setTime(new Date());
 			}
-			String mimeType = request.getContentType();
-			String charEncoding = request.getCharacterEncoding();
+			String mimeType = ContentTypes.getContentType(n.getName(), request
+					.getContentType());
+			String charEncoding = null;
+			if (mimeType.startsWith("text"))
+			{
+				charEncoding = request.getCharacterEncoding();
+			}
 			long contentLength = request.getContentLength();
 
 			InputStream in = request.getInputStream();
@@ -367,10 +377,10 @@ public abstract class JCRHandler implements Handler
 				response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 			}
 		}
-		catch (SDataException e ) 
+		catch (SDataException e)
 		{
 			sendError(request, response, e);
-			log.error("Failed  To service Request "+e.getMessage());			
+			log.error("Failed  To service Request " + e.getMessage());
 		}
 		catch (Exception e)
 		{
@@ -393,12 +403,18 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
-	 * Save the input stream into the JCR storage, 
-	 * @param n the target node
-	 * @param in the input stream from the request.
-	 * @param mimeType the mime type of the content
-	 * @param charEncoding the character encoding of the content
-	 * @param lastModified the time when the content was last modified
+	 * Save the input stream into the JCR storage,
+	 * 
+	 * @param n
+	 *        the target node
+	 * @param in
+	 *        the input stream from the request.
+	 * @param mimeType
+	 *        the mime type of the content
+	 * @param charEncoding
+	 *        the character encoding of the content
+	 * @param lastModified
+	 *        the time when the content was last modified
 	 * @throws RepositoryException
 	 */
 	private long saveStream(Node n, InputStream in, String mimeType, String charEncoding,
@@ -469,7 +485,10 @@ public abstract class JCRHandler implements Handler
 				Property content = resource.getProperty(JCRConstants.JCR_DATA);
 
 				response.setContentType(mimeType.getString());
-				response.setCharacterEncoding(encoding.getString());
+				if (mimeType.getString().startsWith("text"))
+				{
+					response.setCharacterEncoding(encoding.getString());
+				}
 				response.setDateHeader(LAST_MODIFIED, lastModified.getDate()
 						.getTimeInMillis());
 				setGetCacheControl(response, rp.isPrivate());
@@ -496,20 +515,20 @@ public abstract class JCRHandler implements Handler
 
 				long length = ranges[1] - ranges[0];
 
-				if (length > 1024 * 1024)
-				{
-					length = 1024 * 1024;
-					ranges[1] = ranges[0] + length;
-				}
-
 				if (totallength != length)
 				{
+					response.setHeader("Accept-Ranges", "bytes");
+					response.setDateHeader("Last-Modified", lastModifiedTime);
 					response.setHeader("Content-Range", "bytes " + ranges[0] + "-"
 							+ (ranges[1] - 1) + "/" + totallength);
 					response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+
+					log.info("Partial Content Sent "
+							+ HttpServletResponse.SC_PARTIAL_CONTENT);
 				}
 				else
 				{
+					response.setDateHeader("Last-Modified", lastModifiedTime);
 					response.setStatus(HttpServletResponse.SC_OK);
 				}
 
@@ -586,17 +605,16 @@ public abstract class JCRHandler implements Handler
 			}
 
 		}
-		catch (SDataException e ) 
+		catch (SDataException e)
 		{
+			log.error("Failed  To service Request " + e.getMessage());
 			sendError(request, response, e);
-			log.error("Failed  To service Request "+e.getMessage());			
 		}
 		catch (Exception e)
 		{
-			sendError(request, response, e);
-
-			snoopRequest(request);
 			log.error("Failed  TO service Request ", e);
+			sendError(request, response, e);
+			snoopRequest(request);
 		}
 		finally
 		{
@@ -620,16 +638,21 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
-	 * Check the ranges requested in the request headers, this conforms to the RFC on
-	 * the range, if-range headers. On return, it the request is to be processed, true will
-	 * be returned, and ranges[0] will the the start byte of the response stream and ranges[1] 
-	 * will be the end byte.
+	 * Check the ranges requested in the request headers, this conforms to the
+	 * RFC on the range, if-range headers. On return, it the request is to be
+	 * processed, true will be returned, and ranges[0] will the the start byte
+	 * of the response stream and ranges[1] will be the end byte.
 	 * 
-	 * @param request the request object from the Servlet Container.
-	 * @param response the response object from the servlet container.
-	 * @param lastModifiedTime the last modified time from target object
-	 * @param currentEtag the Etag
-	 * @param ranges ranges setup to contain the start and end byte offsets
+	 * @param request
+	 *        the request object from the Servlet Container.
+	 * @param response
+	 *        the response object from the servlet container.
+	 * @param lastModifiedTime
+	 *        the last modified time from target object
+	 * @param currentEtag
+	 *        the Etag
+	 * @param ranges
+	 *        ranges setup to contain the start and end byte offsets
 	 * @return true if the response is to contain data, false if not.
 	 * @throws IOException
 	 */
@@ -702,7 +725,7 @@ public abstract class JCRHandler implements Handler
 	{
 		lastModifiedTime = lastModifiedTime - (lastModifiedTime % 1000);
 		long ifUnmodifiedSince = request.getDateHeader("if-unmodified-since");
-		if (ifUnmodifiedSince > 0 && (lastModifiedTime > ifUnmodifiedSince))
+		if (ifUnmodifiedSince > 0 && (lastModifiedTime >= ifUnmodifiedSince))
 		{
 			response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
 			return false;
@@ -718,7 +741,13 @@ public abstract class JCRHandler implements Handler
 		String ifNoneMatch = request.getHeader("if-none-match");
 		if (ifNoneMatch != null && ifNoneMatch.indexOf(currentEtag) >= 0)
 		{
-			response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
+			if ("GET|HEAD".indexOf(request.getMethod()) >= 0 ) {
+				response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
+				
+			} else {
+				// ifMatch was present, but the currentEtag didnt match
+				response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
+			}
 			return false;
 		}
 		long ifModifiedSince = request.getDateHeader("if-modified-since");
@@ -855,7 +884,8 @@ public abstract class JCRHandler implements Handler
 					{
 						if (name != null && name.trim().length() > 0)
 						{
-							String mimeType = item.getContentType();
+							String mimeType = ContentTypes.getContentType(name, item
+									.getContentType());
 							Node target = jcrNodeFactory.createFile(rp
 									.getRepositoryPath(name));
 							GregorianCalendar lastModified = new GregorianCalendar();
