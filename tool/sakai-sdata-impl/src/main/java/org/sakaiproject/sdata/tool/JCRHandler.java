@@ -528,7 +528,6 @@ public abstract class JCRHandler implements Handler
 				}
 				else
 				{
-					response.setDateHeader("Last-Modified", lastModifiedTime);
 					response.setStatus(HttpServletResponse.SC_OK);
 				}
 
@@ -998,5 +997,4 @@ public abstract class JCRHandler implements Handler
 	{
 		response.setHeader("x-sdata-handler", this.getClass().getName());
 	}
-
 }

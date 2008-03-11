@@ -455,7 +455,6 @@ public abstract class CHSHandler implements Handler
 					throw new RuntimeException("Failed to create node at "
 							+ rp.getRepositoryPath() + " type ContentResource ");
 				}
-
 			}
 			else
 			{
@@ -474,8 +473,15 @@ public abstract class CHSHandler implements Handler
 			{
 				gc.setTime(new Date());
 			}
-			String mimeType = request.getContentType();
-			String charEncoding = request.getCharacterEncoding();
+			String name = getName(cre);
+			String mimeType = ContentTypes.getContentType(name, request
+					.getContentType());
+			String charEncoding = null;
+			if (mimeType.startsWith("text"))
+			{
+				charEncoding = request.getCharacterEncoding();
+			}
+			long contentLength = request.getContentLength();
 
 			InputStream in = request.getInputStream();
 
@@ -496,6 +502,11 @@ public abstract class CHSHandler implements Handler
 						+ rp.getRepositoryPath());
 			}
 		}
+		catch (SDataException e)
+		{
+			sendError(request, response, e);
+			log.error("Failed  To service Request " + e.getMessage());
+		}
 		catch (Exception e)
 		{
 			sendError(request, response, e);
@@ -514,6 +525,21 @@ public abstract class CHSHandler implements Handler
 			{
 			}
 		}
+	}
+
+	/**
+	 * @param cre
+	 * @return
+	 */
+	private String getName(ContentResourceEdit cre)
+	{
+		String id = cre.getId();
+		if (id == null) return null;
+		if (id.length() == 0) return null;
+
+		// take after the last resource path separator, not counting one at the very end if there
+		boolean lastIsSeparator = id.charAt(id.length() - 1) == '/';
+		return id.substring(id.lastIndexOf('/', id.length() - 2) + 1, (lastIsSeparator ? id.length() - 1 : id.length()));
 	}
 
 	/**
@@ -688,17 +714,16 @@ public abstract class CHSHandler implements Handler
 
 				long length = ranges[1] - ranges[0];
 
-				if (length > 1024 * 1024)
-				{
-					length = 1024 * 1024;
-					ranges[1] = ranges[0] + length;
-				}
-
 				if (totallength != length)
 				{
+					response.setHeader("Accept-Ranges", "bytes");
+					response.setDateHeader("Last-Modified", lastModifiedTime);
 					response.setHeader("Content-Range", "bytes " + ranges[0] + "-"
 							+ (ranges[1] - 1) + "/" + totallength);
 					response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+
+					log.info("Partial Content Sent "
+							+ HttpServletResponse.SC_PARTIAL_CONTENT);
 				}
 				else
 				{
@@ -798,12 +823,16 @@ public abstract class CHSHandler implements Handler
 			}
 
 		}
+		catch (SDataException e)
+		{
+			log.error("Failed  To service Request " + e.getMessage());
+			sendError(request, response, e);
+		}
 		catch (Exception e)
 		{
-			sendError(request, response, e);
-
-			snoopRequest(request);
 			log.error("Failed  TO service Request ", e);
+			sendError(request, response, e);
+			snoopRequest(request);
 		}
 		finally
 		{
@@ -879,24 +908,24 @@ public abstract class CHSHandler implements Handler
 			range = range.trim();
 			if (range.startsWith("-"))
 			{
-				finalRanges[1] = Long.parseLong(range.substring(1));
+				ranges[1] = Long.parseLong(range.substring(1));
 			}
 			else if (range.endsWith("-"))
 			{
-				finalRanges[0] = Long.parseLong(range.substring(0, range.length() - 1));
+				ranges[0] = Long.parseLong(range.substring(0, range.length() - 1));
 			}
 			else
 			{
 				r = range.split("-");
-				finalRanges[0] = Long.parseLong(r[0]);
-				finalRanges[1] = Long.parseLong(r[1]);
+				ranges[0] = Long.parseLong(r[0]);
+				ranges[1] = Long.parseLong(r[1]);
 			}
 		}
 		return true;
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Evaluate pre-conditions, based on the request, as per the http rfc.
 	 * 
 	 * @param request
 	 * @param response
@@ -909,7 +938,7 @@ public abstract class CHSHandler implements Handler
 	{
 		lastModifiedTime = lastModifiedTime - (lastModifiedTime % 1000);
 		long ifUnmodifiedSince = request.getDateHeader("if-unmodified-since");
-		if (ifUnmodifiedSince > 0 && (lastModifiedTime > ifUnmodifiedSince))
+		if (ifUnmodifiedSince > 0 && (lastModifiedTime >= ifUnmodifiedSince))
 		{
 			response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
 			return false;
@@ -925,7 +954,13 @@ public abstract class CHSHandler implements Handler
 		String ifNoneMatch = request.getHeader("if-none-match");
 		if (ifNoneMatch != null && ifNoneMatch.indexOf(currentEtag) >= 0)
 		{
-			response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
+			if ("GET|HEAD".indexOf(request.getMethod()) >= 0 ) {
+				response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
+				
+			} else {
+				// ifMatch was present, but the currentEtag didnt match
+				response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
+			}
 			return false;
 		}
 		long ifModifiedSince = request.getDateHeader("if-modified-since");
@@ -1035,9 +1070,13 @@ public abstract class CHSHandler implements Handler
 
 			// Create a new file upload handler
 			ServletFileUpload upload = new ServletFileUpload();
+			List<String> errors = new ArrayList<String>();
+
+			long contentLength = request.getContentLength();
 
 			// Parse the request
 			FileItemIterator iter = upload.getItemIterator(request);
+			Map<String, Object> responseMap = new HashMap<String, Object>();
 			Map<String, Object> uploads = new HashMap<String, Object>();
 			while (iter.hasNext())
 			{
@@ -1045,49 +1084,59 @@ public abstract class CHSHandler implements Handler
 				log.debug("Got Upload through Uploads");
 				String name = item.getName();
 				String fieldName = item.getFieldName();
-				log.debug("    Name is " + name);
+				log.info("    Name is " + name + " field Name " + fieldName);
+				for (String headerName : item.getHeaderNames())
+				{
+					log
+							.info("Header " + headerName + " is "
+									+ item.getHeader(headerName));
+				}
 				InputStream stream = item.openStream();
 				if (!item.isFormField())
 				{
 					try
 					{
-						String mimeType = item.getContentType();
-						String resourceName = rp.getRepositoryPath() + "/" + name;
-						ContentEntity ce = getEntity(resourceName);
-						ContentResourceEdit target = null;
-						if (ce != null)
+						if ( name!= null && name.trim().length() > 0 ) 
 						{
-							target = contentHostingService.editResource(resourceName);
-						}
-						if (target == null)
-						{
-							target = addFile(resourceName);
+							String mimeType = ContentTypes.getContentType(name,item.getContentType());
+							String resourceName = rp.getRepositoryPath() + "/" + name;
+							ContentEntity ce = getEntity(resourceName);
+							ContentResourceEdit target = null;
+							if (ce != null)
+							{
+								target = contentHostingService.editResource(resourceName);
+							}
+							if (target == null)
+							{
+								target = addFile(resourceName);
 
+							}
+							GregorianCalendar lastModified = new GregorianCalendar();
+							lastModified.setTime(new Date());
+							long size = saveStream(target, stream, mimeType, "UTF-8",
+									lastModified);
+							Map<String, Object> uploadMap = new HashMap<String, Object>();
+							if (size > Integer.MAX_VALUE)
+							{
+								uploadMap.put("contentLength", String.valueOf(size));
+							}
+							else
+							{
+								uploadMap.put("contentLength", (int) size);
+							}
+							uploadMap.put("name",name);
+							uploadMap.put("url",rp.getExternalPath(rp.getRepositoryPath(name)));
+							uploadMap.put("mimeType", mimeType);
+							uploadMap.put("lastModified", lastModified.getTime());
+							uploadMap.put("status", "ok");
+							
+							uploads.put(fieldName, uploadMap);
+							uploadMap = new HashMap<String, Object>();
 						}
-						GregorianCalendar lastModified = new GregorianCalendar();
-						lastModified.setTime(new Date());
-						long size = saveStream(target, stream, mimeType, "UTF-8",
-								lastModified);
-						Map<String, Object> uploadMap = new HashMap<String, Object>();
-						if (size > Integer.MAX_VALUE)
-						{
-							uploadMap.put("contentLength", String.valueOf(size));
-						}
-						else
-						{
-							uploadMap.put("contentLength", (int) size);
-						}
-						uploadMap.put("name",name);
-						uploadMap.put("url",rp.getExternalPath(rp.getRepositoryPath(name)));
-						uploadMap.put("mimeType", mimeType);
-						uploadMap.put("lastModified", lastModified.getTime());
-						uploadMap.put("status", "ok");
-						uploads.put(fieldName, uploadMap);
-						uploadMap = new HashMap<String, Object>();
 					}
 					catch (Exception ex)
 					{
-						log.error("Failed to Add Item to " + ex);
+						log.error("Failed to Upload Content", ex);
 						Map<String, Object> uploadMap = new HashMap<String, Object>();
 						uploadMap.put("mimeType", "text/plain");
 						uploadMap.put("encoding", "UTF-8");
@@ -1108,8 +1157,11 @@ public abstract class CHSHandler implements Handler
 
 				}
 			}
-
-			sendMap(request, response, uploads);
+			responseMap.put("success", true);
+			responseMap.put("errors", errors.toArray(new String[1]));
+			responseMap.put("uploads", uploads);
+			sendMap(request, response, responseMap);
+			log.info("Response Complete Saved to " + rp.getRepositoryPath());
 		}
 		catch (Throwable ex)
 		{
