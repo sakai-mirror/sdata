@@ -37,7 +37,9 @@ import javax.jcr.nodetype.NodeType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.sdata.tool.JCRNodeMap;
 import org.sakaiproject.sdata.tool.api.Handler;
+import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.SDataFunction;
 
@@ -55,16 +57,13 @@ public class JCRNodeMetadata implements SDataFunction
 	 *      javax.servlet.http.HttpServletResponse, java.lang.Object)
 	 */
 	public void call(Handler handler, HttpServletRequest request,
-			HttpServletResponse response, Object target) throws SDataException
+			HttpServletResponse response, Object target, ResourceDefinition rp) throws SDataException
 	{
 		try
 		{
 			Node n = (Node) target;
-			Map<String, Object> m = new HashMap<String, Object>();
-			m.put("primaryNodeType", n.getPrimaryNodeType().getName());
-			m.put("mixinNodeType", getMixinTypes(n));
-			m.put("properties", getProperties(n));
-			handler.sendMap(request, response, m);
+			JCRNodeMap nm = new JCRNodeMap(n,1,rp);
+			handler.sendMap(request, response, nm);
 		}
 		catch (RepositoryException rex)
 		{
@@ -78,82 +77,7 @@ public class JCRNodeMetadata implements SDataFunction
 		}
 
 	}
+	
 
-	/**
-	 * @param n
-	 * @return
-	 * @throws RepositoryException
-	 */
-	private Map<String, Object> getProperties(Node n) throws RepositoryException
-	{
-		Map<String, Object> m = new HashMap<String, Object>();
-		for (PropertyIterator pi = n.getProperties(); pi.hasNext();)
-		{
-			Property p = pi.nextProperty();
-			String name = p.getName();
-			boolean multiValue = p.getDefinition().isMultiple();
-			if (multiValue)
-			{
-				Value[] v = p.getValues();
-				Object[] o = new String[v.length];
-				for (int i = 0; i < o.length; i++)
-				{
-					o[i] = formatType(v[i]);
-				}
-				m.put(name,o);
-			}
-			else
-			{
-				Value v = p.getValue();
-				m.put(name,formatType(v));
-
-			}
-		}
-		return m;
-	}
-
-	/**
-	 * @param value
-	 * @return
-	 * @throws RepositoryException 
-	 */
-	private Object formatType(Value value) throws RepositoryException
-	{
-		switch (value.getType())
-		{
-			case PropertyType.BOOLEAN:
-				return String.valueOf(value.getBoolean());
-			case PropertyType.BINARY:
-				return "--binary--";
-			case PropertyType.DATE:
-				return value.getDate().getTime();
-			case PropertyType.DOUBLE:
-				return String.valueOf(value.getDouble());
-			case PropertyType.LONG:
-				return String.valueOf(value.getLong());
-			case PropertyType.NAME:
-			case PropertyType.PATH:
-			case PropertyType.REFERENCE:
-			case PropertyType.STRING:
-				return value.getString();
-			default:
-				return "--undefined--";
-		}
-	}
-
-	/**
-	 * @param n
-	 * @return
-	 * @throws RepositoryException
-	 */
-	private String[] getMixinTypes(Node n) throws RepositoryException
-	{
-		List<String> mixins = new ArrayList<String>();
-		for (NodeType nt : n.getMixinNodeTypes())
-		{
-			mixins.add(nt.getName());
-		}
-		return mixins.toArray(new String[0]);
-	}
 
 }

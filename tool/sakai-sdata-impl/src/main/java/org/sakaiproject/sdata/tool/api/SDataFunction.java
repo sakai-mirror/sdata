@@ -39,7 +39,7 @@ public interface SDataFunction
 	 * @param target 
 	 * @throws SDataException 
 	 */
-	void call(Handler handler, HttpServletRequest request, HttpServletResponse response, Object target) throws SDataException;
+	void call(Handler handler, HttpServletRequest request, HttpServletResponse response, Object target, ResourceDefinition rp) throws SDataException;
 
 
 }

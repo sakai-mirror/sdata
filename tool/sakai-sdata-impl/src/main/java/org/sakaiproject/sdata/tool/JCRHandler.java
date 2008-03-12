@@ -146,10 +146,8 @@ public abstract class JCRHandler implements Handler
 				.get(JCRNodeFactoryService.class.getName());
 
 		resourceDefinitionFactory = getResourceDefinitionFactory(config);
-		
+
 		resourceFunctionFactory = getResourceFunctionFactory(config);
-		
-		
 
 	}
 
@@ -174,7 +172,6 @@ public abstract class JCRHandler implements Handler
 	{
 		return new ResourceFunctionFactoryImpl(config);
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -492,10 +489,11 @@ public abstract class JCRHandler implements Handler
 
 			NodeType nt = n.getPrimaryNodeType();
 
-			SDataFunction m = resourceFunctionFactory.getFunction(rp.getFunctionDefinition());
+			SDataFunction m = resourceFunctionFactory.getFunction(rp
+					.getFunctionDefinition());
 			if (m != null)
 			{
-				m.call(this, request, response, n);
+				m.call(this, request, response, n, rp);
 			}
 			else
 			{
@@ -591,44 +589,7 @@ public abstract class JCRHandler implements Handler
 					// String.valueOf(lastModified.getDate()
 					// .getTimeInMillis()));
 
-					Map<String, Object> outputMap = new HashMap<String, Object>();
-					outputMap.put("path", rp.getExternalPath(n.getPath()));
-					outputMap.put("type", nt.getName());
-					List<Map> nodes = new ArrayList<Map>();
-					NodeIterator ni = n.getNodes();
-					int i = 0;
-					while (ni.hasNext())
-					{
-						Node cn = ni.nextNode();
-						Map<String, Object> cnm = new HashMap<String, Object>();
-						cnm.put("path", rp.getExternalPath(cn.getName()));
-						NodeType cnt = cn.getPrimaryNodeType();
-						cnm.put("type", cnt.getName());
-						cnm.put("position", String.valueOf(i));
-						if (JCRConstants.NT_FILE.equals(nt.getName()))
-						{
-							Node resource = n.getNode(JCRConstants.JCR_CONTENT);
-							Property nodeLastModified = resource
-									.getProperty(JCRConstants.JCR_LASTMODIFIED);
-							Property mimeType = resource
-									.getProperty(JCRConstants.JCR_MIMETYPE);
-							Property encoding = resource
-									.getProperty(JCRConstants.JCR_ENCODING);
-							Property content = resource
-									.getProperty(JCRConstants.JCR_DATA);
-
-							cnm.put("mime-type", mimeType.getString());
-							cnm.put("encoding", encoding.getString());
-							cnm.put("length", String.valueOf(content.getLength()));
-							cnm.put("lastModified", nodeLastModified.getDate());
-
-						}
-						nodes.add(cnm);
-						i++;
-					}
-					outputMap.put("nitems", nodes.size());
-					outputMap.put("items", nodes);
-
+					JCRNodeMap outputMap = new JCRNodeMap(n, 1, rp);
 					sendMap(request, response, outputMap);
 				}
 			}
@@ -981,7 +942,6 @@ public abstract class JCRHandler implements Handler
 			return;
 		}
 	}
-
 
 	/**
 	 * TODO Javadoc
