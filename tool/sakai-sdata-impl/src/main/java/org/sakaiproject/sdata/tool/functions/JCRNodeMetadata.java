@@ -33,12 +33,10 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import javax.jcr.ValueFormatException;
 import javax.jcr.nodetype.NodeType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.sdata.tool.RFC1123Date;
 import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.SDataFunction;
@@ -97,7 +95,7 @@ public class JCRNodeMetadata implements SDataFunction
 			if (multiValue)
 			{
 				Value[] v = p.getValues();
-				String[] o = new String[v.length];
+				Object[] o = new String[v.length];
 				for (int i = 0; i < o.length; i++)
 				{
 					o[i] = formatType(v[i]);
@@ -119,7 +117,7 @@ public class JCRNodeMetadata implements SDataFunction
 	 * @return
 	 * @throws RepositoryException 
 	 */
-	private String formatType(Value value) throws RepositoryException
+	private Object formatType(Value value) throws RepositoryException
 	{
 		switch (value.getType())
 		{
@@ -128,7 +126,7 @@ public class JCRNodeMetadata implements SDataFunction
 			case PropertyType.BINARY:
 				return "--binary--";
 			case PropertyType.DATE:
-				return RFC1123Date.formatDate(value.getDate().getTime());
+				return value.getDate().getTime();
 			case PropertyType.DOUBLE:
 				return String.valueOf(value.getDouble());
 			case PropertyType.LONG:
