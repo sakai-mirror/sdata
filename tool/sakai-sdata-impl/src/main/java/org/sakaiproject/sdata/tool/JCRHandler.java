@@ -589,7 +589,7 @@ public abstract class JCRHandler implements Handler
 					// String.valueOf(lastModified.getDate()
 					// .getTimeInMillis()));
 
-					JCRNodeMap outputMap = new JCRNodeMap(n, 1, rp);
+					JCRNodeMap outputMap = new JCRNodeMap(n, 2, rp);
 					sendMap(request, response, outputMap);
 				}
 			}
