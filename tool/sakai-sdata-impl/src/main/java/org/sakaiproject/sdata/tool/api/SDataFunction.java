@@ -3,7 +3,7 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright (c) 2008 Timefields Ltd
+ * Copyright (c) 2003, 2004, 2005, 2006, 2007 The Sakai Foundation.
  *
  * Licensed under the Educational Community License, Version 1.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,33 +19,27 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sdata.tool.test;
+package org.sakaiproject.sdata.tool.api;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * @author ieb
+ *
  */
-public class TestAll extends TestCase
+public interface SDataFunction
 {
 
 	/**
-	 * @return
+	 * @param handler
+	 * @param request
+	 * @param response
+	 * @param target 
+	 * @throws SDataException 
 	 */
-	public static Test suite()
-	{
-		TestSuite suite = new TestSuite("Test for org.sakaiproject.sdata.tool.test");
-		// $JUnit-BEGIN$
-		suite.addTestSuite(PathPrefixUnitT.class);
-		suite.addTestSuite(ResourceDefinitionFactoryUnitT.class);
-		suite.addTestSuite(UserResourceDefinitionFactoryUnitT.class);
-		suite.addTestSuite(PathSecurityAssertionUnitT.class);
-		suite.addTestSuite(ControllerServletUnitT.class);
-		suite.addTestSuite(RFC1123DateUnitT.class);
-		// $JUnit-END$
-		return suite;
-	}
+	void call(Handler handler, HttpServletRequest request, HttpServletResponse response, Object target) throws SDataException;
+
 
 }

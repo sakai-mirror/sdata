@@ -237,4 +237,23 @@ public interface Handler
 	 */
 	void setHandlerHeaders(HttpServletResponse response);
 
+	/**
+	 * Sends an error to the client
+	 * 
+	 * @param ex
+	 * @throws IOException
+	 */
+	void sendError(HttpServletRequest request,
+			HttpServletResponse response, Throwable ex) throws IOException;
+
+	/**
+	 * Serailize a Map strucutre to the output stream
+	 * 
+	 * @param uploads
+	 * @throws IOException
+	 */
+	void sendMap(HttpServletRequest request,
+			HttpServletResponse response, Map<String, Object> contetMap)
+			throws IOException;
+
 }

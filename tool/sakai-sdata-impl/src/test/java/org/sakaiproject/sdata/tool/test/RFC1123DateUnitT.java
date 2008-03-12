@@ -34,15 +34,15 @@ import org.sakaiproject.sdata.tool.RFC1123Date;
 /**
  * @author ieb
  */
-public class RFC1123DateTest extends TestCase
+public class RFC1123DateUnitT extends TestCase
 {
 
-	private static final Log log = LogFactory.getLog(RFC1123DateTest.class);
+	private static final Log log = LogFactory.getLog(RFC1123DateUnitT.class);
 
 	/**
 	 * @param arg0
 	 */
-	public RFC1123DateTest(String arg0)
+	public RFC1123DateUnitT(String arg0)
 	{
 		super(arg0);
 	}

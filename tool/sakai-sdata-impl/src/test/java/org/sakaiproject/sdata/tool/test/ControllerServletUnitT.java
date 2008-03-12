@@ -31,13 +31,13 @@ import org.sakaiproject.sdata.tool.api.Handler;
 /**
  * @author ieb
  */
-public class ControllerServletTest extends TestCase
+public class ControllerServletUnitT extends TestCase
 {
 
 	/**
 	 * @param arg0
 	 */
-	public ControllerServletTest(String arg0)
+	public ControllerServletUnitT(String arg0)
 	{
 		super(arg0);
 	}

@@ -163,24 +163,6 @@ public abstract class ProgressHandler implements Handler
 		response.setHeader("x-sdata-handler", this.getClass().getName());
 	}
 
-	/**
-	 * Serailize a Map strucutre to the output stream
-	 * 
-	 * @param uploads
-	 * @throws IOException
-	 */
-	protected abstract void sendMap(HttpServletRequest request,
-			HttpServletResponse response, Map<String, Object> contetMap)
-			throws IOException;
-
-	/**
-	 * Sends an error to the client
-	 * 
-	 * @param ex
-	 * @throws IOException
-	 */
-	protected abstract void sendError(HttpServletRequest request,
-			HttpServletResponse response, Throwable ex) throws IOException;
 
 	public static void setMap(String key, Map<String, Object> map)
 	{

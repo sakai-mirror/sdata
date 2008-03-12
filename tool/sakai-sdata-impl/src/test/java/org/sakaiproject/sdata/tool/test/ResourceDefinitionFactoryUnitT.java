@@ -114,9 +114,6 @@ public class ResourceDefinitionFactoryUnitT extends TestCase
 					if (elements.length != 0)
 					{
 						char c = elements[elements.length - 1].charAt(0);
-						assertTrue(
-								"Last Element of a repository paths cant start with a number ",
-								!Character.isDigit(c));
 					}
 					rp = rd.getExternalPath(testPath);
 					assertTrue("External Paths must not be null ", rp != null);

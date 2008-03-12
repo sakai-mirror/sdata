@@ -39,6 +39,7 @@
 			2.baseurl=c;
 			3.classname=org.sakaiproject.sdata.tool.json.JsonJcrHandler;
 			3.baseurl=f;
+			3.function.m=org.sakaiproject.sdata.tool.functions.JCRNodeMetadata;
 			4.classname=org.sakaiproject.sdata.tool.json.JsonJcrUserStorageHandler;
 			4.baseurl=p;
 			5.classname=org.sakaiproject.sdata.tool.json.JsonCHSUserStorageHandler;

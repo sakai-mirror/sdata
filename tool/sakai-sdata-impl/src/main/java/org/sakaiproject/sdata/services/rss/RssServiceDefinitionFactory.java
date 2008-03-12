@@ -26,11 +26,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
-import org.sakaiproject.site.api.SiteService;
-import org.sakaiproject.tool.api.SessionManager;
 
 /**
  * TODO Javadoc

@@ -23,11 +23,13 @@ package org.sakaiproject.sdata.services.me;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.site.api.Site;
@@ -61,7 +63,7 @@ public class MeBean implements ServiceDefinition
 	 * @param sessionManager
 	 * @param siteService
 	 */
-	public MeBean(SiteService siteService, SessionManager sessionManager,
+	public MeBean(SiteService siteService, SessionManager sessionManager, 
 			UserDirectoryService userDirectoryService, HttpServletResponse response)
 	{
 		User user = null;
@@ -166,7 +168,24 @@ public class MeBean implements ServiceDefinition
 
 			}
 			map.put("userEid", user.getEid());
-
+			
+			
+			Map<String, Object> properties = new HashMap<String, Object>();
+			ResourceProperties p = user.getProperties();
+			for (Iterator<String> i = p.getPropertyNames(); i.hasNext(); ) {
+				
+				String pname = i.next();
+				List<String> l = p.getPropertyList(pname);
+				if ( l.size() ==  1 ) {
+					properties.put(pname, l.get(0));
+				} else if ( l.size() > 1 ) {
+					properties.put(pname, l);
+				}
+			}
+			map.put("properties", properties);
+			
+			
+			
 			// map2.put("items", user);
 			map2.put("items", map);
 

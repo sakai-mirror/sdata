@@ -57,8 +57,7 @@ public class JsonProgressHandler extends ProgressHandler
 	 * 
 	 * @see org.sakaiproject.sdata.tool.JCRServlet#sendMap(java.util.Map)
 	 */
-	@Override
-	protected void sendMap(HttpServletRequest request, HttpServletResponse response,
+	public void sendMap(HttpServletRequest request, HttpServletResponse response,
 			Map<String, Object> contetMap) throws IOException
 	{
 		JSONObject jsonObject = JSONObject.fromObject(contetMap);
@@ -75,8 +74,7 @@ public class JsonProgressHandler extends ProgressHandler
 	 * 
 	 * @see org.sakaiproject.sdata.tool.JCRServlet#sendError(java.lang.Throwable)
 	 */
-	@Override
-	protected void sendError(HttpServletRequest request, HttpServletResponse response,
+	public void sendError(HttpServletRequest request, HttpServletResponse response,
 			Throwable ex) throws IOException
 	{
 		if (ex instanceof SDataException)

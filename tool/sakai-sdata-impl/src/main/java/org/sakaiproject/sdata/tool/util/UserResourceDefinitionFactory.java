@@ -106,7 +106,7 @@ public class UserResourceDefinitionFactory implements ResourceDefinitionFactory
 
 		path = pathPrefix + path;
 
-		return new ResourceDefinitionImpl(request.getMethod(), basePath, path, version, nullSecurityAssertion  );
+		return new ResourceDefinitionImpl(request.getMethod(),null, basePath, path, version, nullSecurityAssertion  );
 	}
 
 }

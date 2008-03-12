@@ -146,4 +146,18 @@ public class JCRDumper implements Handler
 		response.setHeader("x-sdata-handler", this.getClass().getName());
 	}
 
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.api.Handler#sendError(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Throwable)
+	 */
+	public void sendError(HttpServletRequest request, HttpServletResponse response, Throwable ex) throws IOException
+	{
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.api.Handler#sendMap(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.util.Map)
+	 */
+	public void sendMap(HttpServletRequest request, HttpServletResponse response, Map<String, Object> contetMap) throws IOException
+	{
+	}
+
 }

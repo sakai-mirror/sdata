@@ -1171,24 +1171,6 @@ public abstract class CHSHandler implements Handler
 		}
 	}
 
-	/**
-	 * TODO Javadoc
-	 * 
-	 * @param ex
-	 * @throws IOException
-	 */
-	protected abstract void sendError(HttpServletRequest request,
-			HttpServletResponse response, Throwable ex) throws IOException;
-
-	/**
-	 * Serailize a Map strucutre to the output stream
-	 * 
-	 * @param uploads
-	 * @throws IOException
-	 */
-	protected abstract void sendMap(HttpServletRequest request,
-			HttpServletResponse response, Map<String, Object> contetMap)
-			throws IOException;
 
 	/**
 	 * TODO Javadoc

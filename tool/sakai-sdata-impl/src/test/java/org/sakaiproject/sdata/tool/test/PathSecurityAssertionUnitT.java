@@ -36,10 +36,10 @@ import org.sakaiproject.sdata.tool.util.PathSecurityAssertion;
 /**
  * @author ieb
  */
-public class PathSecurityAssertionTest extends TestCase
+public class PathSecurityAssertionUnitT extends TestCase
 {
 
-	private static final Log log = LogFactory.getLog(PathSecurityAssertionTest.class);
+	private static final Log log = LogFactory.getLog(PathSecurityAssertionUnitT.class);
 
 	private String[] tests = { 
 			"false,GET,/sfsfdffsd,false", 
@@ -63,7 +63,7 @@ public class PathSecurityAssertionTest extends TestCase
 	/**
 	 * @param arg0
 	 */
-	public PathSecurityAssertionTest(String arg0)
+	public PathSecurityAssertionUnitT(String arg0)
 	{
 		super(arg0);
 	}

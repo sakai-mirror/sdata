@@ -21,8 +21,6 @@
 
 package org.sakaiproject.sdata.tool.util;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
@@ -47,6 +45,8 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 
 	private String repoPath;
 
+	private String function;
+
 	/**
 	 * TODO Javadoc
 	 * @param request 
@@ -57,7 +57,7 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 	 * @param version the version being requested.
 	 * @throws SDataException 
 	 */
-	public ResourceDefinitionImpl(String method, String inbasePath, String inpath, int inversion, SecurityAssertion assertion ) throws SDataException
+	public ResourceDefinitionImpl(String method, String f, String inbasePath, String inpath, int inversion, SecurityAssertion assertion ) throws SDataException
 	{
 		if (log.isDebugEnabled())
 		{
@@ -67,6 +67,8 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 		path = inpath;
 		version = inversion;
 		basePath = String.valueOf(inbasePath);
+		
+		function = f;
 
 		repoPath = basePath + path;
 		repoPath = cleanPath(repoPath);
@@ -153,6 +155,15 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 	public boolean isPrivate()
 	{
 		return false;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.api.ResourceDefinition#getFunctionDefinition()
+	 */
+	public String getFunctionDefinition()
+	{
+		return function;
 	}
 
 }

@@ -55,7 +55,9 @@ import org.sakaiproject.jcr.support.api.JCRNodeFactoryService;
 import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.ResourceDefinitionFactory;
+import org.sakaiproject.sdata.tool.api.ResourceFunctionFactory;
 import org.sakaiproject.sdata.tool.api.SDataException;
+import org.sakaiproject.sdata.tool.api.SDataFunction;
 import org.sakaiproject.sdata.tool.util.ResourceDefinitionFactoryImpl;
 import org.sakaiproject.tool.api.Tool;
 
@@ -116,6 +118,8 @@ public abstract class JCRHandler implements Handler
 
 	private Object newProgressMapMutex = new Object();
 
+	private ResourceFunctionFactory resourceFunctionFactory;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -142,6 +146,10 @@ public abstract class JCRHandler implements Handler
 				.get(JCRNodeFactoryService.class.getName());
 
 		resourceDefinitionFactory = getResourceDefinitionFactory(config);
+		
+		resourceFunctionFactory = getResourceFunctionFactory(config);
+		
+		
 
 	}
 
@@ -157,6 +165,16 @@ public abstract class JCRHandler implements Handler
 	{
 		return new ResourceDefinitionFactoryImpl(config, baseUrl, basePath);
 	}
+
+	/**
+	 * @param config
+	 * @return
+	 */
+	private ResourceFunctionFactory getResourceFunctionFactory(Map<String, String> config)
+	{
+		return new ResourceFunctionFactoryImpl(config);
+	}
+
 
 	/*
 	 * (non-Javadoc)
@@ -474,133 +492,145 @@ public abstract class JCRHandler implements Handler
 
 			NodeType nt = n.getPrimaryNodeType();
 
-			if (JCRConstants.NT_FILE.equals(nt.getName()))
+			SDataFunction m = resourceFunctionFactory.getFunction(rp.getFunctionDefinition());
+			if (m != null)
 			{
-
-				Node resource = n.getNode(JCRConstants.JCR_CONTENT);
-				Property lastModified = resource
-						.getProperty(JCRConstants.JCR_LASTMODIFIED);
-				Property mimeType = resource.getProperty(JCRConstants.JCR_MIMETYPE);
-				Property encoding = resource.getProperty(JCRConstants.JCR_ENCODING);
-				Property content = resource.getProperty(JCRConstants.JCR_DATA);
-
-				response.setContentType(mimeType.getString());
-				if (mimeType.getString().startsWith("text"))
-				{
-					response.setCharacterEncoding(encoding.getString());
-				}
-				response.setDateHeader(LAST_MODIFIED, lastModified.getDate()
-						.getTimeInMillis());
-				setGetCacheControl(response, rp.isPrivate());
-
-				String currentEtag = String.valueOf(lastModified.getDate()
-						.getTimeInMillis());
-				response.setHeader("ETag", currentEtag);
-
-				boolean sendContent = true;
-				long lastModifiedTime = lastModified.getDate().getTimeInMillis();
-
-				if (!checkPreconditions(request, response, lastModifiedTime, currentEtag))
-				{
-					return;
-				}
-				long totallength = content.getLength();
-				long[] ranges = new long[2];
-				ranges[0] = 0;
-				ranges[1] = totallength;
-				if (!checkRanges(request, response, lastModifiedTime, currentEtag, ranges))
-				{
-					return;
-				}
-
-				long length = ranges[1] - ranges[0];
-
-				if (totallength != length)
-				{
-					response.setHeader("Accept-Ranges", "bytes");
-					response.setDateHeader("Last-Modified", lastModifiedTime);
-					response.setHeader("Content-Range", "bytes " + ranges[0] + "-"
-							+ (ranges[1] - 1) + "/" + totallength);
-					response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-
-					log.info("Partial Content Sent "
-							+ HttpServletResponse.SC_PARTIAL_CONTENT);
-				}
-				else
-				{
-					response.setStatus(HttpServletResponse.SC_OK);
-				}
-
-				response.setContentLength((int) length);
-
-				out = response.getOutputStream();
-
-				in = content.getStream();
-				in.skip(ranges[0]);
-				byte[] b = new byte[10240];
-				int nbytes = 0;
-				while ((nbytes = in.read(b)) > 0 && length > 0)
-				{
-					if (nbytes < length)
-					{
-						out.write(b, 0, nbytes);
-						length = length - nbytes;
-					}
-					else
-					{
-						out.write(b, 0, (int) length);
-						length = 0;
-					}
-				}
+				m.call(this, request, response, n);
 			}
 			else
 			{
-				setGetCacheControl(response, rp.isPrivate());
 
-				// Property lastModified =
-				// n.getProperty(JCRConstants.JCR_LASTMODIFIED);
-				// response.setHeader("ETag",
-				// String.valueOf(lastModified.getDate()
-				// .getTimeInMillis()));
-
-				Map<String, Object> outputMap = new HashMap<String, Object>();
-				outputMap.put("path", rp.getExternalPath(n.getPath()));
-				outputMap.put("type", nt.getName());
-				List<Map> nodes = new ArrayList<Map>();
-				NodeIterator ni = n.getNodes();
-				int i = 0;
-				while (ni.hasNext())
+				if (JCRConstants.NT_FILE.equals(nt.getName()))
 				{
-					Node cn = ni.nextNode();
-					Map<String, Object> cnm = new HashMap<String, Object>();
-					cnm.put("path", rp.getExternalPath(cn.getName()));
-					NodeType cnt = cn.getPrimaryNodeType();
-					cnm.put("type", cnt.getName());
-					cnm.put("position", String.valueOf(i));
-					if (JCRConstants.NT_FILE.equals(nt.getName()))
+
+					Node resource = n.getNode(JCRConstants.JCR_CONTENT);
+					Property lastModified = resource
+							.getProperty(JCRConstants.JCR_LASTMODIFIED);
+					Property mimeType = resource.getProperty(JCRConstants.JCR_MIMETYPE);
+					Property encoding = resource.getProperty(JCRConstants.JCR_ENCODING);
+					Property content = resource.getProperty(JCRConstants.JCR_DATA);
+
+					response.setContentType(mimeType.getString());
+					if (mimeType.getString().startsWith("text"))
 					{
-						Node resource = n.getNode(JCRConstants.JCR_CONTENT);
-						Property nodeLastModified = resource
-								.getProperty(JCRConstants.JCR_LASTMODIFIED);
-						Property mimeType = resource
-								.getProperty(JCRConstants.JCR_MIMETYPE);
-						Property encoding = resource
-								.getProperty(JCRConstants.JCR_ENCODING);
-						Property content = resource.getProperty(JCRConstants.JCR_DATA);
-
-						cnm.put("mime-type", mimeType.getString());
-						cnm.put("encoding", encoding.getString());
-						cnm.put("length", String.valueOf(content.getLength()));
-						cnm.put("lastModified", nodeLastModified.getDate());
-
+						response.setCharacterEncoding(encoding.getString());
 					}
-					nodes.add(cnm);
-					i++;
-				}
-				outputMap.put("nitems", nodes.size());
-				outputMap.put("items", nodes);
+					response.setDateHeader(LAST_MODIFIED, lastModified.getDate()
+							.getTimeInMillis());
+					setGetCacheControl(response, rp.isPrivate());
 
-				sendMap(request, response, outputMap);
+					String currentEtag = String.valueOf(lastModified.getDate()
+							.getTimeInMillis());
+					response.setHeader("ETag", currentEtag);
+
+					boolean sendContent = true;
+					long lastModifiedTime = lastModified.getDate().getTimeInMillis();
+
+					if (!checkPreconditions(request, response, lastModifiedTime,
+							currentEtag))
+					{
+						return;
+					}
+					long totallength = content.getLength();
+					long[] ranges = new long[2];
+					ranges[0] = 0;
+					ranges[1] = totallength;
+					if (!checkRanges(request, response, lastModifiedTime, currentEtag,
+							ranges))
+					{
+						return;
+					}
+
+					long length = ranges[1] - ranges[0];
+
+					if (totallength != length)
+					{
+						response.setHeader("Accept-Ranges", "bytes");
+						response.setDateHeader("Last-Modified", lastModifiedTime);
+						response.setHeader("Content-Range", "bytes " + ranges[0] + "-"
+								+ (ranges[1] - 1) + "/" + totallength);
+						response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+
+						log.info("Partial Content Sent "
+								+ HttpServletResponse.SC_PARTIAL_CONTENT);
+					}
+					else
+					{
+						response.setStatus(HttpServletResponse.SC_OK);
+					}
+
+					response.setContentLength((int) length);
+
+					out = response.getOutputStream();
+
+					in = content.getStream();
+					in.skip(ranges[0]);
+					byte[] b = new byte[10240];
+					int nbytes = 0;
+					while ((nbytes = in.read(b)) > 0 && length > 0)
+					{
+						if (nbytes < length)
+						{
+							out.write(b, 0, nbytes);
+							length = length - nbytes;
+						}
+						else
+						{
+							out.write(b, 0, (int) length);
+							length = 0;
+						}
+					}
+				}
+				else
+				{
+					setGetCacheControl(response, rp.isPrivate());
+
+					// Property lastModified =
+					// n.getProperty(JCRConstants.JCR_LASTMODIFIED);
+					// response.setHeader("ETag",
+					// String.valueOf(lastModified.getDate()
+					// .getTimeInMillis()));
+
+					Map<String, Object> outputMap = new HashMap<String, Object>();
+					outputMap.put("path", rp.getExternalPath(n.getPath()));
+					outputMap.put("type", nt.getName());
+					List<Map> nodes = new ArrayList<Map>();
+					NodeIterator ni = n.getNodes();
+					int i = 0;
+					while (ni.hasNext())
+					{
+						Node cn = ni.nextNode();
+						Map<String, Object> cnm = new HashMap<String, Object>();
+						cnm.put("path", rp.getExternalPath(cn.getName()));
+						NodeType cnt = cn.getPrimaryNodeType();
+						cnm.put("type", cnt.getName());
+						cnm.put("position", String.valueOf(i));
+						if (JCRConstants.NT_FILE.equals(nt.getName()))
+						{
+							Node resource = n.getNode(JCRConstants.JCR_CONTENT);
+							Property nodeLastModified = resource
+									.getProperty(JCRConstants.JCR_LASTMODIFIED);
+							Property mimeType = resource
+									.getProperty(JCRConstants.JCR_MIMETYPE);
+							Property encoding = resource
+									.getProperty(JCRConstants.JCR_ENCODING);
+							Property content = resource
+									.getProperty(JCRConstants.JCR_DATA);
+
+							cnm.put("mime-type", mimeType.getString());
+							cnm.put("encoding", encoding.getString());
+							cnm.put("length", String.valueOf(content.getLength()));
+							cnm.put("lastModified", nodeLastModified.getDate());
+
+						}
+						nodes.add(cnm);
+						i++;
+					}
+					outputMap.put("nitems", nodes.size());
+					outputMap.put("items", nodes);
+
+					sendMap(request, response, outputMap);
+				}
 			}
 
 		}
@@ -740,10 +770,13 @@ public abstract class JCRHandler implements Handler
 		String ifNoneMatch = request.getHeader("if-none-match");
 		if (ifNoneMatch != null && ifNoneMatch.indexOf(currentEtag) >= 0)
 		{
-			if ("GET|HEAD".indexOf(request.getMethod()) >= 0 ) {
+			if ("GET|HEAD".indexOf(request.getMethod()) >= 0)
+			{
 				response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
-				
-			} else {
+
+			}
+			else
+			{
 				// ifMatch was present, but the currentEtag didnt match
 				response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
 			}
@@ -805,6 +838,7 @@ public abstract class JCRHandler implements Handler
 			}
 			else
 			{
+
 				log.info("Got Standard");
 
 			}
@@ -948,24 +982,6 @@ public abstract class JCRHandler implements Handler
 		}
 	}
 
-	/**
-	 * Sends an error to the client
-	 * 
-	 * @param ex
-	 * @throws IOException
-	 */
-	protected abstract void sendError(HttpServletRequest request,
-			HttpServletResponse response, Throwable ex) throws IOException;
-
-	/**
-	 * Serailize a Map strucutre to the output stream
-	 * 
-	 * @param uploads
-	 * @throws IOException
-	 */
-	protected abstract void sendMap(HttpServletRequest request,
-			HttpServletResponse response, Map<String, Object> contetMap)
-			throws IOException;
 
 	/**
 	 * TODO Javadoc
