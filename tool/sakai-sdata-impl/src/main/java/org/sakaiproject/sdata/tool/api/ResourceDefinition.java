@@ -68,5 +68,10 @@ public interface ResourceDefinition
 	 */
 	String getFunctionDefinition();
 
+	/**
+	 * @return
+	 */
+	int getDepth();
+
 
 }

@@ -47,17 +47,26 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 
 	private String function;
 
+	private int depth;
+
 	/**
 	 * TODO Javadoc
-	 * @param request 
 	 * 
-	 * @param inbasePath the base path of the resource in the repository
-	 * @param inpath the path reference in the request
-	 * @param method the method bein applied
-	 * @param version the version being requested.
-	 * @throws SDataException 
+	 * @param request
+	 * @param inbasePath
+	 *        the base path of the resource in the repository
+	 * @param inpath
+	 *        the path reference in the request
+	 * @param method
+	 *        the method bein applied
+	 * @param depth
+	 * @param version
+	 *        the version being requested.
+	 * @throws SDataException
 	 */
-	public ResourceDefinitionImpl(String method, String f, String inbasePath, String inpath, int inversion, SecurityAssertion assertion ) throws SDataException
+	public ResourceDefinitionImpl(String method, String f, int depth, String inbasePath,
+			String inpath, int inversion, SecurityAssertion assertion)
+			throws SDataException
 	{
 		if (log.isDebugEnabled())
 		{
@@ -67,8 +76,9 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 		path = inpath;
 		version = inversion;
 		basePath = String.valueOf(inbasePath);
-		
+
 		function = f;
+		this.depth = depth;
 
 		repoPath = basePath + path;
 		repoPath = cleanPath(repoPath);
@@ -81,10 +91,9 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 		{
 			repoPath = "/" + repoPath;
 		}
-		
-		assertion.check(method,repoPath);
-	}
 
+		assertion.check(method, repoPath);
+	}
 
 	/**
 	 * TODO Javadoc
@@ -157,13 +166,19 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 		return false;
 	}
 
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.api.ResourceDefinition#getFunctionDefinition()
 	 */
 	public String getFunctionDefinition()
 	{
 		return function;
+	}
+
+	public int getDepth()
+	{
+		return depth;
 	}
 
 }

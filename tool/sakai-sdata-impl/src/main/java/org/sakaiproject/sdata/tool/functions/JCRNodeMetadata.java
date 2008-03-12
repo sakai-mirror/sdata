@@ -62,7 +62,7 @@ public class JCRNodeMetadata implements SDataFunction
 		try
 		{
 			Node n = (Node) target;
-			JCRNodeMap nm = new JCRNodeMap(n,1,rp);
+			JCRNodeMap nm = new JCRNodeMap(n,rp.getDepth(),rp);
 			handler.sendMap(request, response, nm);
 		}
 		catch (RepositoryException rex)

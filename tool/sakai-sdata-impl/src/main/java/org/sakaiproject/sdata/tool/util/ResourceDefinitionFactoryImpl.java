@@ -88,13 +88,18 @@ public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 		int leng = path.length();
 		String lastElement = path.substring(lastSlash + 1);
 
-		String v = request.getParameter("v");
+		String v = request.getParameter("v"); // version
 		int version = -1;
 		if (  v != null && v.trim().length() > 0 ) {
 			version = Integer.parseInt(v);
 		}
-		String f = request.getParameter("f");
-		return new ResourceDefinitionImpl(request.getMethod(), f, basePath, path, version, pathSecurityAssertion);
+		String f = request.getParameter("f"); // function
+		String d = request.getParameter("d"); // function
+		int depth = 1;
+		if ( d != null && d.trim().length() > 0 ) {
+			depth = Integer.parseInt(d);
+		}
+		return new ResourceDefinitionImpl(request.getMethod(), f, depth, basePath, path, version, pathSecurityAssertion);
 	}
 
 }
