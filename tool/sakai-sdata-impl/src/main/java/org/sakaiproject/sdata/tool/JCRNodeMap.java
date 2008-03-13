@@ -98,7 +98,10 @@ public class JCRNodeMap extends HashMap<String, Object>
 		Property content = resource.getProperty(JCRConstants.JCR_DATA);
 		put("lastModified", lastModified.getDate().getTime());
 		put("mimeType", resource.getProperty(JCRConstants.JCR_MIMETYPE).getString());
-		put("encoding", resource.getProperty(JCRConstants.JCR_ENCODING).getStream());
+		if (resource.hasProperty(JCRConstants.JCR_ENCODING))
+		{
+			put("encoding", resource.getProperty(JCRConstants.JCR_ENCODING).getStream());
+		}
 		put("length", String.valueOf(content.getLength()));
 	}
 

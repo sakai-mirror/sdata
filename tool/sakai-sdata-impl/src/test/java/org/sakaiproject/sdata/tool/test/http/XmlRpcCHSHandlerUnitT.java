@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
  * @author ieb
  */
 
-public class XmlRpcCHSHandlerUnitT extends XmlRpcHandlerUnitT
+public class XmlRpcCHSHandlerUnitT extends JsonHandlerUnitT
 {
 	private static final Log log = LogFactory.getLog(XmlRpcCHSHandlerUnitT.class);
 

@@ -33,7 +33,7 @@ import org.apache.commons.logging.LogFactory;
  * @author ieb
  *
  */
-public class XmlRpcJcrUserStorageHandlerUnitT extends XmlRpcUserStorageHandlerUnitT
+public class XmlRpcJcrUserStorageHandlerUnitT extends JsonUserStorageHandlerUnitT
 {
 	private static final Log log = LogFactory.getLog(XmlRpcJcrUserStorageHandlerUnitT.class);
 

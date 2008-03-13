@@ -37,17 +37,21 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 
 	private static final Log log = LogFactory.getLog(ResourceDefinitionImpl.class);
 
-	private String path;
+	protected String path;
 
-	private int version;
+	protected int version;
 
-	private String basePath;
+	protected String basePath;
 
-	private String repoPath;
+	protected String repoPath;
 
-	private String function;
+	protected String function;
 
-	private int depth;
+	protected int depth;
+
+	protected SecurityAssertion assertion;
+
+	protected String method;
 
 	/**
 	 * TODO Javadoc
@@ -73,13 +77,15 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 			log.debug("ResourceDef: Base:" + inbasePath + ": path:" + inpath
 					+ ": version:" + inversion);
 		}
-		path = inpath;
-		version = inversion;
-		basePath = String.valueOf(inbasePath);
+		this.path = inpath;
+		this.version = inversion;
+		this.basePath = String.valueOf(inbasePath);
 
-		function = f;
+		this.function = f;
 		this.depth = depth;
-
+		this.method = method;
+		this.assertion = assertion;
+		
 		repoPath = basePath + path;
 		repoPath = cleanPath(repoPath);
 		repoPath = repoPath.replaceAll("//", "/");
@@ -101,7 +107,7 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 	 * @param repoPath2
 	 * @return
 	 */
-	private String cleanPath(String p)
+	protected String cleanPath(String p)
 	{
 		p = p.replaceAll("//", "/");
 		if (p.length() > 1 && p.endsWith("/"))

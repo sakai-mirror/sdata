@@ -21,27 +21,31 @@
 
 package org.sakaiproject.sdata.tool.test.http;
 
-import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HeaderElement;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
+import org.apache.commons.httpclient.methods.DeleteMethod;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
+import org.apache.commons.httpclient.methods.multipart.ByteArrayPartSource;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
-
-import com.meterware.httpunit.GetMethodWebRequest;
-import com.meterware.httpunit.HttpInternalErrorException;
-import com.meterware.httpunit.HttpNotFoundException;
-import com.meterware.httpunit.PostMethodWebRequest;
-import com.meterware.httpunit.PutMethodWebRequest;
-import com.meterware.httpunit.UploadFileSpec;
-import com.meterware.httpunit.WebConversation;
-import com.meterware.httpunit.WebRequest;
-import com.meterware.httpunit.WebResponse;
-import com.meterware.servletunit.ServletUnitClient;
 
 /**
  * @author ieb
@@ -57,11 +61,9 @@ public abstract class JsonHandlerUnitT extends TestCase
 
 	private static final String PASSWORD = "admin";
 
-	private ServletUnitClient client = null;
+	protected HttpClient client;
 
-	private WebConversation wc;
-
-	private boolean enabled = true;
+	protected boolean enabled = true;
 
 	private byte[] buffer;
 
@@ -75,15 +77,26 @@ public abstract class JsonHandlerUnitT extends TestCase
 	{
 		try
 		{
-			wc = new WebConversation();
-			WebRequest req = new GetMethodWebRequest(getBaseUrl() + "checkRunning");
-			req.setHeaderField("x-testdata-size", "2048");
-			WebResponse resp = wc.getResponse(req);
-			DataInputStream inputStream = new DataInputStream(resp.getInputStream());
-			buffer = new byte[resp.getContentLength()];
-			inputStream.readFully(buffer);
+			client = new HttpClient();
+			client.getState().setCredentials(
+					new AuthScope("localhost", 8080, "LocalSakaiName"),
+					new UsernamePasswordCredentials("admin", "admin"));
+			GetMethod method = new GetMethod(getBaseUrl() + "checkRunning");
+			method.setDoAuthentication(false);
+			method.setFollowRedirects(true);
+			method.setRequestHeader("x-testdata-size", "2048");
+			client.executeMethod(method);
+			if (method.getStatusCode() == 200)
+			{
+				buffer = method.getResponseBody();
+				enabled = true;
+			}
+			else
+			{
+				enabled = false;
+			}
 		}
-		catch (HttpNotFoundException notfound)
+		catch (HttpException he)
 		{
 			enabled = false;
 		}
@@ -115,13 +128,18 @@ public abstract class JsonHandlerUnitT extends TestCase
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	private void login() throws MalformedURLException, IOException, SAXException
+	protected void login() throws MalformedURLException, IOException
 	{
-		PostMethodWebRequest postMethod = new PostMethodWebRequest(LOGIN_BASE_URL);
+		PostMethod postMethod = new PostMethod(LOGIN_BASE_URL);
 		postMethod.setParameter("eid", USERNAME);
 		postMethod.setParameter("pw", PASSWORD);
 		postMethod.setParameter("submit", "Login");
-		WebResponse resp = wc.getResponse(postMethod);
+		client.executeMethod(postMethod);
+		postMethod.getStatusCode();
+
+		log.info("Login " + postMethod.getURI() + " to Said "
+				+ postMethod.getStatusCode() + " " + postMethod.getStatusText() + " "
+				+ postMethod.getResponseBodyAsString());
 	}
 
 	/**
@@ -146,31 +164,16 @@ public abstract class JsonHandlerUnitT extends TestCase
 	{
 		if (enabled)
 		{
-			WebResponse resp = null;
-			try
-			{
-				login();
-				WebRequest req = new GetMethodWebRequest(getBaseDataUrl() + "testpage");
-				resp = wc.getResponse(req);
-				checkHandler(resp);
-				fail("Should have been a 404, got:" + resp.getResponseCode());
-			}
-			catch (HttpNotFoundException nfex)
-			{
-				// this is Ok
-			}
-			catch (HttpInternalErrorException iex)
-			{
-				fail("Failed with " + iex.getResponseCode() + " Cause: "
-						+ iex.getResponseMessage());
-			}
+			login();
+			GetMethod method = new GetMethod(getBaseDataUrl() + "testpage");
+			client.executeMethod(method);
+			assertEquals(404,method.getStatusCode());
 		}
 		else
 		{
 			log.info("Tests Disabled, please start tomcat with sdata installed");
 		}
 	}
-
 
 	/**
 	 * @throws Exception
@@ -179,30 +182,15 @@ public abstract class JsonHandlerUnitT extends TestCase
 	{
 		if (enabled)
 		{
-			try
-			{
-				login();
-				ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
-				WebRequest req = new PutMethodWebRequest(getBaseDataUrl() + "putUpload",
-						bais, "UTF-8");
-				req.setHeaderField("Content-Type", "text/html");
-				req.setHeaderField("Content-Encoding", "UTF-8");
-				WebResponse resp = wc.getResponse(req);
-				checkHandler(resp);
-				int code = resp.getResponseCode();
-				assertTrue("Should have been a 201 or 204 ", (code == 201)
-						|| (code == 204));
-			}
-			catch (HttpNotFoundException nfex)
-			{
-				fail("Failed with " + nfex.getResponseCode() + " Cause: "
-						+ nfex.getResponseMessage());
-			}
-			catch (HttpInternalErrorException iex)
-			{
-				fail("Failed with " + iex.getResponseCode() + " Cause: "
-						+ iex.getResponseMessage());
-			}
+			login();
+			PutMethod method = new PutMethod(getBaseDataUrl() + "putUpload");
+			method.setRequestHeader("Content-Type", "text/html");
+			method.setRequestHeader("Content-Encoding", "UTF-8");
+			method.setRequestEntity(new ByteArrayRequestEntity(buffer, "text/html"));
+			client.executeMethod(method);
+			checkHandler(method);
+			int code = method.getStatusCode();
+			assertTrue("Should have been a 201 or 204 ", (code == 201) || (code == 204));
 		}
 		else
 		{
@@ -217,47 +205,31 @@ public abstract class JsonHandlerUnitT extends TestCase
 	{
 		if (enabled)
 		{
-			try
-			{
-				login();
-				ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
-				WebRequest req = new PutMethodWebRequest(getBaseDataUrl() + "putUpload",
-						bais, "UTF-8");
-				req.setHeaderField("Content-Type", "text/html");
-				req.setHeaderField("Content-Encoding", "UTF-8");
-				WebResponse resp = wc.getResponse(req);
-				checkHandler(resp);
-				int code = resp.getResponseCode();
-				assertTrue("Should have been a 201 or 204 ", (code == 201)
-						|| (code == 204));
+			login();
+			PutMethod method = new PutMethod(getBaseDataUrl() + "putUpload");
+			method.setRequestHeader("Content-Type", "text/html");
+			method.setRequestHeader("Content-Encoding", "UTF-8");
+			method.setRequestEntity(new ByteArrayRequestEntity(buffer, "text/html"));
+			client.executeMethod(method);
+			checkHandler(method);
+			int code = method.getStatusCode();
+			assertTrue("Should have been a 201 or 204 ", (code == 201) || (code == 204));
 
-				req = new GetMethodWebRequest(getBaseDataUrl() + "putUpload");
-				resp = wc.getResponse(req);
-				checkHandler(resp);
-				code = resp.getResponseCode();
-				assertTrue("Should have been a 201 or 204 ", (code == 200));
-				int contentL = resp.getContentLength();
-				log.info("Got " + contentL + " bytes ");
-				DataInputStream in = new DataInputStream(resp.getInputStream());
-				byte[] buffer2 = new byte[contentL];
-				in.readFully(buffer2);
-				assertEquals("Upload Size is not the same as download size ",
-						buffer.length, buffer2.length);
-				for (int i = 0; i < buffer2.length; i++)
-				{
-					assertEquals("Byte at Offset " + i + " corrupted ", buffer[i],
-							buffer2[i]);
-				}
-			}
-			catch (HttpNotFoundException nfex)
+			GetMethod gmethod = new GetMethod(getBaseDataUrl() + "putUpload");
+			client.executeMethod(gmethod);
+			checkHandler(gmethod);
+			code = gmethod.getStatusCode();
+			assertTrue("Should have been a 201 or 204 ", (code == 200));
+			int contentL = (int) gmethod.getResponseContentLength();
+			log.info("Got " + contentL + " bytes ");
+			DataInputStream in = new DataInputStream(gmethod.getResponseBodyAsStream());
+			byte[] buffer2 = new byte[contentL];
+			in.readFully(buffer2);
+			assertEquals("Upload Size is not the same as download size ", buffer.length,
+					buffer2.length);
+			for (int i = 0; i < buffer2.length; i++)
 			{
-				fail("Failed with " + nfex.getResponseCode() + " Cause: "
-						+ nfex.getResponseMessage());
-			}
-			catch (HttpInternalErrorException iex)
-			{
-				fail("Failed with " + iex.getResponseCode() + " Cause: "
-						+ iex.getResponseMessage());
+				assertEquals("Byte at Offset " + i + " corrupted ", buffer[i], buffer2[i]);
 			}
 		}
 		else
@@ -273,67 +245,49 @@ public abstract class JsonHandlerUnitT extends TestCase
 	{
 		if (enabled)
 		{
-			try
+			login();
+			PutMethod method = new PutMethod(getBaseDataUrl() + "putUpload");
+			method.setRequestHeader("Content-Type", "text/html");
+			method.setRequestHeader("Content-Encoding", "UTF-8");
+			method.setRequestEntity(new ByteArrayRequestEntity(buffer, "text/html"));
+			client.executeMethod(method);
+			checkHandler(method);
+			int code = method.getStatusCode();
+			assertTrue("Should have been a 201 or 204 ", (code == 201) || (code == 204));
+
+			GetMethod gmethod = new GetMethod(getBaseDataUrl() + "putUpload");
+			client.executeMethod(gmethod);
+			checkHandler(gmethod);
+
+			dumpHeaders(gmethod);
+			code = gmethod.getStatusCode();
+			assertEquals("Should have been a 200 ", 200, code);
+			int contentL = (int) gmethod.getResponseContentLength();
+			log.info("Got " + contentL + " bytes ");
+			DataInputStream in = new DataInputStream(gmethod.getResponseBodyAsStream());
+			byte[] buffer2 = new byte[contentL];
+			in.readFully(buffer2);
+			assertEquals("Upload Size is not the same as download size ", buffer.length,
+					buffer2.length);
+			for (int i = 0; i < buffer2.length; i++)
 			{
-				login();
-				ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
-				WebRequest req = new PutMethodWebRequest(getBaseDataUrl() + "putUpload",
-						bais, "UTF-8");
-				req.setHeaderField("Content-Type", "text/html");
-				req.setHeaderField("Content-Encoding", "UTF-8");
-				WebResponse resp = wc.getResponse(req);
-				checkHandler(resp);
-
-				int code = resp.getResponseCode();
-				assertTrue("Should have been a 201 or 204 ", (code == 201)
-						|| (code == 204));
-
-				req = new GetMethodWebRequest(getBaseDataUrl() + "putUpload");
-				resp = wc.getResource(req);
-				checkHandler(resp);
-
-				dumpHeaders(resp);
-				code = resp.getResponseCode();
-				assertEquals("Should have been a 200 ", 200, code);
-				int contentL = resp.getContentLength();
-				log.info("Got " + contentL + " bytes ");
-				DataInputStream in = new DataInputStream(resp.getInputStream());
-				byte[] buffer2 = new byte[contentL];
-				in.readFully(buffer2);
-				assertEquals("Upload Size is not the same as download size ",
-						buffer.length, buffer2.length);
-				for (int i = 0; i < buffer2.length; i++)
-				{
-					assertEquals("Byte at Offset " + i + " corrupted ", buffer[i],
-							buffer2[i]);
-				}
-
-				String dateheader = resp.getHeaderField("last-modified");
-				// Date date =
-				// RFC1123Date.parseDate(resp.getHeaderField("date"));
-
-				// now test the 304 response
-				req = new GetMethodWebRequest(getBaseDataUrl() + "putUpload");
-				req.setHeaderField("if-modified-since", dateheader);
-
-				resp = wc.getResource(req);
-				checkHandler(resp);
-
-				code = resp.getResponseCode();
-				dumpHeaders(resp);
-				assertEquals("Should have been a 304 ", 304, code);
-
+				assertEquals("Byte at Offset " + i + " corrupted ", buffer[i], buffer2[i]);
 			}
-			catch (HttpNotFoundException nfex)
-			{
-				fail("Failed with " + nfex.getResponseCode() + " Cause: "
-						+ nfex.getResponseMessage());
-			}
-			catch (HttpInternalErrorException iex)
-			{
-				fail("Failed with " + iex.getResponseCode() + " Cause: "
-						+ iex.getResponseMessage());
-			}
+
+			String dateheader = gmethod.getResponseHeader("last-modified").getValue();
+			// Date date =
+			// RFC1123Date.parseDate(resp.getHeaderField("date"));
+
+			// now test the 304 response
+			gmethod = new GetMethod(getBaseDataUrl() + "putUpload");
+			gmethod.setRequestHeader("if-modified-since", dateheader);
+			client.executeMethod(gmethod);
+			checkHandler(gmethod);
+
+			code = gmethod.getStatusCode();
+			dumpHeaders(gmethod);
+			assertEquals("Should have been a 304 ", 304, code);
+
 		}
 		else
 		{
@@ -344,14 +298,14 @@ public abstract class JsonHandlerUnitT extends TestCase
 	/**
 	 * @param resp
 	 */
-	private void dumpHeaders(WebResponse resp)
+	private void dumpHeaders(HttpMethod resp)
 	{
 		StringBuilder sb = new StringBuilder();
-		for (String headerName : resp.getHeaderFieldNames())
+		for (Header header : resp.getResponseHeaders())
 		{
-			for (String header : resp.getHeaderFields(headerName))
+			for (HeaderElement h : header.getElements())
 			{
-				sb.append("\n\t").append(headerName).append(": ").append(header);
+				sb.append("\n\t").append(h.getName()).append(": ").append(h.getValue());
 			}
 		}
 		log.info("Headers " + sb.toString());
@@ -364,54 +318,37 @@ public abstract class JsonHandlerUnitT extends TestCase
 	{
 		if (enabled)
 		{
-			try
+			login();
+			for (int i = 0; i < 20; i++)
 			{
-				login();
-				for (int i = 0; i < 20; i++)
-				{
-					ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
-					WebRequest req = new PutMethodWebRequest(getBaseDataUrl()
-							+ "dirlist/file" + i, bais, "UTF-8");
-					req.setHeaderField("Content-Type", "text/html");
-					req.setHeaderField("Content-Encoding", "UTF-8");
-					WebResponse resp = wc.getResponse(req);
-					checkHandler(resp);
+				PutMethod method = new PutMethod(getBaseDataUrl() + "dirlist/file" + i);
+				method.setRequestHeader("Content-Type", "text/html");
+				method.setRequestHeader("Content-Encoding", "UTF-8");
+				method.setRequestEntity(new ByteArrayRequestEntity(buffer, "text/html"));
+				client.executeMethod(method);
+				checkHandler(method);
+				int code = method.getStatusCode();
+				assertTrue("Should have been a 201 or 204 ", (code == 201)
+						|| (code == 204));
 
-					int code = resp.getResponseCode();
-					assertTrue("Should have been a 201 or 204 ", (code == 201)
-							|| (code == 204));
-				}
-				long start = System.currentTimeMillis();
-				WebRequest req = new GetMethodWebRequest(getBaseDataUrl() + "dirlist");
-				WebResponse resp = wc.getResource(req);
-				checkHandler(resp);
+			}
+			long start = System.currentTimeMillis();
+			GetMethod gmethod = new GetMethod(getBaseDataUrl() + "dirlist");
+			client.executeMethod(gmethod);
+			checkHandler(gmethod);
 
-				int code = resp.getResponseCode();
-				log.info("Dir Method took:" + (System.currentTimeMillis() - start));
+			int code = gmethod.getStatusCode();
+			log.info("Dir Method took:" + (System.currentTimeMillis() - start));
 
-				assertEquals("Should have been a 200 ", 200, code);
-				int contentL = resp.getContentLength();
-				log.info("Got " + contentL + " bytes ");
-				DataInputStream in = new DataInputStream(resp.getInputStream());
-				byte[] buffer2 = new byte[contentL];
-				in.readFully(buffer2);
-				String contentEncoding = resp.getCharacterSet();
-				String contentType = resp.getContentType();
-				log.info("Got ContentType:" + contentType + " ContentEncoding:"
-						+ contentEncoding);
-				String content = new String(buffer2, contentEncoding);
-				log.info("Content\n" + content);
-			}
-			catch (HttpNotFoundException nfex)
-			{
-				fail("Failed with " + nfex.getResponseCode() + " Cause: "
-						+ nfex.getResponseMessage());
-			}
-			catch (HttpInternalErrorException iex)
-			{
-				fail("Failed with " + iex.getResponseCode() + " Cause: "
-						+ iex.getResponseMessage());
-			}
+			assertEquals("Should have been a 200 ", 200, code);
+			int contentL = (int) gmethod.getResponseContentLength();
+			log.info("Got " + contentL + " bytes ");
+			DataInputStream in = new DataInputStream(gmethod.getResponseBodyAsStream());
+			byte[] buffer2 = new byte[contentL];
+			in.readFully(buffer2);
+			String contentEncoding = gmethod.getResponseCharSet();
+			String content = new String(buffer2, contentEncoding);
+			log.info("Content\n" + content);
 		}
 		else
 		{
@@ -428,56 +365,31 @@ public abstract class JsonHandlerUnitT extends TestCase
 		{
 			login();
 			testDirectory();
-			try
+			for (int i = 0; i < 20; i++)
 			{
+				DeleteMethod method = new DeleteMethod(getBaseDataUrl() + "dirlist/file"
+						+ i);
+				client.executeMethod(method);
+				checkHandler(method);
 
-				for (int i = 0; i < 20; i++)
-				{
-					WebRequest req = new DeleteMethodWebRequest(getBaseDataUrl()
-							+ "dirlist/file" + i);
-					WebResponse resp = wc.getResponse(req);
-					checkHandler(resp);
-
-					int code = resp.getResponseCode();
-					assertEquals("Should have been a 204 ", 204, code);
-				}
-				{
-					WebRequest req = new DeleteMethodWebRequest(getBaseDataUrl()
-							+ "dirlist");
-					WebResponse resp = wc.getResponse(req);
-					checkHandler(resp);
-
-					int code = resp.getResponseCode();
-					assertEquals("Should have been a 204 ", 204, code);
-				}
-				try
-				{
-					WebRequest req = new GetMethodWebRequest(getBaseDataUrl() + "dirlist");
-					WebResponse resp = wc.getResource(req);
-					checkHandler(resp);
-
-					int code = resp.getResponseCode();
-					assertEquals("Should have been a 404 ", 404, code);
-				}
-				catch (HttpNotFoundException nfex)
-				{
-					assertEquals("Should have generated a 404", 404, nfex
-							.getResponseCode());
-				}
-
+				int code = method.getStatusCode();
+				assertEquals("Should have been a 204 ", 204, code);
 			}
-			catch (HttpNotFoundException nfex)
 			{
-				log.error("Failed ", nfex);
-				fail("Failed with " + nfex.getResponseCode() + " Cause: "
-						+ nfex.getResponseMessage());
+				DeleteMethod method = new DeleteMethod(getBaseDataUrl() + "dirlist");
+				client.executeMethod(method);
+				checkHandler(method);
+
+				int code = method.getStatusCode();
+				assertEquals("Should have been a 204 ", 204, code);
 			}
-			catch (HttpInternalErrorException iex)
-			{
-				log.error("Failed ", iex);
-				fail("Failed with " + iex.getResponseCode() + " Cause: "
-						+ iex.getResponseMessage());
-			}
+			GetMethod method = new GetMethod(getBaseDataUrl() + "dirlist");
+			client.executeMethod(method);
+			checkHandler(method);
+
+			int code = method.getStatusCode();
+			assertEquals("Should have been a 404 ", 404, code);
+
 		}
 		else
 		{
@@ -494,42 +406,20 @@ public abstract class JsonHandlerUnitT extends TestCase
 		{
 			login();
 			testDirectory();
-			try
 			{
-				{
-					WebRequest req = new DeleteMethodWebRequest(getBaseDataUrl()
-							+ "dirlist");
-					WebResponse resp = wc.getResponse(req);
-					checkHandler(resp);
+				DeleteMethod method = new DeleteMethod(getBaseDataUrl() + "dirlist");
+				client.executeMethod(method);
+				checkHandler(method);
 
-					int code = resp.getResponseCode();
-					assertEquals("Should have been a 204 ", 204, resp.getResponseCode());
-				}
-				try
-				{
-					WebRequest req = new GetMethodWebRequest(getBaseDataUrl() + "dirlist");
-					WebResponse resp = wc.getResource(req);
+				int code = method.getStatusCode();
+				assertEquals("Should have been a 204 ", 204, code);
+			}
+			GetMethod method = new GetMethod(getBaseDataUrl() + "dirlist");
+			client.executeMethod(method);
+			checkHandler(method);
 
-					assertEquals("Should have been a 404 ", 404, resp.getResponseCode());
-				}
-				catch (HttpNotFoundException nfex)
-				{
-					assertEquals("Should have generated a 404", 404, nfex
-							.getResponseCode());
-				}
-			}
-			catch (HttpNotFoundException nfex)
-			{
-				log.error("Failed ", nfex);
-				fail("Failed with " + nfex.getResponseCode() + " Cause: "
-						+ nfex.getResponseMessage());
-			}
-			catch (HttpInternalErrorException iex)
-			{
-				log.error("Failed ", iex);
-				fail("Failed with " + iex.getResponseCode() + " Cause: "
-						+ iex.getResponseMessage());
-			}
+			int code = method.getStatusCode();
+			assertEquals("Should have been a 404 ", 404, code);
 		}
 		else
 		{
@@ -541,73 +431,54 @@ public abstract class JsonHandlerUnitT extends TestCase
 	{
 		if (enabled)
 		{
-			try
-			{
-				login();
-				PostMethodWebRequest mreq = new PostMethodWebRequest(getBaseDataUrl()
-						+ "dirlist");
-				mreq.setMimeEncoded(true);
-				for (int i = 0; i < 20; i++)
-				{
-					ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
-					mreq.setParameter("multifile" + i,
-							new UploadFileSpec[] { new UploadFileSpec("multifile" + i,
-									bais, "text/html") });
-				}
-				WebResponse resp = wc.getResponse(mreq);
-				checkHandler(resp);
+			login();
+			PostMethod method = new PostMethod(getBaseUrl() + "dirlist");
 
-				int code = resp.getResponseCode();
-				assertTrue("Should have been a 200 ", (code == 200));
-				int contentL = resp.getContentLength();
+			Part[] parts = new Part[20];
+			for (int i = 0; i < parts.length; i++)
+			{
+				parts[i] = new FilePart("multifile" + i, new ByteArrayPartSource(
+						"multifile" + i, buffer));
+			}
+			method
+					.setRequestEntity(new MultipartRequestEntity(parts, method
+							.getParams()));
+
+			client.executeMethod(method);
+			checkHandler(method);
+
+			int code = method.getStatusCode();
+
+			assertTrue("Should have been a 200 ", (code == 200));
+
+			String content = method.getResponseBodyAsString();
+			log.info("Content\n" + content);
+
+			for (int i = 0; i < 20; i++)
+			{
+				GetMethod gmethod = new GetMethod(getBaseDataUrl() + "dirlist/multifile"
+						+ i);
+				log.info("Trying " + "dirlist/multifile" + i);
+				client.executeMethod(gmethod);
+				checkHandler(gmethod);
+
+				int rcode = gmethod.getStatusCode();
+				assertEquals("Expected a 200 response ", 200, rcode);
+				assertEquals("Content Lenght does not match  ", buffer.length, gmethod
+						.getResponseContentLength());
+				int contentL = (int) gmethod.getResponseContentLength();
 				log.info("Got " + contentL + " bytes ");
-				DataInputStream in = new DataInputStream(resp.getInputStream());
+				DataInputStream in = new DataInputStream(gmethod
+						.getResponseBodyAsStream());
 				byte[] buffer2 = new byte[contentL];
 				in.readFully(buffer2);
-				String contentEncoding = resp.getCharacterSet();
-				String contentType = resp.getContentType();
-				log.info("Got ContentType:" + contentType + " ContentEncoding:"
-						+ contentEncoding);
-				String content = new String(buffer2, contentEncoding);
-				log.info("Content\n" + content);
-				for (int i = 0; i < 20; i++)
+				assertEquals("Upload Size is not the same as download size ",
+						buffer.length, buffer2.length);
+				for (int j = 0; j < buffer2.length; j++)
 				{
-					WebRequest req = new GetMethodWebRequest(getBaseDataUrl()
-							+ "dirlist/multifile" + i);
-					log.info("Trying " + "dirlist/multifile" + i);
-					resp = wc.getResponse(req);
-					checkHandler(resp);
-
-					assertEquals("Expected a 200 response ", 200, resp.getResponseCode());
-					assertEquals("Content Lenght does not match  ", buffer.length, resp
-							.getContentLength());
-					assertEquals("Content Type not correct  ", "text/html", resp
-							.getContentType());
-					contentL = resp.getContentLength();
-					log.info("Got " + contentL + " bytes ");
-					in = new DataInputStream(resp.getInputStream());
-					buffer2 = new byte[contentL];
-					in.readFully(buffer2);
-					assertEquals("Upload Size is not the same as download size ",
-							buffer.length, buffer2.length);
-					for (int j = 0; j < buffer2.length; j++)
-					{
-						assertEquals("Byte at Offset " + j + " corrupted ", buffer[j],
-								buffer2[j]);
-					}
+					assertEquals("Byte at Offset " + j + " corrupted ", buffer[j],
+							buffer2[j]);
 				}
-			}
-			catch (HttpNotFoundException nfex)
-			{
-				log.error("Failed ", nfex);
-				fail("Failed with " + nfex.getResponseCode() + " Cause: "
-						+ nfex.getResponseMessage());
-			}
-			catch (HttpInternalErrorException iex)
-			{
-				log.error("Failed ", iex);
-				fail("Failed with " + iex.getResponseCode() + " Cause: "
-						+ iex.getResponseMessage());
 			}
 		}
 		else
@@ -616,21 +487,21 @@ public abstract class JsonHandlerUnitT extends TestCase
 		}
 
 	}
-	
+
 	/**
 	 * @param resp
 	 */
-	private void checkHandler(WebResponse resp)
+	protected void checkHandler(HttpMethod resp)
 	{
 		String className = this.getClass().getName();
 		className = className.substring(className.lastIndexOf('.'));
-		className = className.substring(0,className.length()-"UnitT".length());
-		String handler = resp.getHeaderField("x-sdata-handler");
-		assertNotNull("Handler Not found ",handler);
-		assertTrue("Handler Not found (no value)",handler.trim().length()>0);
+		className = className.substring(0, className.length() - "UnitT".length());
+		Header h = resp.getResponseHeader("x-sdata-handler");
+		assertNotNull("Handler Not found ", h);
+		String handler = h.getValue();
+		assertTrue("Handler Not found (no value)", handler.trim().length() > 0);
 		handler = handler.substring(handler.lastIndexOf('.'));
-		assertEquals("Not the expected Handler Class",className,handler);
+		assertEquals("Not the expected Handler Class", className, handler);
 	}
-
 
 }

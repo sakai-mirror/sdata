@@ -72,6 +72,8 @@
 			18.baseurl=qa;
 			19.classname=org.sakaiproject.sdata.services.rss.RssHandler;
 			19.baseurl=rss;
+			20.classname=org.sakaiproject.sdata.services.col.ColHandler;
+			20.baseurl=col;
 
 				</param-value>
             </init-param>

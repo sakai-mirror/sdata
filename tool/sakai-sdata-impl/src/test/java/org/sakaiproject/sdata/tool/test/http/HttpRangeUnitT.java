@@ -36,6 +36,7 @@ import org.xml.sax.SAXException;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.HttpInternalErrorException;
 import com.meterware.httpunit.HttpNotFoundException;
+import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.PutMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
@@ -49,6 +50,12 @@ public class HttpRangeUnitT extends TestCase
 {
 
 	private static final Log log = LogFactory.getLog(JsonJcrHandlerUnitT.class);
+
+	private static final String LOGIN_BASE_URL = "http://localhost:8080/portal/relogin";
+
+	private static final String USERNAME = "admin";
+
+	private static final String PASSWORD = "admin";
 
 	private static final String BASE_URL = "http://localhost:8080/sdata/";
 
@@ -68,6 +75,19 @@ public class HttpRangeUnitT extends TestCase
 	public HttpRangeUnitT(String arg0)
 	{
 		super(arg0);
+	}
+	/**
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	private void login() throws MalformedURLException, IOException, SAXException
+	{
+		PostMethodWebRequest postMethod = new PostMethodWebRequest(LOGIN_BASE_URL);
+		postMethod.setParameter("eid", USERNAME);
+		postMethod.setParameter("pw", PASSWORD);
+		postMethod.setParameter("submit", "Login");
+		WebResponse resp = wc.getResponse(postMethod);
 	}
 
 	/*
@@ -114,6 +134,7 @@ public class HttpRangeUnitT extends TestCase
 		{
 			try
 			{
+				login();
 
 				byte[] content = new byte[size];
 				Random r = new Random();

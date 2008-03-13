@@ -293,13 +293,16 @@ public abstract class JCRHandler implements Handler
 			Node resource = n.getNode(JCRConstants.JCR_CONTENT);
 			Property lastModified = resource.getProperty(JCRConstants.JCR_LASTMODIFIED);
 			Property mimeType = resource.getProperty(JCRConstants.JCR_MIMETYPE);
-			Property encoding = resource.getProperty(JCRConstants.JCR_ENCODING);
 			Property content = resource.getProperty(JCRConstants.JCR_DATA);
 
 			response.setContentType(mimeType.getString());
 			if (mimeType.getString().startsWith("text"))
 			{
-				response.setCharacterEncoding(encoding.getString());
+				if (resource.hasProperty(JCRConstants.JCR_ENCODING))
+				{
+					Property encoding = resource.getProperty(JCRConstants.JCR_ENCODING);
+					response.setCharacterEncoding(encoding.getString());
+				}
 			}
 			response.setDateHeader(LAST_MODIFIED, lastModified.getDate()
 					.getTimeInMillis());
@@ -505,13 +508,17 @@ public abstract class JCRHandler implements Handler
 					Property lastModified = resource
 							.getProperty(JCRConstants.JCR_LASTMODIFIED);
 					Property mimeType = resource.getProperty(JCRConstants.JCR_MIMETYPE);
-					Property encoding = resource.getProperty(JCRConstants.JCR_ENCODING);
 					Property content = resource.getProperty(JCRConstants.JCR_DATA);
 
 					response.setContentType(mimeType.getString());
 					if (mimeType.getString().startsWith("text"))
 					{
-						response.setCharacterEncoding(encoding.getString());
+						if (resource.hasProperty(JCRConstants.JCR_ENCODING))
+						{
+							Property encoding = resource
+									.getProperty(JCRConstants.JCR_ENCODING);
+							response.setCharacterEncoding(encoding.getString());
+						}
 					}
 					response.setDateHeader(LAST_MODIFIED, lastModified.getDate()
 							.getTimeInMillis());
