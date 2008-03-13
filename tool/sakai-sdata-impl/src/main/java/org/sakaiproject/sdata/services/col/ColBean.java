@@ -58,6 +58,7 @@ public class ColBean implements ServiceDefinition
 			throws SDataException
 	{
 		int inversion = -1;
+		Map<String, Object> items = new HashMap<String, Object>();
 		for (String uri : uris)
 		{
 
@@ -70,21 +71,22 @@ public class ColBean implements ServiceDefinition
 
 				if (n == null)
 				{
-					m.put(uri, "404 "+repoPath+" "+uri);
+					items.put(uri, "404 "+repoPath+" "+uri);
 				}
 				else
 				{
-					m.put(uri, new JCRNodeMap(n, depth, rp));
+					items.put(uri, new JCRNodeMap(n, depth, rp));
 				}
 			}
 			catch (RepositoryException re)
 			{
-				m.put(uri, "Error " + re.getMessage());
+				items.put(uri, "Error " + re.getMessage());
 			}
 			catch (JCRNodeFactoryServiceException e)
 			{
-				m.put(uri, "Error " + e.getMessage());
+				items.put(uri, "Error " + e.getMessage());
 			}
+			m.put("items", items);
 
 		}
 	}
