@@ -178,8 +178,20 @@ public class MyRecentChangesBean implements ServiceDefinition
 			mySites = siteService.getSites(SelectionType.ACCESS, null, null, null,
 					SortType.TITLE_ASC, null);
 
+			try
+			{
+				mySites.add(0, (siteService.getSite(siteService
+						.getUserSiteId(currentSession.getUserId()))));
+
+			}
+			catch (IdUnusedException e)
+			{
+				e.printStackTrace();
+			}
 			for (int i = 0; i < mySites.size(); i++)
 			{
+				log.error("the site ids: " + mySites.get(i).getId());
+
 				arlSiteId.add(mySites.get(i).getId());
 			}
 
@@ -310,9 +322,10 @@ public class MyRecentChangesBean implements ServiceDefinition
 			{
 				String eid = mres.getName().substring(8);
 
-				log.info("eid is " + eid);
+				// og.info("eid is " + eid);
 
-				log.info("contenthostingservice is " + contentHostingService.toString());
+				// log.info("contenthostingservice is " +
+				// contentHostingService.toString());
 				if (!contentHostingService.isCollection(eid))
 				{
 
@@ -459,7 +472,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 						if (srl.getId() != null && !srl.getId().equals("")
 								&& !arlUsed.contains(srl.getReference()))
 						{
-							log.error("+++++ " + srl.getTool());
+							// log.error("+++++ " + srl.getTool());
 							if (srl.getTool().equals("content"))
 							{
 
@@ -618,7 +631,19 @@ public class MyRecentChangesBean implements ServiceDefinition
 		{
 
 			Map<String, String> mrcsr_map = new HashMap<String, String>();
-			mrcsr_map.put("siteName", mrcsr.getSitename());
+
+			// log.error("the site name: " + mrcsr.getSitename());
+			if (mrcsr.getSitename().equals("My Workspace"))
+			{
+				mrcsr_map.put("siteName", "Personal Tools");
+				log.error("a my workspace file");
+
+			}
+			else
+			{
+				mrcsr_map.put("siteName", mrcsr.getSitename());
+			}
+			// mrcsr_map.put("siteName", mrcsr.getSitename());
 			mrcsr_map.put("context", mrcsr.getContext());
 			mrcsr_map.put("name", mrcsr.getName());
 			mrcsr_map.put("tool", mrcsr.getTool());
