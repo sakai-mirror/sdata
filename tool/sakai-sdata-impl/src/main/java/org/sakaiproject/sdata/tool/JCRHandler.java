@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -104,7 +103,7 @@ public abstract class JCRHandler implements Handler
 
 	private static final String BASE_URL_INIT = "baseurl";
 
-	private static final String DEFAULT_BASE_URL = "";
+	private static final String DEFAULT_BASE_URL = "f";
 
 	private String basePath;
 

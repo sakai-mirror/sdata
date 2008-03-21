@@ -24,6 +24,7 @@ package org.sakaiproject.sdata.tool.xmlrpc;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -99,10 +100,57 @@ public class XmlRpcJcrHandler extends JCRHandler
 		}
 		catch (SAXException e)
 		{
+			StringBuilder sb = new StringBuilder();
+			dumpMap(contentMap,sb);
+			log.error("Map is  "+sb.toString());
 			log.error("Failed to write response ", e);
 			throw new IOException("Failed to write response " + e.getMessage());
 		}
 
+	}
+
+	/**
+	 * @param contentMap
+	 */
+	private void dumpMap(Map<String, Object> contentMap, StringBuilder sb)
+	{
+		for ( String k : contentMap.keySet()) {
+			Object o = contentMap.get(k);
+			if ( o instanceof Map ) {
+				sb.append(k).append(":{");
+				dumpMap((Map)o,sb);
+				sb.append("}\n");
+			} else if ( o instanceof List ) {
+				sb.append(k).append(":[");
+				dumpList((List)o,sb);
+				sb.append("]\n");
+			} else {
+				sb.append(k).append(":").append(o).append("\n");
+			}
+		}
+		
+	}
+
+	/**
+	 * @param list
+	 * @param sb
+	 */
+	private void dumpList(List list, StringBuilder sb)
+	{
+		for ( Object o : list) { 
+			if ( o instanceof Map ) {
+				sb.append(o).append(":{");
+				dumpMap((Map)o,sb);
+				sb.append("}\n");
+			} else if ( o instanceof List ) {
+				sb.append(o).append(":[");
+				dumpList((List)o,sb);
+				sb.append("]\n");
+			} else {
+				sb.append(o).append("\n");
+			}			
+		}
+		
 	}
 
 	/*

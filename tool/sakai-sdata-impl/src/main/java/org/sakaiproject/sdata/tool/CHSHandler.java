@@ -115,7 +115,7 @@ public abstract class CHSHandler implements Handler
 
 	private static final String BASE_URL_INIT = "baseurl";
 
-	private static final String DEFAULT_BASE_URL = "";
+	private static final String DEFAULT_BASE_URL = "c";
 
 	private String basePath;
 
@@ -160,13 +160,14 @@ public abstract class CHSHandler implements Handler
 	/**
 	 * Creates a resource definition factory suitable for controlling the
 	 * storage of items
-	 * @param config 
 	 * 
+	 * @param config
 	 * @return
 	 */
-	protected ResourceDefinitionFactory getResourceDefinitionFactory(Map<String, String> config)
+	protected ResourceDefinitionFactory getResourceDefinitionFactory(
+			Map<String, String> config)
 	{
-		return new ResourceDefinitionFactoryImpl(config,baseUrl, basePath);
+		return new ResourceDefinitionFactoryImpl(config, baseUrl, basePath);
 	}
 
 	/*
@@ -375,7 +376,6 @@ public abstract class CHSHandler implements Handler
 	{
 		try
 		{
-			log.info("Doing Head ");
 			snoopRequest(request);
 
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
@@ -474,8 +474,7 @@ public abstract class CHSHandler implements Handler
 				gc.setTime(new Date());
 			}
 			String name = getName(cre);
-			String mimeType = ContentTypes.getContentType(name, request
-					.getContentType());
+			String mimeType = ContentTypes.getContentType(name, request.getContentType());
 			String charEncoding = null;
 			if (mimeType.startsWith("text"))
 			{
@@ -537,9 +536,11 @@ public abstract class CHSHandler implements Handler
 		if (id == null) return null;
 		if (id.length() == 0) return null;
 
-		// take after the last resource path separator, not counting one at the very end if there
+		// take after the last resource path separator, not counting one at the
+		// very end if there
 		boolean lastIsSeparator = id.charAt(id.length() - 1) == '/';
-		return id.substring(id.lastIndexOf('/', id.length() - 2) + 1, (lastIsSeparator ? id.length() - 1 : id.length()));
+		return id.substring(id.lastIndexOf('/', id.length() - 2) + 1,
+				(lastIsSeparator ? id.length() - 1 : id.length()));
 	}
 
 	/**
@@ -573,6 +574,7 @@ public abstract class CHSHandler implements Handler
 	{
 		try
 		{
+
 			String[] parts = path.split("/");
 			StringBuilder sb = new StringBuilder();
 			ContentCollection cc = null;
@@ -771,53 +773,8 @@ public abstract class CHSHandler implements Handler
 				ContentCollection cc = (ContentCollection) e;
 				setGetCacheControl(response, rp.isPrivate());
 
-				// Property lastModified =
-				// n.getProperty(JCRConstants.JCR_LASTMODIFIED);
-				// response.setHeader("ETag",
-				// String.valueOf(lastModified.getDate()
-				// .getTimeInMillis()));
-
-				Map<String, Object> outputMap = new HashMap<String, Object>();
-				outputMap.put("path", rp.getExternalPath(e.getReference()));
-				outputMap.put("type", "collection");
-				List<Map> nodes = new ArrayList<Map>();
-				Iterator members = cc.getMembers().iterator();
-
-				int i = 0;
-				while (members.hasNext())
-				{
-					String memberId = (String) members.next();
-					ContentEntity ce = cc.getMember(memberId);
-					Map<String, Object> cnm = new HashMap<String, Object>();
-					cnm.put("path", rp.getExternalPath(memberId));
-					cnm.put("position", String.valueOf(i));
-					if (ce instanceof ContentCollection)
-					{
-						if (log.isDebugEnabled())
-						{
-							log.debug("Folder " + memberId + " as " + ce);
-						}
-						cnm.put("type", "folder");
-					}
-					else if (ce instanceof ContentResource)
-					{
-						if (log.isDebugEnabled())
-						{
-							log.debug("File " + memberId + " as " + ce);
-						}
-						ContentResource cr = (ContentResource) ce;
-						cnm.put("type", "file");
-
-						cnm.put("mime-type", cr.getContentType());
-						cnm.put("length", cr.getContentLength());
-						cnm.put("lastModified", getLastModified(cr));
-
-					}
-					nodes.add(cnm);
-					i++;
-				}
-				outputMap.put("nitems", nodes.size());
-				outputMap.put("items", nodes);
+				CHSNodeMap outputMap = new CHSNodeMap(e, rp.getDepth(), rp,
+						contentHostingService);
 
 				sendMap(request, response, outputMap);
 			}
@@ -954,10 +911,13 @@ public abstract class CHSHandler implements Handler
 		String ifNoneMatch = request.getHeader("if-none-match");
 		if (ifNoneMatch != null && ifNoneMatch.indexOf(currentEtag) >= 0)
 		{
-			if ("GET|HEAD".indexOf(request.getMethod()) >= 0 ) {
+			if ("GET|HEAD".indexOf(request.getMethod()) >= 0)
+			{
 				response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
-				
-			} else {
+
+			}
+			else
+			{
 				// ifMatch was present, but the currentEtag didnt match
 				response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
 			}
@@ -1084,21 +1044,24 @@ public abstract class CHSHandler implements Handler
 				log.debug("Got Upload through Uploads");
 				String name = item.getName();
 				String fieldName = item.getFieldName();
-				log.info("    Name is " + name + " field Name " + fieldName);
-				for (String headerName : item.getHeaderNames())
+				if (log.isDebugEnabled())
 				{
-					log
-							.info("Header " + headerName + " is "
-									+ item.getHeader(headerName));
+					log.debug("    Name is " + name + " field Name " + fieldName);
+					for (String headerName : item.getHeaderNames())
+					{
+						log.debug("Header " + headerName + " is "
+								+ item.getHeader(headerName));
+					}
 				}
 				InputStream stream = item.openStream();
 				if (!item.isFormField())
 				{
 					try
 					{
-						if ( name!= null && name.trim().length() > 0 ) 
+						if (name != null && name.trim().length() > 0)
 						{
-							String mimeType = ContentTypes.getContentType(name,item.getContentType());
+							String mimeType = ContentTypes.getContentType(name, item
+									.getContentType());
 							String resourceName = rp.getRepositoryPath() + "/" + name;
 							ContentEntity ce = getEntity(resourceName);
 							ContentResourceEdit target = null;
@@ -1124,12 +1087,13 @@ public abstract class CHSHandler implements Handler
 							{
 								uploadMap.put("contentLength", (int) size);
 							}
-							uploadMap.put("name",name);
-							uploadMap.put("url",rp.getExternalPath(rp.getRepositoryPath(name)));
+							uploadMap.put("name", name);
+							uploadMap.put("url", rp.getExternalPath(rp
+									.getRepositoryPath(name)));
 							uploadMap.put("mimeType", mimeType);
 							uploadMap.put("lastModified", lastModified.getTime());
 							uploadMap.put("status", "ok");
-							
+
 							uploads.put(fieldName, uploadMap);
 							uploadMap = new HashMap<String, Object>();
 						}
@@ -1170,7 +1134,6 @@ public abstract class CHSHandler implements Handler
 			return;
 		}
 	}
-
 
 	/**
 	 * TODO Javadoc

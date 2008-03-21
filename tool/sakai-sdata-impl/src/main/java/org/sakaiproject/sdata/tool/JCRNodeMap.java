@@ -100,7 +100,7 @@ public class JCRNodeMap extends HashMap<String, Object>
 		put("mimeType", resource.getProperty(JCRConstants.JCR_MIMETYPE).getString());
 		if (resource.hasProperty(JCRConstants.JCR_ENCODING))
 		{
-			put("encoding", resource.getProperty(JCRConstants.JCR_ENCODING).getStream());
+			put("encoding", resource.getProperty(JCRConstants.JCR_ENCODING).getString());
 		}
 		put("length", String.valueOf(content.getLength()));
 	}

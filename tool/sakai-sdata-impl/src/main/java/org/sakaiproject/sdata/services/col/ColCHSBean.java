@@ -24,14 +24,11 @@ package org.sakaiproject.sdata.services.col;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.jcr.support.api.JCRNodeFactoryService;
-import org.sakaiproject.jcr.support.api.JCRNodeFactoryServiceException;
-import org.sakaiproject.sdata.tool.JCRNodeMap;
+import org.sakaiproject.content.api.ContentEntity;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.sdata.tool.CHSNodeMap;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.SecurityAssertion;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
@@ -40,10 +37,10 @@ import org.sakaiproject.sdata.tool.util.ResourceDefinitionImpl;
 /**
  * @author ieb
  */
-public class ColBean implements ServiceDefinition
+public class ColCHSBean implements ServiceDefinition
 {
 
-	private static final Log log = LogFactory.getLog(ColBean.class);
+	private static final Log log = LogFactory.getLog(ColCHSBean.class);
 
 	private Map<String, Object> m = new HashMap<String, Object>();
 
@@ -57,40 +54,46 @@ public class ColBean implements ServiceDefinition
 	 * @param jcrNodeFactory
 	 * @throws SDataException
 	 */
-	public ColBean(String[] uris, int depth, String inbasePath,
-			SecurityAssertion assertion, JCRNodeFactoryService jcrNodeFactory)
+	public ColCHSBean(String[] uris, int depth, String inbasePath,
+			SecurityAssertion assertion, ContentHostingService contentHostingService)
 			throws SDataException
 	{
 		int inversion = -1;
 		Map<String, Object> items = new HashMap<String, Object>();
 		for (String uri : uris)
 		{
-
+			ResourceDefinitionImpl rp = new ResourceDefinitionImpl("GET", null, depth,
+					inbasePath, uri, inversion, assertion);
+			String repoPath = rp.getRepositoryPath();
+			ContentEntity n = null;
 			try
 			{
-				ResourceDefinitionImpl rp = new ResourceDefinitionImpl("GET", null,
-						depth, inbasePath, uri, inversion, assertion);
-				String repoPath = rp.getRepositoryPath();
-				Node n = jcrNodeFactory.getNode(repoPath);
-
-				log.info("Getting " + repoPath+ " " + uri);
-
-				if (n == null)
-				{
-					items.put(uri, "404 " + repoPath + " " + uri);
-				}
-				else
-				{
-					items.put(uri, new JCRNodeMap(n, depth, rp));
-				}
+				n = contentHostingService.getResource(repoPath);
 			}
-			catch (RepositoryException re)
+			catch (Exception ex)
 			{
-				items.put(uri, "Error " + re.getMessage());
+				try
+				{
+					
+					String collectionPath = repoPath;
+					if ( !collectionPath.endsWith("/") ) {
+						collectionPath = collectionPath + "/";
+					}
+					n = contentHostingService.getCollection(collectionPath);
+				}
+				catch (Exception ex2)
+				{
+				}
+
 			}
-			catch (JCRNodeFactoryServiceException e)
+
+			if (n == null)
 			{
-				items.put(uri, "Error " + e.getMessage());
+				items.put(uri, "404 " + repoPath + " " + uri);
+			}
+			else
+			{
+				items.put(uri, new CHSNodeMap(n, depth, rp, contentHostingService));
 			}
 			m.put("items", items);
 

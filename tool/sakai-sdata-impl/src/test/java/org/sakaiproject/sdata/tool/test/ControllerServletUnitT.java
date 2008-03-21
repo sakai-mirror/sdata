@@ -68,23 +68,23 @@ public class ControllerServletUnitT extends TestCase
 		MockServletConfig config = new MockServletConfig();
 
 		config.setInitParameters("handler.1.classname", MockHandler.class.getName());
-		config.setInitParameters("handler.1.baseurl", "c");
+		config.setInitParameters("handler.1.baseurl", "/c");
 		config.setInitParameters("handler.1.name", "1");
 
 		config.setInitParameters("handler.2.classname", MockHandler.class.getName());
-		config.setInitParameters("handler.2.baseurl", "f");
+		config.setInitParameters("handler.2.baseurl", "/f");
 		config.setInitParameters("handler.2.name", "2");
 		config.setInitParameters("handler.3.classname", MockHandler.class.getName());
-		config.setInitParameters("handler.3.baseurl", "xc");
+		config.setInitParameters("handler.3.baseurl", "/xc");
 		config.setInitParameters("handler.3.name", "3");
 		config.setInitParameters("handler.4.classname", MockHandler.class.getName());
-		config.setInitParameters("handler.4.baseurl", "xf");
+		config.setInitParameters("handler.4.baseurl", "/xf");
 		config.setInitParameters("handler.4.name", "4");
 		config.setInitParameters("handler.5.classname", MockHandler.class.getName());
-		config.setInitParameters("handler.5.baseurl", "cp");
+		config.setInitParameters("handler.5.baseurl", "/cp");
 		config.setInitParameters("handler.5.name", "5");
 		config.setInitParameters("handler.6.classname", MockHandler.class.getName());
-		config.setInitParameters("handler.6.baseurl", "p");
+		config.setInitParameters("handler.6.baseurl", "/p");
 		config.setInitParameters("handler.6.name", "6");
 		cs.init(config);
 		Handler h = cs.getHandler(new MockRequest("/c"));
@@ -116,23 +116,23 @@ public class ControllerServletUnitT extends TestCase
 		StringBuilder sb = new StringBuilder();
 		sb.append("1.classname=").append(MockHandler.class.getName()).append(";");
 
-		sb.append("1.baseurl=").append("c").append(";");
+		sb.append("1.baseurl=").append("/c").append(";");
 		sb.append("1.name=").append("1").append(";");
 
 		sb.append("2.classname=").append(MockHandler.class.getName()).append(";");
-		sb.append("2.baseurl=").append("f").append(";");
+		sb.append("2.baseurl=").append("/f").append(";");
 		sb.append("2.name=").append("2").append(";");
 		sb.append("3.classname=").append(MockHandler.class.getName()).append(";");
-		sb.append("3.baseurl=").append("xc").append(";");
+		sb.append("3.baseurl=").append("/xc").append(";");
 		sb.append("3.name=").append("3").append(";");
 		sb.append("4.classname=").append(MockHandler.class.getName()).append(";");
-		sb.append("4.baseurl=").append("xf").append(";");
+		sb.append("4.baseurl=").append("/xf").append(";");
 		sb.append("4.name=").append("4").append(";");
 		sb.append("5.classname=").append(MockHandler.class.getName()).append(";");
-		sb.append("5.baseurl=").append("cp").append(";");
+		sb.append("5.baseurl=").append("/cp").append(";");
 		sb.append("5.name=").append("5").append(";");
 		sb.append("6.classname=").append(MockHandler.class.getName()).append(";");
-		sb.append("6.baseurl=").append("p").append(";");
+		sb.append("6.baseurl=").append("/p").append(";");
 		sb.append("6.name=").append("6").append(";");
 		config.setInitParameters("config", sb.toString());
 		cs.init(config);

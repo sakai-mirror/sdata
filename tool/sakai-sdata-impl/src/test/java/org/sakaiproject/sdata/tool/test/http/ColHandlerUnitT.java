@@ -173,8 +173,7 @@ public class ColHandlerUnitT extends TestCase
 			login();
 			doUpload();
 			PostMethod method = new PostMethod(getBaseDataUrl());
-			method.addParameter("uri", "f/missing");
-			method.addParameter("uri", "f/dirlist");
+			method.addParameter("uri", "f");
 			client.executeMethod(method);
 			
 			checkHandler(method);
@@ -262,6 +261,19 @@ public class ColHandlerUnitT extends TestCase
 		className = className.substring(className.lastIndexOf('.'));
 		className = className.substring(0, className.length() - "UnitT".length());
 		Header h = resp.getResponseHeader("x-sdata-handler");
+		if (h == null)
+		{
+			try
+			{
+				log.info("Request was "+resp.getURI());
+				log.info("Failed Content was " + resp.getResponseBodyAsString());
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
 		assertNotNull("Handler Not found ", h);
 		String handler = h.getValue();
 		assertTrue("Handler Not found (no value)", handler.trim().length() > 0);

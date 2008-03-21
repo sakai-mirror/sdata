@@ -85,8 +85,11 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 		this.depth = depth;
 		this.method = method;
 		this.assertion = assertion;
-		
-		repoPath = basePath + path;
+		if ( basePath.endsWith("/") ) {
+			repoPath = basePath + path;
+		} else {
+			repoPath = basePath + "/" + path;			
+		}
 		repoPath = cleanPath(repoPath);
 		repoPath = repoPath.replaceAll("//", "/");
 		if (repoPath.length() > 1 && repoPath.endsWith("/"))

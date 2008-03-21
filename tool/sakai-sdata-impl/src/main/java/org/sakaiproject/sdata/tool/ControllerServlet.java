@@ -517,7 +517,19 @@ public class ControllerServlet extends HttpServlet
 		int end = start;
 		for (; end < path.length && path[end] != '/'; end++);
 		String key = new String(path, start, end - start);
-		return handlerRegister.get(key);
+		return handlerRegister.get("/"+key);
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	@Override
+	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+	{
+		long start = System.currentTimeMillis();
+		super.service(req, resp);
+		log.info((System.currentTimeMillis()-start)+" ms "+req.getMethod()+":"+req.getRequestURL());
 	}
 
 }

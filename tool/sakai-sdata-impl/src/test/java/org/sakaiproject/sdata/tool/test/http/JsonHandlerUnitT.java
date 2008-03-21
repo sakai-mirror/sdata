@@ -432,7 +432,8 @@ public abstract class JsonHandlerUnitT extends TestCase
 		if (enabled)
 		{
 			login();
-			PostMethod method = new PostMethod(getBaseUrl() + "dirlist");
+			
+			PostMethod method = new PostMethod(getBaseDataUrl() + "dirlist");
 
 			Part[] parts = new Part[20];
 			for (int i = 0; i < parts.length; i++)
@@ -445,6 +446,7 @@ public abstract class JsonHandlerUnitT extends TestCase
 							.getParams()));
 
 			client.executeMethod(method);
+			log.info("Got "+method.getURI()+" "+method.getResponseBodyAsString());
 			checkHandler(method);
 
 			int code = method.getStatusCode();

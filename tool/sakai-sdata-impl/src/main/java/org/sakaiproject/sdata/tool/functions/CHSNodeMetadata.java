@@ -23,12 +23,13 @@ package org.sakaiproject.sdata.tool.functions;
 
 import java.io.IOException;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.sdata.tool.JCRNodeMap;
+import org.sakaiproject.component.api.ComponentManager;
+import org.sakaiproject.content.api.ContentEntity;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.sdata.tool.CHSNodeMap;
 import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.SDataException;
@@ -37,8 +38,20 @@ import org.sakaiproject.sdata.tool.api.SDataFunction;
 /**
  * @author ieb
  */
-public class JCRNodeMetadata implements SDataFunction
+public class CHSNodeMetadata implements SDataFunction
 {
+
+	private ContentHostingService contentHostingService;
+
+	public CHSNodeMetadata()
+	{
+		ComponentManager componentManager = org.sakaiproject.component.cover.ComponentManager
+				.getInstance();
+
+		contentHostingService = (ContentHostingService) componentManager
+				.get(ContentHostingService.class.getName());
+
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -48,18 +61,14 @@ public class JCRNodeMetadata implements SDataFunction
 	 *      javax.servlet.http.HttpServletResponse, java.lang.Object)
 	 */
 	public void call(Handler handler, HttpServletRequest request,
-			HttpServletResponse response, Object target, ResourceDefinition rp) throws SDataException
+			HttpServletResponse response, Object target, ResourceDefinition rp)
+			throws SDataException
 	{
 		try
 		{
-			Node n = (Node) target;
-			JCRNodeMap nm = new JCRNodeMap(n,rp.getDepth(),rp);
+			ContentEntity n = (ContentEntity) target;
+			CHSNodeMap nm = new CHSNodeMap(n, rp.getDepth(), rp, contentHostingService);
 			handler.sendMap(request, response, nm);
-		}
-		catch (RepositoryException rex)
-		{
-			throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, rex
-					.getMessage());
 		}
 		catch (IOException e)
 		{
@@ -68,7 +77,5 @@ public class JCRNodeMetadata implements SDataFunction
 		}
 
 	}
-	
-
 
 }

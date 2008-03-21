@@ -47,6 +47,8 @@ public class WebUnitAll extends TestCase
 		suite.addTestSuite(JsonJcrUserStorageHandlerUnitT.class);
 		suite.addTestSuite(XmlRpcJcrUserStorageHandlerUnitT.class);
 		suite.addTestSuite(HttpRangeUnitT.class);
+		suite.addTestSuite(ColHandlerUnitT.class);
+		suite.addTestSuite(ColCHSHandlerUnitT.class);
 		// $JUnit-END$
 		return suite;
 	}

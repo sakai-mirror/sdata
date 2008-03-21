@@ -29,6 +29,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.common.TypeFactory;
 import org.apache.xmlrpc.common.XmlRpcStreamRequestConfig;
@@ -47,6 +49,8 @@ import org.xml.sax.SAXException;
  */
 public class XmlRpcJcrUserStorageHandler extends JCRUserStorageHandler
 {
+	private static final Log log = LogFactory.getLog(XmlRpcJcrUserStorageHandler.class);
+
 	private XmlWriterFactory writerFactory = new DefaultXMLWriterFactory();
 
 	private XmlRpcStreamRequestConfig pConfig = new XmlRpcStreamRequestConfigImpl();
@@ -85,6 +89,7 @@ public class XmlRpcJcrUserStorageHandler extends JCRUserStorageHandler
 		}
 		catch (SAXException e)
 		{
+			log.info("Error Failed to send result ",e);
 			throw new IOException("Failed to write response " + e.getMessage());
 		}
 

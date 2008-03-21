@@ -57,12 +57,12 @@ public class PathSecurityAssertion implements SecurityAssertion
 	/**
 	 * the init parameter for baseResource
 	 */
-	private static final String BASE_RESOURCE_LOCATION_INIT = "resourcebase";
+	private static final String BASE_REFERENCE_INIT = "referencebase";
 
 	/**
 	 * the default value for base resource
 	 */
-	private static final String DEFAULT_BASE_RESOURCE = "";
+	private static final String DEFAULT_BASE_REFERENCE = "";
 
 	/**
 	 * the init parameter name for the lock map
@@ -99,9 +99,10 @@ public class PathSecurityAssertion implements SecurityAssertion
 	 * this is prepended to the resource path, after normalizing (ie removing
 	 * baseLocation) and before sending to the Sakai security service.
 	 */
-	private String baseResource;
+	private String baseReference;
 
 	private boolean inTest = false;
+
 
 	/**
 	 * Construct a PathSecurityAssertion class based on the standard
@@ -121,14 +122,14 @@ public class PathSecurityAssertion implements SecurityAssertion
 		{
 			log.info("Set Base Location to " + baseLocation);
 		}
-		baseResource = config.get(BASE_RESOURCE_LOCATION_INIT);
-		if (baseResource == null)
+		baseReference = config.get(BASE_REFERENCE_INIT);
+		if (baseReference == null)
 		{
-			baseResource = DEFAULT_BASE_RESOURCE;
+			baseReference = DEFAULT_BASE_REFERENCE;
 		}
 		else
 		{
-			log.info("Set Base Location to " + baseResource);
+			log.info("Set Base Reference to " + baseReference);
 		}
 		String lockMapSpec = config.get(LOCK_MAP_INIT);
 		if (lockMapSpec == null)
@@ -178,13 +179,13 @@ public class PathSecurityAssertion implements SecurityAssertion
 		{
 			return;
 		}
-		if (resourceLocation == null || !resourceLocation.startsWith(baseLocation))
+		if (!(baseLocation.length() == 0) && (resourceLocation == null  || !resourceLocation.startsWith(baseLocation)))
 		{
-			log.info("Denied " + method + " on " + resourceLocation + " base "
-					+ baseLocation);
+			log.info("Denied " + method + " on [" + resourceLocation + "] base mismatch ["
+					+ baseLocation + "]");
 			throw new SDataException(HttpServletResponse.SC_FORBIDDEN, "Access Forbidden");
 		}
-		String resourceReference = resourceLocation.substring(baseLocation.length());
+		String resourceReference = baseReference+resourceLocation.substring(baseLocation.length());
 		String resourceLock = getResourceLock(method);
 		try
 		{
