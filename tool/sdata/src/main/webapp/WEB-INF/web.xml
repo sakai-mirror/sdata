@@ -89,7 +89,7 @@
 			14.classname=org.sakaiproject.sdata.services.motd.MessageOfTheDayHandler;
 			14.baseurl=/motd;
 			15.classname=org.sakaiproject.sdata.services.mgs.MyGlobalSearchHandler;
-			15.baseurl=mgs;
+			15.baseurl=/mgs;
 			16.classname=org.sakaiproject.sdata.services.site.SiteHandler;
 			16.baseurl=/site;
 			17.classname=org.sakaiproject.sdata.tool.SnoopHandler;
