@@ -33,7 +33,7 @@ import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
- * TODO Javadoc
+ * TODO javadoc
  * 
  * @author
  */
@@ -48,7 +48,8 @@ public class MyCoursesAndProjectsServiceDefinitionFactory implements
 	private ComponentManager componentManager;
 
 	/**
-	 * TODO Javadoc
+	 * Creates a new instance
+	 * 
 	 */
 	public MyCoursesAndProjectsServiceDefinitionFactory()
 	{
@@ -68,7 +69,7 @@ public class MyCoursesAndProjectsServiceDefinitionFactory implements
 	public ServiceDefinition getSpec(HttpServletRequest request,
 			HttpServletResponse response)
 	{
-		return new MyCoursesAndProjectsBean(sessionManager, siteService);
+		return new MyCoursesAndProjectsBean(sessionManager, siteService, request);
 	}
 
 	/*

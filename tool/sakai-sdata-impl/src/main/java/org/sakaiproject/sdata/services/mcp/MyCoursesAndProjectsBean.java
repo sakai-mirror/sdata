@@ -21,12 +21,20 @@
 
 package org.sakaiproject.sdata.services.mcp;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.sdata.services.mra.MyRecentChangesBean;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
@@ -36,127 +44,250 @@ import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
- * TODO Javadoc
+ * A bean where we construct a map object with all the sites a person is a
+ * member of. The Map object structure is like:
+ * <ul>
+ * <li>site title</li>
+ * <li>site id</li>
+ * <li>site url</li>
+ * </ul>
  * 
  * @author
  */
-public class MyCoursesAndProjectsBean implements ServiceDefinition
-{
+public class MyCoursesAndProjectsBean implements ServiceDefinition {
 
 	private List<Site> mysites;
 
 	private Session currentSession;
 
+	@SuppressWarnings("unchecked")
 	private List<Map> MyMappedSites = new ArrayList<Map>();
 
-	private Map<String, Object> map2 = new HashMap<String, Object>();;
+	private Map<String, Object> map2 = new HashMap<String, Object>();
+	
+	private static final Log log = LogFactory.getLog(MyCoursesAndProjectsBean.class);
 
 	/**
-	 * TODO Javadoc
+	 * The MyCoursesAndProjectsBean constructor
 	 * 
 	 * @param sessionManager
 	 * @param siteService
 	 */
-	public MyCoursesAndProjectsBean(SessionManager sessionManager, SiteService siteService)
+	@SuppressWarnings("unchecked")
+	public MyCoursesAndProjectsBean(SessionManager sessionManager, SiteService siteService, HttpServletRequest request)
 	{
-		setCurrentSession(sessionManager.getCurrentSession());
-		setMysites((List<Site>) siteService.getSites(SelectionType.ACCESS, null, null,
-				null, SortType.TITLE_ASC, null));
+		
+		if (request.getMethod().toLowerCase().equals("get")){
+		
+			if (request.getParameter("action") == null){
+		
+				setCurrentSession(sessionManager.getCurrentSession());
+				setMysites((List<Site>) siteService.getSites(SelectionType.ACCESS, null, null,
+						null, SortType.TITLE_ASC, null));
+		
+				try
+				{
+					mysites.add(0, (siteService.getSite(siteService.getUserSiteId(currentSession
+							.getUserId()))));
+		
+				}
+				catch (IdUnusedException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		
+				for (Site site : mysites)
+				{
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("title", site.getTitle());
+					map.put("id", site.getId());
+					map.put("url", site.getUrl());
+					map.put("iconUrl", site.getIconUrl());
+					map.put("owner", site.getCreatedBy().getDisplayName());
+					map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
+					map.put("members", site.getMembers().size());
+					map.put("description", site.getDescription());
+					map.put("siteType", site.getType());
+					getMyMappedSites().add(map);
+				}
+				
+				
+		
+				map2.put("items", getMyMappedSites());
+			
+			} else if (request.getParameter("action") != null || request.getParameter("action").equals("joinable")){
+				
+				List<Site> myJoinableSites = siteService.getSites(org.sakaiproject.site.api.SiteService.SelectionType.JOINABLE,
+								null, "", null, org.sakaiproject.site.api.SiteService.SortType.TITLE_ASC, null);
+				
+				for (Site site : myJoinableSites)
+				{
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("title", site.getTitle());
+					map.put("id", site.getId());
+					map.put("url", site.getUrl());
+					map.put("iconUrl", site.getIconUrl());
+					map.put("owner", site.getCreatedBy().getDisplayName());
+					map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
+					map.put("members", site.getMembers().size());
+					map.put("description", site.getDescription());
+					map.put("siteType", site.getType());
+					getMyMappedSites().add(map);
+				}
+				
+				
+		
+				map2.put("items", getMyMappedSites());
 
-		try
-		{
-			mysites.add(0, (siteService.getSite(siteService.getUserSiteId(currentSession
-					.getUserId()))));
-
+			}
+		
+		} else if (request.getMethod().toLowerCase().equals("post")) {
+		
+			
+			/*
+			 *  Courses And Project actions (Join a Site - Unjoin a Site)
+			 */
+			
+			String action = request.getParameter("action");
+			
+			if (action.equals("unjoin")){
+				Session session = null;
+				setCurrentSession(sessionManager.getCurrentSession());
+				try
+				{
+					currentSession = sessionManager.getCurrentSession();
+					session = sessionManager.startSession();
+					session.setUserId("admin");
+					sessionManager.setCurrentSession(session);
+					
+					Site s = siteService.getSite(request.getParameter("siteid"));
+					s.removeMember(getCurrentSession().getUserId());
+					siteService.save(s);
+					
+					log.info("User = " + getCurrentSession().getUserId() + " - " + s);
+					map2.put("status", "success");
+				}
+				catch (IdUnusedException e)
+				{
+					// TODO Auto-generated catch block
+					map2.put("status", "failed");
+					e.printStackTrace();
+				}
+				catch (PermissionException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					map2.put("status", "permission denied");
+					e.printStackTrace();
+				}
+				finally {
+					sessionManager.setCurrentSession(currentSession);
+					session.invalidate();
+					session = null;
+				}
+				
+			}  else if (action.equals("join")){
+				Session session = null;
+				setCurrentSession(sessionManager.getCurrentSession());
+				try
+				{
+	
+					currentSession = sessionManager.getCurrentSession();
+					session = sessionManager.startSession();
+					session.setUserId("admin");
+					sessionManager.setCurrentSession(session);
+							
+					Site s = siteService.getSite(request.getParameter("siteid"));
+					s.addMember(getCurrentSession().getUserId(), s.getJoinerRole(), true, false);
+					siteService.save(s);
+					map2.put("status", "success");
+				}
+				catch (IdUnusedException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					map2.put("status", "failed");
+				}
+				catch (PermissionException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					map2.put("status", "failed");
+					
+				} 
+				finally {
+					sessionManager.setCurrentSession(currentSession);
+					session.invalidate();
+					session = null;
+				}			
+			}
+			
 		}
-		catch (IdUnusedException e)
-		{
-			// e.printStackTrace();
-		}
-
-		for (Site site : mysites)
-		{
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("title", site.getTitle());
-			map.put("id", site.getId());
-			map.put("url", site.getUrl());
-			getMyMappedSites().add(map);
-		}
-
-		map2.put("items", getMyMappedSites());
-
-		// jsonObject = JSONObject.fromObject(map2);
 
 	}
 
 	/**
-	 * TODO Javadoc
+	 * setter for mysites
 	 * 
 	 * @param mysites
 	 */
-	public void setMysites(List<Site> mysites)
-	{
+	public void setMysites(List<Site> mysites) {
 		this.mysites = mysites;
 	}
 
 	/**
-	 * TODO Javadoc
+	 * get mysites
 	 * 
-	 * @return
+	 * @return all the sites the person is a member of.
 	 */
-	public List<Site> getMysites()
-	{
+	public List<Site> getMysites() {
 		return mysites;
 	}
 
 	/**
-	 * TODO Javadoc
+	 * set the currentsession
 	 * 
 	 * @param currentSession
 	 */
-	public void setCurrentSession(Session currentSession)
-	{
+	public void setCurrentSession(Session currentSession) {
 		this.currentSession = currentSession;
 	}
 
 	/**
-	 * TODO Javadoc
+	 * get currentsession
 	 * 
-	 * @return
+	 * @return currentSession
 	 */
-	public Session getCurrentSession()
-	{
+	public Session getCurrentSession() {
 		return currentSession;
 	}
 
-	/*
+	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinition#getResponseMap()
 	 */
-	public Map<String, Object> getResponseMap()
-	{
+	public Map<String, Object> getResponseMap() {
 
 		return map2;
 	}
 
 	/**
-	 * TODO Javadoc
+	 * set myMappedSites
 	 * 
 	 * @param myMappedSites
 	 */
-	public void setMyMappedSites(List<Map> myMappedSites)
-	{
+	public void setMyMappedSites(List<Map> myMappedSites) {
 		MyMappedSites = myMappedSites;
 	}
 
 	/**
-	 * TODO Javadoc
+	 * get myMappedSites
 	 * 
-	 * @return
+	 * @return Return a list of mapped sites
 	 */
-	public List<Map> getMyMappedSites()
-	{
+	public List<Map> getMyMappedSites() {
 		return MyMappedSites;
 	}
 
