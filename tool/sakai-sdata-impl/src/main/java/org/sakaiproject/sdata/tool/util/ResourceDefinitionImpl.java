@@ -115,7 +115,7 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 		p = p.replaceAll("//", "/");
 		if (p.length() > 1 && p.endsWith("/"))
 		{
-			p = repoPath.substring(0, p.length() - 1);
+			p = p.substring(0, p.length() - 1);
 		}
 		if (!p.startsWith("/"))
 		{
