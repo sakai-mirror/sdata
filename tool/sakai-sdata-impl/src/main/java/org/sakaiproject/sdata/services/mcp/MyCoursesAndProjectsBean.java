@@ -81,40 +81,69 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 		
 			if (request.getParameter("action") == null){
 		
-				setCurrentSession(sessionManager.getCurrentSession());
-				setMysites((List<Site>) siteService.getSites(SelectionType.ACCESS, null, null,
-						null, SortType.TITLE_ASC, null));
-		
-				try
-				{
-					mysites.add(0, (siteService.getSite(siteService.getUserSiteId(currentSession
+				if (request.getParameter("rolestrict") == null){
+				
+					setCurrentSession(sessionManager.getCurrentSession());
+					setMysites((List<Site>) siteService.getSites(SelectionType.ACCESS, null, null,
+							null, SortType.TITLE_ASC, null));
+			
+					try
+					{
+						mysites.add(0, (siteService.getSite(siteService.getUserSiteId(currentSession
 							.getUserId()))));
-		
+			
+					}
+					catch (IdUnusedException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			
+					for (Site site : mysites)
+					{
+						Map<String, Object> map = new HashMap<String, Object>();
+						map.put("title", site.getTitle());
+						map.put("id", site.getId());
+						map.put("url", site.getUrl());
+						map.put("iconUrl", site.getIconUrl());
+						map.put("owner", site.getCreatedBy().getDisplayName());
+						map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
+						map.put("members", site.getMembers().size());
+						map.put("description", site.getDescription());
+						map.put("siteType", site.getType());
+						getMyMappedSites().add(map);
+					}
+					
+					
+			
+					map2.put("items", getMyMappedSites());
+					
+				} else {
+					
+					setCurrentSession(sessionManager.getCurrentSession());
+					setMysites((List<Site>) siteService.getSites(SelectionType.ACCESS, null, null,
+							null, SortType.TITLE_ASC, null));
+			
+					for (Site site : mysites)
+					{
+						if (site.getUserRole(currentSession.getUserId()).getId().equals(site.getMaintainRole())){
+							Map<String, Object> map = new HashMap<String, Object>();
+							map.put("title", site.getTitle());
+							map.put("id", site.getId());
+							map.put("url", site.getUrl());
+							map.put("iconUrl", site.getIconUrl());
+							map.put("owner", site.getCreatedBy().getDisplayName());
+							map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
+							map.put("members", site.getMembers().size());
+							map.put("description", site.getDescription());
+							map.put("siteType", site.getType());
+							getMyMappedSites().add(map);
+						}
+					}
+					
+					map2.put("items", getMyMappedSites());
+					
 				}
-				catch (IdUnusedException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		
-				for (Site site : mysites)
-				{
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("title", site.getTitle());
-					map.put("id", site.getId());
-					map.put("url", site.getUrl());
-					map.put("iconUrl", site.getIconUrl());
-					map.put("owner", site.getCreatedBy().getDisplayName());
-					map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
-					map.put("members", site.getMembers().size());
-					map.put("description", site.getDescription());
-					map.put("siteType", site.getType());
-					getMyMappedSites().add(map);
-				}
-				
-				
-		
-				map2.put("items", getMyMappedSites());
 			
 			} else if (request.getParameter("action") != null || request.getParameter("action").equals("joinable")){
 				
