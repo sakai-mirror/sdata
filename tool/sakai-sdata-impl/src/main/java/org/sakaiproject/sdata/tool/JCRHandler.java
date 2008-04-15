@@ -51,6 +51,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.jcr.api.JCRConstants;
 import org.sakaiproject.jcr.support.api.JCRNodeFactoryService;
+import org.sakaiproject.jcr.support.api.JCRNodeFactoryServiceException;
 import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.ResourceDefinitionFactory;
@@ -806,7 +807,18 @@ public abstract class JCRHandler implements Handler
 			else
 			{
 
-				log.info("Got Standard");
+				Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
+
+				if (n != null){
+					NodeType nt = n.getPrimaryNodeType();
+				}
+				
+				SDataFunction m = resourceFunctionFactory.getFunction(rp
+						.getFunctionDefinition());
+				if (m != null)
+				{
+					m.call(this, request, response, n, rp);
+				}
 
 			}
 		}
@@ -814,6 +826,14 @@ public abstract class JCRHandler implements Handler
 		{
 			sendError(request, response, sde);
 
+		}
+		catch (RepositoryException rex)
+		{
+			sendError(request, response, rex);
+		} 
+		catch (JCRNodeFactoryServiceException jfe)
+		{
+			sendError(request, response, jfe);
 		}
 
 	}

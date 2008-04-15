@@ -77,7 +77,7 @@ public class JSONServiceHandler extends ServiceHandler
 		 */
 		ex.printStackTrace();
 		response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-				"BOE ++++++===+++ " + ex.getMessage());
+				ex.getMessage());
 	}
 
 	/*

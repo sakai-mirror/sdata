@@ -49,12 +49,14 @@
 			2.classname=org.sakaiproject.sdata.tool.json.JsonCHSHandler;
 			2.baseurl=/c;
 			2.function.m=org.sakaiproject.sdata.tool.functions.CHSNodeMetadata;
+			2.function.cf=org.sakaiproject.sdata.tool.functions.CHSCreateFolder;
 			2.locationbase=;
 			2.referencebase=/content;
 			2.basepath=/;
 			3.classname=org.sakaiproject.sdata.tool.json.JsonJcrHandler;
 			3.baseurl=/f;
 			3.function.m=org.sakaiproject.sdata.tool.functions.JCRNodeMetadata;
+			3.function.cf=org.sakaiproject.sdata.tool.functions.JCRCreateFolder;
 			3.locationbase=/sakai/sdata;
 			3.referencebase=/content;
 			3.basepath=/sakai/sdata;

@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import javax.jcr.Node;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -67,7 +68,9 @@ import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.ResourceDefinitionFactory;
+import org.sakaiproject.sdata.tool.api.ResourceFunctionFactory;
 import org.sakaiproject.sdata.tool.api.SDataException;
+import org.sakaiproject.sdata.tool.api.SDataFunction;
 import org.sakaiproject.sdata.tool.util.ResourceDefinitionFactoryImpl;
 import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.util.Validator;
@@ -124,6 +127,8 @@ public abstract class CHSHandler implements Handler
 	private ContentHostingService contentHostingService;
 
 	private ResourceDefinitionFactory resourceDefinitionFactory;
+	
+	private ResourceFunctionFactory resourceFunctionFactory;
 
 	private String baseUrl;
 
@@ -154,7 +159,14 @@ public abstract class CHSHandler implements Handler
 				.get(ContentHostingService.class.getName());
 
 		resourceDefinitionFactory = getResourceDefinitionFactory(config);
+		
+		resourceFunctionFactory = getResourceFunctionFactory(config);
 
+	}
+	
+	private ResourceFunctionFactory getResourceFunctionFactory(Map<String, String> config)
+	{
+		return new ResourceFunctionFactoryImpl(config);
 	}
 
 	/**
@@ -971,22 +983,37 @@ public abstract class CHSHandler implements Handler
 		{
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
 			boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-
+			
 			// multiparts are always streamed uploads
 			if (isMultipart)
 			{
 				doMumtipartUpload(request, response, rp);
 			}
 			else
-			{
-				log.info("Got Standard");
-
+			{				
+				
+				ContentResource n = null;
+				
+				try {
+					n = contentHostingService.getResource(rp.getRepositoryPath());
+				} catch (Exception ex){}
+				
+				SDataFunction m = resourceFunctionFactory.getFunction(rp
+						.getFunctionDefinition());
+				if (m != null)
+				{
+					m.call(this, request, response, n, rp);
+				} 
+				
 			}
 		}
 		catch (SDataException sde)
 		{
 			sendError(request, response, sde);
 
+		}
+		catch (Exception ex){
+			sendError(request, response, ex);
 		}
 
 	}
