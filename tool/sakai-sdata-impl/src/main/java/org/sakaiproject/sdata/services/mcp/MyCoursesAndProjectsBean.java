@@ -37,11 +37,14 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.sdata.services.mra.MyRecentChangesBean;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.api.SiteService.SelectionType;
 import org.sakaiproject.site.api.SiteService.SortType;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.Tool;
 
 /**
  * A bean where we construct a map object with all the sites a person is a
@@ -118,30 +121,86 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 			
 					map2.put("items", getMyMappedSites());
 					
-				} else {
+				} else if (request.getParameter("rolestrict") != null){
 					
-					setCurrentSession(sessionManager.getCurrentSession());
-					setMysites((List<Site>) siteService.getSites(SelectionType.ACCESS, null, null,
-							null, SortType.TITLE_ASC, null));
-			
-					for (Site site : mysites)
-					{
-						if (site.getUserRole(currentSession.getUserId()).getId().equals(site.getMaintainRole())){
-							Map<String, Object> map = new HashMap<String, Object>();
-							map.put("title", site.getTitle());
-							map.put("id", site.getId());
-							map.put("url", site.getUrl());
-							map.put("iconUrl", site.getIconUrl());
-							map.put("owner", site.getCreatedBy().getDisplayName());
-							map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
-							map.put("members", site.getMembers().size());
-							map.put("description", site.getDescription());
-							map.put("siteType", site.getType());
-							getMyMappedSites().add(map);
+					if (request.getParameter("tool") != null){
+						
+						setCurrentSession(sessionManager.getCurrentSession());
+						setMysites((List<Site>) siteService.getSites(SelectionType.ACCESS, null, null,
+								null, SortType.TITLE_ASC, null));
+				
+						for (Site site : mysites)
+						{
+							if (site.getUserRole(currentSession.getUserId()).getId().equals(site.getMaintainRole())){
+								
+								boolean containstool = false;
+								
+								List<SitePage> pages = (List<SitePage>) site.getOrderedPages();
+
+								for (SitePage page : pages)
+								{
+
+									List<ToolConfiguration> lst = (List<ToolConfiguration>) page
+											.getTools();
+
+									for (ToolConfiguration conf : lst)
+									{
+
+										Tool t = conf.getTool();
+
+										if (t != null && t.getId() != null && t.getId().equals(request.getParameter("tool")))
+										{
+											containstool = true;
+										}
+										
+									}
+									
+								}
+								
+								if (containstool){
+									Map<String, Object> map = new HashMap<String, Object>();
+									map.put("title", site.getTitle());
+									map.put("id", site.getId());
+									map.put("url", site.getUrl());
+									map.put("iconUrl", site.getIconUrl());
+									map.put("owner", site.getCreatedBy().getDisplayName());
+									map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
+									map.put("members", site.getMembers().size());
+									map.put("description", site.getDescription());
+									map.put("siteType", site.getType());
+									getMyMappedSites().add(map);
+								}
+							}
 						}
+						
+						map2.put("items", getMyMappedSites());
+						
+					} else {
+						
+						setCurrentSession(sessionManager.getCurrentSession());
+						setMysites((List<Site>) siteService.getSites(SelectionType.ACCESS, null, null,
+								null, SortType.TITLE_ASC, null));
+				
+						for (Site site : mysites)
+						{
+							if (site.getUserRole(currentSession.getUserId()).getId().equals(site.getMaintainRole())){
+								Map<String, Object> map = new HashMap<String, Object>();
+								map.put("title", site.getTitle());
+								map.put("id", site.getId());
+								map.put("url", site.getUrl());
+								map.put("iconUrl", site.getIconUrl());
+								map.put("owner", site.getCreatedBy().getDisplayName());
+								map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
+								map.put("members", site.getMembers().size());
+								map.put("description", site.getDescription());
+								map.put("siteType", site.getType());
+								getMyMappedSites().add(map);
+							}
+						}
+						
+						map2.put("items", getMyMappedSites());
+						
 					}
-					
-					map2.put("items", getMyMappedSites());
 					
 				}
 			
