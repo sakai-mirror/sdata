@@ -198,26 +198,12 @@ public class MyRecentChangesBean implements ServiceDefinition
 			arlSiteId.add(siteService.getUserSiteId(currentSession.getUserId())
 					.substring(1));
 
-			// searchService = (SearchService) getComponentManager().get(
-			// "org.sakaiproject.search.api.SearchService");
-			// contentHostingService = (ContentHostingService) componentManager
-			// .get("org.sakaiproject.content.api.ContentHostingService");
-			// announcementService = (AnnouncementService) componentManager
-			// .get("org.sakaiproject.announcement.api.AnnouncementService");
-			// entityManager = (EntityManager) componentManager
-			// .get("org.sakaiproject.entity.api.EntityManager");
-
 		}
 		catch (Exception e)
 		{
 			// TODO: handle exception
 			e.printStackTrace();
 		}
-		/*
-		 * log.warn("blah " + this.getSearchService().search("tool:content
-		 * tool:announcement", this.getArlSiteId(), 0, 50, null,
-		 * "dateRelevanceSort"));
-		 */
 
 		// ////////
 		// //////// DELETE INDEXED FILES FROM INDEX QUEUE
@@ -227,10 +213,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 		{
 			searchList = searchService.search("tool:content tool:announcement",
 					arlSiteId, 0, 50, null, "dateRelevanceSort");
-			// log.warn(getSearchService().toString());
-			// log.warn(searchList);
-
-			// this.setSearchResult( null );
+		
 			int ii = -1, iii = 0;
 			do
 			{
@@ -285,9 +268,9 @@ public class MyRecentChangesBean implements ServiceDefinition
 					&& ii < 50);
 		}
 
-		// ////////
-		// //////// GET INDEXED RESULTS FROM INDEXQUEUE
-		// ////////
+		//////////
+		////////// GET INDEXED RESULTS FROM INDEXQUEUE
+		//////////
 
 		String finalResult = "";
 
@@ -320,60 +303,59 @@ public class MyRecentChangesBean implements ServiceDefinition
 
 			if (mres.getTool().equals("content"))
 			{
-				String eid = mres.getName().substring(8);
+				try {
+					
+					String eid = mres.getName().substring(8);
 
-				// og.info("eid is " + eid);
-
-				// log.info("contenthostingservice is " +
-				// contentHostingService.toString());
-				if (!contentHostingService.isCollection(eid))
-				{
-
-					if (contentHostingService.allowGetResource(eid)
-							&& !arlUsed.contains(mres.getName()))
+					if (!contentHostingService.isCollection(eid))
 					{
-
-						if (totalrecordsshown >= (paging - 1) * 10
-								&& totalrecordsshown < (paging) * 10)
+	
+						if (contentHostingService.allowGetResource(eid)
+								&& !arlUsed.contains(mres.getName()))
 						{
-
-							ContentResource cres = contentHostingService.getResource(eid);
-
-							Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-									.parse(mres.getVersion().substring(0, 19));
-
-							MyRecentChangesResult mrcs = new MyRecentChangesResult();
-
-							for (Site s : mySites)
+	
+							if (totalrecordsshown >= (paging - 1) * 10
+									&& totalrecordsshown < (paging) * 10)
 							{
-								// TODO
-								if (mres.getContext().equals(s.getId()))
+	
+								ContentResource cres = contentHostingService.getResource(eid);
+	
+								Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+										.parse(mres.getVersion().substring(0, 19));
+	
+								MyRecentChangesResult mrcs = new MyRecentChangesResult();
+	
+								for (Site s : mySites)
 								{
-
-									mrcs.setSitename(s.getTitle());
-
+									// TODO
+									if (mres.getContext().equals(s.getId()))
+									{
+	
+										mrcs.setSitename(s.getTitle());
+	
+									}
 								}
+	
+								mrcs.setTool(mres.getTool());
+								mrcs.setVersion(mres.getVersion());
+								mrcs.setContext(mres.getContext());
+								mrcs.setName(cres.getUrl().substring(
+										cres.getUrl().lastIndexOf("/") + 1));
+								mrcs.setReference(cres.getReference());
+								results.add(mrcs);
+	
 							}
-
-							mrcs.setTool(mres.getTool());
-							mrcs.setVersion(mres.getVersion());
-							mrcs.setContext(mres.getContext());
-							mrcs.setName(cres.getUrl().substring(
-									cres.getUrl().lastIndexOf("/") + 1));
-							mrcs.setReference(cres.getReference());
-							results.add(mrcs);
-
+	
+							totalrecordsshown += 1;
+							arlUsed.add(mres.getName());
+							if (totalrecordsshown == 50)
+							{
+								break;
+							}
+	
 						}
-
-						totalrecordsshown += 1;
-						arlUsed.add(mres.getName());
-						if (totalrecordsshown == 50)
-						{
-							break;
-						}
-
 					}
-				}
+				} catch (Exception ex){};
 			}
 			else if (mres.getTool().equals("announcement") && announcementService != null)
 			{
@@ -437,10 +419,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 					}
 
 				}
-				catch (Exception ex)
-				{
-					ex.printStackTrace();
-				}
+				catch (Exception ex){};
 
 			}
 
