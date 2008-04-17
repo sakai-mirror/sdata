@@ -70,6 +70,30 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 	
 	private static final Log log = LogFactory.getLog(MyCoursesAndProjectsBean.class);
 
+	private boolean containstool(Site site, String tool){
+		
+		boolean containstool = false;
+		
+		List<SitePage> pages = (List<SitePage>) site.getOrderedPages();
+
+		for (SitePage page : pages)
+		{
+			List<ToolConfiguration> lst = (List<ToolConfiguration>) page
+					.getTools();
+			for (ToolConfiguration conf : lst)
+			{
+				Tool t = conf.getTool();
+				if (t != null && t.getId() != null && t.getId().equals(tool))
+				{
+					containstool = true;
+				}				
+			}
+		}
+
+		return containstool;
+		
+	}
+	
 	/**
 	 * The MyCoursesAndProjectsBean constructor
 	 * 
@@ -92,8 +116,16 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 			
 					try
 					{
-						mysites.add(0, (siteService.getSite(siteService.getUserSiteId(currentSession
-							.getUserId()))));
+						if (request.getParameter("tool") == null){
+							mysites.add(0, (siteService.getSite(siteService.getUserSiteId(currentSession
+									.getUserId()))));
+						} else {
+							if (containstool(siteService.getSite(siteService.getUserSiteId(currentSession
+									.getUserId())), request.getParameter("tool"))){
+								mysites.add(0, (siteService.getSite(siteService.getUserSiteId(currentSession
+										.getUserId()))));
+							}
+						}
 			
 					}
 					catch (IdUnusedException e)
@@ -104,17 +136,34 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 			
 					for (Site site : mysites)
 					{
-						Map<String, Object> map = new HashMap<String, Object>();
-						map.put("title", site.getTitle());
-						map.put("id", site.getId());
-						map.put("url", site.getUrl());
-						map.put("iconUrl", site.getIconUrl());
-						map.put("owner", site.getCreatedBy().getDisplayName());
-						map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
-						map.put("members", site.getMembers().size());
-						map.put("description", site.getDescription());
-						map.put("siteType", site.getType());
-						getMyMappedSites().add(map);
+						if (request.getParameter("tool") == null){
+							Map<String, Object> map = new HashMap<String, Object>();
+							map.put("title", site.getTitle());
+							map.put("id", site.getId());
+							map.put("url", site.getUrl());
+							map.put("iconUrl", site.getIconUrl());
+							map.put("owner", site.getCreatedBy().getDisplayName());
+							map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
+							map.put("members", site.getMembers().size());
+							map.put("description", site.getDescription());
+							map.put("siteType", site.getType());
+							getMyMappedSites().add(map);
+						} else {
+							if (containstool(site, request.getParameter("tool"))){
+								Map<String, Object> map = new HashMap<String, Object>();
+								map.put("title", site.getTitle());
+								map.put("id", site.getId());
+								map.put("url", site.getUrl());
+								map.put("iconUrl", site.getIconUrl());
+								map.put("owner", site.getCreatedBy().getDisplayName());
+								map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
+								map.put("members", site.getMembers().size());
+								map.put("description", site.getDescription());
+								map.put("siteType", site.getType());
+								getMyMappedSites().add(map);
+							}
+						}
+						
 					}
 					
 					
@@ -133,31 +182,7 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 						{
 							if (site.getUserRole(currentSession.getUserId()).getId().equals(site.getMaintainRole())){
 								
-								boolean containstool = false;
-								
-								List<SitePage> pages = (List<SitePage>) site.getOrderedPages();
-
-								for (SitePage page : pages)
-								{
-
-									List<ToolConfiguration> lst = (List<ToolConfiguration>) page
-											.getTools();
-
-									for (ToolConfiguration conf : lst)
-									{
-
-										Tool t = conf.getTool();
-
-										if (t != null && t.getId() != null && t.getId().equals(request.getParameter("tool")))
-										{
-											containstool = true;
-										}
-										
-									}
-									
-								}
-								
-								if (containstool){
+								if (containstool(site, request.getParameter("tool"))){
 									Map<String, Object> map = new HashMap<String, Object>();
 									map.put("title", site.getTitle());
 									map.put("id", site.getId());
