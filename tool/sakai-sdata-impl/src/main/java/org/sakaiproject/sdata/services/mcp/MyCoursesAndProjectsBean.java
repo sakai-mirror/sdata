@@ -34,6 +34,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.sdata.services.mra.MyRecentChangesBean;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.site.api.Site;
@@ -231,8 +232,29 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 			
 			} else if (request.getParameter("action") != null || request.getParameter("action").equals("joinable")){
 				
+				int page = 1;
+				int pagesize = 5;
+				
+				String search = "";
+				
+				if (request.getParameter("search") != null){
+					try {
+						search = request.getParameter("search");
+					} catch (Exception ex){}
+				}
+				
+				if (request.getParameter("page") != null){
+					try {
+						page = Integer.parseInt(request.getParameter("page"));
+					} catch (Exception ex){}
+				}
+				
+				PagingPosition pager = new PagingPosition((page - 1) * pagesize + 1, pagesize * (page - 1) + pagesize);
+				
 				List<Site> myJoinableSites = siteService.getSites(org.sakaiproject.site.api.SiteService.SelectionType.JOINABLE,
-								null, "", null, org.sakaiproject.site.api.SiteService.SortType.TITLE_ASC, null);
+								null, search, null, org.sakaiproject.site.api.SiteService.SortType.TITLE_ASC, pager);
+				
+				int totalsites = siteService.countSites(org.sakaiproject.site.api.SiteService.SelectionType.JOINABLE, null, search, null);
 				
 				for (Site site : myJoinableSites)
 				{
@@ -242,7 +264,11 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 					map.put("url", site.getUrl());
 					map.put("iconUrl", site.getIconUrl());
 					map.put("owner", site.getCreatedBy().getDisplayName());
-					map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
+					try {
+						map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
+					} catch (Exception ex){
+						map.put("creationDate", "unknown");
+					}
 					map.put("members", site.getMembers().size());
 					map.put("description", site.getDescription());
 					map.put("siteType", site.getType());
@@ -250,7 +276,7 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 				}
 				
 				
-		
+				map2.put("total", totalsites);
 				map2.put("items", getMyMappedSites());
 
 			}

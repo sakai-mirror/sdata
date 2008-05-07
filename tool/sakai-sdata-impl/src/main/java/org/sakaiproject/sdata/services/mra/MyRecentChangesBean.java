@@ -314,8 +314,8 @@ public class MyRecentChangesBean implements ServiceDefinition
 								&& !arlUsed.contains(mres.getName()))
 						{
 	
-							if (totalrecordsshown >= (paging - 1) * 10
-									&& totalrecordsshown < (paging) * 10)
+							if (totalrecordsshown >= (paging - 1) * 5
+									&& totalrecordsshown < (paging) * 5)
 							{
 	
 								ContentResource cres = contentHostingService.getResource(eid);
@@ -376,8 +376,8 @@ public class MyRecentChangesBean implements ServiceDefinition
 						if (!announcementMessage.getAnnouncementHeader().getDraft())
 						{
 
-							if (totalrecordsshown >= (paging - 1) * 10
-									&& totalrecordsshown < (paging) * 10)
+							if (totalrecordsshown >= (paging - 1) * 5
+									&& totalrecordsshown < (paging) * 5)
 							{
 
 								Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -455,8 +455,8 @@ public class MyRecentChangesBean implements ServiceDefinition
 							if (srl.getTool().equals("content"))
 							{
 
-								if (totalrecordsshown >= (paging - 1) * 10
-										&& totalrecordsshown < (paging) * 10)
+								if (totalrecordsshown >= (paging - 1) * 5
+										&& totalrecordsshown < (paging) * 5)
 								{
 
 									long l = 0;
@@ -520,8 +520,8 @@ public class MyRecentChangesBean implements ServiceDefinition
 							else if (srl.getTool().equals("announcement"))
 							{
 
-								if (totalrecordsshown >= (paging - 1) * 10
-										&& totalrecordsshown < (paging) * 10)
+								if (totalrecordsshown >= (paging - 1) * 5
+										&& totalrecordsshown < (paging) * 5)
 								{
 
 									long l = 0;
