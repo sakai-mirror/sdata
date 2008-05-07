@@ -33,12 +33,10 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import javax.jcr.Node;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -122,7 +120,7 @@ public abstract class CHSHandler implements Handler
 
 	private String basePath;
 
-	private ComponentManager componentManager;
+	protected ComponentManager componentManager;
 
 	private ContentHostingService contentHostingService;
 
@@ -131,6 +129,8 @@ public abstract class CHSHandler implements Handler
 	private ResourceFunctionFactory resourceFunctionFactory;
 
 	private String baseUrl;
+
+	protected boolean testmode = false;
 
 	/*
 	 * (non-Javadoc)
@@ -152,8 +152,11 @@ public abstract class CHSHandler implements Handler
 			this.baseUrl = DEFAULT_BASE_URL;
 		}
 
-		componentManager = org.sakaiproject.component.cover.ComponentManager
-				.getInstance();
+		if (!testmode)
+		{
+			componentManager = org.sakaiproject.component.cover.ComponentManager
+					.getInstance();
+		}
 
 		contentHostingService = (ContentHostingService) componentManager
 				.get(ContentHostingService.class.getName());
@@ -542,7 +545,7 @@ public abstract class CHSHandler implements Handler
 	 * @param cre
 	 * @return
 	 */
-	private String getName(ContentResourceEdit cre)
+	protected String getName(ContentResourceEdit cre)
 	{
 		String id = cre.getId();
 		if (id == null) return null;
@@ -582,15 +585,35 @@ public abstract class CHSHandler implements Handler
 	 * 
 	 * @param s
 	 */
-	private ContentCollection getFolder(String path)
+	protected ContentCollection getFolder(String path)
 	{
+		if ( path != null && !path.endsWith("/")) {
+			path = path + "/";
+		}
+		ContentCollection cc = null;
 		try
 		{
-			return contentHostingService.getCollection(path + "/");
+			cc = contentHostingService.getCollection(path);
 		}
 		catch (IdUnusedException ex)
 		{
-			ContentCollection cc = null;
+		}
+		catch (PermissionException inc)
+		{
+			log
+					.warn(
+							"Failed Creating folder " + path + " cause:"
+									+ inc.getMessage(), inc);
+
+			return null;
+		}
+		catch (TypeException e)
+		{
+			log.warn("Failed Creating folder " + path + " cause:" + e.getMessage(), e);
+
+			return null;
+		}
+		if ( cc == null ) {
 			try
 			{
 				if (log.isDebugEnabled())
@@ -602,14 +625,15 @@ public abstract class CHSHandler implements Handler
 				{
 					if (p[i] == '/')
 					{
-						String folderName = new String(p, 0, i);
+						
+						String folderName = new String(p, 0, i+1);
 						if (log.isDebugEnabled())
 						{
 							log.debug("Getting Folder " + folderName);
 						}
 						try
 						{
-							cc = contentHostingService.getCollection(folderName + "/");
+							cc = contentHostingService.getCollection(folderName);
 						}
 						catch (IdUnusedException idex)
 						{
@@ -618,20 +642,20 @@ public abstract class CHSHandler implements Handler
 						if (cc != null)
 						{
 							int m = i + 1;
-							for (int j = m; j <= p.length; j++)
+							for (int j = m; j < p.length; j++)
 							{
-								if (p[j] == '/' || j == p.length)
+								if (p[j] == '/' )
 								{
-									String collectionPath = new String(p, 0, j);
-									String collectionName = new String(p, m, j);
+									String collectionPath = new String(p, 0, j+1);
+									String collectionName = new String(p, m, j-m);
 									ContentCollectionEdit cce = contentHostingService
-											.addCollection(collectionPath + "/");
+											.addCollection(collectionPath);
 									cce.getPropertiesEdit().addProperty(
 											ResourceProperties.PROP_DISPLAY_NAME,
 											Validator.escapeResourceName(collectionName));
 									contentHostingService.commitCollection(cce);
 									cc = contentHostingService
-											.getCollection(collectionPath + "/");
+											.getCollection(collectionPath);
 									if (cc != null)
 									{
 										if (log.isDebugEnabled())
@@ -663,21 +687,7 @@ public abstract class CHSHandler implements Handler
 				return null;
 			}
 		}
-		catch (PermissionException inc)
-		{
-			log
-					.warn(
-							"Failed Creating folder " + path + " cause:"
-									+ inc.getMessage(), inc);
-
-			return null;
-		}
-		catch (TypeException e)
-		{
-			log.warn("Failed Creating folder " + path + " cause:" + e.getMessage(), e);
-
-			return null;
-		}
+		return cc;
 	}
 
 	/**
