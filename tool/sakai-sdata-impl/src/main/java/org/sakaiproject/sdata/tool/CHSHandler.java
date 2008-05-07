@@ -127,7 +127,7 @@ public abstract class CHSHandler implements Handler
 	private ContentHostingService contentHostingService;
 
 	private ResourceDefinitionFactory resourceDefinitionFactory;
-	
+
 	private ResourceFunctionFactory resourceFunctionFactory;
 
 	private String baseUrl;
@@ -159,11 +159,11 @@ public abstract class CHSHandler implements Handler
 				.get(ContentHostingService.class.getName());
 
 		resourceDefinitionFactory = getResourceDefinitionFactory(config);
-		
+
 		resourceFunctionFactory = getResourceFunctionFactory(config);
 
 	}
-	
+
 	private ResourceFunctionFactory getResourceFunctionFactory(Map<String, String> config)
 	{
 		return new ResourceFunctionFactoryImpl(config);
@@ -586,65 +586,98 @@ public abstract class CHSHandler implements Handler
 	{
 		try
 		{
-
-			String[] parts = path.split("/");
-			StringBuilder sb = new StringBuilder();
+			return contentHostingService.getCollection(path + "/");
+		}
+		catch (IdUnusedException ex)
+		{
 			ContentCollection cc = null;
-
-			for (String part : parts)
+			try
 			{
-				sb.append(part);
-				sb.append("/");
-				try
+				if (log.isDebugEnabled())
 				{
-					cc = contentHostingService.getCollection(sb.toString());
+					log.debug("Failed to get " + path);
 				}
-				catch (IdUnusedException idu)
+				char[] p = path.toCharArray();
+				for (int i = p.length - 1; i > 0; i--)
 				{
-					cc = null;
-				}
-				if (cc == null)
-				{
-
-					ContentCollectionEdit cce = contentHostingService.addCollection(sb
-							.toString());
-					cce.getPropertiesEdit().addProperty(
-							ResourceProperties.PROP_DISPLAY_NAME,
-							Validator.escapeResourceName(part));
-					contentHostingService.commitCollection(cce);
-					cc = contentHostingService.getCollection(sb.toString());
-					if (cc != null)
+					if (p[i] == '/')
 					{
+						String folderName = new String(p, 0, i);
 						if (log.isDebugEnabled())
 						{
-							log.debug("Created " + sb.toString());
+							log.debug("Getting Folder " + folderName);
+						}
+						try
+						{
+							cc = contentHostingService.getCollection(folderName + "/");
+						}
+						catch (IdUnusedException idex)
+						{
+
+						}
+						if (cc != null)
+						{
+							int m = i + 1;
+							for (int j = m; j <= p.length; j++)
+							{
+								if (p[j] == '/' || j == p.length)
+								{
+									String collectionPath = new String(p, 0, j);
+									String collectionName = new String(p, m, j);
+									ContentCollectionEdit cce = contentHostingService
+											.addCollection(collectionPath + "/");
+									cce.getPropertiesEdit().addProperty(
+											ResourceProperties.PROP_DISPLAY_NAME,
+											Validator.escapeResourceName(collectionName));
+									contentHostingService.commitCollection(cce);
+									cc = contentHostingService
+											.getCollection(collectionPath + "/");
+									if (cc != null)
+									{
+										if (log.isDebugEnabled())
+										{
+											log.debug("Created " + collectionPath
+													+ " with name " + collectionName);
+										}
+									}
+									else
+									{
+										log.warn("Failed " + collectionPath
+												+ " with name " + collectionName);
+										return null;
+									}
+
+								}
+							}
+							return cc;
 						}
 					}
 				}
-				else
-				{
-					if (log.isDebugEnabled())
-					{
-						log.debug("Found " + cc + ":" + cc.getReference());
-					}
-
-				}
-				if (cc == null)
-				{
-					log.error("Failed to create " + sb.toString());
-					return null;
-				}
+				return cc;
 			}
-			return cc;
+			catch (Exception inc)
+			{
+				log.warn("Failed Creating folder " + path + " cause:" + inc.getMessage(),
+						inc);
+
+				return null;
+			}
 		}
-		catch (Exception inc)
+		catch (PermissionException inc)
 		{
 			log
 					.warn(
 							"Failed Creating folder " + path + " cause:"
 									+ inc.getMessage(), inc);
+
+			return null;
 		}
-		return null;
+		catch (TypeException e)
+		{
+			log.warn("Failed Creating folder " + path + " cause:" + e.getMessage(), e);
+
+			return null;
+		}
 	}
 
 	/**
@@ -983,28 +1016,32 @@ public abstract class CHSHandler implements Handler
 		{
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
 			boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-			
+
 			// multiparts are always streamed uploads
 			if (isMultipart)
 			{
 				doMumtipartUpload(request, response, rp);
 			}
 			else
-			{				
-				
+			{
+
 				ContentResource n = null;
-				
-				try {
+
+				try
+				{
 					n = contentHostingService.getResource(rp.getRepositoryPath());
-				} catch (Exception ex){}
-				
+				}
+				catch (Exception ex)
+				{
+				}
+
 				SDataFunction m = resourceFunctionFactory.getFunction(rp
 						.getFunctionDefinition());
 				if (m != null)
 				{
 					m.call(this, request, response, n, rp);
-				} 
-				
+				}
+
 			}
 		}
 		catch (SDataException sde)
@@ -1012,7 +1049,8 @@ public abstract class CHSHandler implements Handler
 			sendError(request, response, sde);
 
 		}
-		catch (Exception ex){
+		catch (Exception ex)
+		{
 			sendError(request, response, ex);
 		}
 

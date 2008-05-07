@@ -113,7 +113,7 @@ public class UserResourceDefinitionFactory implements ResourceDefinitionFactory
 			depth = Integer.parseInt(d);
 		}
 
-		return new ResourceDefinitionImpl(request.getMethod(),f, depth, basePath, path, version, nullSecurityAssertion  );
+		return new ResourceDefinitionImpl( request.getMethod(),f, depth, basePath, path, version, nullSecurityAssertion  );
 	}
 
 }

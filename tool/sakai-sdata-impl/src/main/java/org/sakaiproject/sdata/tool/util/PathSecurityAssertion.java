@@ -21,7 +21,9 @@
 
 package org.sakaiproject.sdata.tool.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +34,7 @@ import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.SecurityAssertion;
+import org.sakaiproject.user.api.UserDirectoryService;
 
 /**
  * An implementaiton of the Security Assertion that uses the http method, the
@@ -72,7 +75,7 @@ public class PathSecurityAssertion implements SecurityAssertion
 	/**
 	 * the default lock map
 	 */
-	private static final String DEFAULT_LOCK_MAP = "GET:content.read,PUT:content.write,HEAD:content.read,POST:content.write,DELETE:content.delete";
+	private static final String DEFAULT_LOCK_MAP = "GET:content.read,PUT:content.revise.any,HEAD:content.read,POST:content.revise.any,DELETE:content.delete.any";
 
 	private static final Log log = LogFactory.getLog(PathSecurityAssertion.class);
 
@@ -91,6 +94,11 @@ public class PathSecurityAssertion implements SecurityAssertion
 	private SecurityService securityService;
 
 	/**
+	 * The Sakai security Service
+	 */
+	private UserDirectoryService userDirectoryService;
+
+	/**
 	 * A map mapping http methods to locks
 	 */
 	private Map<String, String> locks;
@@ -102,7 +110,6 @@ public class PathSecurityAssertion implements SecurityAssertion
 	private String baseReference;
 
 	private boolean inTest = false;
-
 
 	/**
 	 * Construct a PathSecurityAssertion class based on the standard
@@ -156,6 +163,8 @@ public class PathSecurityAssertion implements SecurityAssertion
 
 			securityService = (SecurityService) componentManager
 					.get(SecurityService.class.getName());
+			userDirectoryService = (UserDirectoryService) componentManager
+					.get(UserDirectoryService.class.getName());
 		}
 		else
 		{
@@ -170,7 +179,7 @@ public class PathSecurityAssertion implements SecurityAssertion
 	 * SDataException with Forbidden if the resoruce location is outside the
 	 * configured range, or if permission is denied.
 	 * 
-	 * @see org.sakaiproject.sdata.tool.api.SecurityAssertion#check(java.lang.String,
+	 * @see org.sakaiproject.sdata.tool.api.SecurityAssertion#check(java.lang.String,java.lang.String,
 	 *      java.lang.String)
 	 */
 	public void check(String method, String resourceLocation) throws SDataException
@@ -179,25 +188,102 @@ public class PathSecurityAssertion implements SecurityAssertion
 		{
 			return;
 		}
-		if (!(baseLocation.length() == 0) && (resourceLocation == null  || !resourceLocation.startsWith(baseLocation)))
+		if (!(baseLocation.length() == 0)
+				&& (resourceLocation == null || !resourceLocation
+						.startsWith(baseLocation)))
 		{
-			log.info("Denied " + method + " on [" + resourceLocation + "] base mismatch ["
-					+ baseLocation + "]");
+			log.info("Denied " + method + " on [" + resourceLocation
+					+ "] base mismatch [" + baseLocation + "]");
 			throw new SDataException(HttpServletResponse.SC_FORBIDDEN, "Access Forbidden");
 		}
-		String resourceReference = baseReference+resourceLocation.substring(baseLocation.length());
+		String resourceReference = baseReference
+				+ resourceLocation.substring(baseLocation.length());
 		String resourceLock = getResourceLock(method);
 		try
 		{
-			if (!securityService.unlock(resourceLock,resourceReference))
-			{
-				log.info("Denied " + method + ":" + resourceLock + " on "
-						+ resourceLocation + " ref  " + resourceReference);
-				throw new SDataException(HttpServletResponse.SC_FORBIDDEN,
-						"Access denied for operation " + method);
+			String[] elements = resourceReference.trim().split("/");
+			List<String> elementsList = new ArrayList<String>();
+			for ( String e : elements) {
+				elementsList.add(e);
 			}
-			log.info("Granted " + method + ":" + resourceLock + " on " + resourceLocation
-					+ " ref  " + resourceReference);
+			log.info("Respurce Reference " + resourceReference + ":[" + elementsList + "]");
+
+			if (elements.length > 3)
+			{
+				if (resourceReference.startsWith("/content/user"))
+				{
+					if (securityService.unlock(resourceLock, "/site/" + elements[3]))
+					{
+						log.info("Granted [" + method + "]:[" + resourceLock + "] on ["
+								+ "/site/" + elements[3] + "]");
+						return;
+					}
+					else
+					{
+						log.info("Denied [" + method + "]:[" + resourceLock + "] on ["
+								+ "/site/" + elements[3] + "]");
+
+					}
+				}
+				if (resourceReference.startsWith("/content/group"))
+				{
+					if (securityService.unlock(resourceLock, "/site/" + elements[3]))
+					{
+						log.info("Granted [" + method + "]:[" + resourceLock + "] on ["
+								+ "/site/" + elements[3] + "]");
+						return;
+					}
+					else
+					{
+						log.info("Denied [" + method + "]:[" + resourceLock + "] on ["
+								+ "/site/" + elements[3] + "]");
+
+					}
+				}
+			}
+			if (elements.length > 4)
+			{
+				if (resourceReference.startsWith("/content"))
+				{
+					if (securityService.unlock(resourceLock, resourceReference))
+					{
+						log.info("Granted [" + method + "]:[" + resourceLock + "] on ["
+								+ resourceReference + "]");
+						return;
+					}
+					else
+					{
+						log.info("Denied [" + method + "]:[" + resourceLock + "] on ["
+								+ resourceReference + "]");
+
+					}
+				}
+				StringBuilder sb = new StringBuilder();
+				for (int i = 1; i < elements.length; i++)
+				{
+					sb.append("/").append(elements[i]);
+					if (i > 3)
+					{
+						if (securityService.unlock(resourceLock, sb.toString()))
+						{
+							log.info("Granted [" + method + "]:[" + resourceLock
+									+ "] on [" + sb.toString() + "]");
+							return;
+						}
+						else
+						{
+							log.info("Denied [" + method + "]:[" + resourceLock
+									+ "] on [" + sb.toString() + "]");
+
+						}
+					}
+				}
+			}
+			log.info("All Denied " + method + ":" + resourceLock + " on "
+					+ resourceLocation + " baseReference:[" + baseReference
+					+ "] baseLocation:[" + baseLocation + "]");
+			throw new SDataException(HttpServletResponse.SC_FORBIDDEN,
+					"Access denied for operation " + method);
 		}
 		catch (Exception pex)
 		{
@@ -235,6 +321,23 @@ public class PathSecurityAssertion implements SecurityAssertion
 	public void setSecurityService(SecurityService securityService)
 	{
 		this.securityService = securityService;
+	}
+
+	/**
+	 * @return the userDirectoryService
+	 */
+	public UserDirectoryService getUserDirectoryService()
+	{
+		return userDirectoryService;
+	}
+
+	/**
+	 * @param userDirectoryService
+	 *        the userDirectoryService to set
+	 */
+	public void setUserDirectoryService(UserDirectoryService userDirectoryService)
+	{
+		this.userDirectoryService = userDirectoryService;
 	}
 
 }
