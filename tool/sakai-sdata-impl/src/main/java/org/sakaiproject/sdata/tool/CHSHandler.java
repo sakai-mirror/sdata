@@ -47,6 +47,7 @@ import org.apache.commons.fileupload.sdata.FileItemStream;
 import org.apache.commons.fileupload.sdata.servlet.ServletFileUpload;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.cover.SecurityService;
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
@@ -257,8 +258,9 @@ public abstract class CHSHandler implements Handler
 	 * @param repositoryPath
 	 * @return
 	 * @throws PermissionException
+	 * @throws SDataAccessException 
 	 */
-	private ContentEntity getEntity(String repositoryPath) throws PermissionException
+	private ContentEntity getEntity(String repositoryPath) throws PermissionException, SDataAccessException
 	{
 		ContentEntity ce = null;
 		try
@@ -304,6 +306,17 @@ public abstract class CHSHandler implements Handler
 				}
 			}
 		}
+		if (ce != null)
+		{
+			String lock = ContentHostingService.AUTH_RESOURCE_HIDDEN;
+			boolean canSeeHidden = SecurityService.unlock(lock, ce.getReference());
+			if (!canSeeHidden && !ce.isAvailable())
+			{
+				throw new SDataAccessException(403, "Permission denied on item");
+			}
+						
+		}
+
 		return ce;
 	}
 
@@ -587,7 +600,8 @@ public abstract class CHSHandler implements Handler
 	 */
 	protected ContentCollection getFolder(String path)
 	{
-		if ( path != null && !path.endsWith("/")) {
+		if (path != null && !path.endsWith("/"))
+		{
 			path = path + "/";
 		}
 		ContentCollection cc = null;
@@ -613,7 +627,8 @@ public abstract class CHSHandler implements Handler
 
 			return null;
 		}
-		if ( cc == null ) {
+		if (cc == null)
+		{
 			try
 			{
 				if (log.isDebugEnabled())
@@ -625,8 +640,8 @@ public abstract class CHSHandler implements Handler
 				{
 					if (p[i] == '/')
 					{
-						
-						String folderName = new String(p, 0, i+1);
+
+						String folderName = new String(p, 0, i + 1);
 						if (log.isDebugEnabled())
 						{
 							log.debug("Getting Folder " + folderName);
@@ -644,10 +659,10 @@ public abstract class CHSHandler implements Handler
 							int m = i + 1;
 							for (int j = m; j < p.length; j++)
 							{
-								if (p[j] == '/' )
+								if (p[j] == '/')
 								{
-									String collectionPath = new String(p, 0, j+1);
-									String collectionName = new String(p, m, j-m);
+									String collectionPath = new String(p, 0, j + 1);
+									String collectionName = new String(p, m, j - m);
 									ContentCollectionEdit cce = contentHostingService
 											.addCollection(collectionPath);
 									cce.getPropertiesEdit().addProperty(
@@ -741,6 +756,7 @@ public abstract class CHSHandler implements Handler
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				return;
 			}
+
 			if (e instanceof ContentResource)
 			{
 				ContentResource cr = (ContentResource) e;
