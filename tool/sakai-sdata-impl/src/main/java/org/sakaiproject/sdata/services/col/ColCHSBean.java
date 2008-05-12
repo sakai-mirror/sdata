@@ -29,6 +29,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.content.api.ContentEntity;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.sdata.tool.CHSNodeMap;
+import org.sakaiproject.sdata.tool.SDataAccessException;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.SecurityAssertion;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
@@ -93,7 +94,12 @@ public class ColCHSBean implements ServiceDefinition
 			}
 			else
 			{
-				items.put(uri, new CHSNodeMap(n, depth, rp, contentHostingService));
+				try {
+					Map<String, Object> m = new CHSNodeMap(n, depth, rp, contentHostingService);
+					items.put(uri, m);
+				} catch ( SDataAccessException sdae ) {
+					items.put(uri,"403 Forbidden");
+				}
 			}
 			m.put("items", items);
 

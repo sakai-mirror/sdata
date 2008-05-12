@@ -30,6 +30,7 @@ import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.content.api.ContentEntity;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.sdata.tool.CHSNodeMap;
+import org.sakaiproject.sdata.tool.SDataAccessException;
 import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.SDataException;

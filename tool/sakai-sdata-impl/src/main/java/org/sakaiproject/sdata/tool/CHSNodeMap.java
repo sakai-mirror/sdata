@@ -30,6 +30,7 @@ import java.util.Map;
 
 import javax.jcr.RepositoryException;
 
+import org.sakaiproject.authz.cover.SecurityService;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentEntity;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -48,11 +49,17 @@ public class CHSNodeMap extends HashMap<String, Object>
 	private ContentHostingService contentHostingService;
 
 	/**
+	 * @throws SDataAccessException if the item is not available to the current user¤
 	 * @throws RepositoryException
 	 */
 	public CHSNodeMap(ContentEntity n, int depth, ResourceDefinition rp,
-			ContentHostingService contentHostingService)
+			ContentHostingService contentHostingService) throws SDataAccessException
 	{
+		String lock = ContentHostingService.AUTH_RESOURCE_HIDDEN;
+		boolean canSeeHidden = SecurityService.unlock(lock, n.getReference());
+		if ( !canSeeHidden && !n.isAvailable() ) {
+			throw new SDataAccessException(403,"Permission denied on item");
+		}
 		this.contentHostingService = contentHostingService;
 		depth--;
 		put("mixinNodeType", getMixinTypes(n));
@@ -105,9 +112,15 @@ public class CHSNodeMap extends HashMap<String, Object>
 					}
 					if (cn != null)
 					{
-						Map<String, Object> m = new CHSNodeMap(cn, depth, rp, contentHostingService);
-						m.put("position", String.valueOf(i));
-						nodes.put(getName(cn), m);
+						
+						try {
+							Map<String, Object> m = new CHSNodeMap(cn, depth, rp, contentHostingService);
+							m.put("position", String.valueOf(i));
+							nodes.put(getName(cn), m);
+						} catch ( SDataAccessException sdae ) {
+							// hide the item from the list
+							continue;
+						}
 					}
 					i++;
 				}
@@ -143,6 +156,20 @@ public class CHSNodeMap extends HashMap<String, Object>
 		put("lastModified", lastModified.getTime());
 		put("mimeType", mimeType);
 		put("length", String.valueOf(contentLength));
+		
+		
+		put("available",n.isAvailable());
+		put("hidden",n.isHidden());
+		if ( !n.isHidden() ) {
+			Time releaseDate = n.getReleaseDate();
+			if ( releaseDate != null ) {
+				put("releaseDate",releaseDate.getTime());
+			} 
+			Time retractDate = n.getRetractDate();
+			if ( retractDate != null ) {
+				put("retractDate",retractDate.getTime());
+			} 
+		}
 	}
 
 	/**
