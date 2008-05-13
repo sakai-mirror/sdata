@@ -33,7 +33,7 @@ public class JsonCHSHandlerUnitT extends JsonHandlerUnitT
 {
 	private static final String BASE_URL = "http://localhost:8080/sdata/";
 
-	private static final String BASE_DATA_URL = BASE_URL + "c/";
+	private static final String BASE_DATA_URL = BASE_URL + "c/private/sdata";
 
 	private static final Log log = LogFactory.getLog(JsonCHSHandlerUnitT.class);
 

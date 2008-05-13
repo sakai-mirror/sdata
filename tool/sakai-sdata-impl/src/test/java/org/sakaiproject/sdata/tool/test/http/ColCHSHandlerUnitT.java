@@ -157,9 +157,13 @@ public class ColCHSHandlerUnitT extends TestCase
 		client.executeMethod(postMethod);
 		postMethod.getStatusCode();
 
-		log.info("Login " + postMethod.getURI() + " to Said "
-				+ postMethod.getStatusCode() + " " + postMethod.getStatusText() + " "
-				+ postMethod.getResponseBodyAsString());
+		if (postMethod.getStatusCode() == 401)
+		{
+			log.info("Login " + postMethod.getURI() + " to Said "
+					+ postMethod.getStatusCode() + " " + postMethod.getStatusText() + " "
+					+ postMethod.getResponseBodyAsString());
+			fail("Failed to login ");
+		}
 	}
 
 	/**
@@ -191,9 +195,9 @@ public class ColCHSHandlerUnitT extends TestCase
 	{
 		if (enabled)
 		{
-			PostMethod method = new PostMethod(getBaseUrl() + "/c/dirlist");
+			PostMethod method = new PostMethod(getBaseUrl() + "/c/private/dirlist");
 
-			log.info("Uloading to " + getBaseUrl() + "/c/dirlist");
+			log.info("Uloading to " + getBaseUrl() + "/c/private/dirlist");
 
 			Part[] parts = new Part[20];
 			for (int i = 0; i < parts.length; i++)
@@ -219,9 +223,9 @@ public class ColCHSHandlerUnitT extends TestCase
 
 			for (int i = 0; i < 20; i++)
 			{
-				GetMethod gmethod = new GetMethod(getBaseUrl() + "/c/dirlist/multifile"
+				GetMethod gmethod = new GetMethod(getBaseUrl() + "/c/private/dirlist/multifile"
 						+ i);
-				log.info("Trying " + "dirlist/multifile" + i);
+				log.info("Trying " + "private/dirlist/multifile" + i);
 				client.executeMethod(gmethod);
 				// checkHandler(gmethod);
 

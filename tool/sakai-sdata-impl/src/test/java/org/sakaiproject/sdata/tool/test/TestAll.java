@@ -44,6 +44,7 @@ public class TestAll extends TestCase
 		suite.addTestSuite(PathSecurityAssertionUnitT.class);
 		suite.addTestSuite(ControllerServletUnitT.class);
 		suite.addTestSuite(RFC1123DateUnitT.class);
+		suite.addTestSuite(CHSHandlerUnitT.class);
 		// $JUnit-END$
 		return suite;
 	}

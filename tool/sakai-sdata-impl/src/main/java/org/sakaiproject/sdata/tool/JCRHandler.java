@@ -496,6 +496,12 @@ public abstract class JCRHandler implements Handler
 					.getFunctionDefinition());
 			if (m != null)
 			{
+				if (m.isModification())
+				{
+					throw new SDataException(
+							HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+							"Server is configured with a modification function on GET, this is not Ok, should be on POST; function was "+m);
+				}
 				m.call(this, request, response, n, rp);
 			}
 			else
@@ -809,15 +815,24 @@ public abstract class JCRHandler implements Handler
 
 				Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
 
-				if (n != null){
+				if (n != null)
+				{
 					NodeType nt = n.getPrimaryNodeType();
 				}
-				
+
 				SDataFunction m = resourceFunctionFactory.getFunction(rp
 						.getFunctionDefinition());
 				if (m != null)
 				{
+					if (!m.isModification())
+					{
+						log.warn("Non modification function mouted on POST method, probably not a good idea; function was "+m);
+					}
 					m.call(this, request, response, n, rp);
+				}
+				else
+				{
+					log.info("NOP Post performed");
 				}
 
 			}
@@ -830,7 +845,7 @@ public abstract class JCRHandler implements Handler
 		catch (RepositoryException rex)
 		{
 			sendError(request, response, rex);
-		} 
+		}
 		catch (JCRNodeFactoryServiceException jfe)
 		{
 			sendError(request, response, jfe);
@@ -997,6 +1012,7 @@ public abstract class JCRHandler implements Handler
 	 */
 	public void setHandlerHeaders(HttpServletResponse response)
 	{
+		log.info("Setting SData Header "+this.getClass().getName());
 		response.setHeader("x-sdata-handler", this.getClass().getName());
 	}
 }

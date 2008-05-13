@@ -52,7 +52,7 @@ public abstract class XmlRpcUserStorageHandlerUnitT extends TestCase
 {
 	private static final Log log = LogFactory.getLog(XmlRpcUserStorageHandlerUnitT.class);
 
-	private static final String LOGIN_BASE_URL = "http://localhost:8080/portal/relogin";
+	private static final String LOGIN_BASE_URL = "http://localhost:8080/portal/login";
 
 	private static final String USERNAME = "admin";
 

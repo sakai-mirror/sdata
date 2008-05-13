@@ -3,7 +3,7 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright (c) 2008 Timefields Ltd
+ * Copyright (c) 2003, 2004, 2005, 2006, 2007 The Sakai Foundation.
  *
  * Licensed under the Educational Community License, Version 1.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,41 +21,39 @@
 
 package org.sakaiproject.sdata.tool.test.http;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-
 /**
  * @author ieb
  */
-
-public class XmlRpcCHSHandlerUnitT extends JsonHandlerUnitT
+public class CHSHideReleaseFuntionUnitT extends BaseHandlerUnitT
 {
-	private static final Log log = LogFactory.getLog(XmlRpcCHSHandlerUnitT.class);
 
 	private static final String BASE_URL = "http://localhost:8080/sdata/";
 
-	private static final String BASE_DATA_URL = BASE_URL + "xc/private/";
-
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.test.http.JsonUserStorageServletUnitT#getBaseUrl()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.test.http.BaseHandlerUnitT#getBaseUrl()
 	 */
 	@Override
 	protected String getBaseUrl()
 	{
 		return BASE_URL;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.test.http.JsonUserStorageServletUnitT#getBaseDataUrl()
-	 */
-	@Override
-	protected String getBaseDataUrl()
-	{
-		return BASE_DATA_URL;
+	
+	public void testHide() {
+		
 	}
-
+	
+	public void testShow() {
+		
+	}
+	
+	public void testRelease() {
+		
+	}
+	public void testRetract() {
+		
+	}
+	
 
 }
-
-

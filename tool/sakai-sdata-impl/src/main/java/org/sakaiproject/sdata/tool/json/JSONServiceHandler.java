@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONObject;
 
 import org.sakaiproject.sdata.tool.ServiceHandler;
+import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 
 /**
@@ -67,17 +68,21 @@ public class JSONServiceHandler extends ServiceHandler
 	public void sendError(HttpServletRequest request, HttpServletResponse response,
 			Throwable ex) throws IOException
 	{
-		/*
-		 * if (ex instanceof SDataException) { SDataException sde =
-		 * (SDataException) ex; response.reset();
-		 * response.sendError(sde.getCode(), sde.getMessage()); } else {
-		 * response.reset();
-		 * response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-		 * "Failed with " + ex.getMessage()); }
-		 */
-		ex.printStackTrace();
-		response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-				ex.getMessage());
+
+		if (ex instanceof SDataException)
+		{
+			SDataException sde = (SDataException) ex;
+			response.reset();
+			setHandlerHeaders(response);
+			response.sendError(sde.getCode(), sde.getMessage());
+		}
+		else
+		{
+			response.reset();
+			setHandlerHeaders(response);
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Failed with " + ex.getMessage());
+		}
 	}
 
 	/*

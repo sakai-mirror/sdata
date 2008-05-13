@@ -3,7 +3,7 @@
  * $Id$
  ***********************************************************************************
  *
- * Copyright (c) 2008 Timefields Ltd
+ * Copyright (c) 2003, 2004, 2005, 2006, 2007 The Sakai Foundation.
  *
  * Licensed under the Educational Community License, Version 1.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,43 +19,35 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sdata.tool.test.http;
+package org.sakaiproject.sdata.tool.functions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+import org.sakaiproject.sdata.tool.api.SDataFunction;
 
 /**
+ * The base SDataFunction for JCR
  * @author ieb
  */
-
-public class XmlRpcCHSHandlerUnitT extends JsonHandlerUnitT
+public abstract class JCRSDataFunction implements SDataFunction
 {
-	private static final Log log = LogFactory.getLog(XmlRpcCHSHandlerUnitT.class);
 
-	private static final String BASE_URL = "http://localhost:8080/sdata/";
+	private static final Log log = LogFactory.getLog(JCRSDataFunction.class);
 
-	private static final String BASE_DATA_URL = BASE_URL + "xc/private/";
-
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.test.http.JsonUserStorageServletUnitT#getBaseUrl()
+	/**
+	 * @param string
+	 * @param e
 	 */
-	@Override
-	protected String getBaseUrl()
+	protected void logException(String string, Exception e)
 	{
-		return BASE_URL;
+		if (log.isDebugEnabled())
+		{
+			log.warn("Type missmatch ", e);
+		}
+		else
+		{
+			log.warn("Type missmatch " + e.getMessage());
+		}
 	}
-
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.test.http.JsonUserStorageServletUnitT#getBaseDataUrl()
-	 */
-	@Override
-	protected String getBaseDataUrl()
-	{
-		return BASE_DATA_URL;
-	}
-
 
 }
-
-

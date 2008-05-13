@@ -30,13 +30,19 @@ import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.content.api.ContentEntity;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.sdata.tool.CHSNodeMap;
-import org.sakaiproject.sdata.tool.SDataAccessException;
 import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.SDataFunction;
 
 /**
+ * <p>
+ * Get the node metadata
+ * </p>
+ * <p>
+ * The content entity is specified by the URL. The response will contain the metadata associated with the node, down to the depth specified
+ * in the ResourceDefinition object
+ * </p>
  * @author ieb
  */
 public class CHSNodeMetadata implements SDataFunction
@@ -77,6 +83,14 @@ public class CHSNodeMetadata implements SDataFunction
 					.getMessage());
 		}
 
+	}
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.api.SDataFunction#isModification()
+	 */
+	public boolean isModification()
+	{
+		return false;
 	}
 
 }

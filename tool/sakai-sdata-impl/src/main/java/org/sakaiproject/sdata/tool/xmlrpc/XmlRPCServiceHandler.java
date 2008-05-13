@@ -39,6 +39,7 @@ import org.apache.xmlrpc.serializer.DefaultXMLWriterFactory;
 import org.apache.xmlrpc.serializer.XmlRpcWriter;
 import org.apache.xmlrpc.serializer.XmlWriterFactory;
 import org.sakaiproject.sdata.tool.ServiceHandler;
+import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -85,16 +86,21 @@ public class XmlRPCServiceHandler extends ServiceHandler
 	public void sendError(HttpServletRequest request, HttpServletResponse response,
 			Throwable ex) throws IOException
 	{
-		/*
-		 * if (ex instanceof SDataException) { SDataException sde =
-		 * (SDataException) ex; response.reset();
-		 * response.sendError(sde.getCode(), sde.getMessage()); } else {
-		 * response.reset();
-		 * response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-		 * "Failed with " + ex.getMessage()); }
-		 */
 
-		response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		if (ex instanceof SDataException)
+		{
+			SDataException sde = (SDataException) ex;
+			response.reset();
+			setHandlerHeaders(response);
+			response.sendError(sde.getCode(), sde.getMessage());
+		}
+		else
+		{
+			response.reset();
+			setHandlerHeaders(response);
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Failed with " + ex.getMessage());
+		}
 	}
 
 	/*

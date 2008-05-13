@@ -158,9 +158,13 @@ public class ColHandlerUnitT extends TestCase
 		client.executeMethod(postMethod);
 		postMethod.getStatusCode();
 
-		log.info("Login " + postMethod.getURI() + " to Said "
-				+ postMethod.getStatusCode() + " " + postMethod.getStatusText() + " "
-				+ postMethod.getResponseBodyAsString());
+		if (postMethod.getStatusCode() == 401)
+		{
+			log.info("Login " + postMethod.getURI() + " to Said "
+					+ postMethod.getStatusCode() + " " + postMethod.getStatusText() + " "
+					+ postMethod.getResponseBodyAsString());
+			fail("Failed to login ");
+		}
 	}
 
 	/**
@@ -192,6 +196,7 @@ public class ColHandlerUnitT extends TestCase
 	{
 		if (enabled)
 		{
+			
 			PostMethod method = new PostMethod(getBaseUrl() + "f/dirlist");
 
 			log.info("Uloading to "+getBaseUrl() + "f/dirlist");

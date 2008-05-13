@@ -39,7 +39,7 @@ public class JsonCHSUserStorageHandlerUnitT extends JsonUserStorageHandlerUnitT
 
 	private static final String BASE_URL = "http://localhost:8080/sdata/";
 
-	private static final String BASE_DATA_URL = BASE_URL + "cp/";
+	private static final String BASE_DATA_URL = BASE_URL + "cp/private/";
 
 	/* (non-Javadoc)
 	 * @see org.sakaiproject.sdata.tool.test.http.JsonUserStorageServletUnitT#getBaseUrl()

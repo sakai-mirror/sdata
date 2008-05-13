@@ -22,18 +22,10 @@
 package org.sakaiproject.sdata.tool.test.http;
 
 import java.io.DataInputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-
-import junit.framework.TestCase;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HeaderElement;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -45,102 +37,23 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xml.sax.SAXException;
 
 /**
  * @author ieb
  */
 
-public abstract class JsonHandlerUnitT extends TestCase
+public abstract class JsonHandlerUnitT extends BaseHandlerUnitT
 {
 	private static final Log log = LogFactory.getLog(JsonHandlerUnitT.class);
 
-	private static final String LOGIN_BASE_URL = "http://localhost:8080/portal/relogin";
 
-	private static final String USERNAME = "admin";
-
-	private static final String PASSWORD = "admin";
-
-	protected HttpClient client;
-
-	protected boolean enabled = true;
-
-	private byte[] buffer;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	@Override
-	protected void setUp() throws Exception
-	{
-		try
-		{
-			client = new HttpClient();
-			client.getState().setCredentials(
-					new AuthScope("localhost", 8080, "LocalSakaiName"),
-					new UsernamePasswordCredentials("admin", "admin"));
-			GetMethod method = new GetMethod(getBaseUrl() + "checkRunning");
-			method.setDoAuthentication(false);
-			method.setFollowRedirects(true);
-			method.setRequestHeader("x-testdata-size", "2048");
-			client.executeMethod(method);
-			if (method.getStatusCode() == 200)
-			{
-				buffer = method.getResponseBody();
-				enabled = true;
-			}
-			else
-			{
-				enabled = false;
-			}
-		}
-		catch (HttpException he)
-		{
-			enabled = false;
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see junit.framework.TestCase#tearDown()
-	 */
-	@Override
-	protected void tearDown() throws Exception
-	{
-		super.tearDown();
-	}
 
 	/**
 	 * @return
 	 */
 	protected abstract String getBaseDataUrl();
 
-	/**
-	 * @return
-	 */
-	protected abstract String getBaseUrl();
 
-	/**
-	 * @throws MalformedURLException
-	 * @throws IOException
-	 * @throws SAXException
-	 */
-	protected void login() throws MalformedURLException, IOException
-	{
-		PostMethod postMethod = new PostMethod(LOGIN_BASE_URL);
-		postMethod.setParameter("eid", USERNAME);
-		postMethod.setParameter("pw", PASSWORD);
-		postMethod.setParameter("submit", "Login");
-		client.executeMethod(postMethod);
-		postMethod.getStatusCode();
-
-		log.info("Login " + postMethod.getURI() + " to Said "
-				+ postMethod.getStatusCode() + " " + postMethod.getStatusText() + " "
-				+ postMethod.getResponseBodyAsString());
-	}
 
 	/**
 	 * 
@@ -167,7 +80,11 @@ public abstract class JsonHandlerUnitT extends TestCase
 			login();
 			GetMethod method = new GetMethod(getBaseDataUrl() + "testpage");
 			client.executeMethod(method);
-			assertEquals(404,method.getStatusCode());
+			// anything other than 404 or 403 is Ok.
+			if (method.getStatusCode() != 404  )
+			{
+				fail("Failed " + method.getStatusLine());
+			}
 		}
 		else
 		{
@@ -190,7 +107,9 @@ public abstract class JsonHandlerUnitT extends TestCase
 			client.executeMethod(method);
 			checkHandler(method);
 			int code = method.getStatusCode();
-			assertTrue("Should have been a 201 or 204 ", (code == 201) || (code == 204));
+
+			assertTrue("Should have been a 201 or 204, response was  "
+					+ method.getStatusLine(), (code == 201) || (code == 204));
 		}
 		else
 		{
@@ -213,13 +132,15 @@ public abstract class JsonHandlerUnitT extends TestCase
 			client.executeMethod(method);
 			checkHandler(method);
 			int code = method.getStatusCode();
-			assertTrue("Should have been a 201 or 204 ", (code == 201) || (code == 204));
+			assertTrue("Should have been a 201 or 204 " + method.getStatusLine(),
+					(code == 201) || (code == 204));
 
 			GetMethod gmethod = new GetMethod(getBaseDataUrl() + "putUpload");
 			client.executeMethod(gmethod);
 			checkHandler(gmethod);
 			code = gmethod.getStatusCode();
-			assertTrue("Should have been a 201 or 204 ", (code == 200));
+			assertTrue("Should have been a 201 or 204 " + method.getStatusLine(),
+					(code == 200));
 			int contentL = (int) gmethod.getResponseContentLength();
 			log.info("Got " + contentL + " bytes ");
 			DataInputStream in = new DataInputStream(gmethod.getResponseBodyAsStream());
@@ -432,7 +353,7 @@ public abstract class JsonHandlerUnitT extends TestCase
 		if (enabled)
 		{
 			login();
-			
+
 			PostMethod method = new PostMethod(getBaseDataUrl() + "dirlist");
 
 			Part[] parts = new Part[20];
@@ -446,7 +367,7 @@ public abstract class JsonHandlerUnitT extends TestCase
 							.getParams()));
 
 			client.executeMethod(method);
-			log.info("Got "+method.getURI()+" "+method.getResponseBodyAsString());
+			log.info("Got " + method.getURI() + " " + method.getResponseBodyAsString());
 			checkHandler(method);
 
 			int code = method.getStatusCode();
@@ -499,6 +420,14 @@ public abstract class JsonHandlerUnitT extends TestCase
 		className = className.substring(className.lastIndexOf('.'));
 		className = className.substring(0, className.length() - "UnitT".length());
 		Header h = resp.getResponseHeader("x-sdata-handler");
+		if (h == null)
+		{
+			Header[] headers = resp.getResponseHeaders();
+			for (Header header : headers)
+			{
+				log.info("Header:" + header.toExternalForm());
+			}
+		}
 		assertNotNull("Handler Not found ", h);
 		String handler = h.getValue();
 		assertTrue("Handler Not found (no value)", handler.trim().length() > 0);

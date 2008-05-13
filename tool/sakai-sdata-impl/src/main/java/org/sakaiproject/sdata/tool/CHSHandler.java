@@ -258,9 +258,10 @@ public abstract class CHSHandler implements Handler
 	 * @param repositoryPath
 	 * @return
 	 * @throws PermissionException
-	 * @throws SDataAccessException 
+	 * @throws SDataAccessException
 	 */
-	private ContentEntity getEntity(String repositoryPath) throws PermissionException, SDataAccessException
+	public ContentEntity getEntity(String repositoryPath) throws PermissionException,
+			SDataAccessException
 	{
 		ContentEntity ce = null;
 		try
@@ -314,7 +315,7 @@ public abstract class CHSHandler implements Handler
 			{
 				throw new SDataAccessException(403, "Permission denied on item");
 			}
-						
+
 		}
 
 		return ce;
@@ -756,98 +757,116 @@ public abstract class CHSHandler implements Handler
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				return;
 			}
-
-			if (e instanceof ContentResource)
+			SDataFunction m = resourceFunctionFactory.getFunction(rp
+					.getFunctionDefinition());
+			if (m != null)
 			{
-				ContentResource cr = (ContentResource) e;
-				Date lastModified = getLastModified(cr);
-
-				response.setContentType(cr.getContentType());
-				response.setDateHeader(LAST_MODIFIED, lastModified.getTime());
-				setGetCacheControl(response, rp.isPrivate());
-
-				String currentEtag = String.valueOf(lastModified.getTime());
-				response.setHeader("ETag", currentEtag);
-
-				boolean sendContent = true;
-				long lastModifiedTime = lastModified.getTime();
-
-				if (!checkPreconditions(request, response, lastModifiedTime, currentEtag))
+				if (m.isModification())
 				{
-					return;
+					throw new SDataException(
+							HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+							"Server is configured with a modification function on GET, this is not Ok, should be on POST; function was "+m);
 				}
-				long totallength = cr.getContentLength();
-				long[] ranges = new long[2];
-				ranges[0] = 0;
-				ranges[1] = totallength;
-				if (!checkRanges(request, response, lastModifiedTime, currentEtag, ranges))
+				m.call(this, request, response, e, rp);
+			}
+			else
+			{
+
+				if (e instanceof ContentResource)
 				{
-					return;
-				}
+					ContentResource cr = (ContentResource) e;
+					Date lastModified = getLastModified(cr);
 
-				long length = ranges[1] - ranges[0];
+					response.setContentType(cr.getContentType());
+					response.setDateHeader(LAST_MODIFIED, lastModified.getTime());
+					setGetCacheControl(response, rp.isPrivate());
 
-				if (totallength != length)
-				{
-					response.setHeader("Accept-Ranges", "bytes");
-					response.setDateHeader("Last-Modified", lastModifiedTime);
-					response.setHeader("Content-Range", "bytes " + ranges[0] + "-"
-							+ (ranges[1] - 1) + "/" + totallength);
-					response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+					String currentEtag = String.valueOf(lastModified.getTime());
+					response.setHeader("ETag", currentEtag);
 
-					log.info("Partial Content Sent "
-							+ HttpServletResponse.SC_PARTIAL_CONTENT);
-				}
-				else
-				{
-					response.setStatus(HttpServletResponse.SC_OK);
-				}
+					boolean sendContent = true;
+					long lastModifiedTime = lastModified.getTime();
 
-				response.setContentLength((int) length);
-				if (length > 0)
-				{
-
-					out = response.getOutputStream();
-
-					in = cr.streamContent();
-					if (in == null)
+					if (!checkPreconditions(request, response, lastModifiedTime,
+							currentEtag))
 					{
-						log.warn("Failed to get Input Stream from content Resource ["
-								+ in + "] ContentResource[" + cr + "] ID[" + cr.getId()
-								+ "]");
-						response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-								"Failed to get Input Stream from content Resource [" + in
-										+ "] ContentResource[" + cr + "] ID["
-										+ cr.getId() + "]");
 						return;
 					}
-					in.skip(ranges[0]);
-					byte[] b = new byte[10240];
-					int nbytes = 0;
-					while ((nbytes = in.read(b)) > 0 && length > 0)
+					long totallength = cr.getContentLength();
+					long[] ranges = new long[2];
+					ranges[0] = 0;
+					ranges[1] = totallength;
+					if (!checkRanges(request, response, lastModifiedTime, currentEtag,
+							ranges))
 					{
-						if (nbytes < length)
+						return;
+					}
+
+					long length = ranges[1] - ranges[0];
+
+					if (totallength != length)
+					{
+						response.setHeader("Accept-Ranges", "bytes");
+						response.setDateHeader("Last-Modified", lastModifiedTime);
+						response.setHeader("Content-Range", "bytes " + ranges[0] + "-"
+								+ (ranges[1] - 1) + "/" + totallength);
+						response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+
+						log.info("Partial Content Sent "
+								+ HttpServletResponse.SC_PARTIAL_CONTENT);
+					}
+					else
+					{
+						response.setStatus(HttpServletResponse.SC_OK);
+					}
+
+					response.setContentLength((int) length);
+					if (length > 0)
+					{
+
+						out = response.getOutputStream();
+
+						in = cr.streamContent();
+						if (in == null)
 						{
-							out.write(b, 0, nbytes);
-							length = length - nbytes;
+							log.warn("Failed to get Input Stream from content Resource ["
+									+ in + "] ContentResource[" + cr + "] ID["
+									+ cr.getId() + "]");
+							response.sendError(
+									HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+									"Failed to get Input Stream from content Resource ["
+											+ in + "] ContentResource[" + cr + "] ID["
+											+ cr.getId() + "]");
+							return;
 						}
-						else
+						in.skip(ranges[0]);
+						byte[] b = new byte[10240];
+						int nbytes = 0;
+						while ((nbytes = in.read(b)) > 0 && length > 0)
 						{
-							out.write(b, 0, (int) length);
-							length = 0;
+							if (nbytes < length)
+							{
+								out.write(b, 0, nbytes);
+								length = length - nbytes;
+							}
+							else
+							{
+								out.write(b, 0, (int) length);
+								length = 0;
+							}
 						}
 					}
 				}
-			}
-			else if (e instanceof ContentCollection)
-			{
-				ContentCollection cc = (ContentCollection) e;
-				setGetCacheControl(response, rp.isPrivate());
+				else if (e instanceof ContentCollection)
+				{
+					ContentCollection cc = (ContentCollection) e;
+					setGetCacheControl(response, rp.isPrivate());
 
-				CHSNodeMap outputMap = new CHSNodeMap(e, rp.getDepth(), rp,
-						contentHostingService);
+					CHSNodeMap outputMap = new CHSNodeMap(e, rp.getDepth(), rp,
+							contentHostingService);
 
-				sendMap(request, response, outputMap);
+					sendMap(request, response, outputMap);
+				}
 			}
 
 		}
@@ -1051,21 +1070,20 @@ public abstract class CHSHandler implements Handler
 			else
 			{
 
-				ContentResource n = null;
-
-				try
-				{
-					n = contentHostingService.getResource(rp.getRepositoryPath());
-				}
-				catch (Exception ex)
-				{
-				}
-
+				ContentEntity ce = getEntity(rp.getRepositoryPath());
 				SDataFunction m = resourceFunctionFactory.getFunction(rp
 						.getFunctionDefinition());
 				if (m != null)
 				{
-					m.call(this, request, response, n, rp);
+					if (!m.isModification())
+					{
+						log.warn("Non modification function mouted on POST method, probably not a good idea; function was "+m);
+					}
+					m.call(this, request, response, ce, rp);
+				}
+				else
+				{
+					log.info("NOP Post performed");
 				}
 
 			}

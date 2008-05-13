@@ -41,5 +41,10 @@ public interface SDataFunction
 	 */
 	void call(Handler handler, HttpServletRequest request, HttpServletResponse response, Object target, ResourceDefinition rp) throws SDataException;
 
+	/**
+	 * Return true if the function performs data modification
+	 * @return
+	 */
+	boolean isModification();
 
 }

@@ -39,7 +39,7 @@ public class XmlRpcCHSUserStorageHandlerUnitT extends JsonUserStorageHandlerUnit
 
 	private static final String BASE_URL = "http://localhost:8080/sdata/";
 
-	private static final String BASE_DATA_URL = BASE_URL + "xcp/";
+	private static final String BASE_DATA_URL = BASE_URL + "xcp/private/";
 
 	/* (non-Javadoc)
 	 * @see org.sakaiproject.sdata.tool.test.http.JsonUserStorageServletUnitT#getBaseUrl()

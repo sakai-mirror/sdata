@@ -118,6 +118,7 @@ public class XmlRpcCHSHandler extends CHSHandler
 
 			SDataException sde = (SDataException) ex;
 			response.reset();
+			setHandlerHeaders(response);
 			response.sendError(sde.getCode(), sde.getMessage());
 		}
 		else

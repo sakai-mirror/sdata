@@ -88,6 +88,8 @@ public class HttpRangeUnitT extends TestCase
 		postMethod.setParameter("pw", PASSWORD);
 		postMethod.setParameter("submit", "Login");
 		WebResponse resp = wc.getResponse(postMethod);
+		assertEquals("Failed to Login", 200, resp.getResponseCode() );
+		
 	}
 
 	/*

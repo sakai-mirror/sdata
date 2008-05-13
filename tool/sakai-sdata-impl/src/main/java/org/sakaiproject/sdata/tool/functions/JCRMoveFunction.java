@@ -21,14 +21,9 @@
 
 package org.sakaiproject.sdata.tool.functions;
 
-import java.io.IOException;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.sdata.tool.JCRNodeMap;
 import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.SDataException;
@@ -36,37 +31,17 @@ import org.sakaiproject.sdata.tool.api.SDataException;
 /**
  * This has not been implemented as yet.
  * @author ieb
+ *
  */
-public class JCRNodeMetadata extends JCRSDataFunction
+public class JCRMoveFunction extends JCRSDataFunction
 {
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sdata.tool.api.SDataFunction#call(org.sakaiproject.sdata.tool.api.Handler,
-	 *      javax.servlet.http.HttpServletRequest,
-	 *      javax.servlet.http.HttpServletResponse, java.lang.Object)
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.sdata.tool.api.SDataFunction#call(org.sakaiproject.sdata.tool.api.Handler, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object, org.sakaiproject.sdata.tool.api.ResourceDefinition)
 	 */
-	public void call(Handler handler, HttpServletRequest request,
-			HttpServletResponse response, Object target, ResourceDefinition rp) throws SDataException
+	public void call(Handler handler, HttpServletRequest request, HttpServletResponse response, Object target, ResourceDefinition rp) throws SDataException
 	{
-		try
-		{
-			Node n = (Node) target;
-			JCRNodeMap nm = new JCRNodeMap(n,rp.getDepth(),rp);
-			handler.sendMap(request, response, nm);
-		}
-		catch (RepositoryException rex)
-		{
-			throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, rex
-					.getMessage());
-		}
-		catch (IOException e)
-		{
-			throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e
-					.getMessage());
-		}
-
+		// TODO To Be implemented
+		throw new SDataException(HttpServletResponse.SC_NOT_IMPLEMENTED," Move is not implemented in JCR at the moment ");
 	}
 
 	/* (non-Javadoc)
@@ -76,7 +51,6 @@ public class JCRNodeMetadata extends JCRSDataFunction
 	{
 		return false;
 	}
-	
 
 
 }

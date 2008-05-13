@@ -21,39 +21,31 @@
 
 package org.sakaiproject.sdata.tool.functions;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.content.api.ContentCollectionEdit;
-import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.sdata.tool.CHSNodeMap;
 import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.SDataException;
-import org.sakaiproject.sdata.tool.api.SDataFunction;
 
 /**
+ * Creates a folder using the request path as the folder path. There are no
+ * parameters in teh request. This function will modify content.
+ * 
  * @author ieb
  */
-public class CHSCreateFolder implements SDataFunction
+public class CHSCreateFolder extends CHSSDataFunction
 {
-
-	private ContentHostingService contentHostingService;
 	private static final Log log = LogFactory.getLog(CHSCreateFolder.class);
-
-	public CHSCreateFolder()
-	{
-		ComponentManager componentManager = org.sakaiproject.component.cover.ComponentManager
-				.getInstance();
-
-		contentHostingService = (ContentHostingService) componentManager
-				.get(ContentHostingService.class.getName());
-
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -66,23 +58,44 @@ public class CHSCreateFolder implements SDataFunction
 			HttpServletResponse response, Object target, ResourceDefinition rp)
 			throws SDataException
 	{
-			
-			try {
-					
-				ContentCollectionEdit edit = contentHostingService.addCollection(rp.getRepositoryPath());
-				edit.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, rp.getRepositoryPath().substring(rp.getRepositoryPath().lastIndexOf('/') + 1));
-				contentHostingService.commitCollection(edit);
-				
-			} catch (PermissionException e) {
-				e.printStackTrace();
-				throw new SDataException(HttpServletResponse.SC_FORBIDDEN, e
-						.getMessage());
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e
-						.getMessage());	
-			} 
+
+		try
+		{
+
+			ContentCollectionEdit edit = contentHostingService.addCollection(rp
+					.getRepositoryPath());
+			edit.getPropertiesEdit().addProperty(
+					ResourceProperties.PROP_DISPLAY_NAME,
+					rp.getRepositoryPath().substring(
+							rp.getRepositoryPath().lastIndexOf('/') + 1));
+			contentHostingService.commitCollection(edit);
 		
+			CHSNodeMap nm = new CHSNodeMap(edit, rp.getDepth(), rp, contentHostingService);
+			handler.sendMap(request, response, nm);
+
+		}
+		catch (PermissionException e)
+		{
+			e.printStackTrace();
+			throw new SDataException(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e
+					.getMessage());
+		}
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.SDataFunction#isModification()
+	 */
+	public boolean isModification()
+	{
+		return true;
 	}
 
 }

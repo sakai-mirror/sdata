@@ -24,6 +24,7 @@ package org.sakaiproject.sdata.tool.functions;
 import java.io.IOException;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -41,16 +42,20 @@ import org.sakaiproject.sdata.tool.api.SDataFunction;
  */
 public class JCRCreateFolder implements SDataFunction
 {
-	
+
 	private ComponentManager componentManager;
+
 	private JCRNodeFactoryService jcrNodeFactory;
 
-	public JCRCreateFolder(){
-		
-		componentManager = org.sakaiproject.component.cover.ComponentManager.getInstance();
+	public JCRCreateFolder()
+	{
 
-		jcrNodeFactory = (JCRNodeFactoryService) componentManager.get(JCRNodeFactoryService.class.getName());
-		
+		componentManager = org.sakaiproject.component.cover.ComponentManager
+				.getInstance();
+
+		jcrNodeFactory = (JCRNodeFactoryService) componentManager
+				.get(JCRNodeFactoryService.class.getName());
+
 	}
 
 	/*
@@ -61,33 +66,54 @@ public class JCRCreateFolder implements SDataFunction
 	 *      javax.servlet.http.HttpServletResponse, java.lang.Object)
 	 */
 	public void call(Handler handler, HttpServletRequest request,
-			HttpServletResponse response, Object target, ResourceDefinition rp) throws SDataException
+			HttpServletResponse response, Object target, ResourceDefinition rp)
+			throws SDataException
 	{
-		
-		try {
-			jcrNodeFactory.createFolder(rp.getRepositoryPath());
-		} catch (JCRNodeFactoryServiceException e) {
+
+		try
+		{
+			Node n = jcrNodeFactory.createFolder(rp.getRepositoryPath());
+
+			JCRNodeMap outputMap = new JCRNodeMap(n, rp.getDepth(), rp);
+			handler.sendMap(request, response, outputMap);
+
+		}
+		catch (JCRNodeFactoryServiceException e)
+		{
 			throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e
 					.getMessage());
 		}
-		
-		/*try
+		catch (RepositoryException e)
 		{
-			Node n = (Node) target;
-			JCRNodeMap nm = new JCRNodeMap(n,rp.getDepth(),rp);
-			handler.sendMap(request, response, nm);
-		}
-		catch (RepositoryException rex)
-		{
-			throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, rex
+			throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e
 					.getMessage());
 		}
 		catch (IOException e)
 		{
 			throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e
 					.getMessage());
-		}*/
+		}
 
+		/*
+		 * try { Node n = (Node) target; JCRNodeMap nm = new
+		 * JCRNodeMap(n,rp.getDepth(),rp); handler.sendMap(request, response,
+		 * nm); } catch (RepositoryException rex) { throw new
+		 * SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, rex
+		 * .getMessage()); } catch (IOException e) { throw new
+		 * SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e
+		 * .getMessage()); }
+		 */
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.SDataFunction#isModification()
+	 */
+	public boolean isModification()
+	{
+		return true;
 	}
 
 }
