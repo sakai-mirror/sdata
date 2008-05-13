@@ -114,12 +114,12 @@ public abstract class CHSSDataFunction implements SDataFunction
 			if (target instanceof ContentCollection)
 			{
 				ContentCollection cc = (ContentCollection) target;
-				return contentHostingService.editCollection(cc.getReference());
+				return contentHostingService.editCollection(cc.getId());
 			}
 			if (target instanceof ContentResource)
 			{
 				ContentResource cc = (ContentResource) target;
-				return contentHostingService.editResource(cc.getReference());
+				return contentHostingService.editResource(cc.getId());
 			}
 
 			// so we have no idea what this entity is, try all the available
@@ -225,6 +225,7 @@ public abstract class CHSSDataFunction implements SDataFunction
 		else
 		{
 			log.warn("Type missmatch " + e.getMessage());
+			log.warn("Type missmatch " ,e);
 		}
 	}
 

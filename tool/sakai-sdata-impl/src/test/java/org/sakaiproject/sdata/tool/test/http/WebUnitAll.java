@@ -49,6 +49,7 @@ public class WebUnitAll extends TestCase
 		suite.addTestSuite(HttpRangeUnitT.class);
 		suite.addTestSuite(ColHandlerUnitT.class);
 		suite.addTestSuite(ColCHSHandlerUnitT.class);
+		suite.addTestSuite(CHSHideReleaseFuntionUnitT.class);
 		// $JUnit-END$
 		return suite;
 	}

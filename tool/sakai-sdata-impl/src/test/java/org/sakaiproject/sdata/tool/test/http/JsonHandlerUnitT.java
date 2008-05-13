@@ -411,28 +411,5 @@ public abstract class JsonHandlerUnitT extends BaseHandlerUnitT
 
 	}
 
-	/**
-	 * @param resp
-	 */
-	protected void checkHandler(HttpMethod resp)
-	{
-		String className = this.getClass().getName();
-		className = className.substring(className.lastIndexOf('.'));
-		className = className.substring(0, className.length() - "UnitT".length());
-		Header h = resp.getResponseHeader("x-sdata-handler");
-		if (h == null)
-		{
-			Header[] headers = resp.getResponseHeaders();
-			for (Header header : headers)
-			{
-				log.info("Header:" + header.toExternalForm());
-			}
-		}
-		assertNotNull("Handler Not found ", h);
-		String handler = h.getValue();
-		assertTrue("Handler Not found (no value)", handler.trim().length() > 0);
-		handler = handler.substring(handler.lastIndexOf('.'));
-		assertEquals("Not the expected Handler Class", className, handler);
-	}
 
 }

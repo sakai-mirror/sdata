@@ -70,11 +70,11 @@ public class CHSHideReleaseFunction extends CHSSDataFunction
 {
 	private static final Log log = LogFactory.getLog(CHSHideReleaseFunction.class);
 
-	private static final String HIDDEN = "hidden";
+	public static final String HIDDEN = "hidden";
 
-	private static final String RELEASE_DATE = "releaseDate";
+	public static final String RELEASE_DATE = "releaseDate";
 
-	private static final String RETRACT_DATE = "retractDate";
+	public static final String RETRACT_DATE = "retractDate";
 
 	private ContentHostingService contentHostingService;
 

@@ -60,7 +60,6 @@ public class JsonJcrHandler extends JCRHandler
 			Map<String, Object> contetMap) throws IOException
 	{
 		JSONObject jsonObject = JSONObject.fromObject(contetMap);
-		log.info(jsonObject.toString());
 		byte[] b = jsonObject.toString().getBytes("UTF-8");
 		response.setContentType("text/javascript");
 		response.setCharacterEncoding("UTF-8");
