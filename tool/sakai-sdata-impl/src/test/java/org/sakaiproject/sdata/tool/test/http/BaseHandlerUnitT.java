@@ -24,14 +24,19 @@ package org.sakaiproject.sdata.tool.test.http;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
@@ -40,7 +45,6 @@ import junit.framework.TestCase;
 
 /**
  * @author ieb
- *
  */
 public abstract class BaseHandlerUnitT extends TestCase
 {
@@ -56,9 +60,8 @@ public abstract class BaseHandlerUnitT extends TestCase
 	protected HttpClient client;
 
 	protected boolean enabled = true;
-	
-	protected byte[] buffer;
 
+	protected byte[] buffer;
 
 	/*
 	 * (non-Javadoc)
@@ -105,6 +108,7 @@ public abstract class BaseHandlerUnitT extends TestCase
 	{
 		super.tearDown();
 	}
+
 	/**
 	 * @throws MalformedURLException
 	 * @throws IOException
@@ -117,8 +121,8 @@ public abstract class BaseHandlerUnitT extends TestCase
 		postMethod.setParameter("pw", PASSWORD);
 		postMethod.setParameter("submit", "Login");
 		postMethod.setDoAuthentication(true);
-		
-		log.info("Performing Login "+LOGIN_BASE_URL);
+
+		log.info("Performing Login " + LOGIN_BASE_URL);
 		client.executeMethod(postMethod);
 		log.info("Done Performing Login");
 		postMethod.getStatusCode();
@@ -134,6 +138,7 @@ public abstract class BaseHandlerUnitT extends TestCase
 				+ postMethod.getStatusCode() + " " + postMethod.getStatusText() + " "
 				+ postMethod.getResponseBodyAsString());
 	}
+
 	/**
 	 * @return
 	 */
@@ -161,6 +166,64 @@ public abstract class BaseHandlerUnitT extends TestCase
 		assertTrue("Handler Not found (no value)", handler.trim().length() > 0);
 		handler = handler.substring(handler.lastIndexOf('.'));
 		assertEquals("Not the expected Handler Class", className, handler);
+	}
+
+	public void createDocument() throws Exception
+	{
+		createDocument(getTestDocument());
+	}
+
+	public void createDocument(String document) throws Exception
+	{
+		if (enabled)
+		{
+			login();
+			PutMethod method = new PutMethod(document);
+			method.setRequestHeader("Content-Type", "text/html");
+			method.setRequestHeader("Content-Encoding", "UTF-8");
+			method.setRequestEntity(new ByteArrayRequestEntity(buffer, "text/html"));
+			client.executeMethod(method);
+			int code = method.getStatusCode();
+
+			assertTrue("Should have been a 201 or 204, response was  "
+					+ method.getStatusLine(), (code == 201) || (code == 204));
+		}
+		else
+		{
+			log.info("Tests Disabled, please start tomcat with sdata installed");
+		}
+	}
+
+	public void deleteDocument() throws HttpException, IOException
+	{
+		deleteDocument(getTestDocument(), false);
+	}
+
+	public void deleteDocument(String documentPath, boolean check) throws HttpException,
+			IOException
+	{
+		if (enabled)
+		{
+			login();
+			DeleteMethod method = new DeleteMethod(documentPath);
+			client.executeMethod(method);
+			int code = method.getStatusCode();
+			if (check)
+			{
+
+				assertEquals("Delete Failed  " + method.getStatusLine(),
+						HttpServletResponse.SC_NO_CONTENT, code);
+			}
+		}
+		else
+		{
+			log.info("Tests Disabled, please start tomcat with sdata installed");
+		}
+	}
+
+	protected String getTestDocument()
+	{
+		throw new RuntimeException("Not implemented");
 	}
 
 }

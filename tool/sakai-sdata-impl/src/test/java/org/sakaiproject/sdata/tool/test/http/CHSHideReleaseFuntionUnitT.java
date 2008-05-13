@@ -23,17 +23,12 @@ package org.sakaiproject.sdata.tool.test.http;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletResponse;
-
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
 import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
-import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sdata.tool.functions.CHSHideReleaseFunction;
@@ -81,51 +76,15 @@ public class CHSHideReleaseFuntionUnitT extends BaseHandlerUnitT
 		super.tearDown();
 	}
 
-	public void createDocument() throws Exception
-	{
-		if (enabled)
-		{
-			login();
-			PutMethod method = new PutMethod(getTestDocument());
-			method.setRequestHeader("Content-Type", "text/html");
-			method.setRequestHeader("Content-Encoding", "UTF-8");
-			method.setRequestEntity(new ByteArrayRequestEntity(buffer, "text/html"));
-			client.executeMethod(method);
-			int code = method.getStatusCode();
-
-			assertTrue("Should have been a 201 or 204, response was  "
-					+ method.getStatusLine(), (code == 201) || (code == 204));
-		}
-		else
-		{
-			log.info("Tests Disabled, please start tomcat with sdata installed");
-		}
-	}
 	/**
 	 * @return
 	 */
-	private String getTestDocument()
+	@Override
+	protected String getTestDocument()
 	{
 		return getBaseDataUrl() + this.getClass().getName();
 	}
 
-	public void deleteDocument() throws Exception
-	{
-		if (enabled)
-		{
-			login();
-			DeleteMethod method = new DeleteMethod(getTestDocument());
-			client.executeMethod(method);
-			int code = method.getStatusCode();
-
-			assertEquals("Delete Failed  "+ method.getStatusLine(),HttpServletResponse.SC_NO_CONTENT,
-					code);
-		}
-		else
-		{
-			log.info("Tests Disabled, please start tomcat with sdata installed");
-		}
-	}
 
 	protected String getBaseDataUrl()
 	{

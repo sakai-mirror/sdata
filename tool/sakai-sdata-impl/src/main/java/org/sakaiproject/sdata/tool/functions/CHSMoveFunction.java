@@ -26,6 +26,8 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.content.api.ContentEntity;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
@@ -55,7 +57,9 @@ import org.sakaiproject.sdata.tool.api.SDataException;
 public class CHSMoveFunction extends CHSSDataFunction
 {
 
-	private static final String TO = "to";
+	public static final String TO = "to";
+
+	private static final Log log = LogFactory.getLog(CHSMoveFunction.class);
 
 	/*
 	 * (non-Javadoc)
@@ -75,8 +79,12 @@ public class CHSMoveFunction extends CHSSDataFunction
 			throw new SDataException(HttpServletResponse.SC_BAD_REQUEST,
 					"No Target folder for the move specified ");
 		}
-		String reposotoryTargetPath = rp.getRepositoryPath(targetPath);
+		String reposotoryTargetPath = targetPath;
 		String repositorySourcePath = rp.getRepositoryPath();
+
+		log.info("Moving " + repositorySourcePath + " to " + reposotoryTargetPath
+				+ " specified by " + targetPath);
+
 		try
 		{
 			contentHostingService.moveIntoFolder(repositorySourcePath,
