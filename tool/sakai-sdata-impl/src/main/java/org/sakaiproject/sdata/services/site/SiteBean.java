@@ -28,6 +28,9 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.api.AuthzGroup;
+import org.sakaiproject.authz.api.AuthzGroupService;
+import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.site.api.Site;
@@ -64,7 +67,7 @@ public class SiteBean implements ServiceDefinition
 	 * @param sessionManager
 	 * @param siteService
 	 */
-	public SiteBean(SessionManager sessionManager, SiteService siteService, String siteId)
+	public SiteBean(SessionManager sessionManager, SiteService siteService, AuthzGroupService authzGroupService, String siteId)
 	{
 		boolean siteExists = true;
 		String status = "900";
@@ -182,7 +185,21 @@ public class SiteBean implements ServiceDefinition
 					arlpages.add(mpages);
 
 				}
-
+				
+				ArrayList<HashMap<String, String>> roles = new ArrayList<HashMap<String, String>>();
+				try {
+					AuthzGroup group = authzGroupService.getAuthzGroup("/site/" + siteId);
+					for (Object o : group.getRoles()){ 
+						Role r = (Role) o;	
+						HashMap<String, String> map = new HashMap<String, String>();
+						map.put("id", r.getId());
+						map.put("description", r.getDescription());
+						roles.add(map);
+					}
+					map2.put("roles", roles);
+				} catch (Exception ex){
+					log.info("Roles undefined for " + siteId);
+				}
 			}
 
 		}
@@ -197,6 +214,29 @@ public class SiteBean implements ServiceDefinition
 		map2.put("status", status);
 		map2.put("pages", arlpages);
 
+	}
+	
+	protected class SDataSiteRole {
+		
+		private String id;
+		private String description;
+		
+		public void setId(String id) {
+			this.id = id;
+		}
+		
+		public String getId() {
+			return id;
+		}
+
+		public void setDescription(String description) {
+			this.description = description;
+		}
+
+		public String getDescription() {
+			return description;
+		}
+		
 	}
 
 	/**

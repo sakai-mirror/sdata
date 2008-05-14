@@ -26,6 +26,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.authz.api.AuthzGroupService;
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
@@ -45,6 +46,8 @@ public class SiteServiceDefinitionFactory implements ServiceDefinitionFactory
 	private SiteService siteService;
 
 	private ComponentManager componentManager;
+	
+	private AuthzGroupService authzGroupService;
 
 	/**
 	 * TODO Javadoc
@@ -54,6 +57,8 @@ public class SiteServiceDefinitionFactory implements ServiceDefinitionFactory
 		componentManager = org.sakaiproject.component.cover.ComponentManager
 				.getInstance();
 		siteService = (SiteService) componentManager.get(SiteService.class.getName());
+		siteService = (SiteService) componentManager.get(SiteService.class.getName());
+		authzGroupService = (AuthzGroupService) componentManager.get(AuthzGroupService.class.getName());
 		sessionManager = (SessionManager) componentManager.get(SessionManager.class
 				.getName());
 	}
@@ -68,7 +73,7 @@ public class SiteServiceDefinitionFactory implements ServiceDefinitionFactory
 			HttpServletResponse response)
 	{
 		String siteId = request.getParameter("siteid");
-		return new SiteBean(sessionManager, siteService, siteId);
+		return new SiteBean(sessionManager, siteService, authzGroupService, siteId);
 	}
 
 	/*
