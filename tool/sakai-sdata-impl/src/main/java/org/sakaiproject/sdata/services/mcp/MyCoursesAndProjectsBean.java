@@ -144,7 +144,11 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 							map.put("url", site.getUrl());
 							map.put("iconUrl", site.getIconUrl());
 							map.put("owner", site.getCreatedBy().getDisplayName());
-							map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
+							try {
+								map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
+							} catch (Exception ex){
+								map.put("creationDate", "unknown");
+							}
 							map.put("members", site.getMembers().size());
 							map.put("description", site.getDescription());
 							map.put("siteType", site.getType());
@@ -157,7 +161,11 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 								map.put("url", site.getUrl());
 								map.put("iconUrl", site.getIconUrl());
 								map.put("owner", site.getCreatedBy().getDisplayName());
-								map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
+								try {
+									map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
+								} catch (Exception ex){
+									map.put("creationDate", "unknown");
+								}
 								map.put("members", site.getMembers().size());
 								map.put("description", site.getDescription());
 								map.put("siteType", site.getType());
@@ -190,7 +198,11 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 									map.put("url", site.getUrl());
 									map.put("iconUrl", site.getIconUrl());
 									map.put("owner", site.getCreatedBy().getDisplayName());
-									map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
+									try {
+										map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
+									} catch (Exception ex){
+										map.put("creationDate", "unknown");
+									}
 									map.put("members", site.getMembers().size());
 									map.put("description", site.getDescription());
 									map.put("siteType", site.getType());
@@ -216,7 +228,11 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 								map.put("url", site.getUrl());
 								map.put("iconUrl", site.getIconUrl());
 								map.put("owner", site.getCreatedBy().getDisplayName());
-								map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
+								try {
+									map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
+								} catch (Exception ex){
+									map.put("creationDate", "unknown");
+								}
 								map.put("members", site.getMembers().size());
 								map.put("description", site.getDescription());
 								map.put("siteType", site.getType());
@@ -304,7 +320,7 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 					s.removeMember(getCurrentSession().getUserId());
 					siteService.save(s);
 					
-					log.info("User = " + getCurrentSession().getUserId() + " - " + s);
+					//log.info("User = " + getCurrentSession().getUserId() + " - " + s);
 					map2.put("status", "success");
 				}
 				catch (IdUnusedException e)

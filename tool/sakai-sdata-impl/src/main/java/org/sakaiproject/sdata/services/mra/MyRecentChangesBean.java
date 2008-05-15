@@ -190,7 +190,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 			}
 			for (int i = 0; i < mySites.size(); i++)
 			{
-				log.error("the site ids: " + mySites.get(i).getId());
+				
 
 				arlSiteId.add(mySites.get(i).getId());
 			}
@@ -497,7 +497,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 
 									for (Site ss : mySites)
 									{
-										// log.error("BIER :: " + s);
+										
 										if (s.equals(ss.getId()))
 										{
 
@@ -615,7 +615,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 			if (mrcsr.getSitename().equals("My Workspace"))
 			{
 				mrcsr_map.put("siteName", "Personal Tools");
-				log.error("a my workspace file");
+				//log.error("a my workspace file");
 
 			}
 			else
