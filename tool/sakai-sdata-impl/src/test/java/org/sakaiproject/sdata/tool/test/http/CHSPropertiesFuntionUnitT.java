@@ -99,7 +99,7 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 		return BASE_DATA_URL;
 	}
 
-	public void testSetProperties() throws Exception
+	public void testSetProperties1() throws Exception
 	{
 		if (enabled)
 		{
@@ -112,6 +112,60 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 			};
 			String[] actions = { CHSPropertiesFunction.ADD, CHSPropertiesFunction.ADD,
 					CHSPropertiesFunction.ADD, CHSPropertiesFunction.ADD };
+			setProperties(testDocument, names, values, actions);
+
+			checkProperties(testDocument, names, values, actions);
+		}
+	}
+	public void testSetProperties2() throws Exception
+	{
+		if (enabled)
+		{
+			String testDocument = getTestDocument();
+			String[] names = { "1xxx:yyyy", "2xxx:yyyy", "3xxx:yyyy", "4xxx:yyyy",
+
+			};
+			String[] values = { "1", "2", "3", "4"
+
+			};
+			String[] actions = { CHSPropertiesFunction.ADD, CHSPropertiesFunction.ADD,
+					CHSPropertiesFunction.ADD, CHSPropertiesFunction.ADD };
+			setProperties(testDocument, names, values, actions);
+
+			checkProperties(testDocument, names, values, actions);
+		}
+	}
+	public void testSetProperties3() throws Exception
+	{
+		if (enabled)
+		{
+			String testDocument = getTestDocument();
+			String[] names = { "xxx:yyyy", "xxx:yyyy", "xxx:yyyy", "xxx:yyyy",
+
+			};
+			String[] values = { "1", "2", "3", "4"
+
+			};
+			String[] actions = { CHSPropertiesFunction.REMOVE, CHSPropertiesFunction.ADD,
+					CHSPropertiesFunction.REPLACE, CHSPropertiesFunction.ADD };
+			setProperties(testDocument, names, values, actions);
+
+			checkProperties(testDocument, names, values, actions);
+		}
+	}
+	public void testSetProperties4() throws Exception
+	{
+		if (enabled)
+		{
+			String testDocument = getTestDocument();
+			String[] names = { "1xxx:yyyy", "xxx:yyyy", "1xxx:yyyy", "xxx:yyyy",
+
+			};
+			String[] values = { "1", "2", "3", "4"
+
+			};
+			String[] actions = { CHSPropertiesFunction.REMOVE, CHSPropertiesFunction.ADD,
+					CHSPropertiesFunction.REPLACE, CHSPropertiesFunction.ADD };
 			setProperties(testDocument, names, values, actions);
 
 			checkProperties(testDocument, names, values, actions);
