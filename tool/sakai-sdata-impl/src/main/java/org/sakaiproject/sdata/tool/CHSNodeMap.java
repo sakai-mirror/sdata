@@ -46,10 +46,12 @@ import org.sakaiproject.time.api.Time;
  */
 public class CHSNodeMap extends HashMap<String, Object>
 {
+
 	private ContentHostingService contentHostingService;
 
 	/**
-	 * @throws SDataAccessException if the item is not available to the current user¤
+	 * @throws SDataAccessException
+	 *         if the item is not available to the current user¤
 	 * @throws RepositoryException
 	 */
 	public CHSNodeMap(ContentEntity n, int depth, ResourceDefinition rp,
@@ -57,8 +59,9 @@ public class CHSNodeMap extends HashMap<String, Object>
 	{
 		String lock = ContentHostingService.AUTH_RESOURCE_HIDDEN;
 		boolean canSeeHidden = SecurityService.unlock(lock, n.getReference());
-		if ( !canSeeHidden && !n.isAvailable() ) {
-			throw new SDataAccessException(403,"Permission denied on item");
+		if (!canSeeHidden && !n.isAvailable())
+		{
+			throw new SDataAccessException(403, "Permission denied on item");
 		}
 		this.contentHostingService = contentHostingService;
 		depth--;
@@ -100,7 +103,8 @@ public class CHSNodeMap extends HashMap<String, Object>
 						try
 						{
 							String collectionPath = memberID;
-							if ( !collectionPath.endsWith("/") ) {
+							if (!collectionPath.endsWith("/"))
+							{
 								collectionPath = collectionPath + "/";
 							}
 							cn = contentHostingService.getCollection(collectionPath);
@@ -112,12 +116,16 @@ public class CHSNodeMap extends HashMap<String, Object>
 					}
 					if (cn != null)
 					{
-						
-						try {
-							Map<String, Object> m = new CHSNodeMap(cn, depth, rp, contentHostingService);
+
+						try
+						{
+							Map<String, Object> m = new CHSNodeMap(cn, depth, rp,
+									contentHostingService);
 							m.put("position", String.valueOf(i));
 							nodes.put(getName(cn), m);
-						} catch ( SDataAccessException sdae ) {
+						}
+						catch (SDataAccessException sdae)
+						{
 							// hide the item from the list
 							continue;
 						}
@@ -140,7 +148,8 @@ public class CHSNodeMap extends HashMap<String, Object>
 		Calendar lastModified = new GregorianCalendar();
 		try
 		{
-			Time lastModifiedTime = rp.getTimeProperty(ResourceProperties.PROP_MODIFIED_DATE);
+			Time lastModifiedTime = rp
+					.getTimeProperty(ResourceProperties.PROP_MODIFIED_DATE);
 			lastModified.setTimeInMillis(lastModifiedTime.getTime());
 		}
 		catch (EntityPropertyNotDefinedException e)
@@ -152,23 +161,25 @@ public class CHSNodeMap extends HashMap<String, Object>
 			// default to now
 		}
 		long contentLength = n.getContentLength();
-		String mimeType = n.getContentType();		
+		String mimeType = n.getContentType();
 		put("lastModified", lastModified.getTime());
 		put("mimeType", mimeType);
 		put("length", String.valueOf(contentLength));
-		
-		
-		put("available",n.isAvailable());
-		put("hidden",n.isHidden());
-		if ( !n.isHidden() ) {
+
+		put("available", n.isAvailable());
+		put("hidden", n.isHidden());
+		if (!n.isHidden())
+		{
 			Time releaseDate = n.getReleaseDate();
-			if ( releaseDate != null ) {
-				put("releaseDate",releaseDate.getTime());
-			} 
+			if (releaseDate != null)
+			{
+				put("releaseDate", releaseDate.getTime());
+			}
 			Time retractDate = n.getRetractDate();
-			if ( retractDate != null ) {
-				put("retractDate",retractDate.getTime());
-			} 
+			if (retractDate != null)
+			{
+				put("retractDate", retractDate.getTime());
+			}
 		}
 	}
 
@@ -187,7 +198,7 @@ public class CHSNodeMap extends HashMap<String, Object>
 			List l = rp.getPropertyList(name);
 			if (l.size() > 1)
 			{
-				Object[] o = l.toArray(new String[0]);
+				String[] o = (String[]) l.toArray(new String[0]);
 				m.put(name, o);
 			}
 			else if (l.size() == 1)
@@ -198,8 +209,6 @@ public class CHSNodeMap extends HashMap<String, Object>
 		}
 		return m;
 	}
-
-
 
 	/**
 	 * @param n

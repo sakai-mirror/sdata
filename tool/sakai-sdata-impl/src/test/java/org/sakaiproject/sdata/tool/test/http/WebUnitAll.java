@@ -51,6 +51,7 @@ public class WebUnitAll extends TestCase
 		suite.addTestSuite(ColCHSHandlerUnitT.class);
 		suite.addTestSuite(CHSHideReleaseFuntionUnitT.class);
 		suite.addTestSuite(CHSMoveFuntionUnitT.class);
+		suite.addTestSuite(CHSPropertiesFuntionUnitT.class);
 		// $JUnit-END$
 		return suite;
 	}

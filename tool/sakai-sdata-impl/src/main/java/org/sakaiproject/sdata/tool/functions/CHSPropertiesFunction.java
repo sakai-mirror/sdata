@@ -27,10 +27,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.content.api.ContentEntity;
 import org.sakaiproject.content.api.GroupAwareEdit;
-import org.sakaiproject.entity.api.Edit;
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
+import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.sdata.tool.CHSNodeMap;
 import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
@@ -58,15 +60,11 @@ import org.sakaiproject.sdata.tool.api.SDataException;
  * for add, <b>d</b> for remove or <b>r</b> for replace.
  * </p>
  * <ul>
- * <li>
- * <b>add</b>: To add a property or to create a new property.
- * </li>
- * <li>
- * <b>remove</b>: To remove the property.
- * </li>
- * <li>
- * <b>replace</b>: To replace the property with the value specified, this will be a single value property to start with, but if later (including in the same request) it is converted into a list.
- * </li>
+ * <li> <b>add</b>: To add a property or to create a new property. </li>
+ * <li> <b>remove</b>: To remove the property. </li>
+ * <li> <b>replace</b>: To replace the property with the value specified, this
+ * will be a single value property to start with, but if later (including in the
+ * same request) it is converted into a list. </li>
  * </ul>
  * 
  * @author ieb
@@ -74,17 +72,19 @@ import org.sakaiproject.sdata.tool.api.SDataException;
 public class CHSPropertiesFunction extends CHSSDataFunction
 {
 
-	private static final String ADD = "a";
+	public static final String ADD = "a";
 
-	private static final String REMOVE = "d";
+	public static final String REMOVE = "d";
 
-	private static final String REPLACE = "r";
+	public static final String REPLACE = "r";
 
-	private static final String NAME = "name";
+	public static final String NAME = "name";
 
-	private static final String VALUE = "value";
+	public static final String VALUE = "value";
 
-	private static final String ACTION = "action";
+	public static final String ACTION = "action";
+
+	private static final Log log = LogFactory.getLog(CHSPropertiesFunction.class);
 
 	/*
 	 * (non-Javadoc)
@@ -117,9 +117,17 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 			if (ADD.equals(actions[i]))
 			{
 				List p = properties.getPropertyList(names[i]);
+				log.info("Got Property " + p);
 				if (p == null || p.size() == 0)
 				{
 					properties.addProperty(names[i], values[i]);
+				}
+				else if (p.size() == 1)
+				{
+					String value = properties.getProperty(names[i]);
+					properties.removeProperty(names[i]);
+					properties.addPropertyToList(names[i], value);
+					properties.addPropertyToList(names[i], values[i]);
 				}
 				else
 				{
@@ -137,11 +145,10 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 			}
 
 		}
-		
+
 		commitEntity(edit);
-		
-		CHSNodeMap nm = new CHSNodeMap((ContentEntity) edit, rp.getDepth(), rp,
-				contentHostingService);
+
+		CHSNodeMap nm = new CHSNodeMap((ContentEntity) edit, rp.getDepth(), rp, contentHostingService);
 		try
 		{
 			handler.sendMap(request, response, nm);
