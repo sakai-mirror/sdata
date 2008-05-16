@@ -49,7 +49,6 @@ public class MyCoursesAndProjectsServiceDefinitionFactory implements
 
 	/**
 	 * Creates a new instance
-	 * 
 	 */
 	public MyCoursesAndProjectsServiceDefinitionFactory()
 	{

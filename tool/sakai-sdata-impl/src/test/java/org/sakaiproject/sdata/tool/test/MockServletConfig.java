@@ -29,15 +29,15 @@ import javax.servlet.ServletContext;
 
 /**
  * @author ieb
- *
  */
 public class MockServletConfig implements ServletConfig
 {
 
-
 	private Hashtable<String, String> initParameters = new Hashtable<String, String>();
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletConfig#getInitParameter(java.lang.String)
 	 */
 	public String getInitParameter(String name)
@@ -45,7 +45,9 @@ public class MockServletConfig implements ServletConfig
 		return initParameters.get(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletConfig#getInitParameterNames()
 	 */
 	public Enumeration getInitParameterNames()
@@ -53,7 +55,9 @@ public class MockServletConfig implements ServletConfig
 		return initParameters.keys();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletConfig#getServletContext()
 	 */
 	public ServletContext getServletContext()
@@ -61,7 +65,9 @@ public class MockServletConfig implements ServletConfig
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletConfig#getServletName()
 	 */
 	public String getServletName()
@@ -75,8 +81,8 @@ public class MockServletConfig implements ServletConfig
 	 */
 	public void setInitParameters(String key, String value)
 	{
-		initParameters.put(key,value);
-		
+		initParameters.put(key, value);
+
 	}
 
 }

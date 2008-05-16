@@ -54,8 +54,8 @@ public class MyRecentChangesObserver implements Observer
 		{
 
 			Event event = (org.sakaiproject.event.api.Event) arg1;
-			UsageSession session = Kernel.usageSessionService()
-					.getSession(event.getSessionId());
+			UsageSession session = Kernel.usageSessionService().getSession(
+					event.getSessionId());
 			SqlService sqlService = Kernel.sqlService();
 			String user = session.getUserId();
 			String euser = session.getUserEid();

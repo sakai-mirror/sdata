@@ -114,8 +114,6 @@ public abstract class JCRHandler implements Handler
 
 	private String baseUrl;
 
-	private Object newProgressMapMutex = new Object();
-
 	private ResourceFunctionFactory resourceFunctionFactory;
 
 	/*
@@ -492,7 +490,8 @@ public abstract class JCRHandler implements Handler
 				{
 					throw new SDataException(
 							HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-							"Server is configured with a modification function on GET, this is not Ok, should be on POST; function was "+m);
+							"Server is configured with a modification function on GET, this is not Ok, should be on POST; function was "
+									+ m);
 				}
 				m.call(this, request, response, n, rp);
 			}
@@ -818,7 +817,9 @@ public abstract class JCRHandler implements Handler
 				{
 					if (!m.isModification())
 					{
-						log.warn("Non modification function mouted on POST method, probably not a good idea; function was "+m);
+						log
+								.warn("Non modification function mouted on POST method, probably not a good idea; function was "
+										+ m);
 					}
 					m.call(this, request, response, n, rp);
 				}
@@ -1004,7 +1005,7 @@ public abstract class JCRHandler implements Handler
 	 */
 	public void setHandlerHeaders(HttpServletResponse response)
 	{
-		log.info("Setting SData Header "+this.getClass().getName());
+		log.info("Setting SData Header " + this.getClass().getName());
 		response.setHeader("x-sdata-handler", this.getClass().getName());
 	}
 }

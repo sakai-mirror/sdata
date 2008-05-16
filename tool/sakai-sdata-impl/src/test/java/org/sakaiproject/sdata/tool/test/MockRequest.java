@@ -37,7 +37,6 @@ import javax.servlet.http.HttpSession;
 
 /**
  * @author ieb
- *
  */
 public class MockRequest implements HttpServletRequest
 {
@@ -51,7 +50,10 @@ public class MockRequest implements HttpServletRequest
 	{
 		this.path = path;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getAuthType()
 	 */
 	public String getAuthType()
@@ -60,7 +62,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getContextPath()
 	 */
 	public String getContextPath()
@@ -69,7 +73,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getCookies()
 	 */
 	public Cookie[] getCookies()
@@ -78,7 +84,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getDateHeader(java.lang.String)
 	 */
 	public long getDateHeader(String arg0)
@@ -87,7 +95,9 @@ public class MockRequest implements HttpServletRequest
 		return 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getHeader(java.lang.String)
 	 */
 	public String getHeader(String arg0)
@@ -96,7 +106,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getHeaderNames()
 	 */
 	public Enumeration getHeaderNames()
@@ -105,7 +117,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getHeaders(java.lang.String)
 	 */
 	public Enumeration getHeaders(String arg0)
@@ -114,7 +128,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getIntHeader(java.lang.String)
 	 */
 	public int getIntHeader(String arg0)
@@ -123,7 +139,9 @@ public class MockRequest implements HttpServletRequest
 		return 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getMethod()
 	 */
 	public String getMethod()
@@ -132,7 +150,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getPathInfo()
 	 */
 	public String getPathInfo()
@@ -140,7 +160,9 @@ public class MockRequest implements HttpServletRequest
 		return path;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getPathTranslated()
 	 */
 	public String getPathTranslated()
@@ -149,7 +171,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getQueryString()
 	 */
 	public String getQueryString()
@@ -158,7 +182,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getRemoteUser()
 	 */
 	public String getRemoteUser()
@@ -167,7 +193,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getRequestURI()
 	 */
 	public String getRequestURI()
@@ -176,7 +204,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getRequestURL()
 	 */
 	public StringBuffer getRequestURL()
@@ -185,7 +215,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getRequestedSessionId()
 	 */
 	public String getRequestedSessionId()
@@ -194,7 +226,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getServletPath()
 	 */
 	public String getServletPath()
@@ -203,7 +237,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getSession()
 	 */
 	public HttpSession getSession()
@@ -212,7 +248,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getSession(boolean)
 	 */
 	public HttpSession getSession(boolean arg0)
@@ -221,7 +259,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#getUserPrincipal()
 	 */
 	public Principal getUserPrincipal()
@@ -230,7 +270,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdFromCookie()
 	 */
 	public boolean isRequestedSessionIdFromCookie()
@@ -239,7 +281,9 @@ public class MockRequest implements HttpServletRequest
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdFromURL()
 	 */
 	public boolean isRequestedSessionIdFromURL()
@@ -248,7 +292,9 @@ public class MockRequest implements HttpServletRequest
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdFromUrl()
 	 */
 	public boolean isRequestedSessionIdFromUrl()
@@ -257,7 +303,9 @@ public class MockRequest implements HttpServletRequest
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdValid()
 	 */
 	public boolean isRequestedSessionIdValid()
@@ -266,7 +314,9 @@ public class MockRequest implements HttpServletRequest
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.http.HttpServletRequest#isUserInRole(java.lang.String)
 	 */
 	public boolean isUserInRole(String arg0)
@@ -275,7 +325,9 @@ public class MockRequest implements HttpServletRequest
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getAttribute(java.lang.String)
 	 */
 	public Object getAttribute(String arg0)
@@ -284,7 +336,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getAttributeNames()
 	 */
 	public Enumeration getAttributeNames()
@@ -293,7 +347,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getCharacterEncoding()
 	 */
 	public String getCharacterEncoding()
@@ -302,7 +358,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getContentLength()
 	 */
 	public int getContentLength()
@@ -311,7 +369,9 @@ public class MockRequest implements HttpServletRequest
 		return 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getContentType()
 	 */
 	public String getContentType()
@@ -320,7 +380,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getInputStream()
 	 */
 	public ServletInputStream getInputStream() throws IOException
@@ -329,7 +391,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getLocalAddr()
 	 */
 	public String getLocalAddr()
@@ -338,7 +402,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getLocalName()
 	 */
 	public String getLocalName()
@@ -347,7 +413,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getLocalPort()
 	 */
 	public int getLocalPort()
@@ -356,7 +424,9 @@ public class MockRequest implements HttpServletRequest
 		return 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getLocale()
 	 */
 	public Locale getLocale()
@@ -365,7 +435,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getLocales()
 	 */
 	public Enumeration getLocales()
@@ -374,7 +446,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getParameter(java.lang.String)
 	 */
 	public String getParameter(String arg0)
@@ -383,7 +457,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getParameterMap()
 	 */
 	public Map getParameterMap()
@@ -392,7 +468,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getParameterNames()
 	 */
 	public Enumeration getParameterNames()
@@ -401,7 +479,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getParameterValues(java.lang.String)
 	 */
 	public String[] getParameterValues(String arg0)
@@ -410,7 +490,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getProtocol()
 	 */
 	public String getProtocol()
@@ -419,7 +501,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getReader()
 	 */
 	public BufferedReader getReader() throws IOException
@@ -428,7 +512,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getRealPath(java.lang.String)
 	 */
 	public String getRealPath(String arg0)
@@ -437,7 +523,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getRemoteAddr()
 	 */
 	public String getRemoteAddr()
@@ -446,7 +534,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getRemoteHost()
 	 */
 	public String getRemoteHost()
@@ -455,7 +545,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getRemotePort()
 	 */
 	public int getRemotePort()
@@ -464,7 +556,9 @@ public class MockRequest implements HttpServletRequest
 		return 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getRequestDispatcher(java.lang.String)
 	 */
 	public RequestDispatcher getRequestDispatcher(String arg0)
@@ -473,7 +567,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getScheme()
 	 */
 	public String getScheme()
@@ -482,7 +578,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getServerName()
 	 */
 	public String getServerName()
@@ -491,7 +589,9 @@ public class MockRequest implements HttpServletRequest
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#getServerPort()
 	 */
 	public int getServerPort()
@@ -500,7 +600,9 @@ public class MockRequest implements HttpServletRequest
 		return 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#isSecure()
 	 */
 	public boolean isSecure()
@@ -509,7 +611,9 @@ public class MockRequest implements HttpServletRequest
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#removeAttribute(java.lang.String)
 	 */
 	public void removeAttribute(String arg0)
@@ -518,8 +622,11 @@ public class MockRequest implements HttpServletRequest
 
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.ServletRequest#setAttribute(java.lang.String, java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.ServletRequest#setAttribute(java.lang.String,
+	 *      java.lang.Object)
 	 */
 	public void setAttribute(String arg0, Object arg1)
 	{
@@ -527,7 +634,9 @@ public class MockRequest implements HttpServletRequest
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.servlet.ServletRequest#setCharacterEncoding(java.lang.String)
 	 */
 	public void setCharacterEncoding(String arg0) throws UnsupportedEncodingException

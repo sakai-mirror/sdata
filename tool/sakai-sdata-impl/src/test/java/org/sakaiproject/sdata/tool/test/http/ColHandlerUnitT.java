@@ -89,7 +89,7 @@ public class ColHandlerUnitT extends TestCase
 			client.getState().setCredentials(
 					new AuthScope("localhost", 8080, "LocalSakaiName"),
 					new UsernamePasswordCredentials("admin", "admin"));
-			
+
 			GetMethod method = new GetMethod(getBaseUrl() + "checkRunning");
 			method.setDoAuthentication(false);
 			method.setFollowRedirects(true);
@@ -142,7 +142,6 @@ public class ColHandlerUnitT extends TestCase
 		super.tearDown();
 	}
 
-	
 	/**
 	 * @throws MalformedURLException
 	 * @throws IOException
@@ -179,12 +178,12 @@ public class ColHandlerUnitT extends TestCase
 			PostMethod method = new PostMethod(getBaseDataUrl());
 			method.addParameter("uri", "");
 			client.executeMethod(method);
-			
+
 			checkHandler(method);
 			int code = method.getStatusCode();
 			assertTrue("Should have been a 200  ", (code == 200));
 			String response = method.getResponseBodyAsString();
-			log.info("Got "+response);
+			log.info("Got " + response);
 		}
 		else
 		{
@@ -196,10 +195,10 @@ public class ColHandlerUnitT extends TestCase
 	{
 		if (enabled)
 		{
-			
+
 			PostMethod method = new PostMethod(getBaseUrl() + "f/dirlist");
 
-			log.info("Uloading to "+getBaseUrl() + "f/dirlist");
+			log.info("Uloading to " + getBaseUrl() + "f/dirlist");
 
 			Part[] parts = new Part[20];
 			for (int i = 0; i < parts.length; i++)
@@ -214,11 +213,11 @@ public class ColHandlerUnitT extends TestCase
 			client.executeMethod(method);
 
 			int code = method.getStatusCode();
-			
+
 			log.info(method.getResponseBodyAsString());
 
 			assertEquals("Should have been a 200 ", 200, code);
-			//checkHandler(method);
+			// checkHandler(method);
 
 			String content = method.getResponseBodyAsString();
 			log.info("Content\n" + content);
@@ -229,7 +228,7 @@ public class ColHandlerUnitT extends TestCase
 						+ i);
 				log.info("Trying " + "dirlist/multifile" + i);
 				client.executeMethod(gmethod);
-				//checkHandler(gmethod);
+				// checkHandler(gmethod);
 
 				int rcode = gmethod.getStatusCode();
 				assertEquals("Expected a 200 response ", 200, rcode);
@@ -270,7 +269,7 @@ public class ColHandlerUnitT extends TestCase
 		{
 			try
 			{
-				log.info("Request was "+resp.getURI());
+				log.info("Request was " + resp.getURI());
 				log.info("Failed Content was " + resp.getResponseBodyAsString());
 			}
 			catch (IOException e)
@@ -278,7 +277,7 @@ public class ColHandlerUnitT extends TestCase
 				e.printStackTrace();
 			}
 		}
-		
+
 		assertNotNull("Handler Not found ", h);
 		String handler = h.getValue();
 		assertTrue("Handler Not found (no value)", handler.trim().length() > 0);

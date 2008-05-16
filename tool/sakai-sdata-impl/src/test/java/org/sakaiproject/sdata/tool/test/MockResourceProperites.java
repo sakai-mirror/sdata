@@ -37,12 +37,13 @@ import org.xml.sax.ContentHandler;
 
 /**
  * @author ieb
- *
  */
 public class MockResourceProperites implements ResourcePropertiesEdit
 {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#addAll(org.sakaiproject.entity.api.ResourceProperties)
 	 */
 	public void addAll(ResourceProperties arg0)
@@ -51,7 +52,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#addAll(java.util.Properties)
 	 */
 	public void addAll(Properties arg0)
@@ -60,8 +63,11 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.entity.api.ResourceProperties#addProperty(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.entity.api.ResourceProperties#addProperty(java.lang.String,
+	 *      java.lang.String)
 	 */
 	public void addProperty(String arg0, String arg1)
 	{
@@ -69,8 +75,11 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.entity.api.ResourceProperties#addPropertyToList(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.entity.api.ResourceProperties#addPropertyToList(java.lang.String,
+	 *      java.lang.String)
 	 */
 	public void addPropertyToList(String arg0, String arg1)
 	{
@@ -78,7 +87,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#clear()
 	 */
 	public void clear()
@@ -87,7 +98,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#get(java.lang.String)
 	 */
 	public Object get(String arg0)
@@ -96,7 +109,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getBooleanProperty(java.lang.String)
 	 */
 	public boolean getBooleanProperty(String arg0)
@@ -106,7 +121,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getContentHander()
 	 */
 	public ContentHandler getContentHander()
@@ -115,7 +132,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getLongProperty(java.lang.String)
 	 */
 	public long getLongProperty(String arg0) throws EntityPropertyNotDefinedException,
@@ -125,7 +144,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropAssignmentDeleted()
 	 */
 	public String getNamePropAssignmentDeleted()
@@ -134,7 +155,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropCalendarLocation()
 	 */
 	public String getNamePropCalendarLocation()
@@ -143,7 +166,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropCalendarType()
 	 */
 	public String getNamePropCalendarType()
@@ -152,7 +177,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropChatRoom()
 	 */
 	public String getNamePropChatRoom()
@@ -161,7 +188,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropCollectionBodyQuota()
 	 */
 	public String getNamePropCollectionBodyQuota()
@@ -170,7 +199,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropContentLength()
 	 */
 	public String getNamePropContentLength()
@@ -179,7 +210,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropContentType()
 	 */
 	public String getNamePropContentType()
@@ -188,7 +221,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropCopyright()
 	 */
 	public String getNamePropCopyright()
@@ -197,7 +232,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropCopyrightAlert()
 	 */
 	public String getNamePropCopyrightAlert()
@@ -206,7 +243,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropCopyrightChoice()
 	 */
 	public String getNamePropCopyrightChoice()
@@ -215,7 +254,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropCreationDate()
 	 */
 	public String getNamePropCreationDate()
@@ -224,7 +265,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropCreator()
 	 */
 	public String getNamePropCreator()
@@ -233,7 +276,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropDescription()
 	 */
 	public String getNamePropDescription()
@@ -242,7 +287,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropDisplayName()
 	 */
 	public String getNamePropDisplayName()
@@ -251,7 +298,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropIsCollection()
 	 */
 	public String getNamePropIsCollection()
@@ -260,7 +309,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropModifiedBy()
 	 */
 	public String getNamePropModifiedBy()
@@ -269,7 +320,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropModifiedDate()
 	 */
 	public String getNamePropModifiedDate()
@@ -278,7 +331,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropNewAssignmentCheckAddDueDate()
 	 */
 	public String getNamePropNewAssignmentCheckAddDueDate()
@@ -287,7 +342,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropNewAssignmentCheckAutoAnnounce()
 	 */
 	public String getNamePropNewAssignmentCheckAutoAnnounce()
@@ -296,7 +353,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropReplyStyle()
 	 */
 	public String getNamePropReplyStyle()
@@ -305,7 +364,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropStructObjType()
 	 */
 	public String getNamePropStructObjType()
@@ -314,7 +375,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropSubmissionPreviousFeedbackComment()
 	 */
 	public String getNamePropSubmissionPreviousFeedbackComment()
@@ -323,7 +386,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropSubmissionPreviousFeedbackText()
 	 */
 	public String getNamePropSubmissionPreviousFeedbackText()
@@ -332,7 +397,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropSubmissionPreviousGrades()
 	 */
 	public String getNamePropSubmissionPreviousGrades()
@@ -341,7 +408,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropSubmissionScaledPreviousGrades()
 	 */
 	public String getNamePropSubmissionScaledPreviousGrades()
@@ -350,7 +419,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getNamePropTo()
 	 */
 	public String getNamePropTo()
@@ -359,7 +430,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getProperty(java.lang.String)
 	 */
 	public String getProperty(String arg0)
@@ -368,7 +441,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getPropertyFormatted(java.lang.String)
 	 */
 	public String getPropertyFormatted(String arg0)
@@ -377,7 +452,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getPropertyList(java.lang.String)
 	 */
 	public List getPropertyList(String arg0)
@@ -386,7 +463,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getPropertyNames()
 	 */
 	public Iterator getPropertyNames()
@@ -395,7 +474,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getTimeProperty(java.lang.String)
 	 */
 	public Time getTimeProperty(String arg0) throws EntityPropertyNotDefinedException,
@@ -405,7 +486,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#getTypeUrl()
 	 */
 	public String getTypeUrl()
@@ -414,7 +497,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#isLiveProperty(java.lang.String)
 	 */
 	public boolean isLiveProperty(String arg0)
@@ -423,7 +508,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#removeProperty(java.lang.String)
 	 */
 	public void removeProperty(String arg0)
@@ -432,7 +519,9 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.ResourceProperties#set(org.sakaiproject.entity.api.ResourceProperties)
 	 */
 	public void set(ResourceProperties arg0)
@@ -441,8 +530,11 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.entity.api.ResourceProperties#toXml(org.w3c.dom.Document, java.util.Stack)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.entity.api.ResourceProperties#toXml(org.w3c.dom.Document,
+	 *      java.util.Stack)
 	 */
 	public Element toXml(Document arg0, Stack arg1)
 	{

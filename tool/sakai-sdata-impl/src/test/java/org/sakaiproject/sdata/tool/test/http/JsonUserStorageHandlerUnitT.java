@@ -21,27 +21,9 @@
 
 package org.sakaiproject.sdata.tool.test.http;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-
-import junit.framework.TestCase;
-
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xml.sax.SAXException;
-
 
 /**
  * @author ieb
@@ -51,8 +33,6 @@ public abstract class JsonUserStorageHandlerUnitT extends JsonHandlerUnitT
 {
 	private static final Log log = LogFactory.getLog(JsonUserStorageHandlerUnitT.class);
 
-
-
 	/**
 	 * @throws Exception
 	 */
@@ -60,18 +40,16 @@ public abstract class JsonUserStorageHandlerUnitT extends JsonHandlerUnitT
 	{
 		if (enabled)
 		{
-				GetMethod method = new GetMethod(getBaseDataUrl() + "testpage");
-				method.setDoAuthentication(false);
-				client.executeMethod(method);
+			GetMethod method = new GetMethod(getBaseDataUrl() + "testpage");
+			method.setDoAuthentication(false);
+			client.executeMethod(method);
 
-				assertEquals(401,method.getStatusCode());
+			assertEquals(401, method.getStatusCode());
 		}
 		else
 		{
 			log.info("Tests Disabled, please start tomcat with sdata installed");
 		}
 	}
-
-
 
 }

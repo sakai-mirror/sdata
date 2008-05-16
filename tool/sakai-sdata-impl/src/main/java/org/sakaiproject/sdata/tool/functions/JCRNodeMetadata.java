@@ -35,6 +35,7 @@ import org.sakaiproject.sdata.tool.api.SDataException;
 
 /**
  * This has not been implemented as yet.
+ * 
  * @author ieb
  */
 public class JCRNodeMetadata extends JCRSDataFunction
@@ -48,12 +49,13 @@ public class JCRNodeMetadata extends JCRSDataFunction
 	 *      javax.servlet.http.HttpServletResponse, java.lang.Object)
 	 */
 	public void call(Handler handler, HttpServletRequest request,
-			HttpServletResponse response, Object target, ResourceDefinition rp) throws SDataException
+			HttpServletResponse response, Object target, ResourceDefinition rp)
+			throws SDataException
 	{
 		try
 		{
 			Node n = (Node) target;
-			JCRNodeMap nm = new JCRNodeMap(n,rp.getDepth(),rp);
+			JCRNodeMap nm = new JCRNodeMap(n, rp.getDepth(), rp);
 			handler.sendMap(request, response, nm);
 		}
 		catch (RepositoryException rex)
@@ -69,14 +71,14 @@ public class JCRNodeMetadata extends JCRSDataFunction
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.api.SDataFunction#isModification()
 	 */
 	public boolean isModification()
 	{
 		return false;
 	}
-	
-
 
 }

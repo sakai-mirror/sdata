@@ -29,11 +29,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * A Handler handles http method request, without the addional weight of a servlet.
- * Implementaitons of this interface should obej rfc2616 and releated rfcs as closely as 
- * possible. The relevant parts of the standard are listed against each method. 
+ * A Handler handles http method request, without the addional weight of a
+ * servlet. Implementaitons of this interface should obej rfc2616 and releated
+ * rfcs as closely as possible. The relevant parts of the standard are listed
+ * against each method.
+ * 
  * @author ieb
- *
  */
 public interface Handler
 {
@@ -71,7 +72,8 @@ public interface Handler
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
+	void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException;
 
 	/**
 	 * <p>
@@ -120,7 +122,8 @@ public interface Handler
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
+	void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException;
 
 	/**
 	 * <a id="sec9.4">9.4</a> HEAD</h3>
@@ -148,7 +151,8 @@ public interface Handler
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
+	void doHead(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException;
 
 	/**
 	 * @param request
@@ -156,10 +160,11 @@ public interface Handler
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
+	void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException;
 
 	/**
-	/**
+	 * /**
 	 * <p>
 	 * The PUT method requests that the enclosed entity be stored under the
 	 * supplied Request-URI. If the Request-URI refers to an already existing
@@ -223,8 +228,8 @@ public interface Handler
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
-
+	void doPut(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException;
 
 	/**
 	 * @param config
@@ -243,8 +248,8 @@ public interface Handler
 	 * @param ex
 	 * @throws IOException
 	 */
-	void sendError(HttpServletRequest request,
-			HttpServletResponse response, Throwable ex) throws IOException;
+	void sendError(HttpServletRequest request, HttpServletResponse response, Throwable ex)
+			throws IOException;
 
 	/**
 	 * Serailize a Map strucutre to the output stream
@@ -252,8 +257,7 @@ public interface Handler
 	 * @param uploads
 	 * @throws IOException
 	 */
-	void sendMap(HttpServletRequest request,
-			HttpServletResponse response, Map<String, Object> contetMap)
-			throws IOException;
+	void sendMap(HttpServletRequest request, HttpServletResponse response,
+			Map<String, Object> contetMap) throws IOException;
 
 }

@@ -26,15 +26,12 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.sakaiproject.UnitTestComponentManager;
-import org.sakaiproject.component.api.ComponentManager;
 
 /**
  * @author ieb
- *
  */
 public class MockComponentManager implements UnitTestComponentManager
 {
-	
 
 	private Map<String, Object> componentMap;
 
@@ -46,7 +43,9 @@ public class MockComponentManager implements UnitTestComponentManager
 		this.componentMap = componentMap;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.component.api.ComponentManager#close()
 	 */
 	public void close()
@@ -55,7 +54,9 @@ public class MockComponentManager implements UnitTestComponentManager
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.component.api.ComponentManager#contains(java.lang.Class)
 	 */
 	public boolean contains(Class arg0)
@@ -64,7 +65,9 @@ public class MockComponentManager implements UnitTestComponentManager
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.component.api.ComponentManager#contains(java.lang.String)
 	 */
 	public boolean contains(String arg0)
@@ -73,7 +76,9 @@ public class MockComponentManager implements UnitTestComponentManager
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.component.api.ComponentManager#get(java.lang.Class)
 	 */
 	public Object get(Class arg0)
@@ -82,7 +87,9 @@ public class MockComponentManager implements UnitTestComponentManager
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.component.api.ComponentManager#get(java.lang.String)
 	 */
 	public Object get(String key)
@@ -90,7 +97,9 @@ public class MockComponentManager implements UnitTestComponentManager
 		return componentMap.get(key);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.component.api.ComponentManager#getConfig()
 	 */
 	public Properties getConfig()
@@ -99,7 +108,9 @@ public class MockComponentManager implements UnitTestComponentManager
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.component.api.ComponentManager#getRegisteredInterfaces()
 	 */
 	public Set getRegisteredInterfaces()
@@ -108,7 +119,9 @@ public class MockComponentManager implements UnitTestComponentManager
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.component.api.ComponentManager#hasBeenClosed()
 	 */
 	public boolean hasBeenClosed()
@@ -116,8 +129,11 @@ public class MockComponentManager implements UnitTestComponentManager
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.component.api.ComponentManager#loadComponent(java.lang.Class, java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.component.api.ComponentManager#loadComponent(java.lang.Class,
+	 *      java.lang.Object)
 	 */
 	public void loadComponent(Class arg0, Object arg1)
 	{
@@ -125,8 +141,11 @@ public class MockComponentManager implements UnitTestComponentManager
 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.component.api.ComponentManager#loadComponent(java.lang.String, java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.component.api.ComponentManager#loadComponent(java.lang.String,
+	 *      java.lang.Object)
 	 */
 	public void loadComponent(String arg0, Object arg1)
 	{
@@ -134,7 +153,9 @@ public class MockComponentManager implements UnitTestComponentManager
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.component.api.ComponentManager#waitTillConfigured()
 	 */
 	public void waitTillConfigured()

@@ -21,19 +21,14 @@
 
 package org.sakaiproject.sdata.services.qa;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.announcement.api.AnnouncementMessage;
 import org.sakaiproject.announcement.api.AnnouncementService;
-import org.sakaiproject.message.api.Message;
 import org.sakaiproject.message.api.MessageService;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.site.api.SiteService;
@@ -47,19 +42,7 @@ import org.sakaiproject.tool.api.SessionManager;
  */
 public class QaBean implements ServiceDefinition
 {
-	private List<Map> searchList = new ArrayList<Map>();
-
 	private Map<String, Object> map2 = new HashMap<String, Object>();;
-
-	private List<String> arl = new ArrayList<String>();
-
-	private ArrayList<Message> Mes = new ArrayList<Message>();
-
-	private Map<String, Object> map = new HashMap<String, Object>();
-
-	private static final Log log = LogFactory.getLog(QaBean.class);
-
-	private List<Map> MyMotds = new ArrayList<Map>();
 
 	/**
 	 * TODO Javadoc
@@ -67,27 +50,33 @@ public class QaBean implements ServiceDefinition
 	 * @param sessionManager
 	 * @param siteService
 	 */
-	public QaBean(SessionManager sessionManager,
-			MessageService messageservice, TimeService timeService,
-			SiteService siteService, AnnouncementService announcementService, HttpServletRequest request, HttpServletResponse response)
+	public QaBean(SessionManager sessionManager, MessageService messageservice,
+			TimeService timeService, SiteService siteService,
+			AnnouncementService announcementService, HttpServletRequest request,
+			HttpServletResponse response)
 	{
 
 		try
 		{
-			
+
 			String siteId = request.getParameter("siteid");
 			String subject = request.getParameter("subject");
 			String body = request.getParameter("body");
-			
-			AnnouncementMessage edit = announcementService.getAnnouncementChannel("/announcement/channel/" + siteId + "/main").addAnnouncementMessage(subject, false, null, body);
-			//announcementService.getAnnouncementChannel("/announcement/channel/" + siteId + "/main").commitMessage(edit);
-			
+
+			AnnouncementMessage edit = announcementService.getAnnouncementChannel(
+					"/announcement/channel/" + siteId + "/main").addAnnouncementMessage(
+					subject, false, null, body);
+			// announcementService.getAnnouncementChannel("/announcement/channel/"
+			// + siteId + "/main").commitMessage(edit);
+
 			map2.put("status", "success");
-			
-		} catch (Exception ex){
-			
+
+		}
+		catch (Exception ex)
+		{
+
 			map2.put("status", "failed");
-			
+
 		}
 
 	}

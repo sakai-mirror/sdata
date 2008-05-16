@@ -41,8 +41,7 @@ public class JsonCHSHandler extends CHSHandler
 {
 
 	/**
- * TODO Javadoc
-	 * 
+	 * TODO Javadoc
 	 */
 	public JsonCHSHandler()
 	{

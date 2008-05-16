@@ -30,22 +30,32 @@ import org.sakaiproject.sdata.tool.api.SDataException;
 
 /**
  * This has not been implemented as yet.
+ * 
  * @author ieb
- *
  */
 public class JCRHideReleaseFunction extends JCRSDataFunction
 {
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.api.SDataFunction#call(org.sakaiproject.sdata.tool.api.Handler, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object, org.sakaiproject.sdata.tool.api.ResourceDefinition)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.SDataFunction#call(org.sakaiproject.sdata.tool.api.Handler,
+	 *      javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse, java.lang.Object,
+	 *      org.sakaiproject.sdata.tool.api.ResourceDefinition)
 	 */
-	public void call(Handler handler, HttpServletRequest request, HttpServletResponse response, Object target, ResourceDefinition rp) throws SDataException
+	public void call(Handler handler, HttpServletRequest request,
+			HttpServletResponse response, Object target, ResourceDefinition rp)
+			throws SDataException
 	{
 		// TODO To Be implemented
-		throw new SDataException(HttpServletResponse.SC_NOT_IMPLEMENTED," Hide Release is not implemented in JCR at the moment ");
+		throw new SDataException(HttpServletResponse.SC_NOT_IMPLEMENTED,
+				" Hide Release is not implemented in JCR at the moment ");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.api.SDataFunction#isModification()
 	 */
 	public boolean isModification()

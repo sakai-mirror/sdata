@@ -21,16 +21,14 @@
 
 package org.sakaiproject.sdata.tool.api;
 
-
 /**
  * @author ieb
- *
  */
 public interface SecurityAssertion
 {
 
 	/**
-	 * @param method 
+	 * @param method
 	 * @param repoPath
 	 */
 	void check(String method, String resourceLocation) throws SDataException;

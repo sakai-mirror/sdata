@@ -46,7 +46,6 @@ public class JsonProgressHandler extends ProgressHandler
 
 	/**
 	 * Build a Json progress handler
-	 * 
 	 */
 	public JsonProgressHandler()
 	{

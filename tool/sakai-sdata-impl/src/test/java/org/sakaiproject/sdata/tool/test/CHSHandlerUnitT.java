@@ -41,12 +41,12 @@ import org.sakaiproject.exception.TypeException;
 
 /**
  * @author ieb
- *
  */
 public class CHSHandlerUnitT extends TestCase
 {
 
 	protected static final Map<String, Object> componentMap = new HashMap<String, Object>();
+
 	protected static final Log log = LogFactory.getLog(CHSHandlerUnitT.class);
 
 	/**
@@ -57,61 +57,75 @@ public class CHSHandlerUnitT extends TestCase
 		super(arg0);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	protected void setUp() throws Exception
 	{
 		super.setUp();
-		ContentHostingService chs = new MockContentHostingService() {
-			
+		ContentHostingService chs = new MockContentHostingService()
+		{
+
 			private Map<String, ContentCollection> ccMap = new HashMap<String, ContentCollection>();
 
-			/* (non-Javadoc)
+			/*
+			 * (non-Javadoc)
+			 * 
 			 * @see org.sakaiproject.sdata.tool.test.MockContentHostingService#getCollection(java.lang.String)
 			 */
 			@Override
-			
-			public ContentCollection getCollection(String path) throws IdUnusedException, TypeException, PermissionException
+			public ContentCollection getCollection(String path) throws IdUnusedException,
+					TypeException, PermissionException
 			{
 				ContentCollection cc = ccMap.get(path);
-				if ( "/content/group/testcollection/".equals(path)) {
-					log.info("Request for "+path+" was mockCC ");
+				if ("/content/group/testcollection/".equals(path))
+				{
+					log.info("Request for " + path + " was mockCC ");
 					return new MockContentCollection(path);
-				} else {
-					log.info("Request for "+path+" was "+cc);
+				}
+				else
+				{
+					log.info("Request for " + path + " was " + cc);
 				}
 				return cc;
 			}
-			
-			/* (non-Javadoc)
+
+			/*
+			 * (non-Javadoc)
+			 * 
 			 * @see org.sakaiproject.sdata.tool.test.MockContentHostingService#addCollection(java.lang.String)
 			 */
 			@Override
-			public ContentCollectionEdit addCollection(String path) throws IdUsedException, IdInvalidException, PermissionException, InconsistentException
+			public ContentCollectionEdit addCollection(String path)
+					throws IdUsedException, IdInvalidException, PermissionException,
+					InconsistentException
 			{
 				ContentCollectionEdit cce = new MockContentCollection(path);
-				ccMap.put(path,cce);
+				ccMap.put(path, cce);
 				return cce;
 			}
-			
+
 		};
 		componentMap.put(ContentHostingService.class.getName(), chs);
 		Kernel.setComponentManager(new MockComponentManager(componentMap));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 */
 	protected void tearDown() throws Exception
 	{
 		super.tearDown();
 	}
-	
-	public void testGetFolder() {
-		
-		
-		ConcreteCHSHandler chsH = new ConcreteCHSHandler(); 
+
+	public void testGetFolder()
+	{
+
+		ConcreteCHSHandler chsH = new ConcreteCHSHandler();
 		Map<String, String> m = new HashMap<String, String>();
 		chsH.init(m);
 		ContentCollection cc = chsH.testGetFolder("/content/group/testcollection");
@@ -122,19 +136,19 @@ public class CHSHandlerUnitT extends TestCase
 		assertNotNull(cc);
 		cc = chsH.testGetFolder("/content/group/testcollection/1/2/3/sdfsdf/sad/sdffsd/");
 		assertNotNull(cc);
-		
-	
-		
+
 	}
 
-	public void testGetName() {
-		ConcreteCHSHandler chsH = new ConcreteCHSHandler(); 
+	public void testGetName()
+	{
+		ConcreteCHSHandler chsH = new ConcreteCHSHandler();
 		Map<String, String> m = new HashMap<String, String>();
 		chsH.init(m);
-		
-		String name = chsH.testGetName(new MockContentResource("/sdfsdf/sdfsdfsdf/rtert.pdf"));
-		assertEquals("rtert.pdf",name);
+
+		String name = chsH.testGetName(new MockContentResource(
+				"/sdfsdf/sdfsdfsdf/rtert.pdf"));
+		assertEquals("rtert.pdf", name);
 		name = chsH.testGetName(new MockContentResource("/sdfsdf/sdfsdfsdf/rtert.pdf/"));
-		assertEquals("rtert.pdf",name);
+		assertEquals("rtert.pdf", name);
 	}
 }

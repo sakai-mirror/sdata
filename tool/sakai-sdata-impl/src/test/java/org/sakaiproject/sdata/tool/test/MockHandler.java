@@ -32,57 +32,81 @@ import org.sakaiproject.sdata.tool.api.Handler;
 
 /**
  * @author ieb
- *
  */
 public class MockHandler implements Handler
 {
 
 	private String name;
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.api.Handler#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.Handler#doDelete(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
-	public void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	public void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException
 	{
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.api.Handler#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.Handler#doGet(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException
 	{
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.api.Handler#doHead(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.Handler#doHead(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
-	public void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	public void doHead(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException
 	{
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.api.Handler#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.Handler#doPost(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException
 	{
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.api.Handler#doPut(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.Handler#doPut(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
-	public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	public void doPut(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException
 	{
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.api.Handler#init(java.util.Map)
 	 */
 	public void init(Map<String, String> config) throws ServletException
 	{
 		name = config.get("name");
-		
+
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -90,29 +114,41 @@ public class MockHandler implements Handler
 	{
 		return name;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.api.Handler#setHandlerHeaders(javax.servlet.http.HttpServletResponse)
 	 */
-	public void setHandlerHeaders(HttpServletResponse response ) {
+	public void setHandlerHeaders(HttpServletResponse response)
+	{
 		response.setHeader("x-sdata-handler", this.getClass().getName());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.api.Handler#sendError(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Throwable)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.Handler#sendError(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse, java.lang.Throwable)
 	 */
-	public void sendError(HttpServletRequest request, HttpServletResponse response, Throwable ex) throws IOException
+	public void sendError(HttpServletRequest request, HttpServletResponse response,
+			Throwable ex) throws IOException
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.sdata.tool.api.Handler#sendMap(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.util.Map)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sdata.tool.api.Handler#sendMap(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse, java.util.Map)
 	 */
-	public void sendMap(HttpServletRequest request, HttpServletResponse response, Map<String, Object> contetMap) throws IOException
+	public void sendMap(HttpServletRequest request, HttpServletResponse response,
+			Map<String, Object> contetMap) throws IOException
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

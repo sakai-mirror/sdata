@@ -163,7 +163,6 @@ public abstract class ProgressHandler implements Handler
 		response.setHeader("x-sdata-handler", this.getClass().getName());
 	}
 
-
 	public static void setMap(String key, Map<String, Object> map)
 	{
 		if (key != null)
@@ -185,27 +184,33 @@ public abstract class ProgressHandler implements Handler
 	public static void clearMap()
 	{
 		long now = System.currentTimeMillis();
-		for ( String key : progressStore.keySet() ) {
+		for (String key : progressStore.keySet())
+		{
 			Object o = progressStore.get(key);
-			if ( o instanceof Map )
+			if (o instanceof Map)
 			{
-				Map<String, Object> m = (Map<String, Object>)o;
+				Map<String, Object> m = (Map<String, Object>) o;
 				if (m.get("all-completed-at") != null)
 				{
 					long t = Long.parseLong(String.valueOf(m.get("all-completed-at")));
-					if ( (now - t) > 60000 ) {
+					if ((now - t) > 60000)
+					{
 						progressStore.remove(key);
 					}
 				}
-				
+
 			}
 		}
 	}
-	public static void markComplete(Map<String, Object> progressMap) {
+
+	public static void markComplete(Map<String, Object> progressMap)
+	{
 		progressMap.put("all-completed", "true");
 		progressMap.put("all-completed-at", String.valueOf(System.currentTimeMillis()));
 	}
-	public static void clearComplete(Map<String, Object> progressMap) {
+
+	public static void clearComplete(Map<String, Object> progressMap)
+	{
 		progressMap.remove("all-completed");
 		progressMap.remove("all-completed-at");
 	}

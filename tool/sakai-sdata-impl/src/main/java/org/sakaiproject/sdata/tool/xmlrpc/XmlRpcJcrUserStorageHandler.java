@@ -89,7 +89,7 @@ public class XmlRpcJcrUserStorageHandler extends JCRUserStorageHandler
 		}
 		catch (SAXException e)
 		{
-			log.info("Error Failed to send result ",e);
+			log.info("Error Failed to send result ", e);
 			throw new IOException("Failed to write response " + e.getMessage());
 		}
 

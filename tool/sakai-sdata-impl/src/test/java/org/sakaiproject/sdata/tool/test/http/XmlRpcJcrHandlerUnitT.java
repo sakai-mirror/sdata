@@ -24,7 +24,6 @@ package org.sakaiproject.sdata.tool.test.http;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
 /**
  * @author ieb
  */
@@ -37,7 +36,9 @@ public class XmlRpcJcrHandlerUnitT extends JsonHandlerUnitT
 
 	private static final String BASE_DATA_URL = BASE_URL + "xf/";
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.test.http.JsonUserStorageServletUnitT#getBaseUrl()
 	 */
 	@Override
@@ -46,7 +47,9 @@ public class XmlRpcJcrHandlerUnitT extends JsonHandlerUnitT
 		return BASE_URL;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.test.http.JsonUserStorageServletUnitT#getBaseDataUrl()
 	 */
 	@Override
@@ -55,7 +58,4 @@ public class XmlRpcJcrHandlerUnitT extends JsonHandlerUnitT
 		return BASE_DATA_URL;
 	}
 
-
 }
-
-

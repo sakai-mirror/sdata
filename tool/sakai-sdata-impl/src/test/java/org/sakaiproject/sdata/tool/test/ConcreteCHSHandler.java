@@ -98,8 +98,7 @@ public class ConcreteCHSHandler extends CHSHandler
 	}
 
 	/**
-	 * @param contentResource 
-	 * 
+	 * @param contentResource
 	 */
 	public String testGetName(ContentResourceEdit contentResource)
 	{

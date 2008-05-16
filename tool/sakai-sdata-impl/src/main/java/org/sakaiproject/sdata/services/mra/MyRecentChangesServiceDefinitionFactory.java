@@ -26,16 +26,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.Kernel;
-import org.sakaiproject.announcement.api.AnnouncementService;
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.db.api.SqlService;
-import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
-import org.sakaiproject.search.api.SearchService;
-import org.sakaiproject.site.api.SiteService;
-import org.sakaiproject.tool.api.SessionManager;
 
 /**
  * TODO Javadoc
@@ -45,35 +37,11 @@ import org.sakaiproject.tool.api.SessionManager;
 public class MyRecentChangesServiceDefinitionFactory implements ServiceDefinitionFactory
 {
 
-	private SessionManager sessionManager;
-
-	private SiteService siteService;
-
-
-	private SqlService sqlService;
-
-	private ContentHostingService contentHostingService;
-
-	private AnnouncementService announcementService;
-
-	private EntityManager entityManager;
-
-	private SearchService searchService;
-
 	/**
 	 * TODO Javadoc
 	 */
 	public MyRecentChangesServiceDefinitionFactory()
 	{
-
-		searchService = Kernel.searchService();
-		contentHostingService = Kernel.contentHostingService();
-		announcementService = Kernel.announcementService();
-		entityManager = Kernel.entityManager();
-
-		siteService = Kernel.siteService();
-		sessionManager = Kernel.sessionManager();
-		sqlService = Kernel.sqlService();
 	}
 
 	/*

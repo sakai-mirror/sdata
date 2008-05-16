@@ -51,7 +51,8 @@ public abstract class JCRUserStorageHandler extends JCRHandler
 	 * @see org.sakaiproject.sdata.tool.JCRServlet#getResourceDefinitionFactory()
 	 */
 	@Override
-	protected ResourceDefinitionFactory getResourceDefinitionFactory(Map<String, String> config)
+	protected ResourceDefinitionFactory getResourceDefinitionFactory(
+			Map<String, String> config)
 	{
 		return new UserResourceDefinitionFactory(getBasePath());
 	}

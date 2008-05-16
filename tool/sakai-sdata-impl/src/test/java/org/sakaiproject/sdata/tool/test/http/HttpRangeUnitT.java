@@ -76,6 +76,7 @@ public class HttpRangeUnitT extends TestCase
 	{
 		super(arg0);
 	}
+
 	/**
 	 * @throws MalformedURLException
 	 * @throws IOException
@@ -88,8 +89,8 @@ public class HttpRangeUnitT extends TestCase
 		postMethod.setParameter("pw", PASSWORD);
 		postMethod.setParameter("submit", "Login");
 		WebResponse resp = wc.getResponse(postMethod);
-		assertEquals("Failed to Login", 200, resp.getResponseCode() );
-		
+		assertEquals("Failed to Login", 200, resp.getResponseCode());
+
 	}
 
 	/*

@@ -41,10 +41,10 @@ public class PathSecurityAssertionUnitT extends TestCase
 {
 
 	private static final Log log = LogFactory.getLog(PathSecurityAssertionUnitT.class);
+
 	protected static final Map<String, Object> componentMap = new HashMap<String, Object>();
 
-	private String[] tests = { 
-			"false,GET,/sfsfdffsd,false", 
+	private String[] tests = { "false,GET,/sfsfdffsd,false",
 			"true,GET,/sdfsdffs,false",
 			"true,GET,/somelocation/resourceA,true",
 			"false,GET,/somelocation/resourceA,false",
@@ -127,11 +127,12 @@ public class PathSecurityAssertionUnitT extends TestCase
 					mss.setPass(false);
 				}
 				psa.check(t[1], t[2]);
-			//	assertEquals("Expected Test Fail for " + test, "true", t[3]);
+				// assertEquals("Expected Test Fail for " + test, "true", t[3]);
 			}
 			catch (SDataException sde)
 			{
-			//	assertEquals("Expected Test Pass for " + test, "false", t[3]);
+				// assertEquals("Expected Test Pass for " + test, "false",
+				// t[3]);
 			}
 		}
 

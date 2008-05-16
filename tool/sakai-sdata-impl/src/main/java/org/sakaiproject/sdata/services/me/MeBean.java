@@ -63,7 +63,7 @@ public class MeBean implements ServiceDefinition
 	 * @param sessionManager
 	 * @param siteService
 	 */
-	public MeBean(SiteService siteService, SessionManager sessionManager, 
+	public MeBean(SiteService siteService, SessionManager sessionManager,
 			UserDirectoryService userDirectoryService, HttpServletResponse response)
 	{
 		User user = null;
@@ -168,24 +168,25 @@ public class MeBean implements ServiceDefinition
 
 			}
 			map.put("userEid", user.getEid());
-			
-			
+
 			Map<String, Object> properties = new HashMap<String, Object>();
 			ResourceProperties p = user.getProperties();
-			for (Iterator<String> i = p.getPropertyNames(); i.hasNext(); ) {
-				
+			for (Iterator<String> i = p.getPropertyNames(); i.hasNext();)
+			{
+
 				String pname = i.next();
 				List<String> l = p.getPropertyList(pname);
-				if ( l.size() ==  1 ) {
+				if (l.size() == 1)
+				{
 					properties.put(pname, l.get(0));
-				} else if ( l.size() > 1 ) {
+				}
+				else if (l.size() > 1)
+				{
 					properties.put(pname, l);
 				}
 			}
 			map.put("properties", properties);
-			
-			
-			
+
 			// map2.put("items", user);
 			map2.put("items", map);
 

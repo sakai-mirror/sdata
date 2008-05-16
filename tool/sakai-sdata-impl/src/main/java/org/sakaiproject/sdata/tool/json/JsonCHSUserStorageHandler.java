@@ -41,8 +41,7 @@ public class JsonCHSUserStorageHandler extends CHSUserStorageHandler
 {
 
 	/**
- * TODO Javadoc
-	 * 
+	 * TODO Javadoc
 	 */
 	public JsonCHSUserStorageHandler()
 	{

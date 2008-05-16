@@ -34,8 +34,7 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
  * 
  * @author
  */
-public class RssServiceDefinitionFactory implements
-		ServiceDefinitionFactory
+public class RssServiceDefinitionFactory implements ServiceDefinitionFactory
 {
 
 	/**
@@ -43,7 +42,7 @@ public class RssServiceDefinitionFactory implements
 	 */
 	public RssServiceDefinitionFactory()
 	{
-		
+
 	}
 
 	/*

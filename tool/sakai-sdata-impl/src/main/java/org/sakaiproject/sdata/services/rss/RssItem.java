@@ -5,98 +5,113 @@ import java.util.Date;
 
 /**
  * Represents an item in an RSS feed.
- *
- * @author    Simon Brown
+ * 
+ * @author Simon Brown
  */
-public class RssItem implements Comparable<RssItem>{
+public class RssItem implements Comparable<RssItem>
+{
 
-  /** the title of the item */
-  private String title;
+	/** the title of the item */
+	private String title;
 
-  /** a link (url) to the complete item */
-  private String link;
-  
-  private String content;
-  private Date pubDate;
-  private String spubDate;
-  private String name;
+	/** a link (url) to the complete item */
+	private String link;
 
-  /**
-   * Gets the title of this item.
-   *
-   * @return  the title as a String
-   */
-  public String getTitle() {
-    return title;
-  }
+	private String content;
 
-  /**
-   * Sets the title of this item.
-   *
-   * @param title   the title as a String
-   */
-  public void setTitle(String title) {
-    this.title = title;
-  }
+	private Date pubDate;
 
-  /**
-   * Gets the url (link) to this item.
-   *
-   * @return  the url as a String
-   */
-  public String getLink() {
-    return link;
-  }
+	private String name;
 
-  /**
-   * Sets the url (link) to this item.
-   *
-   * @param link    the link as a String
-   */
-  public void setLink(String link) {
-    this.link = link;
-  }
-
-  public void setContent(String content) {
-	this.content = content;
-  }
-
-  public String getContent() {
-	return content;
-  }
-
-  public void setPubDate(Date pubDate) {
-	this.pubDate = pubDate;
-  }
-
-  public Date getPubDate() {
-	return pubDate;
-  }
-
-public int compareTo(RssItem o) {
-	// TODO Auto-generated method stub
-	if (o.getPubDate().before(pubDate)){
-		return 0;
-	} else {
-		return 1;
+	/**
+	 * Gets the title of this item.
+	 * 
+	 * @return the title as a String
+	 */
+	public String getTitle()
+	{
+		return title;
 	}
-	//return getPubDate().compareTo(o.getPubDate());
-}
 
-public void setSpubDate(String spubDate) {
-	this.spubDate = spubDate;
-}
+	/**
+	 * Sets the title of this item.
+	 * 
+	 * @param title
+	 *        the title as a String
+	 */
+	public void setTitle(String title)
+	{
+		this.title = title;
+	}
 
-public String getSpubDate() {
-	return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(pubDate);
-}
+	/**
+	 * Gets the url (link) to this item.
+	 * 
+	 * @return the url as a String
+	 */
+	public String getLink()
+	{
+		return link;
+	}
 
-public void setName(String name) {
-	this.name = name;
-}
+	/**
+	 * Sets the url (link) to this item.
+	 * 
+	 * @param link
+	 *        the link as a String
+	 */
+	public void setLink(String link)
+	{
+		this.link = link;
+	}
 
-public String getName() {
-	return name;
-}
+	public void setContent(String content)
+	{
+		this.content = content;
+	}
+
+	public String getContent()
+	{
+		return content;
+	}
+
+	public void setPubDate(Date pubDate)
+	{
+		this.pubDate = pubDate;
+	}
+
+	public Date getPubDate()
+	{
+		return pubDate;
+	}
+
+	public int compareTo(RssItem o)
+	{
+		// TODO Auto-generated method stub
+		if (o.getPubDate().before(pubDate))
+		{
+			return 0;
+		}
+		else
+		{
+			return 1;
+		}
+		// return getPubDate().compareTo(o.getPubDate());
+	}
+
+	public String getSpubDate()
+	{
+		return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(pubDate);
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
 
 }

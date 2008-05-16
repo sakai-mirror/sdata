@@ -44,7 +44,7 @@ public class SiteServiceDefinitionFactory implements ServiceDefinitionFactory
 	private SessionManager sessionManager;
 
 	private SiteService siteService;
-	
+
 	private AuthzGroupService authzGroupService;
 
 	/**

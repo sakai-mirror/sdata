@@ -32,7 +32,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.Kernel;
 import org.sakaiproject.authz.api.SecurityService;
-import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.sdata.tool.SDataAccessException;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.SecurityAssertion;
@@ -196,7 +195,7 @@ public class PathSecurityAssertion implements SecurityAssertion
 		String resourceReference = baseReference
 				+ resourceLocation.substring(baseLocation.length());
 		String resourceLock = getResourceLock(method);
-		
+
 		if (securityService.unlock(resourceLock, resourceReference))
 		{
 			log.info("Granted [" + method + "]:[" + resourceLock + "] on ["
@@ -209,16 +208,17 @@ public class PathSecurityAssertion implements SecurityAssertion
 					+ resourceReference + "]");
 
 		}
-		
-		
+
 		try
 		{
 			String[] elements = resourceReference.trim().split("/");
 			List<String> elementsList = new ArrayList<String>();
-			for ( String e : elements) {
+			for (String e : elements)
+			{
 				elementsList.add(e);
 			}
-			log.info("Respurce Reference " + resourceReference + ":[" + elementsList + "]");
+			log.info("Respurce Reference " + resourceReference + ":[" + elementsList
+					+ "]");
 
 			if (elements.length > 3)
 			{
@@ -297,7 +297,8 @@ public class PathSecurityAssertion implements SecurityAssertion
 			throw new SDataAccessException(HttpServletResponse.SC_FORBIDDEN,
 					"Access denied for operation " + method);
 		}
-		catch ( SDataAccessException sdae ) {
+		catch (SDataAccessException sdae)
+		{
 			throw sdae;
 		}
 		catch (Exception pex)

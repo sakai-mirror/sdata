@@ -68,7 +68,7 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 	 *        the version being requested.
 	 * @throws SDataException
 	 */
-	public ResourceDefinitionImpl( String method, String f, int depth, String inbasePath,
+	public ResourceDefinitionImpl(String method, String f, int depth, String inbasePath,
 			String inpath, int inversion, SecurityAssertion assertion)
 			throws SDataException
 	{
@@ -85,10 +85,13 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 		this.depth = depth;
 		this.method = method;
 		this.assertion = assertion;
-		if ( basePath.endsWith("/") ) {
+		if (basePath.endsWith("/"))
+		{
 			repoPath = basePath + path;
-		} else {
-			repoPath = basePath + "/" + path;			
+		}
+		else
+		{
+			repoPath = basePath + "/" + path;
 		}
 		repoPath = cleanPath(repoPath);
 		repoPath = repoPath.replaceAll("//", "/");
@@ -101,7 +104,7 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 			repoPath = "/" + repoPath;
 		}
 
-		assertion.check( method, repoPath);
+		assertion.check(method, repoPath);
 	}
 
 	/**

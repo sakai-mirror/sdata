@@ -67,12 +67,13 @@ public class SiteBean implements ServiceDefinition
 	 * @param sessionManager
 	 * @param siteService
 	 */
-	public SiteBean(SessionManager sessionManager, SiteService siteService, AuthzGroupService authzGroupService, String siteId)
+	public SiteBean(SessionManager sessionManager, SiteService siteService,
+			AuthzGroupService authzGroupService, String siteId)
 	{
 		boolean siteExists = true;
 		String status = "900";
 		ArrayList<HashMap<String, Object>> arlpages = new ArrayList<HashMap<String, Object>>();
-		
+
 		String curUser = sessionManager.getCurrentSessionUserId();
 
 		/*
@@ -125,15 +126,19 @@ public class SiteBean implements ServiceDefinition
 				}
 			}
 
-			if (member == false){
+			if (member == false)
+			{
 				status = "902";
-				
-				if (theSite.isAllowed(curUser, "read")){
+
+				if (theSite.isAllowed(curUser, "read"))
+				{
 					status = "904";
 					member = true;
-				} else if (theSite.isJoinable()){
+				}
+				else if (theSite.isJoinable())
+				{
 					status = "905";
-					
+
 				}
 			}
 
@@ -155,7 +160,7 @@ public class SiteBean implements ServiceDefinition
 					mpages.put("layout", page.getLayoutTitle());
 					mpages.put("number", number);
 					mpages.put("popup", page.isPopUp());
-					
+
 					ArrayList<HashMap<String, Object>> arltools = new ArrayList<HashMap<String, Object>>();
 					List<ToolConfiguration> lst = (List<ToolConfiguration>) page
 							.getTools();
@@ -185,19 +190,23 @@ public class SiteBean implements ServiceDefinition
 					arlpages.add(mpages);
 
 				}
-				
+
 				ArrayList<HashMap<String, String>> roles = new ArrayList<HashMap<String, String>>();
-				try {
+				try
+				{
 					AuthzGroup group = authzGroupService.getAuthzGroup("/site/" + siteId);
-					for (Object o : group.getRoles()){ 
-						Role r = (Role) o;	
+					for (Object o : group.getRoles())
+					{
+						Role r = (Role) o;
 						HashMap<String, String> map = new HashMap<String, String>();
 						map.put("id", r.getId());
 						map.put("description", r.getDescription());
 						roles.add(map);
 					}
 					map2.put("roles", roles);
-				} catch (Exception ex){
+				}
+				catch (Exception ex)
+				{
 					log.info("Roles undefined for " + siteId);
 				}
 			}
@@ -215,28 +224,34 @@ public class SiteBean implements ServiceDefinition
 		map2.put("pages", arlpages);
 
 	}
-	
-	protected class SDataSiteRole {
-		
+
+	protected class SDataSiteRole
+	{
+
 		private String id;
+
 		private String description;
-		
-		public void setId(String id) {
+
+		public void setId(String id)
+		{
 			this.id = id;
 		}
-		
-		public String getId() {
+
+		public String getId()
+		{
 			return id;
 		}
 
-		public void setDescription(String description) {
+		public void setDescription(String description)
+		{
 			this.description = description;
 		}
 
-		public String getDescription() {
+		public String getDescription()
+		{
 			return description;
 		}
-		
+
 	}
 
 	/**

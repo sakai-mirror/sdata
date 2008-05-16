@@ -95,10 +95,12 @@ public class CHSMoveFuntionUnitT extends BaseHandlerUnitT
 	{
 		return getBaseDataUrl() + "/destination/";
 	}
+
 	protected String getTargetPath()
 	{
 		return "/private/sdata/destination/";
 	}
+
 	protected String getSourcePath()
 	{
 		return "/private/sdata/";
@@ -119,31 +121,30 @@ public class CHSMoveFuntionUnitT extends BaseHandlerUnitT
 			String targetPath = getTargetPath();
 			String targetDocument = getTargetDocument();
 
-			createDocument(targetDocument+"-foldergen");
-			
-			deleteDocument(targetDocument,false);
-			
+			createDocument(targetDocument + "-foldergen");
+
+			deleteDocument(targetDocument, false);
+
 			moveDocument(testDocument, targetPath);
 			checkDocumentExists(testDocument, false);
-			
-			
 
-			deleteDocument(targetDocument,false);
+			deleteDocument(targetDocument, false);
 
 		}
 	}
 
 	/**
 	 * @param targetFolder
-	 * @throws IOException 
-	 * @throws HttpException 
+	 * @throws IOException
+	 * @throws HttpException
 	 */
-	private void createTargetFolder(String targetFolder) throws HttpException, IOException
+	private void createTargetFolder(String targetFolder) throws HttpException,
+			IOException
 	{
 		PostMethod method = new PostMethod(targetFolder);
 		method.setParameter("f", "cf");
 		client.executeMethod(method);
-		int code = method.getStatusCode();		
+		int code = method.getStatusCode();
 	}
 
 	/**
@@ -161,7 +162,8 @@ public class CHSMoveFuntionUnitT extends BaseHandlerUnitT
 
 		if (exists)
 		{
-			assertEquals("File does not exist and should " + validate.getStatusLine(), 200, code);
+			assertEquals("File does not exist and should " + validate.getStatusLine(),
+					200, code);
 		}
 		else
 		{
@@ -177,10 +179,10 @@ public class CHSMoveFuntionUnitT extends BaseHandlerUnitT
 	 * @throws IOException
 	 * @throws HttpException
 	 */
-	private void moveDocument(String sourceDocument, String targetFolder) throws HttpException,
-			IOException
+	private void moveDocument(String sourceDocument, String targetFolder)
+			throws HttpException, IOException
 	{
-		log.info("Moving "+sourceDocument+" to "+targetFolder);
+		log.info("Moving " + sourceDocument + " to " + targetFolder);
 		PostMethod method = new PostMethod(sourceDocument);
 		method.setParameter("f", "mv");
 		method.setParameter(CHSMoveFunction.TO, targetFolder);
@@ -190,6 +192,5 @@ public class CHSMoveFuntionUnitT extends BaseHandlerUnitT
 		assertEquals("Move Failed " + method.getStatusLine(), 200, code);
 
 	}
-
 
 }

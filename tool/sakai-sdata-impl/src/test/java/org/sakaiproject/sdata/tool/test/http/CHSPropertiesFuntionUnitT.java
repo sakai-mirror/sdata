@@ -117,6 +117,7 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 			checkProperties(testDocument, names, values, actions);
 		}
 	}
+
 	public void testSetProperties2() throws Exception
 	{
 		if (enabled)
@@ -135,6 +136,7 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 			checkProperties(testDocument, names, values, actions);
 		}
 	}
+
 	public void testSetProperties3() throws Exception
 	{
 		if (enabled)
@@ -153,6 +155,7 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 			checkProperties(testDocument, names, values, actions);
 		}
 	}
+
 	public void testSetProperties4() throws Exception
 	{
 		if (enabled)
@@ -217,8 +220,8 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 		}
 
 		String body = validate.getResponseBodyAsString();
-		
-		log.info("Got response "+body);
+
+		log.info("Got response " + body);
 
 		JSONObject jsonObject = (JSONObject) JSONSerializer.toJSON(body);
 
@@ -234,12 +237,13 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 			else
 			{
 				JSONArray pa = jsonProperties.getJSONArray(key);
-				assertNotNull(key+" Should not be null",pa);
-				assertTrue(key+" Should have been an array "+pa,pa.isArray());
+				assertNotNull(key + " Should not be null", pa);
+				assertTrue(key + " Should have been an array " + pa, pa.isArray());
 				assertEquals("Array Size of " + key + " does not match ", a.size(), pa
 						.size());
-				for ( int i = 0; i < a.size(); i++ ) {
-					assertEquals("Mismatch in Array ",a.get(i),pa.get(i));
+				for (int i = 0; i < a.size(); i++)
+				{
+					assertEquals("Mismatch in Array ", a.get(i), pa.get(i));
 				}
 			}
 		}

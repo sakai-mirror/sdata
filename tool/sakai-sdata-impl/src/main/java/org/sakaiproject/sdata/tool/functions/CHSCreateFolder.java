@@ -24,8 +24,6 @@ package org.sakaiproject.sdata.tool.functions;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.PermissionException;
@@ -42,7 +40,6 @@ import org.sakaiproject.sdata.tool.api.SDataException;
  */
 public class CHSCreateFolder extends CHSSDataFunction
 {
-	private static final Log log = LogFactory.getLog(CHSCreateFolder.class);
 
 	/*
 	 * (non-Javadoc)
@@ -66,7 +63,7 @@ public class CHSCreateFolder extends CHSSDataFunction
 					rp.getRepositoryPath().substring(
 							rp.getRepositoryPath().lastIndexOf('/') + 1));
 			contentHostingService.commitCollection(edit);
-		
+
 			CHSNodeMap nm = new CHSNodeMap(edit, rp.getDepth(), rp);
 			handler.sendMap(request, response, nm);
 

@@ -54,8 +54,6 @@ public class ColServiceDefinitionFactory implements ServiceDefinitionFactory
 	private SecurityAssertion pathSecurityAssertion;
 
 	private JCRNodeFactoryService jcrNodeFactoryService;
-	
-	
 
 	/*
 	 * (non-Javadoc)
@@ -67,10 +65,11 @@ public class ColServiceDefinitionFactory implements ServiceDefinitionFactory
 			HttpServletResponse response) throws SDataException
 	{
 		String[] uris = request.getParameterValues("uri");
-		
-		log.info("GOT URIS as "+uris);
-		for ( String u : uris ) {
-			log.info("URIS "+u);
+
+		log.info("GOT URIS as " + uris);
+		for (String u : uris)
+		{
+			log.info("URIS " + u);
 		}
 		request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
 
@@ -88,7 +87,8 @@ public class ColServiceDefinitionFactory implements ServiceDefinitionFactory
 			depth = Integer.parseInt(d);
 		}
 
-		return new ColBean(uris, depth, basePath, pathSecurityAssertion, jcrNodeFactoryService);
+		return new ColBean(uris, depth, basePath, pathSecurityAssertion,
+				jcrNodeFactoryService);
 	}
 
 	/*

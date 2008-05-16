@@ -57,7 +57,8 @@ import org.sakaiproject.tool.api.Tool;
  * 
  * @author
  */
-public class MyCoursesAndProjectsBean implements ServiceDefinition {
+public class MyCoursesAndProjectsBean implements ServiceDefinition
+{
 
 	private List<Site> mysites;
 
@@ -67,33 +68,33 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 	private List<Map> MyMappedSites = new ArrayList<Map>();
 
 	private Map<String, Object> map2 = new HashMap<String, Object>();
-	
+
 	private static final Log log = LogFactory.getLog(MyCoursesAndProjectsBean.class);
 
-	private boolean containstool(Site site, String tool){
-		
+	private boolean containstool(Site site, String tool)
+	{
+
 		boolean containstool = false;
-		
+
 		List<SitePage> pages = (List<SitePage>) site.getOrderedPages();
 
 		for (SitePage page : pages)
 		{
-			List<ToolConfiguration> lst = (List<ToolConfiguration>) page
-					.getTools();
+			List<ToolConfiguration> lst = (List<ToolConfiguration>) page.getTools();
 			for (ToolConfiguration conf : lst)
 			{
 				Tool t = conf.getTool();
 				if (t != null && t.getId() != null && t.getId().equals(tool))
 				{
 					containstool = true;
-				}				
+				}
 			}
 		}
 
 		return containstool;
-		
+
 	}
-	
+
 	/**
 	 * The MyCoursesAndProjectsBean constructor
 	 * 
@@ -101,68 +102,92 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 	 * @param siteService
 	 */
 	@SuppressWarnings("unchecked")
-	public MyCoursesAndProjectsBean(SessionManager sessionManager, SiteService siteService, HttpServletRequest request)
+	public MyCoursesAndProjectsBean(SessionManager sessionManager,
+			SiteService siteService, HttpServletRequest request)
 	{
-		
-		if (request.getMethod().toLowerCase().equals("get")){
-		
-			if (request.getParameter("action") == null){
-		
-				if (request.getParameter("rolestrict") == null){
-				
+
+		if (request.getMethod().toLowerCase().equals("get"))
+		{
+
+			if (request.getParameter("action") == null)
+			{
+
+				if (request.getParameter("rolestrict") == null)
+				{
+
 					setCurrentSession(sessionManager.getCurrentSession());
-					setMysites((List<Site>) siteService.getSites(SelectionType.ACCESS, null, null,
-							null, SortType.TITLE_ASC, null));
-			
+					setMysites((List<Site>) siteService.getSites(SelectionType.ACCESS,
+							null, null, null, SortType.TITLE_ASC, null));
+
 					try
 					{
-						if (request.getParameter("tool") == null){
-							mysites.add(0, (siteService.getSite(siteService.getUserSiteId(currentSession
-									.getUserId()))));
-						} else {
-							if (containstool(siteService.getSite(siteService.getUserSiteId(currentSession
-									.getUserId())), request.getParameter("tool"))){
-								mysites.add(0, (siteService.getSite(siteService.getUserSiteId(currentSession
-										.getUserId()))));
+						if (request.getParameter("tool") == null)
+						{
+							mysites.add(0, (siteService.getSite(siteService
+									.getUserSiteId(currentSession.getUserId()))));
+						}
+						else
+						{
+							if (containstool(siteService.getSite(siteService
+									.getUserSiteId(currentSession.getUserId())), request
+									.getParameter("tool")))
+							{
+								mysites.add(0, (siteService.getSite(siteService
+										.getUserSiteId(currentSession.getUserId()))));
 							}
 						}
-			
+
 					}
 					catch (IdUnusedException e)
 					{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-			
+
 					for (Site site : mysites)
 					{
-						if (request.getParameter("tool") == null){
+						if (request.getParameter("tool") == null)
+						{
 							Map<String, Object> map = new HashMap<String, Object>();
 							map.put("title", site.getTitle());
 							map.put("id", site.getId());
 							map.put("url", site.getUrl());
 							map.put("iconUrl", site.getIconUrl());
 							map.put("owner", site.getCreatedBy().getDisplayName());
-							try {
-								map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
-							} catch (Exception ex){
+							try
+							{
+								map.put("creationDate",
+										new SimpleDateFormat("dd-MM-yyyy")
+												.format(new Date(site.getCreatedTime()
+														.getTime())));
+							}
+							catch (Exception ex)
+							{
 								map.put("creationDate", "unknown");
 							}
 							map.put("members", site.getMembers().size());
 							map.put("description", site.getDescription());
 							map.put("siteType", site.getType());
 							getMyMappedSites().add(map);
-						} else {
-							if (containstool(site, request.getParameter("tool"))){
+						}
+						else
+						{
+							if (containstool(site, request.getParameter("tool")))
+							{
 								Map<String, Object> map = new HashMap<String, Object>();
 								map.put("title", site.getTitle());
 								map.put("id", site.getId());
 								map.put("url", site.getUrl());
 								map.put("iconUrl", site.getIconUrl());
 								map.put("owner", site.getCreatedBy().getDisplayName());
-								try {
-									map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
-								} catch (Exception ex){
+								try
+								{
+									map.put("creationDate", new SimpleDateFormat(
+											"dd-MM-yyyy").format(new Date(site
+											.getCreatedTime().getTime())));
+								}
+								catch (Exception ex)
+								{
 									map.put("creationDate", "unknown");
 								}
 								map.put("members", site.getMembers().size());
@@ -171,35 +196,47 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 								getMyMappedSites().add(map);
 							}
 						}
-						
+
 					}
-					
-					
-			
+
 					map2.put("items", getMyMappedSites());
-					
-				} else if (request.getParameter("rolestrict") != null){
-					
-					if (request.getParameter("tool") != null){
-						
+
+				}
+				else if (request.getParameter("rolestrict") != null)
+				{
+
+					if (request.getParameter("tool") != null)
+					{
+
 						setCurrentSession(sessionManager.getCurrentSession());
-						setMysites((List<Site>) siteService.getSites(SelectionType.ACCESS, null, null,
-								null, SortType.TITLE_ASC, null));
-				
+						setMysites((List<Site>) siteService.getSites(
+								SelectionType.ACCESS, null, null, null,
+								SortType.TITLE_ASC, null));
+
 						for (Site site : mysites)
 						{
-							if (site.getUserRole(currentSession.getUserId()).getId().equals(site.getMaintainRole())){
-								
-								if (containstool(site, request.getParameter("tool"))){
+							if (site.getUserRole(currentSession.getUserId()).getId()
+									.equals(site.getMaintainRole()))
+							{
+
+								if (containstool(site, request.getParameter("tool")))
+								{
 									Map<String, Object> map = new HashMap<String, Object>();
 									map.put("title", site.getTitle());
 									map.put("id", site.getId());
 									map.put("url", site.getUrl());
 									map.put("iconUrl", site.getIconUrl());
-									map.put("owner", site.getCreatedBy().getDisplayName());
-									try {
-										map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
-									} catch (Exception ex){
+									map
+											.put("owner", site.getCreatedBy()
+													.getDisplayName());
+									try
+									{
+										map.put("creationDate", new SimpleDateFormat(
+												"dd-MM-yyyy").format(new Date(site
+												.getCreatedTime().getTime())));
+									}
+									catch (Exception ex)
+									{
 										map.put("creationDate", "unknown");
 									}
 									map.put("members", site.getMembers().size());
@@ -209,27 +246,37 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 								}
 							}
 						}
-						
+
 						map2.put("items", getMyMappedSites());
-						
-					} else {
-						
+
+					}
+					else
+					{
+
 						setCurrentSession(sessionManager.getCurrentSession());
-						setMysites((List<Site>) siteService.getSites(SelectionType.ACCESS, null, null,
-								null, SortType.TITLE_ASC, null));
-				
+						setMysites((List<Site>) siteService.getSites(
+								SelectionType.ACCESS, null, null, null,
+								SortType.TITLE_ASC, null));
+
 						for (Site site : mysites)
 						{
-							if (site.getUserRole(currentSession.getUserId()).getId().equals(site.getMaintainRole())){
+							if (site.getUserRole(currentSession.getUserId()).getId()
+									.equals(site.getMaintainRole()))
+							{
 								Map<String, Object> map = new HashMap<String, Object>();
 								map.put("title", site.getTitle());
 								map.put("id", site.getId());
 								map.put("url", site.getUrl());
 								map.put("iconUrl", site.getIconUrl());
 								map.put("owner", site.getCreatedBy().getDisplayName());
-								try {
-									map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
-								} catch (Exception ex){
+								try
+								{
+									map.put("creationDate", new SimpleDateFormat(
+											"dd-MM-yyyy").format(new Date(site
+											.getCreatedTime().getTime())));
+								}
+								catch (Exception ex)
+								{
 									map.put("creationDate", "unknown");
 								}
 								map.put("members", site.getMembers().size());
@@ -238,39 +285,57 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 								getMyMappedSites().add(map);
 							}
 						}
-						
+
 						map2.put("items", getMyMappedSites());
-						
+
 					}
-					
+
 				}
-			
-			} else if (request.getParameter("action") != null || request.getParameter("action").equals("joinable")){
-				
+
+			}
+			else if (request.getParameter("action") != null
+					|| request.getParameter("action").equals("joinable"))
+			{
+
 				int page = 1;
 				int pagesize = 5;
-				
+
 				String search = "";
-				
-				if (request.getParameter("search") != null){
-					try {
+
+				if (request.getParameter("search") != null)
+				{
+					try
+					{
 						search = request.getParameter("search");
-					} catch (Exception ex){}
+					}
+					catch (Exception ex)
+					{
+					}
 				}
-				
-				if (request.getParameter("page") != null){
-					try {
+
+				if (request.getParameter("page") != null)
+				{
+					try
+					{
 						page = Integer.parseInt(request.getParameter("page"));
-					} catch (Exception ex){}
+					}
+					catch (Exception ex)
+					{
+					}
 				}
-				
-				PagingPosition pager = new PagingPosition((page - 1) * pagesize + 1, pagesize * (page - 1) + pagesize);
-				
-				List<Site> myJoinableSites = siteService.getSites(org.sakaiproject.site.api.SiteService.SelectionType.JOINABLE,
-								null, search, null, org.sakaiproject.site.api.SiteService.SortType.TITLE_ASC, pager);
-				
-				int totalsites = siteService.countSites(org.sakaiproject.site.api.SiteService.SelectionType.JOINABLE, null, search, null);
-				
+
+				PagingPosition pager = new PagingPosition((page - 1) * pagesize + 1,
+						pagesize * (page - 1) + pagesize);
+
+				List<Site> myJoinableSites = siteService.getSites(
+						org.sakaiproject.site.api.SiteService.SelectionType.JOINABLE,
+						null, search, null,
+						org.sakaiproject.site.api.SiteService.SortType.TITLE_ASC, pager);
+
+				int totalsites = siteService.countSites(
+						org.sakaiproject.site.api.SiteService.SelectionType.JOINABLE,
+						null, search, null);
+
 				for (Site site : myJoinableSites)
 				{
 					Map<String, Object> map = new HashMap<String, Object>();
@@ -279,9 +344,13 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 					map.put("url", site.getUrl());
 					map.put("iconUrl", site.getIconUrl());
 					map.put("owner", site.getCreatedBy().getDisplayName());
-					try {
-						map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy").format(new Date(site.getCreatedTime().getTime())));
-					} catch (Exception ex){
+					try
+					{
+						map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy")
+								.format(new Date(site.getCreatedTime().getTime())));
+					}
+					catch (Exception ex)
+					{
 						map.put("creationDate", "unknown");
 					}
 					map.put("members", site.getMembers().size());
@@ -289,23 +358,24 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 					map.put("siteType", site.getType());
 					getMyMappedSites().add(map);
 				}
-				
-				
+
 				map2.put("total", totalsites);
 				map2.put("items", getMyMappedSites());
 
 			}
-		
-		} else if (request.getMethod().toLowerCase().equals("post")) {
-		
-			
+
+		}
+		else if (request.getMethod().toLowerCase().equals("post"))
+		{
+
 			/*
-			 *  Courses And Project actions (Join a Site - Unjoin a Site)
+			 * Courses And Project actions (Join a Site - Unjoin a Site)
 			 */
-			
+
 			String action = request.getParameter("action");
-			
-			if (action.equals("unjoin")){
+
+			if (action.equals("unjoin"))
+			{
 				Session session = null;
 				setCurrentSession(sessionManager.getCurrentSession());
 				try
@@ -314,12 +384,13 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 					session = sessionManager.startSession();
 					session.setUserId("admin");
 					sessionManager.setCurrentSession(session);
-					
+
 					Site s = siteService.getSite(request.getParameter("siteid"));
 					s.removeMember(getCurrentSession().getUserId());
 					siteService.save(s);
-					
-					//log.info("User = " + getCurrentSession().getUserId() + " - " + s);
+
+					// log.info("User = " + getCurrentSession().getUserId() + "
+					// - " + s);
 					map2.put("status", "success");
 				}
 				catch (IdUnusedException e)
@@ -335,25 +406,29 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 					map2.put("status", "permission denied");
 					e.printStackTrace();
 				}
-				finally {
+				finally
+				{
 					sessionManager.setCurrentSession(currentSession);
 					session.invalidate();
 					session = null;
 				}
-				
-			}  else if (action.equals("join")){
+
+			}
+			else if (action.equals("join"))
+			{
 				Session session = null;
 				setCurrentSession(sessionManager.getCurrentSession());
 				try
 				{
-	
+
 					currentSession = sessionManager.getCurrentSession();
 					session = sessionManager.startSession();
 					session.setUserId("admin");
 					sessionManager.setCurrentSession(session);
-							
+
 					Site s = siteService.getSite(request.getParameter("siteid"));
-					s.addMember(getCurrentSession().getUserId(), s.getJoinerRole(), true, false);
+					s.addMember(getCurrentSession().getUserId(), s.getJoinerRole(), true,
+							false);
 					siteService.save(s);
 					map2.put("status", "success");
 				}
@@ -368,15 +443,16 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					map2.put("status", "failed");
-					
-				} 
-				finally {
+
+				}
+				finally
+				{
 					sessionManager.setCurrentSession(currentSession);
 					session.invalidate();
 					session = null;
-				}			
+				}
 			}
-			
+
 		}
 
 	}
@@ -386,7 +462,8 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 	 * 
 	 * @param mysites
 	 */
-	public void setMysites(List<Site> mysites) {
+	public void setMysites(List<Site> mysites)
+	{
 		this.mysites = mysites;
 	}
 
@@ -395,7 +472,8 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 	 * 
 	 * @return all the sites the person is a member of.
 	 */
-	public List<Site> getMysites() {
+	public List<Site> getMysites()
+	{
 		return mysites;
 	}
 
@@ -404,7 +482,8 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 	 * 
 	 * @param currentSession
 	 */
-	public void setCurrentSession(Session currentSession) {
+	public void setCurrentSession(Session currentSession)
+	{
 		this.currentSession = currentSession;
 	}
 
@@ -413,7 +492,8 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 	 * 
 	 * @return currentSession
 	 */
-	public Session getCurrentSession() {
+	public Session getCurrentSession()
+	{
 		return currentSession;
 	}
 
@@ -422,7 +502,8 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 	 * 
 	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinition#getResponseMap()
 	 */
-	public Map<String, Object> getResponseMap() {
+	public Map<String, Object> getResponseMap()
+	{
 
 		return map2;
 	}
@@ -432,7 +513,8 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 	 * 
 	 * @param myMappedSites
 	 */
-	public void setMyMappedSites(List<Map> myMappedSites) {
+	public void setMyMappedSites(List<Map> myMappedSites)
+	{
 		MyMappedSites = myMappedSites;
 	}
 
@@ -441,7 +523,8 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition {
 	 * 
 	 * @return Return a list of mapped sites
 	 */
-	public List<Map> getMyMappedSites() {
+	public List<Map> getMyMappedSites()
+	{
 		return MyMappedSites;
 	}
 

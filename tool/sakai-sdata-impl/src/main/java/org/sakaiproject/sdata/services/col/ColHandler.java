@@ -31,7 +31,6 @@ import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 /**
  * @author ieb
- *
  */
 public class ColHandler extends JSONServiceHandler
 {
@@ -50,7 +49,7 @@ public class ColHandler extends JSONServiceHandler
 	protected ServiceDefinitionFactory getServiceDefinitionFactory()
 			throws ServletException
 	{
-		ColServiceDefinitionFactory col =  new ColServiceDefinitionFactory();
+		ColServiceDefinitionFactory col = new ColServiceDefinitionFactory();
 		col.init(new HashMap<String, String>());
 		return col;
 	}
@@ -64,7 +63,7 @@ public class ColHandler extends JSONServiceHandler
 	protected ServiceDefinitionFactory getServiceDefinitionFactory(
 			Map<String, String> config) throws ServletException
 	{
-		ColServiceDefinitionFactory col =  new ColServiceDefinitionFactory();
+		ColServiceDefinitionFactory col = new ColServiceDefinitionFactory();
 		col.init(config);
 		return col;
 	}

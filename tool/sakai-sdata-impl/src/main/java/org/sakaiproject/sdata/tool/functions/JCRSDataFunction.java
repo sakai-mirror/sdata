@@ -27,6 +27,7 @@ import org.sakaiproject.sdata.tool.api.SDataFunction;
 
 /**
  * The base SDataFunction for JCR
+ * 
  * @author ieb
  */
 public abstract class JCRSDataFunction implements SDataFunction

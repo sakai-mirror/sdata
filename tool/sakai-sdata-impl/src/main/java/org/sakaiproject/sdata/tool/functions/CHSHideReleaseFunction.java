@@ -26,10 +26,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.content.api.ContentEntity;
-import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.GroupAwareEdit;
 import org.sakaiproject.sdata.tool.CHSNodeMap;
 import org.sakaiproject.sdata.tool.api.Handler;
@@ -68,15 +65,12 @@ import org.sakaiproject.time.api.Time;
  */
 public class CHSHideReleaseFunction extends CHSSDataFunction
 {
-	private static final Log log = LogFactory.getLog(CHSHideReleaseFunction.class);
 
 	public static final String HIDDEN = "hidden";
 
 	public static final String RELEASE_DATE = "releaseDate";
 
 	public static final String RETRACT_DATE = "retractDate";
-
-	private ContentHostingService contentHostingService;
 
 	/*
 	 * (non-Javadoc)

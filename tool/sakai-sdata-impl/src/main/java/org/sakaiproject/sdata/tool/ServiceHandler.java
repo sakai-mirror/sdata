@@ -118,7 +118,6 @@ public abstract class ServiceHandler implements Handler
 		}
 	}
 
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -129,7 +128,7 @@ public abstract class ServiceHandler implements Handler
 			throws ServletException, IOException
 	{
 		// process(request,response);
-		//response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+		// response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 		try
 		{
 			ServiceDefinition serviceDefinition = serviceDefinitionFactory.getSpec(
@@ -190,6 +189,5 @@ public abstract class ServiceHandler implements Handler
 	{
 		response.setHeader("x-sdata-handler", this.getClass().getName());
 	}
-	
-	
+
 }

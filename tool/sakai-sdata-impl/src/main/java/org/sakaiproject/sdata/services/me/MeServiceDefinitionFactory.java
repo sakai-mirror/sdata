@@ -45,7 +45,6 @@ public class MeServiceDefinitionFactory implements ServiceDefinitionFactory
 
 	private SiteService siteService;
 
-
 	private UserDirectoryService userDirectoryService;
 
 	/**
@@ -55,7 +54,7 @@ public class MeServiceDefinitionFactory implements ServiceDefinitionFactory
 	{
 		// siteService = (SiteService)
 		// componentManager.get(SiteService.class.getName());
-		sessionManager =  Kernel.sessionManager();
+		sessionManager = Kernel.sessionManager();
 		userDirectoryService = Kernel.userDirectoryService();
 		siteService = Kernel.siteService();
 

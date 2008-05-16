@@ -40,9 +40,10 @@ public interface ServiceDefinitionFactory
 	 * @param request
 	 * @param response
 	 * @return
-	 * @throws SDataException 
+	 * @throws SDataException
 	 */
-	ServiceDefinition getSpec(HttpServletRequest request, HttpServletResponse response) throws SDataException;
+	ServiceDefinition getSpec(HttpServletRequest request, HttpServletResponse response)
+			throws SDataException;
 
 	/**
 	 * Configure the service definition factory

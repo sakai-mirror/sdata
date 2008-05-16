@@ -46,14 +46,10 @@ public abstract class JsonHandlerUnitT extends BaseHandlerUnitT
 {
 	private static final Log log = LogFactory.getLog(JsonHandlerUnitT.class);
 
-
-
 	/**
 	 * @return
 	 */
 	protected abstract String getBaseDataUrl();
-
-
 
 	/**
 	 * 
@@ -81,7 +77,7 @@ public abstract class JsonHandlerUnitT extends BaseHandlerUnitT
 			GetMethod method = new GetMethod(getBaseDataUrl() + "testpage");
 			client.executeMethod(method);
 			// anything other than 404 or 403 is Ok.
-			if (method.getStatusCode() != 404  )
+			if (method.getStatusCode() != 404)
 			{
 				fail("Failed " + method.getStatusLine());
 			}
@@ -410,6 +406,5 @@ public abstract class JsonHandlerUnitT extends BaseHandlerUnitT
 		}
 
 	}
-
 
 }

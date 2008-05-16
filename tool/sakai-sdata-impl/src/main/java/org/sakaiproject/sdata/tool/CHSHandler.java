@@ -148,7 +148,6 @@ public abstract class CHSHandler implements Handler
 			this.baseUrl = DEFAULT_BASE_URL;
 		}
 
-
 		contentHostingService = Kernel.contentHostingService();
 		resourceDefinitionFactory = getResourceDefinitionFactory(config);
 		resourceFunctionFactory = getResourceFunctionFactory(config);
@@ -297,7 +296,8 @@ public abstract class CHSHandler implements Handler
 		if (ce != null)
 		{
 			String lock = ContentHostingService.AUTH_RESOURCE_HIDDEN;
-			boolean canSeeHidden = Kernel.securityService().unlock(lock, ce.getReference());
+			boolean canSeeHidden = Kernel.securityService().unlock(lock,
+					ce.getReference());
 			if (!canSeeHidden && !ce.isAvailable())
 			{
 				throw new SDataAccessException(403, "Permission denied on item");
@@ -752,7 +752,8 @@ public abstract class CHSHandler implements Handler
 				{
 					throw new SDataException(
 							HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-							"Server is configured with a modification function on GET, this is not Ok, should be on POST; function was "+m);
+							"Server is configured with a modification function on GET, this is not Ok, should be on POST; function was "
+									+ m);
 				}
 				m.call(this, request, response, e, rp);
 			}
@@ -1063,7 +1064,9 @@ public abstract class CHSHandler implements Handler
 				{
 					if (!m.isModification())
 					{
-						log.warn("Non modification function mouted on POST method, probably not a good idea; function was "+m);
+						log
+								.warn("Non modification function mouted on POST method, probably not a good idea; function was "
+										+ m);
 					}
 					m.call(this, request, response, ce, rp);
 				}

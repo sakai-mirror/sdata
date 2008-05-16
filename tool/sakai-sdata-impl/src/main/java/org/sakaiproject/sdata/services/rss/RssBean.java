@@ -49,9 +49,11 @@ import org.xml.sax.SAXParseException;
  * 
  * @author
  */
-public class RssBean implements ServiceDefinition {
+public class RssBean implements ServiceDefinition
+{
 
 	private Map<String, Object> map2 = new HashMap<String, Object>();;
+
 	private RssFeed rssFeed = new RssFeed();
 
 	/**
@@ -60,113 +62,132 @@ public class RssBean implements ServiceDefinition {
 	 * @param sessionManager
 	 * @param siteService
 	 */
-	public RssBean(HttpServletRequest request, HttpServletResponse response) {
-		
-		String[] feeds = request.getParameter("feeds").toString().split("[*]");		
-		
- 		for (String feed: feeds){ 	
- 			
-			try {
-				
+	public RssBean(HttpServletRequest request, HttpServletResponse response)
+	{
+
+		String[] feeds = request.getParameter("feeds").toString().split("[*]");
+
+		for (String feed : feeds)
+		{
+
+			try
+			{
+
 				String url = feed.split("[_][_][_]")[0];
 				String name = feed.split("[_][_][_]")[1];
-				
+
 				HttpClient httpClient = new HttpClient();
 				GetMethod getMethod = new GetMethod(url);
 				int responseCode = httpClient.executeMethod(getMethod);
-	
-				if (responseCode != 200) {
-					//map2.put("status", "failed");
+
+				if (responseCode != 200)
+				{
+					// map2.put("status", "failed");
 				}
-	
-				DocumentBuilderFactory factory = DocumentBuilderFactory
-						.newInstance();
+
+				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 				factory.setValidating(false);
 				factory.setNamespaceAware(true);
 				factory.setIgnoringElementContentWhitespace(true);
 				factory.setIgnoringComments(true);
 				DocumentBuilder builder = factory.newDocumentBuilder();
-				builder.setErrorHandler(new ErrorHandler() {
-					public void warning(SAXParseException e) throws SAXException {
+				builder.setErrorHandler(new ErrorHandler()
+				{
+					public void warning(SAXParseException e) throws SAXException
+					{
 						System.out.println(e);
 						throw e;
 					}
-	
-					public void error(SAXParseException e) throws SAXException {
+
+					public void error(SAXParseException e) throws SAXException
+					{
 						System.out.println(e);
 						throw e;
 					}
-	
-					public void fatalError(SAXParseException e) throws SAXException {
+
+					public void fatalError(SAXParseException e) throws SAXException
+					{
 						System.out.println(e);
 						throw e;
 					}
 				});
-	
+
 				InputStream in = getMethod.getResponseBodyAsStream();
 				Document doc = builder.parse(in);
 				Node root = doc.getDocumentElement();
-	
+
 				// this section supports RSS
 				NodeList channels = doc.getElementsByTagName("channel");
-				for (int i = 0; i < channels.getLength(); i++) {
+				for (int i = 0; i < channels.getLength(); i++)
+				{
 					NodeList nodes = channels.item(i).getChildNodes();
-					for (int j = 0; j < nodes.getLength(); j++) {
+					for (int j = 0; j < nodes.getLength(); j++)
+					{
 						Node n = nodes.item(j);
-	
-						if (n.getNodeName().equals("item")) {
+
+						if (n.getNodeName().equals("item"))
+						{
 							RssItem rssItem = loadRssItem(n, name);
 							rssFeed.addItem(rssItem);
 						}
 					}
 				}
-	
+
 				// this section supports RDF (a variation of RSS)
 				// ideally RSS and RDF parsing would be separated, but this will
 				// suffice for this simple example :-)
-				//NodeList items = doc.getElementsByTagName("item");
-				//for (int i = 0; i < items.getLength(); i++) {
-				//	RssItem rssItem = loadRssItem(items.item(i), name);
-				//	rssFeed.addItem(rssItem);
-				//}
-			} catch (Exception e) {
+				// NodeList items = doc.getElementsByTagName("item");
+				// for (int i = 0; i < items.getLength(); i++) {
+				// RssItem rssItem = loadRssItem(items.item(i), name);
+				// rssFeed.addItem(rssItem);
+				// }
+			}
+			catch (Exception e)
+			{
 				e.printStackTrace();
 			}
 
 		}
- 		
- 		List<RssItem> items = rssFeed.getItems();
- 		Collections.sort(items);
- 		
- 		map2.put("items", items);
-		
+
+		List<RssItem> items = rssFeed.getItems();
+		Collections.sort(items);
+
+		map2.put("items", items);
+
 	}
 
-	private RssItem loadRssItem(Node root, String name) throws Exception {
+	private RssItem loadRssItem(Node root, String name) throws Exception
+	{
 		String title = null;
 		String link = null;
 		String description = null;
 		Date pubDate = null;
 
 		NodeList nodes = root.getChildNodes();
-		for (int i = 0; i < nodes.getLength(); i++) {
+		for (int i = 0; i < nodes.getLength(); i++)
+		{
 			Node n = nodes.item(i);
 
-			if (n.getNodeName().equals("title")) {
+			if (n.getNodeName().equals("title"))
+			{
 				title = getTextValue(n);
 			}
 
-			if (n.getNodeName().equals("link")) {
+			if (n.getNodeName().equals("link"))
+			{
 				link = getTextValue(n);
 			}
-			
-			if (n.getNodeName().equals("description")) {
+
+			if (n.getNodeName().equals("description"))
+			{
 				description = getTextValue(n);
 			}
-			
-			if (n.getNodeName().equals("pubDate")) {
+
+			if (n.getNodeName().equals("pubDate"))
+			{
 				String sDate = getTextValue(n);
-				pubDate = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z").parse(sDate);
+				pubDate = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z")
+						.parse(sDate);
 			}
 		}
 
@@ -176,24 +197,29 @@ public class RssBean implements ServiceDefinition {
 		item.setContent(description);
 		item.setPubDate(pubDate);
 		item.setName(name);
-		
+
 		return item;
 	}
 
-	private String getTextValue(Node node) {
-		if (node.hasChildNodes()) {
+	private String getTextValue(Node node)
+	{
+		if (node.hasChildNodes())
+		{
 			return node.getFirstChild().getNodeValue();
-		} else {
+		}
+		else
+		{
 			return "";
 		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinition#getResponseMap()
 	 */
-	public Map<String, Object> getResponseMap() {
+	public Map<String, Object> getResponseMap()
+	{
 
 		return map2;
 	}

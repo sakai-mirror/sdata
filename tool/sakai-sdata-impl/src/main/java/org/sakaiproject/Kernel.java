@@ -260,7 +260,7 @@ public class Kernel
 
 	public static void setComponentManager(UnitTestComponentManager mockComponentManager)
 	{
-		componentManager = mockComponentManager;		
+		componentManager = mockComponentManager;
 	}
 
 }

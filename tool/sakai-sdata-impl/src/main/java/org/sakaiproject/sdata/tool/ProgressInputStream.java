@@ -26,16 +26,11 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * @author ieb
  */
 public class ProgressInputStream extends InputStream
 {
-
-	private static final Log log = LogFactory.getLog(ProgressInputStream.class);
 
 	private InputStream in;
 
@@ -50,8 +45,6 @@ public class ProgressInputStream extends InputStream
 	private Map<String, Object> progressMap;
 
 	private Map<String, Object> itemMap;
-
-	private String fieldName;
 
 	private long contentLength;
 

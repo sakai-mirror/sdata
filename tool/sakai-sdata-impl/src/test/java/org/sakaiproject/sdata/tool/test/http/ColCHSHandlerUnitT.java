@@ -223,8 +223,8 @@ public class ColCHSHandlerUnitT extends TestCase
 
 			for (int i = 0; i < 20; i++)
 			{
-				GetMethod gmethod = new GetMethod(getBaseUrl() + "/c/private/dirlist/multifile"
-						+ i);
+				GetMethod gmethod = new GetMethod(getBaseUrl()
+						+ "/c/private/dirlist/multifile" + i);
 				log.info("Trying " + "private/dirlist/multifile" + i);
 				client.executeMethod(gmethod);
 				// checkHandler(gmethod);
@@ -268,7 +268,7 @@ public class ColCHSHandlerUnitT extends TestCase
 		{
 			try
 			{
-				log.info("Request was "+resp.getURI());
+				log.info("Request was " + resp.getURI());
 				log.info("Failed Content was " + resp.getResponseBodyAsString());
 			}
 			catch (IOException e)

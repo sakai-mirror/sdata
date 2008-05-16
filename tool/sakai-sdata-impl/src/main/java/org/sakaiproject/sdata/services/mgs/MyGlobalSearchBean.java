@@ -61,8 +61,6 @@ public class MyGlobalSearchBean implements ServiceDefinition
 
 	List<String> arl2 = new ArrayList<String>();
 
-	private Map<String, Object> map = new HashMap<String, Object>();
-
 	private static final Log log = LogFactory.getLog(MyGlobalSearchBean.class);
 
 	private Site currentSite = null;
@@ -110,7 +108,7 @@ public class MyGlobalSearchBean implements ServiceDefinition
 				try
 				{
 
-					SearchService search = Kernel.searchService(); 
+					SearchService search = Kernel.searchService();
 					int currentPage = 0;
 					if (page != null)
 					{
@@ -157,7 +155,7 @@ public class MyGlobalSearchBean implements ServiceDefinition
 							}
 							Site resultsite = siteService.getSite(context);
 							search_result.put("site", resultsite.getTitle());
-							search_result.put("siteId",context);
+							search_result.put("siteId", context);
 							search_result.put("score", String.valueOf(bis.getScore()));
 							searchList.add(search_result);
 
@@ -179,7 +177,7 @@ public class MyGlobalSearchBean implements ServiceDefinition
 							search_result.put("tool", "");
 							search_result.put("searchResult", "");
 							search_result.put("score", "");
-							search_result.put("siteId","");
+							search_result.put("siteId", "");
 							search_result.put("site", "");
 							searchList.add(search_result);
 						}
@@ -264,7 +262,7 @@ public class MyGlobalSearchBean implements ServiceDefinition
 						search_result.put("tool", bis.getTool());
 						search_result.put("searchResult", bis.getSearchResult());
 						search_result.put("score", String.valueOf(bis.getScore()));
-						
+
 						String context = "";
 						String[] str = (String[]) bis.getValueMap().get("context");
 						for (String s : str)
@@ -274,7 +272,7 @@ public class MyGlobalSearchBean implements ServiceDefinition
 						Site resultsite = siteService.getSite(context);
 						search_result.put("site", resultsite.getTitle());
 						searchList.add(search_result);
-						search_result.put("siteId",context);
+						search_result.put("siteId", context);
 						resBis.add(bis);
 					}
 					else
@@ -292,7 +290,7 @@ public class MyGlobalSearchBean implements ServiceDefinition
 						search_result.put("tool", "");
 						search_result.put("searchResult", "");
 						search_result.put("score", "");
-						search_result.put("siteId","");
+						search_result.put("siteId", "");
 						search_result.put("site", "");
 
 						searchList.add(search_result);

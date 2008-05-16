@@ -48,9 +48,10 @@ import org.sakaiproject.time.api.TimeService;
 
 /**
  * Base SDataFunction for ContentHosting
+ * 
  * @author ieb
  */
-public abstract class CHSSDataFunction implements SDataFunction 
+public abstract class CHSSDataFunction implements SDataFunction
 {
 
 	private static final Log log = LogFactory.getLog(CHSSDataFunction.class);
@@ -69,9 +70,13 @@ public abstract class CHSSDataFunction implements SDataFunction
 
 	/**
 	 * Get a ContentEntity relevant to the request
-	 * @param h THe Handler, which is expected to be a CHSHandler
-	 * @param repositoryPath the path into the repository
-	 * @return the ContentEntity specified, may return null if handler was not a CHSHandler
+	 * 
+	 * @param h
+	 *        THe Handler, which is expected to be a CHSHandler
+	 * @param repositoryPath
+	 *        the path into the repository
+	 * @return the ContentEntity specified, may return null if handler was not a
+	 *         CHSHandler
 	 * @throws SDataAccessException
 	 * @throws PermissionException
 	 */
@@ -90,11 +95,18 @@ public abstract class CHSSDataFunction implements SDataFunction
 
 	/**
 	 * Get a GroupAwareEdit object based on the target
-	 * @param handler the Handler, expected to be a CHSHandler
-	 * @param target the target object that might already be suitable, if so it will be used.
-	 * @param repositoryPath The path into the repository where the content entity is located
+	 * 
+	 * @param handler
+	 *        the Handler, expected to be a CHSHandler
+	 * @param target
+	 *        the target object that might already be suitable, if so it will be
+	 *        used.
+	 * @param repositoryPath
+	 *        The path into the repository where the content entity is located
 	 * @return The edit object, however may return null if one cant be found.
-	 * @throws SDataException thrown if there is a problem, the status code will indicate the type of problem.
+	 * @throws SDataException
+	 *         thrown if there is a problem, the status code will indicate the
+	 *         type of problem.
 	 */
 	protected GroupAwareEdit editEntity(Handler handler, Object target,
 			String repositoryPath) throws SDataException
@@ -168,7 +180,8 @@ public abstract class CHSSDataFunction implements SDataFunction
 			if (ce != null)
 			{
 				String lock = ContentHostingService.AUTH_RESOURCE_HIDDEN;
-				boolean canSeeHidden = Kernel.securityService().unlock(lock, ce.getReference());
+				boolean canSeeHidden = Kernel.securityService().unlock(lock,
+						ce.getReference());
 				if (!canSeeHidden && !ce.isAvailable())
 				{
 					throw new SDataAccessException(HttpServletResponse.SC_FORBIDDEN,
@@ -220,7 +233,7 @@ public abstract class CHSSDataFunction implements SDataFunction
 		else
 		{
 			log.warn("Type missmatch " + e.getMessage());
-			log.warn("Type missmatch " ,e);
+			log.warn("Type missmatch ", e);
 		}
 	}
 

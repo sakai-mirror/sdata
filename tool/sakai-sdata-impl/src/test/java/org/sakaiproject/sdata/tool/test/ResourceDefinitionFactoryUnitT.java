@@ -40,11 +40,11 @@ import org.sakaiproject.sdata.tool.util.ResourceDefinitionFactoryImpl;
  */
 public class ResourceDefinitionFactoryUnitT extends TestCase
 {
-	
+
 	protected static final Map<String, Object> componentMap = new HashMap<String, Object>();
 
-
-	private static final Log log = LogFactory.getLog(ResourceDefinitionFactoryUnitT.class);
+	private static final Log log = LogFactory
+			.getLog(ResourceDefinitionFactoryUnitT.class);
 
 	private String[] basePaths = { "/", "/sakai", "/sakai/", null, "" };
 
@@ -69,7 +69,7 @@ public class ResourceDefinitionFactoryUnitT extends TestCase
 		MockSecurityService securityService = new MockSecurityService();
 		securityService.setPass(true);
 		componentMap.put(SecurityService.class.getName(), securityService);
-		
+
 		Kernel.setComponentManager(new MockComponentManager(componentMap));
 		super.setUp();
 	}
@@ -92,7 +92,8 @@ public class ResourceDefinitionFactoryUnitT extends TestCase
 		for (String basePath : basePaths)
 		{
 			Map<String, String> config = new HashMap<String, String>();
-			ResourceDefinitionFactory rdf = new ResourceDefinitionFactoryImpl(config,"",basePath);
+			ResourceDefinitionFactory rdf = new ResourceDefinitionFactoryImpl(config, "",
+					basePath);
 			for (String testPath : testPaths)
 			{
 				MockResourceDefinitionRequest request = new MockResourceDefinitionRequest(
@@ -146,7 +147,7 @@ public class ResourceDefinitionFactoryUnitT extends TestCase
 				}
 				catch (SDataException sde)
 				{
-					log.info("Failed ",sde);
+					log.info("Failed ", sde);
 					fail("Problem with dispatcher " + sde.getMessage());
 				}
 

@@ -51,12 +51,13 @@ public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 
 	/**
 	 * construct a resource definition factory with a base URL and a base Path.
-	 * @param config 
 	 * 
+	 * @param config
 	 * @param basePath
 	 * @param basePath2
 	 */
-	public ResourceDefinitionFactoryImpl(Map<String, String> config, String baseUrl, String basePath)
+	public ResourceDefinitionFactoryImpl(Map<String, String> config, String baseUrl,
+			String basePath)
 	{
 		this.basePath = basePath;
 		this.baseUrl = baseUrl;
@@ -64,15 +65,15 @@ public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 		log.info("Definition Factory Created with base path as " + basePath);
 	}
 
-
 	/**
 	 * TODO Javadoc
 	 * 
 	 * @param path
 	 * @return
-	 * @throws SDataException 
+	 * @throws SDataException
 	 */
-	public ResourceDefinition getSpec(final HttpServletRequest request) throws SDataException
+	public ResourceDefinition getSpec(final HttpServletRequest request)
+			throws SDataException
 	{
 
 		request.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
@@ -90,16 +91,19 @@ public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 
 		String v = request.getParameter("v"); // version
 		int version = -1;
-		if (  v != null && v.trim().length() > 0 ) {
+		if (v != null && v.trim().length() > 0)
+		{
 			version = Integer.parseInt(v);
 		}
 		String f = request.getParameter("f"); // function
 		String d = request.getParameter("d"); // function
 		int depth = 1;
-		if ( d != null && d.trim().length() > 0 ) {
+		if (d != null && d.trim().length() > 0)
+		{
 			depth = Integer.parseInt(d);
 		}
-		return new ResourceDefinitionImpl(request.getMethod(), f, depth, basePath, path, version, pathSecurityAssertion);
+		return new ResourceDefinitionImpl(request.getMethod(), f, depth, basePath, path,
+				version, pathSecurityAssertion);
 	}
 
 }

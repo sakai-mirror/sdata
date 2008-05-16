@@ -48,7 +48,6 @@ import org.sakaiproject.time.api.Time;
 public class CHSNodeMap extends HashMap<String, Object>
 {
 
-
 	private ContentHostingService contentHostingService;
 
 	private AuthzGroupService authZGroupService;
@@ -58,7 +57,8 @@ public class CHSNodeMap extends HashMap<String, Object>
 	 *         if the item is not available to the current user¤
 	 * @throws RepositoryException
 	 */
-	public CHSNodeMap(ContentEntity n, int depth, ResourceDefinition rp) throws SDataAccessException
+	public CHSNodeMap(ContentEntity n, int depth, ResourceDefinition rp)
+			throws SDataAccessException
 	{
 		String lock = ContentHostingService.AUTH_RESOURCE_HIDDEN;
 		boolean canSeeHidden = Kernel.securityService().unlock(lock, n.getReference());
@@ -66,8 +66,8 @@ public class CHSNodeMap extends HashMap<String, Object>
 		{
 			throw new SDataAccessException(403, "Permission denied on item");
 		}
-		 contentHostingService = Kernel.contentHostingService();
-		 authZGroupService = Kernel.authzGroupService();
+		contentHostingService = Kernel.contentHostingService();
+		authZGroupService = Kernel.authzGroupService();
 		depth--;
 		put("mixinNodeType", getMixinTypes(n));
 		put("properties", getProperties(n));
@@ -143,16 +143,26 @@ public class CHSNodeMap extends HashMap<String, Object>
 		}
 	}
 
-	private Map<String, String> getPermissions(ContentEntity n) {
+	private Map<String, String> getPermissions(ContentEntity n)
+	{
 		Map<String, String> map = new HashMap<String, String>();
-		if ( n instanceof ContentCollection ) {
-			map.put("read", String.valueOf(contentHostingService.allowGetResource(n.getId())));
-			map.put("delete", String.valueOf(contentHostingService.allowRemoveResource(n.getId())));
-			map.put("write", String.valueOf(contentHostingService.allowUpdateResource(n.getId())));
-		} else {
-			map.put("read", String.valueOf(contentHostingService.allowGetCollection(n.getId())));
-			map.put("delete", String.valueOf(contentHostingService.allowRemoveCollection(n.getId())));
-			map.put("write", String.valueOf(contentHostingService.allowRemoveCollection(n.getId())));
+		if (n instanceof ContentCollection)
+		{
+			map.put("read", String.valueOf(contentHostingService.allowGetResource(n
+					.getId())));
+			map.put("delete", String.valueOf(contentHostingService.allowRemoveResource(n
+					.getId())));
+			map.put("write", String.valueOf(contentHostingService.allowUpdateResource(n
+					.getId())));
+		}
+		else
+		{
+			map.put("read", String.valueOf(contentHostingService.allowGetCollection(n
+					.getId())));
+			map.put("delete", String.valueOf(contentHostingService
+					.allowRemoveCollection(n.getId())));
+			map.put("write", String.valueOf(contentHostingService.allowRemoveCollection(n
+					.getId())));
 			// this may need some resolution to attempt to check site.
 			map.put("admin", String.valueOf(authZGroupService.allowUpdate(n.getId())));
 		}

@@ -40,7 +40,6 @@ import org.w3c.dom.Element;
 
 /**
  * @author ieb
- *
  */
 public class MockContentCollection implements ContentCollectionEdit
 {
@@ -55,7 +54,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		this.path = path;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentCollection#getBodySizeK()
 	 */
 	public long getBodySizeK()
@@ -64,7 +65,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentCollection#getMemberCount()
 	 */
 	public int getMemberCount()
@@ -73,7 +76,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentCollection#getMemberResources()
 	 */
 	public List getMemberResources()
@@ -82,7 +87,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentCollection#getMembers()
 	 */
 	public List getMembers()
@@ -91,7 +98,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentCollection#getReleaseDate()
 	 */
 	public Time getReleaseDate()
@@ -100,7 +109,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentCollection#getRetractDate()
 	 */
 	public Time getRetractDate()
@@ -109,7 +120,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#getContainingCollection()
 	 */
 	public ContentCollection getContainingCollection()
@@ -118,7 +131,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#getContentHandler()
 	 */
 	public ContentHostingHandler getContentHandler()
@@ -127,7 +142,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#getMember(java.lang.String)
 	 */
 	public ContentEntity getMember(String arg0)
@@ -136,7 +153,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#getResourceType()
 	 */
 	public String getResourceType()
@@ -145,7 +164,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#getUrl(boolean)
 	 */
 	public String getUrl(boolean arg0)
@@ -154,7 +175,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#getVirtualContentEntity()
 	 */
 	public ContentEntity getVirtualContentEntity()
@@ -163,7 +186,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#isCollection()
 	 */
 	public boolean isCollection()
@@ -172,7 +197,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#isResource()
 	 */
 	public boolean isResource()
@@ -181,7 +208,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#setContentHandler(org.sakaiproject.content.api.ContentHostingHandler)
 	 */
 	public void setContentHandler(ContentHostingHandler arg0)
@@ -190,7 +219,9 @@ public class MockContentCollection implements ContentCollectionEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#setVirtualContentEntity(org.sakaiproject.content.api.ContentEntity)
 	 */
 	public void setVirtualContentEntity(ContentEntity arg0)
@@ -199,7 +230,9 @@ public class MockContentCollection implements ContentCollectionEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEntity#getAccess()
 	 */
 	public AccessMode getAccess()
@@ -208,7 +241,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEntity#getGroupObjects()
 	 */
 	public Collection getGroupObjects()
@@ -217,7 +252,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEntity#getGroups()
 	 */
 	public Collection getGroups()
@@ -226,7 +263,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEntity#getInheritedAccess()
 	 */
 	public AccessMode getInheritedAccess()
@@ -235,7 +274,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEntity#getInheritedGroupObjects()
 	 */
 	public Collection getInheritedGroupObjects()
@@ -244,7 +285,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEntity#getInheritedGroups()
 	 */
 	public Collection getInheritedGroups()
@@ -253,7 +296,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEntity#isAvailable()
 	 */
 	public boolean isAvailable()
@@ -262,7 +307,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEntity#isHidden()
 	 */
 	public boolean isHidden()
@@ -271,7 +318,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.Entity#getId()
 	 */
 	public String getId()
@@ -280,7 +329,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.Entity#getProperties()
 	 */
 	public ResourceProperties getProperties()
@@ -289,7 +340,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return new MockResourceProperites();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.Entity#getReference()
 	 */
 	public String getReference()
@@ -298,7 +351,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.Entity#getReference(java.lang.String)
 	 */
 	public String getReference(String arg0)
@@ -307,7 +362,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.Entity#getUrl()
 	 */
 	public String getUrl()
@@ -316,7 +373,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.Entity#getUrl(java.lang.String)
 	 */
 	public String getUrl(String arg0)
@@ -325,8 +384,11 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.entity.api.Entity#toXml(org.w3c.dom.Document, java.util.Stack)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.entity.api.Entity#toXml(org.w3c.dom.Document,
+	 *      java.util.Stack)
 	 */
 	public Element toXml(Document arg0, Stack arg1)
 	{
@@ -334,16 +396,20 @@ public class MockContentCollection implements ContentCollectionEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentCollectionEdit#setPriorityMap(java.util.Map)
 	 */
 	public void setPriorityMap(Map arg0)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.Edit#getPropertiesEdit()
 	 */
 	public ResourcePropertiesEdit getPropertiesEdit()
@@ -352,7 +418,9 @@ public class MockContentCollection implements ContentCollectionEdit
 		return new MockResourceProperites();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.Edit#isActiveEdit()
 	 */
 	public boolean isActiveEdit()
@@ -361,85 +429,105 @@ public class MockContentCollection implements ContentCollectionEdit
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEdit#clearGroupAccess()
 	 */
 	public void clearGroupAccess() throws InconsistentException, PermissionException
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEdit#clearPublicAccess()
 	 */
 	public void clearPublicAccess() throws InconsistentException, PermissionException
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.content.api.GroupAwareEdit#setAvailability(boolean, org.sakaiproject.time.api.Time, org.sakaiproject.time.api.Time)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.content.api.GroupAwareEdit#setAvailability(boolean,
+	 *      org.sakaiproject.time.api.Time, org.sakaiproject.time.api.Time)
 	 */
 	public void setAvailability(boolean arg0, Time arg1, Time arg2)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEdit#setGroupAccess(java.util.Collection)
 	 */
-	public void setGroupAccess(Collection arg0) throws InconsistentException, PermissionException
+	public void setGroupAccess(Collection arg0) throws InconsistentException,
+			PermissionException
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEdit#setHidden()
 	 */
 	public void setHidden()
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEdit#setPublicAccess()
 	 */
 	public void setPublicAccess() throws InconsistentException, PermissionException
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEdit#setReleaseDate(org.sakaiproject.time.api.Time)
 	 */
 	public void setReleaseDate(Time arg0)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEdit#setResourceType(java.lang.String)
 	 */
 	public void setResourceType(String arg0)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEdit#setRetractDate(org.sakaiproject.time.api.Time)
 	 */
 	public void setRetractDate(Time arg0)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

@@ -104,7 +104,7 @@ public abstract class XmlRpcUserStorageHandlerUnitT extends TestCase
 	 * @return
 	 */
 	protected abstract String getBaseDataUrl();
-	
+
 	/**
 	 * @return
 	 */
@@ -462,7 +462,8 @@ public abstract class XmlRpcUserStorageHandlerUnitT extends TestCase
 					assertEquals("Should have been a 204 ", 204, code);
 				}
 				{
-					WebRequest req = new DeleteMethodWebRequest(getBaseDataUrl() + "dirlist");
+					WebRequest req = new DeleteMethodWebRequest(getBaseDataUrl()
+							+ "dirlist");
 					WebResponse resp = wc.getResponse(req);
 					checkHandler(resp);
 
@@ -514,7 +515,8 @@ public abstract class XmlRpcUserStorageHandlerUnitT extends TestCase
 			try
 			{
 				{
-					WebRequest req = new DeleteMethodWebRequest(getBaseDataUrl() + "dirlist");
+					WebRequest req = new DeleteMethodWebRequest(getBaseDataUrl()
+							+ "dirlist");
 					WebResponse resp = wc.getResponse(req);
 					checkHandler(resp);
 
@@ -643,11 +645,11 @@ public abstract class XmlRpcUserStorageHandlerUnitT extends TestCase
 	{
 		String className = this.getClass().getName();
 		className = className.substring(className.lastIndexOf('.'));
-		className = className.substring(0,className.length()-"UnitT".length());
+		className = className.substring(0, className.length() - "UnitT".length());
 		String handler = resp.getHeaderField("x-sdata-handler");
-		assertNotNull("Handler Not found ",handler);
-		assertTrue("Handler Not found (no value)",handler.trim().length()>0);
+		assertNotNull("Handler Not found ", handler);
+		assertTrue("Handler Not found (no value)", handler.trim().length() > 0);
 		handler = handler.substring(handler.lastIndexOf('.'));
-		assertEquals("Not the expected Handler Class",className,handler);
+		assertEquals("Not the expected Handler Class", className, handler);
 	}
 }

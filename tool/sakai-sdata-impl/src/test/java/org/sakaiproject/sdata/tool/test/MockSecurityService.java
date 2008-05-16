@@ -74,8 +74,9 @@ public class MockSecurityService implements SecurityService
 
 	public boolean unlock(String arg0, String arg1)
 	{
-		if ( arg0 == null || arg1 == null ) {
-			log.debug("unlock("+arg0+","+arg1+") is bad ");
+		if (arg0 == null || arg1 == null)
+		{
+			log.debug("unlock(" + arg0 + "," + arg1 + ") is bad ");
 			return false;
 		}
 		lastResource = arg0;
@@ -85,20 +86,22 @@ public class MockSecurityService implements SecurityService
 
 	public boolean unlock(User arg0, String arg1, String arg2)
 	{
-		if ( arg0 == null || arg1 == null ) {
-			log.debug("unlock("+arg0+","+arg1+","+arg2+") is bad ");
+		if (arg0 == null || arg1 == null)
+		{
+			log.debug("unlock(" + arg0 + "," + arg1 + "," + arg2 + ") is bad ");
 			return false;
 		}
 		lastResource = arg1;
 		lastLock = arg2;
-		log.debug("unlock("+arg0+","+arg1+","+arg2+") is "+pass);
+		log.debug("unlock(" + arg0 + "," + arg1 + "," + arg2 + ") is " + pass);
 		return pass;
 	}
 
 	public boolean unlock(String arg0, String arg1, String arg2)
 	{
-		if ( arg0 == null || arg1 == null ) {
-			log.debug("unlock("+arg0+","+arg1+","+arg2+") is bad ");
+		if (arg0 == null || arg1 == null)
+		{
+			log.debug("unlock(" + arg0 + "," + arg1 + "," + arg2 + ") is bad ");
 			return false;
 		}
 		lastResource = arg0;
@@ -108,23 +111,27 @@ public class MockSecurityService implements SecurityService
 
 	public boolean unlock(String arg0, String arg1, String arg2, Collection arg3)
 	{
-		if ( arg0 == null || arg1 == null ) {
-			log.debug("unlock("+arg0+","+arg1+","+arg2+","+arg3+") is bad ");
+		if (arg0 == null || arg1 == null)
+		{
+			log.debug("unlock(" + arg0 + "," + arg1 + "," + arg2 + "," + arg3
+					+ ") is bad ");
 			return false;
 		}
 		lastResource = arg0;
 		lastLock = arg1;
-		log.debug("unlock("+arg0+","+arg1+","+arg2+","+arg3+") is "+pass);
+		log.debug("unlock(" + arg0 + "," + arg1 + "," + arg2 + "," + arg3 + ") is "
+				+ pass);
 		return pass;
 	}
 
 	public List unlockUsers(String arg0, String arg1)
 	{
-		if ( arg0 == null || arg1 == null ) {
-			log.debug("unlockUsers("+arg0+","+arg1+") is bad ");
+		if (arg0 == null || arg1 == null)
+		{
+			log.debug("unlockUsers(" + arg0 + "," + arg1 + ") is bad ");
 			return null;
 		}
-		log.debug("unlockUsers("+arg0+","+arg1+") is "+pass);
+		log.debug("unlockUsers(" + arg0 + "," + arg1 + ") is " + pass);
 		lastResource = arg0;
 		lastLock = arg1;
 		return null;
@@ -139,7 +146,8 @@ public class MockSecurityService implements SecurityService
 	}
 
 	/**
-	 * @param lastLock the lastLock to set
+	 * @param lastLock
+	 *        the lastLock to set
 	 */
 	public void setLastLock(String lastLock)
 	{
@@ -155,7 +163,8 @@ public class MockSecurityService implements SecurityService
 	}
 
 	/**
-	 * @param lastResource the lastResource to set
+	 * @param lastResource
+	 *        the lastResource to set
 	 */
 	public void setLastResource(String lastResource)
 	{
@@ -171,7 +180,8 @@ public class MockSecurityService implements SecurityService
 	}
 
 	/**
-	 * @param pass the pass to set
+	 * @param pass
+	 *        the pass to set
 	 */
 	public void setPass(boolean pass)
 	{

@@ -24,24 +24,25 @@ package org.sakaiproject.sdata.tool.test.http;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
 /**
  * @author ieb
  */
 
 /**
  * @author ieb
- *
  */
 public class JsonJcrUserStorageHandlerUnitT extends JsonUserStorageHandlerUnitT
 {
-	private static final Log log = LogFactory.getLog(JsonJcrUserStorageHandlerUnitT.class);
+	private static final Log log = LogFactory
+			.getLog(JsonJcrUserStorageHandlerUnitT.class);
 
 	private static final String BASE_URL = "http://localhost:8080/sdata/";
 
 	private static final String BASE_DATA_URL = BASE_URL + "p/";
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.test.http.JsonUserStorageServletUnitT#getBaseUrl()
 	 */
 	@Override
@@ -50,7 +51,9 @@ public class JsonJcrUserStorageHandlerUnitT extends JsonUserStorageHandlerUnitT
 		return BASE_URL;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.test.http.JsonUserStorageServletUnitT#getBaseDataUrl()
 	 */
 	@Override
@@ -58,5 +61,5 @@ public class JsonJcrUserStorageHandlerUnitT extends JsonUserStorageHandlerUnitT
 	{
 		return BASE_DATA_URL;
 	}
-	
+
 }

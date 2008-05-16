@@ -25,7 +25,6 @@ import org.sakaiproject.sdata.tool.api.SDataException;
 
 /**
  * @author ieb
- *
  */
 public class SDataAccessException extends SDataException
 {

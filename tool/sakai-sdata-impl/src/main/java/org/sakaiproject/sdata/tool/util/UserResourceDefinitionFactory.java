@@ -51,6 +51,7 @@ public class UserResourceDefinitionFactory implements ResourceDefinitionFactory
 {
 
 	private String basePath;
+
 	private SecurityAssertion nullSecurityAssertion = new NullSecurityAssertion();
 
 	/**
@@ -105,15 +106,17 @@ public class UserResourceDefinitionFactory implements ResourceDefinitionFactory
 		String pathPrefix = PathPrefix.getPrefix(user);
 
 		path = pathPrefix + path;
-		
+
 		String f = request.getParameter("f"); // function
 		String d = request.getParameter("d"); // function
 		int depth = 1;
-		if ( d != null && d.trim().length() > 0 ) {
+		if (d != null && d.trim().length() > 0)
+		{
 			depth = Integer.parseInt(d);
 		}
 
-		return new ResourceDefinitionImpl( request.getMethod(),f, depth, basePath, path, version, nullSecurityAssertion  );
+		return new ResourceDefinitionImpl(request.getMethod(), f, depth, basePath, path,
+				version, nullSecurityAssertion);
 	}
 
 }

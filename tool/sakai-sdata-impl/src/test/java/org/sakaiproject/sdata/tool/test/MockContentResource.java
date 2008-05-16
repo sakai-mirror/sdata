@@ -40,7 +40,6 @@ import org.w3c.dom.Element;
 
 /**
  * @author ieb
- *
  */
 public class MockContentResource implements ContentResourceEdit
 {
@@ -55,7 +54,9 @@ public class MockContentResource implements ContentResourceEdit
 		this.id = id;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentResourceEdit#setContent(byte[])
 	 */
 	public void setContent(byte[] arg0)
@@ -64,7 +65,9 @@ public class MockContentResource implements ContentResourceEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentResourceEdit#setContent(java.io.InputStream)
 	 */
 	public void setContent(InputStream arg0)
@@ -73,7 +76,9 @@ public class MockContentResource implements ContentResourceEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentResourceEdit#setContentLength(int)
 	 */
 	public void setContentLength(int arg0)
@@ -82,7 +87,9 @@ public class MockContentResource implements ContentResourceEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentResourceEdit#setContentType(java.lang.String)
 	 */
 	public void setContentType(String arg0)
@@ -91,7 +98,9 @@ public class MockContentResource implements ContentResourceEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentResource#getContent()
 	 */
 	public byte[] getContent() throws ServerOverloadException
@@ -100,7 +109,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentResource#getContentLength()
 	 */
 	public int getContentLength()
@@ -109,7 +120,9 @@ public class MockContentResource implements ContentResourceEdit
 		return 0;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentResource#getContentType()
 	 */
 	public String getContentType()
@@ -118,7 +131,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentResource#streamContent()
 	 */
 	public InputStream streamContent() throws ServerOverloadException
@@ -127,7 +142,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#getContainingCollection()
 	 */
 	public ContentCollection getContainingCollection()
@@ -136,7 +153,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#getContentHandler()
 	 */
 	public ContentHostingHandler getContentHandler()
@@ -145,7 +164,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#getMember(java.lang.String)
 	 */
 	public ContentEntity getMember(String arg0)
@@ -154,7 +175,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#getResourceType()
 	 */
 	public String getResourceType()
@@ -163,7 +186,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#getUrl(boolean)
 	 */
 	public String getUrl(boolean arg0)
@@ -172,7 +197,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#getVirtualContentEntity()
 	 */
 	public ContentEntity getVirtualContentEntity()
@@ -181,7 +208,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#isCollection()
 	 */
 	public boolean isCollection()
@@ -190,7 +219,9 @@ public class MockContentResource implements ContentResourceEdit
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#isResource()
 	 */
 	public boolean isResource()
@@ -199,7 +230,9 @@ public class MockContentResource implements ContentResourceEdit
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#setContentHandler(org.sakaiproject.content.api.ContentHostingHandler)
 	 */
 	public void setContentHandler(ContentHostingHandler arg0)
@@ -208,7 +241,9 @@ public class MockContentResource implements ContentResourceEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.ContentEntity#setVirtualContentEntity(org.sakaiproject.content.api.ContentEntity)
 	 */
 	public void setVirtualContentEntity(ContentEntity arg0)
@@ -217,7 +252,9 @@ public class MockContentResource implements ContentResourceEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEntity#getAccess()
 	 */
 	public AccessMode getAccess()
@@ -226,7 +263,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEntity#getGroupObjects()
 	 */
 	public Collection getGroupObjects()
@@ -235,7 +274,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEntity#getGroups()
 	 */
 	public Collection getGroups()
@@ -244,7 +285,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEntity#getInheritedAccess()
 	 */
 	public AccessMode getInheritedAccess()
@@ -253,7 +296,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEntity#getInheritedGroupObjects()
 	 */
 	public Collection getInheritedGroupObjects()
@@ -262,7 +307,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEntity#getInheritedGroups()
 	 */
 	public Collection getInheritedGroups()
@@ -271,7 +318,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEntity#getReleaseDate()
 	 */
 	public Time getReleaseDate()
@@ -280,7 +329,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEntity#getRetractDate()
 	 */
 	public Time getRetractDate()
@@ -289,7 +340,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEntity#isAvailable()
 	 */
 	public boolean isAvailable()
@@ -298,7 +351,9 @@ public class MockContentResource implements ContentResourceEdit
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEntity#isHidden()
 	 */
 	public boolean isHidden()
@@ -307,7 +362,9 @@ public class MockContentResource implements ContentResourceEdit
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.Entity#getId()
 	 */
 	public String getId()
@@ -315,7 +372,9 @@ public class MockContentResource implements ContentResourceEdit
 		return id;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.Entity#getProperties()
 	 */
 	public ResourceProperties getProperties()
@@ -324,7 +383,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.Entity#getReference()
 	 */
 	public String getReference()
@@ -333,7 +394,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.Entity#getReference(java.lang.String)
 	 */
 	public String getReference(String arg0)
@@ -342,7 +405,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.Entity#getUrl()
 	 */
 	public String getUrl()
@@ -351,7 +416,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.Entity#getUrl(java.lang.String)
 	 */
 	public String getUrl(String arg0)
@@ -360,8 +427,11 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.entity.api.Entity#toXml(org.w3c.dom.Document, java.util.Stack)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.entity.api.Entity#toXml(org.w3c.dom.Document,
+	 *      java.util.Stack)
 	 */
 	public Element toXml(Document arg0, Stack arg1)
 	{
@@ -369,7 +439,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.Edit#getPropertiesEdit()
 	 */
 	public ResourcePropertiesEdit getPropertiesEdit()
@@ -378,7 +450,9 @@ public class MockContentResource implements ContentResourceEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.entity.api.Edit#isActiveEdit()
 	 */
 	public boolean isActiveEdit()
@@ -387,7 +461,9 @@ public class MockContentResource implements ContentResourceEdit
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEdit#clearGroupAccess()
 	 */
 	public void clearGroupAccess() throws InconsistentException, PermissionException
@@ -396,7 +472,9 @@ public class MockContentResource implements ContentResourceEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEdit#clearPublicAccess()
 	 */
 	public void clearPublicAccess() throws InconsistentException, PermissionException
@@ -405,8 +483,11 @@ public class MockContentResource implements ContentResourceEdit
 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.sakaiproject.content.api.GroupAwareEdit#setAvailability(boolean, org.sakaiproject.time.api.Time, org.sakaiproject.time.api.Time)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.content.api.GroupAwareEdit#setAvailability(boolean,
+	 *      org.sakaiproject.time.api.Time, org.sakaiproject.time.api.Time)
 	 */
 	public void setAvailability(boolean arg0, Time arg1, Time arg2)
 	{
@@ -414,7 +495,9 @@ public class MockContentResource implements ContentResourceEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEdit#setGroupAccess(java.util.Collection)
 	 */
 	public void setGroupAccess(Collection arg0) throws InconsistentException,
@@ -424,7 +507,9 @@ public class MockContentResource implements ContentResourceEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEdit#setHidden()
 	 */
 	public void setHidden()
@@ -433,7 +518,9 @@ public class MockContentResource implements ContentResourceEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEdit#setPublicAccess()
 	 */
 	public void setPublicAccess() throws InconsistentException, PermissionException
@@ -442,7 +529,9 @@ public class MockContentResource implements ContentResourceEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEdit#setReleaseDate(org.sakaiproject.time.api.Time)
 	 */
 	public void setReleaseDate(Time arg0)
@@ -451,7 +540,9 @@ public class MockContentResource implements ContentResourceEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEdit#setResourceType(java.lang.String)
 	 */
 	public void setResourceType(String arg0)
@@ -460,7 +551,9 @@ public class MockContentResource implements ContentResourceEdit
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.content.api.GroupAwareEdit#setRetractDate(org.sakaiproject.time.api.Time)
 	 */
 	public void setRetractDate(Time arg0)

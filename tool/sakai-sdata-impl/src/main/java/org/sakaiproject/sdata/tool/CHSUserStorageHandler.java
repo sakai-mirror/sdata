@@ -39,8 +39,7 @@ public abstract class CHSUserStorageHandler extends CHSHandler
 {
 
 	/**
- * TODO Javadoc
-	 * 
+	 * TODO Javadoc
 	 */
 	public CHSUserStorageHandler()
 	{
@@ -52,7 +51,8 @@ public abstract class CHSUserStorageHandler extends CHSHandler
 	 * @see org.sakaiproject.sdata.tool.JCRServlet#getResourceDefinitionFactory()
 	 */
 	@Override
-	protected ResourceDefinitionFactory getResourceDefinitionFactory(Map<String, String> config)
+	protected ResourceDefinitionFactory getResourceDefinitionFactory(
+			Map<String, String> config)
 	{
 		return new UserResourceDefinitionFactory(getBasePath());
 	}

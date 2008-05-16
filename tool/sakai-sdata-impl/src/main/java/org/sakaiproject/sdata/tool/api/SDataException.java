@@ -32,10 +32,9 @@ public class SDataException extends Exception
 
 	private int code;
 
-
-
 	/**
 	 * Construct an exception with code and message
+	 * 
 	 * @param sc_unauthorized
 	 * @param string
 	 */
@@ -47,6 +46,7 @@ public class SDataException extends Exception
 
 	/**
 	 * The status code of the exception (http)
+	 * 
 	 * @return
 	 */
 	public int getCode()

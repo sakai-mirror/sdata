@@ -26,6 +26,8 @@ import java.net.MalformedURLException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -40,8 +42,6 @@ import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
-
-import junit.framework.TestCase;
 
 /**
  * @author ieb

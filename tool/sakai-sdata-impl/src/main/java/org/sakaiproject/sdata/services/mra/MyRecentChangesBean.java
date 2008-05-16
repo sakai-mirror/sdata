@@ -8,18 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.Kernel;
 import org.sakaiproject.announcement.api.AnnouncementMessage;
 import org.sakaiproject.announcement.api.AnnouncementService;
-import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.db.api.SqlService;
-import org.sakaiproject.entity.api.EntityManager;
-import org.sakaiproject.event.api.Event;
-import org.sakaiproject.event.api.EventTrackingService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
@@ -43,10 +37,6 @@ import org.sakaiproject.tool.api.SessionManager;
 public class MyRecentChangesBean implements ServiceDefinition
 {
 
-	private EventTrackingService eventTrackingService;
-
-	private Event event;
-
 	private List<Site> mySites;
 
 	private ArrayList<String> arlSiteId = new ArrayList<String>();
@@ -57,19 +47,13 @@ public class MyRecentChangesBean implements ServiceDefinition
 
 	private AnnouncementService announcementService;
 
-	private EntityManager entityManager;
-
 	private SiteService siteService;
-
-	private ComponentManager componentManager;
 
 	private SqlService sqlService;
 
 	Map<String, Object> resultMap = new HashMap<String, Object>();
 
 	private SessionManager sessionManager;
-
-	private static final Log log = LogFactory.getLog(MyRecentChangesBean.class);
 
 	/**
 	 * TODO Javadoc
@@ -79,7 +63,6 @@ public class MyRecentChangesBean implements ServiceDefinition
 	public MyRecentChangesBean(int paging)
 	{
 		this.announcementService = Kernel.announcementService();
-		this.entityManager = Kernel.entityManager();
 		this.contentHostingService = Kernel.contentHostingService();
 		this.searchService = Kernel.searchService();
 		this.sqlService = Kernel.sqlService();
@@ -167,7 +150,6 @@ public class MyRecentChangesBean implements ServiceDefinition
 			}
 			for (int i = 0; i < mySites.size(); i++)
 			{
-				
 
 				arlSiteId.add(mySites.get(i).getId());
 			}
@@ -190,7 +172,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 		{
 			searchList = searchService.search("tool:content tool:announcement",
 					arlSiteId, 0, 50, null, "dateRelevanceSort");
-		
+
 			int ii = -1, iii = 0;
 			do
 			{
@@ -245,9 +227,9 @@ public class MyRecentChangesBean implements ServiceDefinition
 					&& ii < 50);
 		}
 
-		//////////
-		////////// GET INDEXED RESULTS FROM INDEXQUEUE
-		//////////
+		// ////////
+		// //////// GET INDEXED RESULTS FROM INDEXQUEUE
+		// ////////
 
 		String finalResult = "";
 
@@ -280,39 +262,41 @@ public class MyRecentChangesBean implements ServiceDefinition
 
 			if (mres.getTool().equals("content"))
 			{
-				try {
-					
+				try
+				{
+
 					String eid = mres.getName().substring(8);
 
 					if (!contentHostingService.isCollection(eid))
 					{
-	
+
 						if (contentHostingService.allowGetResource(eid)
 								&& !arlUsed.contains(mres.getName()))
 						{
-	
+
 							if (totalrecordsshown >= (paging - 1) * 5
 									&& totalrecordsshown < (paging) * 5)
 							{
-	
-								ContentResource cres = contentHostingService.getResource(eid);
-	
+
+								ContentResource cres = contentHostingService
+										.getResource(eid);
+
 								Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 										.parse(mres.getVersion().substring(0, 19));
-	
+
 								MyRecentChangesResult mrcs = new MyRecentChangesResult();
-	
+
 								for (Site s : mySites)
 								{
 									// TODO
 									if (mres.getContext().equals(s.getId()))
 									{
-	
+
 										mrcs.setSitename(s.getTitle());
-	
+
 									}
 								}
-	
+
 								mrcs.setTool(mres.getTool());
 								mrcs.setVersion(mres.getVersion());
 								mrcs.setContext(mres.getContext());
@@ -320,19 +304,22 @@ public class MyRecentChangesBean implements ServiceDefinition
 										cres.getUrl().lastIndexOf("/") + 1));
 								mrcs.setReference(cres.getReference());
 								results.add(mrcs);
-	
+
 							}
-	
+
 							totalrecordsshown += 1;
 							arlUsed.add(mres.getName());
 							if (totalrecordsshown == 50)
 							{
 								break;
 							}
-	
+
 						}
 					}
-				} catch (Exception ex){};
+				}
+				catch (Exception ex)
+				{
+				};
 			}
 			else if (mres.getTool().equals("announcement") && announcementService != null)
 			{
@@ -396,7 +383,9 @@ public class MyRecentChangesBean implements ServiceDefinition
 					}
 
 				}
-				catch (Exception ex){};
+				catch (Exception ex)
+				{
+				};
 
 			}
 
@@ -474,7 +463,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 
 									for (Site ss : mySites)
 									{
-										
+
 										if (s.equals(ss.getId()))
 										{
 
@@ -592,7 +581,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 			if (mrcsr.getSitename().equals("My Workspace"))
 			{
 				mrcsr_map.put("siteName", "Personal Tools");
-				//log.error("a my workspace file");
+				// log.error("a my workspace file");
 
 			}
 			else

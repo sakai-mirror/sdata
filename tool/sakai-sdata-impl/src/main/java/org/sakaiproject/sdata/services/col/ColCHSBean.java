@@ -24,8 +24,6 @@ package org.sakaiproject.sdata.services.col;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.content.api.ContentEntity;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.sdata.tool.CHSNodeMap;
@@ -40,8 +38,6 @@ import org.sakaiproject.sdata.tool.util.ResourceDefinitionImpl;
  */
 public class ColCHSBean implements ServiceDefinition
 {
-
-	private static final Log log = LogFactory.getLog(ColCHSBean.class);
 
 	private Map<String, Object> m = new HashMap<String, Object>();
 
@@ -75,9 +71,10 @@ public class ColCHSBean implements ServiceDefinition
 			{
 				try
 				{
-					
+
 					String collectionPath = repoPath;
-					if ( !collectionPath.endsWith("/") ) {
+					if (!collectionPath.endsWith("/"))
+					{
 						collectionPath = collectionPath + "/";
 					}
 					n = contentHostingService.getCollection(collectionPath);
@@ -94,11 +91,14 @@ public class ColCHSBean implements ServiceDefinition
 			}
 			else
 			{
-				try {
+				try
+				{
 					Map<String, Object> m = new CHSNodeMap(n, depth, rp);
 					items.put(uri, m);
-				} catch ( SDataAccessException sdae ) {
-					items.put(uri,"403 Forbidden");
+				}
+				catch (SDataAccessException sdae)
+				{
+					items.put(uri, "403 Forbidden");
 				}
 			}
 			m.put("items", items);

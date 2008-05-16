@@ -28,8 +28,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.message.api.Message;
 import org.sakaiproject.message.api.MessageService;
@@ -46,17 +44,10 @@ import org.sakaiproject.tool.api.SessionManager;
  */
 public class MessageOfTheDayBean implements ServiceDefinition
 {
-	private List<Map> searchList = new ArrayList<Map>();
 
 	private Map<String, Object> map2 = new HashMap<String, Object>();;
 
-	private List<String> arl = new ArrayList<String>();
-
-	private ArrayList<Message> Mes = new ArrayList<Message>();
-
 	private Map<String, Object> map = new HashMap<String, Object>();
-
-	private static final Log log = LogFactory.getLog(MessageOfTheDayBean.class);
 
 	private List<Map> MyMotds = new ArrayList<Map>();
 

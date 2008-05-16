@@ -233,16 +233,18 @@ public class ControllerServlet extends HttpServlet
 			response.setHeader("x-sdata-handler", this.getClass().getName());
 		}
 
-		public void sendError(HttpServletRequest request, HttpServletResponse response, Throwable ex) throws IOException
+		public void sendError(HttpServletRequest request, HttpServletResponse response,
+				Throwable ex) throws IOException
 		{
 			// TODO Auto-generated method stub
-			
+
 		}
 
-		public void sendMap(HttpServletRequest request, HttpServletResponse response, Map<String, Object> contetMap) throws IOException
+		public void sendMap(HttpServletRequest request, HttpServletResponse response,
+				Map<String, Object> contetMap) throws IOException
 		{
 			// TODO Auto-generated method stub
-			
+
 		}
 
 	};
@@ -517,19 +519,23 @@ public class ControllerServlet extends HttpServlet
 		int end = start;
 		for (; end < path.length && path[end] != '/'; end++);
 		String key = new String(path, start, end - start);
-		return handlerRegister.get("/"+key);
+		return handlerRegister.get("/" + key);
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+	protected void service(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException
 	{
 		long start = System.currentTimeMillis();
 		super.service(req, resp);
-		log.info((System.currentTimeMillis()-start)+" ms "+req.getMethod()+":"+req.getRequestURL());
+		log.info((System.currentTimeMillis() - start) + " ms " + req.getMethod() + ":"
+				+ req.getRequestURL());
 	}
 
 }

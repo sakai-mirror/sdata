@@ -21,11 +21,8 @@
 
 package org.sakaiproject.sdata.tool.api;
 
-
-
 /**
  * @author ieb
- *
  */
 public interface ResourceFunctionFactory
 {

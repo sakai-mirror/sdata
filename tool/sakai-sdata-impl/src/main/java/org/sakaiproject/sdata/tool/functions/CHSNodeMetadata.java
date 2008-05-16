@@ -26,10 +26,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.Kernel;
-import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.content.api.ContentEntity;
-import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.sdata.tool.CHSNodeMap;
 import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
@@ -41,20 +38,18 @@ import org.sakaiproject.sdata.tool.api.SDataFunction;
  * Get the node metadata
  * </p>
  * <p>
- * The content entity is specified by the URL. The response will contain the metadata associated with the node, down to the depth specified
- * in the ResourceDefinition object
+ * The content entity is specified by the URL. The response will contain the
+ * metadata associated with the node, down to the depth specified in the
+ * ResourceDefinition object
  * </p>
+ * 
  * @author ieb
  */
 public class CHSNodeMetadata implements SDataFunction
 {
 
-	private ContentHostingService contentHostingService;
-
 	public CHSNodeMetadata()
 	{
-		contentHostingService = Kernel.contentHostingService();
-
 	}
 
 	/*
@@ -82,7 +77,9 @@ public class CHSNodeMetadata implements SDataFunction
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.api.SDataFunction#isModification()
 	 */
 	public boolean isModification()

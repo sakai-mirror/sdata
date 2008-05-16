@@ -600,11 +600,11 @@ public abstract class XmlRpcHandlerUnitT extends TestCase
 	{
 		String className = this.getClass().getName();
 		className = className.substring(className.lastIndexOf('.'));
-		className = className.substring(0,className.length()-"UnitT".length());
+		className = className.substring(0, className.length() - "UnitT".length());
 		String handler = resp.getHeaderField("x-sdata-handler");
-		assertNotNull("Handler Not found ",handler);
-		assertTrue("Handler Not found (no value)",handler.trim().length()>0);
+		assertNotNull("Handler Not found ", handler);
+		assertTrue("Handler Not found (no value)", handler.trim().length() > 0);
 		handler = handler.substring(handler.lastIndexOf('.'));
-		assertEquals("Not the expected Handler Class",className,handler);
+		assertEquals("Not the expected Handler Class", className, handler);
 	}
 }

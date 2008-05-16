@@ -26,11 +26,12 @@ import org.sakaiproject.sdata.tool.api.SecurityAssertion;
 
 /**
  * @author ieb
- *
  */
 public class NullSecurityAssertion implements SecurityAssertion
 {
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.api.SecurityAssertion#check(java.lang.String)
 	 */
 	public void check(String method, String resourceLocation) throws SDataException

@@ -56,8 +56,9 @@ public class ContentTypes
 		}
 		for (Object k : p.keySet())
 		{
-			for ( String ext : p.getProperty(String.valueOf(k)).split(" ") ) {
-				contentTypes.put(ext,String.valueOf(k));				
+			for (String ext : p.getProperty(String.valueOf(k)).split(" "))
+			{
+				contentTypes.put(ext, String.valueOf(k));
 			}
 		}
 

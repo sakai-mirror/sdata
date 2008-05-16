@@ -29,8 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sdata.tool.JCRHandler;
 import org.sakaiproject.sdata.tool.api.SDataException;
 
@@ -41,9 +39,6 @@ import org.sakaiproject.sdata.tool.api.SDataException;
  */
 public class JsonJcrHandler extends JCRHandler
 {
-
-	private static final Log log = LogFactory.getLog(JsonJcrHandler.class);
-
 	/**
 	 * TODO Javadoc
 	 */

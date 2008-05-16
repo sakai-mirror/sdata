@@ -30,19 +30,20 @@ import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 /**
  * TODO Javadoc
- * @author 
- *
+ * 
+ * @author
  */
 public class SiteHandler extends JSONServiceHandler
 {
 
 	/**
- * TODO Javadoc
-	 * 
+	 * TODO Javadoc
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.json.JSONServiceServlet#getServiceDefinitionFactory()
 	 */
 	@Override
@@ -52,12 +53,14 @@ public class SiteHandler extends JSONServiceHandler
 		return new SiteServiceDefinitionFactory();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.sakaiproject.sdata.tool.ServiceServlet#getServiceDefinitionFactory(javax.servlet.ServletConfig)
 	 */
 	@Override
-	protected ServiceDefinitionFactory getServiceDefinitionFactory(Map<String, String> config)
-			throws ServletException
+	protected ServiceDefinitionFactory getServiceDefinitionFactory(
+			Map<String, String> config) throws ServletException
 	{
 		return new SiteServiceDefinitionFactory();
 	}
