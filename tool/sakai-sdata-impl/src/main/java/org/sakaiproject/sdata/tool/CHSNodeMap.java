@@ -30,7 +30,8 @@ import java.util.Map;
 
 import javax.jcr.RepositoryException;
 
-import org.sakaiproject.authz.cover.SecurityService;
+import org.sakaiproject.Kernel;
+import org.sakaiproject.authz.api.AuthzGroupService;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentEntity;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -47,23 +48,26 @@ import org.sakaiproject.time.api.Time;
 public class CHSNodeMap extends HashMap<String, Object>
 {
 
+
 	private ContentHostingService contentHostingService;
+
+	private AuthzGroupService authZGroupService;
 
 	/**
 	 * @throws SDataAccessException
 	 *         if the item is not available to the current user¤
 	 * @throws RepositoryException
 	 */
-	public CHSNodeMap(ContentEntity n, int depth, ResourceDefinition rp,
-			ContentHostingService contentHostingService) throws SDataAccessException
+	public CHSNodeMap(ContentEntity n, int depth, ResourceDefinition rp) throws SDataAccessException
 	{
 		String lock = ContentHostingService.AUTH_RESOURCE_HIDDEN;
-		boolean canSeeHidden = SecurityService.unlock(lock, n.getReference());
+		boolean canSeeHidden = Kernel.securityService().unlock(lock, n.getReference());
 		if (!canSeeHidden && !n.isAvailable())
 		{
 			throw new SDataAccessException(403, "Permission denied on item");
 		}
-		this.contentHostingService = contentHostingService;
+		 contentHostingService = Kernel.contentHostingService();
+		 authZGroupService = Kernel.authzGroupService();
 		depth--;
 		put("mixinNodeType", getMixinTypes(n));
 		put("properties", getProperties(n));
@@ -72,6 +76,8 @@ public class CHSNodeMap extends HashMap<String, Object>
 		{
 			put("path", rp.getExternalPath(n.getId()));
 		}
+		Map<String, String> permissions = new HashMap<String, String>();
+		put("permissions", getPermissions(n));
 
 		if (n instanceof ContentResource)
 		{
@@ -119,8 +125,7 @@ public class CHSNodeMap extends HashMap<String, Object>
 
 						try
 						{
-							Map<String, Object> m = new CHSNodeMap(cn, depth, rp,
-									contentHostingService);
+							Map<String, Object> m = new CHSNodeMap(cn, depth, rp);
 							m.put("position", String.valueOf(i));
 							nodes.put(getName(cn), m);
 						}
@@ -136,6 +141,22 @@ public class CHSNodeMap extends HashMap<String, Object>
 				put("items", nodes);
 			}
 		}
+	}
+
+	private Map<String, String> getPermissions(ContentEntity n) {
+		Map<String, String> map = new HashMap<String, String>();
+		if ( n instanceof ContentCollection ) {
+			map.put("read", String.valueOf(contentHostingService.allowGetResource(n.getId())));
+			map.put("delete", String.valueOf(contentHostingService.allowRemoveResource(n.getId())));
+			map.put("write", String.valueOf(contentHostingService.allowUpdateResource(n.getId())));
+		} else {
+			map.put("read", String.valueOf(contentHostingService.allowGetCollection(n.getId())));
+			map.put("delete", String.valueOf(contentHostingService.allowRemoveCollection(n.getId())));
+			map.put("write", String.valueOf(contentHostingService.allowRemoveCollection(n.getId())));
+			// this may need some resolution to attempt to check site.
+			map.put("admin", String.valueOf(authZGroupService.allowUpdate(n.getId())));
+		}
+		return map;
 	}
 
 	/**

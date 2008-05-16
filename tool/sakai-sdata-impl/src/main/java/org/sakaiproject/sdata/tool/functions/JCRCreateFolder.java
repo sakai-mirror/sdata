@@ -28,6 +28,7 @@ import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.Kernel;
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.jcr.support.api.JCRNodeFactoryService;
 import org.sakaiproject.jcr.support.api.JCRNodeFactoryServiceException;
@@ -43,18 +44,14 @@ import org.sakaiproject.sdata.tool.api.SDataFunction;
 public class JCRCreateFolder implements SDataFunction
 {
 
-	private ComponentManager componentManager;
 
 	private JCRNodeFactoryService jcrNodeFactory;
 
 	public JCRCreateFolder()
 	{
 
-		componentManager = org.sakaiproject.component.cover.ComponentManager
-				.getInstance();
 
-		jcrNodeFactory = (JCRNodeFactoryService) componentManager
-				.get(JCRNodeFactoryService.class.getName());
+		jcrNodeFactory = Kernel.jcrNodeFactoryService();
 
 	}
 

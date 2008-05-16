@@ -26,6 +26,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.Kernel;
 import org.sakaiproject.announcement.api.AnnouncementService;
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -48,7 +49,6 @@ public class QaDefinitionFactory implements ServiceDefinitionFactory
 
 	private SiteService siteService;
 
-	private ComponentManager componentManager;
 
 	private ContentHostingService contentHostingService;
 
@@ -63,20 +63,12 @@ public class QaDefinitionFactory implements ServiceDefinitionFactory
 	 */
 	public QaDefinitionFactory()
 	{
-		componentManager = org.sakaiproject.component.cover.ComponentManager
-				.getInstance();
-		siteService = (SiteService) componentManager.get(SiteService.class.getName());
-		sessionManager = (SessionManager) componentManager.get(SessionManager.class
-				.getName());
-		contentHostingService = (ContentHostingService) componentManager
-				.get(ContentHostingService.class.getName());
-		announcementService = (AnnouncementService) componentManager
-				.get(AnnouncementService.class.getName());
-
-		messageService = (MessageService) componentManager.get(AnnouncementService.class
-				.getName());
-
-		timeService = (TimeService) componentManager.get(TimeService.class.getName());
+		siteService = Kernel.siteService();
+		sessionManager = Kernel.sessionManager();
+		contentHostingService = Kernel.contentHostingService();
+		announcementService = Kernel.announcementService();
+		messageService = Kernel.messageService();
+		timeService = Kernel.timeService();
 	}
 
 	/*

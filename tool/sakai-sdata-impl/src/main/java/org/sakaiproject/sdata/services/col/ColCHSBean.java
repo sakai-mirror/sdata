@@ -95,7 +95,7 @@ public class ColCHSBean implements ServiceDefinition
 			else
 			{
 				try {
-					Map<String, Object> m = new CHSNodeMap(n, depth, rp, contentHostingService);
+					Map<String, Object> m = new CHSNodeMap(n, depth, rp);
 					items.put(uri, m);
 				} catch ( SDataAccessException sdae ) {
 					items.put(uri,"403 Forbidden");

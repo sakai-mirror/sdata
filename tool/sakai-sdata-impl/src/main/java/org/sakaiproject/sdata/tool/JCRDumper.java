@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.Kernel;
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.jcr.api.JCRService;
 import org.sakaiproject.sdata.tool.api.Handler;
@@ -63,10 +64,8 @@ public class JCRDumper implements Handler
 	public void init(Map<String, String> config) throws ServletException
 	{
 
-		componentManager = org.sakaiproject.component.cover.ComponentManager
-				.getInstance();
 
-		jcrService = (JCRService) componentManager.get(JCRService.class.getName());
+		jcrService = Kernel.jcrService();
 
 	}
 

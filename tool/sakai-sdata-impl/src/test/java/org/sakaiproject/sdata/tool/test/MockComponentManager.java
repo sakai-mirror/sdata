@@ -25,13 +25,14 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.sakaiproject.UnitTestComponentManager;
 import org.sakaiproject.component.api.ComponentManager;
 
 /**
  * @author ieb
  *
  */
-public class MockComponentManager implements ComponentManager
+public class MockComponentManager implements UnitTestComponentManager
 {
 	
 

@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.Kernel;
 import org.sakaiproject.announcement.api.AnnouncementMessage;
 import org.sakaiproject.announcement.api.AnnouncementService;
 import org.sakaiproject.component.api.ComponentManager;
@@ -73,30 +74,17 @@ public class MyRecentChangesBean implements ServiceDefinition
 	/**
 	 * TODO Javadoc
 	 * 
-	 * @param sessionManager
-	 * @param siteService
-	 * @param componentManager
-	 * @param sqlService
-	 * @param searchService
-	 * @param contentHostingService
-	 * @param announcementService
-	 * @param entityManager
 	 * @param paging
 	 */
-	public MyRecentChangesBean(SessionManager sessionManager, SiteService siteService,
-			ComponentManager componentManager, SqlService sqlService,
-			SearchService searchService, ContentHostingService contentHostingService,
-			AnnouncementService announcementService, EntityManager entityManager,
-			int paging)
+	public MyRecentChangesBean(int paging)
 	{
-		this.announcementService = announcementService;
-		this.entityManager = entityManager;
-		this.contentHostingService = contentHostingService;
-		this.searchService = searchService;
-		this.sqlService = sqlService;
-		this.componentManager = componentManager;
-		this.siteService = siteService;
-		this.sessionManager = sessionManager;
+		this.announcementService = Kernel.announcementService();
+		this.entityManager = Kernel.entityManager();
+		this.contentHostingService = Kernel.contentHostingService();
+		this.searchService = Kernel.searchService();
+		this.sqlService = Kernel.sqlService();
+		this.siteService = Kernel.siteService();
+		this.sessionManager = Kernel.sessionManager();
 
 		try
 		{
@@ -153,17 +141,6 @@ public class MyRecentChangesBean implements ServiceDefinition
 			Session currentSession = sessionManager.getCurrentSession();
 			String currentUser = currentSession.getUserId();
 
-			// log.error(currentSession);
-			// log.error(currentUser);
-
-			// setEventTrackingService(org.sakaiproject.event.cover.EventTrackingService.getInstance());
-			// setEvent(getEventTrackingService().newEvent("octopus.recent.activity",
-			// null, true));
-
-			// post the event
-			// getEventTrackingService().post(getEvent());
-
-			// this.setLastLogin(null);
 			lstLastLogin = sqlService
 					.dbRead("select userdate from sdata_lastlogin where userid='"
 							+ currentSession.getUserId() + "'");

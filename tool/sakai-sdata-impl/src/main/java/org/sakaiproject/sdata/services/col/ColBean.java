@@ -73,7 +73,7 @@ public class ColBean implements ServiceDefinition
 				String repoPath = rp.getRepositoryPath();
 				Node n = jcrNodeFactory.getNode(repoPath);
 
-				log.info("Getting " + repoPath+ " " + uri);
+				log.info("Getting " + repoPath + " " + uri);
 
 				if (n == null)
 				{

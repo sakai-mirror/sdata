@@ -92,7 +92,7 @@ public class CHSMoveFunction extends CHSSDataFunction
 			response.setStatus(HttpServletResponse.SC_OK);
 
 			ContentEntity ce = getEntity(handler, reposotoryTargetPath);
-			CHSNodeMap nm = new CHSNodeMap(ce, rp.getDepth(), rp, contentHostingService);
+			CHSNodeMap nm = new CHSNodeMap(ce, rp.getDepth(), rp);
 			try
 			{
 				handler.sendMap(request, response, nm);

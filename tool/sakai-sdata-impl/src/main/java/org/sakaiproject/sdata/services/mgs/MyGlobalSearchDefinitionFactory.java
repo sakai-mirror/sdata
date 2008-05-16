@@ -26,7 +26,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.component.api.ComponentManager;
+import org.sakaiproject.Kernel;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
@@ -45,8 +45,6 @@ public class MyGlobalSearchDefinitionFactory implements ServiceDefinitionFactory
 
 	private SiteService siteService;
 
-	private ComponentManager componentManager;
-
 	private ContentHostingService contentHostingService;
 
 	/**
@@ -54,13 +52,9 @@ public class MyGlobalSearchDefinitionFactory implements ServiceDefinitionFactory
 	 */
 	public MyGlobalSearchDefinitionFactory()
 	{
-		componentManager = org.sakaiproject.component.cover.ComponentManager
-				.getInstance();
-		siteService = (SiteService) componentManager.get(SiteService.class.getName());
-		sessionManager = (SessionManager) componentManager.get(SessionManager.class
-				.getName());
-		contentHostingService = (ContentHostingService) componentManager
-				.get(ContentHostingService.class.getName());
+		siteService = Kernel.siteService();
+		sessionManager = Kernel.sessionManager();
+		contentHostingService = Kernel.contentHostingService();
 	}
 
 	/*

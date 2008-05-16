@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.Kernel;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -96,6 +97,7 @@ public class CHSHandlerUnitT extends TestCase
 			
 		};
 		componentMap.put(ContentHostingService.class.getName(), chs);
+		Kernel.setComponentManager(new MockComponentManager(componentMap));
 	}
 
 	/* (non-Javadoc)
@@ -109,9 +111,8 @@ public class CHSHandlerUnitT extends TestCase
 	public void testGetFolder() {
 		
 		
-		ConcreteCHSHandler chsH = new ConcreteCHSHandler(componentMap); 
+		ConcreteCHSHandler chsH = new ConcreteCHSHandler(); 
 		Map<String, String> m = new HashMap<String, String>();
-		m.put("testmode", "testmode");
 		chsH.init(m);
 		ContentCollection cc = chsH.testGetFolder("/content/group/testcollection");
 		assertNotNull(cc);
@@ -127,9 +128,8 @@ public class CHSHandlerUnitT extends TestCase
 	}
 
 	public void testGetName() {
-		ConcreteCHSHandler chsH = new ConcreteCHSHandler(componentMap); 
+		ConcreteCHSHandler chsH = new ConcreteCHSHandler(); 
 		Map<String, String> m = new HashMap<String, String>();
-		m.put("testmode", "testmode");
 		chsH.init(m);
 		
 		String name = chsH.testGetName(new MockContentResource("/sdfsdf/sdfsdfsdf/rtert.pdf"));

@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.Kernel;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
@@ -110,8 +110,7 @@ public class MyGlobalSearchBean implements ServiceDefinition
 				try
 				{
 
-					SearchService search = (SearchService) ComponentManager
-							.get("org.sakaiproject.search.api.SearchService");
+					SearchService search = Kernel.searchService(); 
 					int currentPage = 0;
 					if (page != null)
 					{
@@ -225,8 +224,7 @@ public class MyGlobalSearchBean implements ServiceDefinition
 
 				arl2.add(currentSite.getId());
 
-				SearchService search = (SearchService) ComponentManager
-						.get("org.sakaiproject.search.api.SearchService");
+				SearchService search = Kernel.searchService();
 				int currentPage = 0;
 
 				if (page != null)

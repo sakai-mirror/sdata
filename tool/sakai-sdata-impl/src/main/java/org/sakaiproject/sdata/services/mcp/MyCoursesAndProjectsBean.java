@@ -35,7 +35,6 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.javax.PagingPosition;
-import org.sakaiproject.sdata.services.mra.MyRecentChangesBean;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;

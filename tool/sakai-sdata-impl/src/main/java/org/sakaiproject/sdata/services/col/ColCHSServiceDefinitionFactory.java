@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.Kernel;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.SecurityAssertion;
@@ -100,8 +100,7 @@ public class ColCHSServiceDefinitionFactory implements ServiceDefinitionFactory
 	public void init(Map<String, String> config)
 	{
 
-		contentHostingService = (ContentHostingService) ComponentManager
-				.get(ContentHostingService.class.getName());
+		contentHostingService = Kernel.contentHostingService();
 		basePath = config.get(BASE_PATH_INIT);
 		if (basePath == null)
 		{

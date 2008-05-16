@@ -30,6 +30,7 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.Kernel;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.util.PathSecurityAssertion;
 
@@ -40,6 +41,7 @@ public class PathSecurityAssertionUnitT extends TestCase
 {
 
 	private static final Log log = LogFactory.getLog(PathSecurityAssertionUnitT.class);
+	protected static final Map<String, Object> componentMap = new HashMap<String, Object>();
 
 	private String[] tests = { 
 			"false,GET,/sfsfdffsd,false", 
@@ -75,6 +77,8 @@ public class PathSecurityAssertionUnitT extends TestCase
 	 */
 	protected void setUp() throws Exception
 	{
+
+		Kernel.setComponentManager(new MockComponentManager(componentMap));
 		super.setUp();
 	}
 
@@ -91,7 +95,6 @@ public class PathSecurityAssertionUnitT extends TestCase
 	public void testInitConfigData() throws ServletException
 	{
 		Map<String, String> config = new HashMap<String, String>();
-		config.put("testmode", "testmode");
 		PathSecurityAssertion psa = new PathSecurityAssertion(config);
 		config.put("locationbase", "/somelocation");
 		psa = new PathSecurityAssertion(config);

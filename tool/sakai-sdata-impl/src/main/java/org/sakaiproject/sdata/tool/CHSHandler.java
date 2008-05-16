@@ -47,8 +47,7 @@ import org.apache.commons.fileupload.sdata.FileItemStream;
 import org.apache.commons.fileupload.sdata.servlet.ServletFileUpload;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.authz.cover.SecurityService;
-import org.sakaiproject.component.api.ComponentManager;
+import org.sakaiproject.Kernel;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentEntity;
@@ -121,8 +120,6 @@ public abstract class CHSHandler implements Handler
 
 	private String basePath;
 
-	protected ComponentManager componentManager;
-
 	private ContentHostingService contentHostingService;
 
 	private ResourceDefinitionFactory resourceDefinitionFactory;
@@ -130,8 +127,6 @@ public abstract class CHSHandler implements Handler
 	private ResourceFunctionFactory resourceFunctionFactory;
 
 	private String baseUrl;
-
-	protected boolean testmode = false;
 
 	/*
 	 * (non-Javadoc)
@@ -153,17 +148,9 @@ public abstract class CHSHandler implements Handler
 			this.baseUrl = DEFAULT_BASE_URL;
 		}
 
-		if (!testmode)
-		{
-			componentManager = org.sakaiproject.component.cover.ComponentManager
-					.getInstance();
-		}
 
-		contentHostingService = (ContentHostingService) componentManager
-				.get(ContentHostingService.class.getName());
-
+		contentHostingService = Kernel.contentHostingService();
 		resourceDefinitionFactory = getResourceDefinitionFactory(config);
-
 		resourceFunctionFactory = getResourceFunctionFactory(config);
 
 	}
@@ -310,7 +297,7 @@ public abstract class CHSHandler implements Handler
 		if (ce != null)
 		{
 			String lock = ContentHostingService.AUTH_RESOURCE_HIDDEN;
-			boolean canSeeHidden = SecurityService.unlock(lock, ce.getReference());
+			boolean canSeeHidden = Kernel.securityService().unlock(lock, ce.getReference());
 			if (!canSeeHidden && !ce.isAvailable())
 			{
 				throw new SDataAccessException(403, "Permission denied on item");
@@ -862,8 +849,7 @@ public abstract class CHSHandler implements Handler
 					ContentCollection cc = (ContentCollection) e;
 					setGetCacheControl(response, rp.isPrivate());
 
-					CHSNodeMap outputMap = new CHSNodeMap(e, rp.getDepth(), rp,
-							contentHostingService);
+					CHSNodeMap outputMap = new CHSNodeMap(e, rp.getDepth(), rp);
 
 					sendMap(request, response, outputMap);
 				}

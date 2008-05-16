@@ -67,7 +67,7 @@ public class CHSCreateFolder extends CHSSDataFunction
 							rp.getRepositoryPath().lastIndexOf('/') + 1));
 			contentHostingService.commitCollection(edit);
 		
-			CHSNodeMap nm = new CHSNodeMap(edit, rp.getDepth(), rp, contentHostingService);
+			CHSNodeMap nm = new CHSNodeMap(edit, rp.getDepth(), rp);
 			handler.sendMap(request, response, nm);
 
 		}

@@ -114,8 +114,7 @@ public class CHSHideReleaseFunction extends CHSSDataFunction
 		// commit
 		commitEntity(edit);
 
-		CHSNodeMap nm = new CHSNodeMap((ContentEntity) edit, rp.getDepth(), rp,
-				contentHostingService);
+		CHSNodeMap nm = new CHSNodeMap((ContentEntity) edit, rp.getDepth(), rp);
 		try
 		{
 			handler.sendMap(request, response, nm);

@@ -39,13 +39,6 @@ import org.sakaiproject.sdata.tool.CHSHandler;
 public class ConcreteCHSHandler extends CHSHandler
 {
 
-	private Map<String, Object> componentMap;
-
-	public ConcreteCHSHandler(Map<String, Object> componentMap)
-	{
-		this.componentMap = componentMap;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -54,8 +47,6 @@ public class ConcreteCHSHandler extends CHSHandler
 	@Override
 	public void init(Map<String, String> config)
 	{
-		testmode = true;
-		componentManager = new MockComponentManager(componentMap);
 		super.init(config);
 	}
 

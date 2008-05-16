@@ -35,9 +35,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.thread_local.cover.ThreadLocalManager;
+import org.sakaiproject.Kernel;
 import org.sakaiproject.tool.api.Session;
-import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.util.RequestFilter;
 
 /**
@@ -110,6 +110,7 @@ public class StreamRequestFilter extends RequestFilter
 	{
 		Session s = null;
 		String sessionId = null;
+		SessionManager sessionManager = Kernel.sessionManager();
 
 		// compute the session cookie suffix, based on this configured server id
 		String suffix = System.getProperty(SAKAI_SERVERID);
@@ -160,7 +161,7 @@ public class StreamRequestFilter extends RequestFilter
 			}
 
 			// find the session
-			s = SessionManager.getSession(sessionId);
+			s = sessionManager.getSession(sessionId);
 		}
 
 		// if no cookie, try finding a non-cookie session based on the remote
@@ -181,12 +182,12 @@ public class StreamRequestFilter extends RequestFilter
 				sessionId = principal.getName();
 
 				// find the session
-				s = SessionManager.getSession(sessionId);
+				s = sessionManager.getSession(sessionId);
 
 				// if not found, make a session for this user
 				if (s == null)
 				{
-					s = SessionManager.startSession(sessionId);
+					s = sessionManager.startSession(sessionId);
 				}
 			}
 		}
@@ -200,13 +201,13 @@ public class StreamRequestFilter extends RequestFilter
 		// if missing, make one
 		if (s == null)
 		{
-			s = SessionManager.startSession();
+			s = sessionManager.startSession();
 
 			// if we have a cookie, but didn't find the session and are creating
 			// a new one, mark this
 			if (c != null)
 			{
-				ThreadLocalManager.set(SessionManager.CURRENT_INVALID_SESSION,
+				Kernel.threadLocalManager().set(SessionManager.CURRENT_INVALID_SESSION,
 						SessionManager.CURRENT_INVALID_SESSION);
 			}
 		}
@@ -215,7 +216,7 @@ public class StreamRequestFilter extends RequestFilter
 		req.setAttribute(ATTR_SESSION, s);
 
 		// set this as the current session
-		SessionManager.setCurrentSession(s);
+		sessionManager.setCurrentSession(s);
 
 		// if we had a cookie and we have no session, clear the cookie TODO:
 		// detect closed session in the request

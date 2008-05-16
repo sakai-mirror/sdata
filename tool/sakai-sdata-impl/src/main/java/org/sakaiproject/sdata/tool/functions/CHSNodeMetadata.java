@@ -26,6 +26,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.Kernel;
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.content.api.ContentEntity;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -52,11 +53,7 @@ public class CHSNodeMetadata implements SDataFunction
 
 	public CHSNodeMetadata()
 	{
-		ComponentManager componentManager = org.sakaiproject.component.cover.ComponentManager
-				.getInstance();
-
-		contentHostingService = (ContentHostingService) componentManager
-				.get(ContentHostingService.class.getName());
+		contentHostingService = Kernel.contentHostingService();
 
 	}
 
@@ -74,7 +71,7 @@ public class CHSNodeMetadata implements SDataFunction
 		try
 		{
 			ContentEntity n = (ContentEntity) target;
-			CHSNodeMap nm = new CHSNodeMap(n, rp.getDepth(), rp, contentHostingService);
+			CHSNodeMap nm = new CHSNodeMap(n, rp.getDepth(), rp);
 			handler.sendMap(request, response, nm);
 		}
 		catch (IOException e)

@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.Kernel;
 import org.sakaiproject.jcr.support.api.JCRNodeFactoryService;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.SecurityAssertion;
@@ -99,8 +99,7 @@ public class ColServiceDefinitionFactory implements ServiceDefinitionFactory
 	public void init(Map<String, String> config)
 	{
 
-		jcrNodeFactoryService = (JCRNodeFactoryService) ComponentManager
-				.get(JCRNodeFactoryService.class.getName());
+		jcrNodeFactoryService = Kernel.jcrNodeFactoryService();
 		basePath = config.get(BASE_PATH_INIT);
 		if (basePath == null)
 		{

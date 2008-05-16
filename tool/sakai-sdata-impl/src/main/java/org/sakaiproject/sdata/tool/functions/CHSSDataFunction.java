@@ -25,8 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.authz.cover.SecurityService;
-import org.sakaiproject.component.api.ComponentManager;
+import org.sakaiproject.Kernel;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentEntity;
@@ -62,13 +61,9 @@ public abstract class CHSSDataFunction implements SDataFunction
 
 	public CHSSDataFunction()
 	{
-		ComponentManager componentManager = org.sakaiproject.component.cover.ComponentManager
-				.getInstance();
 
-		contentHostingService = (ContentHostingService) componentManager
-				.get(ContentHostingService.class.getName());
-
-		timeService = (TimeService) componentManager.get(TimeService.class.getName());
+		contentHostingService = Kernel.contentHostingService();
+		timeService = Kernel.timeService();
 
 	}
 
@@ -173,7 +168,7 @@ public abstract class CHSSDataFunction implements SDataFunction
 			if (ce != null)
 			{
 				String lock = ContentHostingService.AUTH_RESOURCE_HIDDEN;
-				boolean canSeeHidden = SecurityService.unlock(lock, ce.getReference());
+				boolean canSeeHidden = Kernel.securityService().unlock(lock, ce.getReference());
 				if (!canSeeHidden && !ce.isAvailable())
 				{
 					throw new SDataAccessException(HttpServletResponse.SC_FORBIDDEN,

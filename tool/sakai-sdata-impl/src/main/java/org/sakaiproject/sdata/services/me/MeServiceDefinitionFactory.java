@@ -26,7 +26,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.component.api.ComponentManager;
+import org.sakaiproject.Kernel;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.site.api.SiteService;
@@ -45,7 +45,6 @@ public class MeServiceDefinitionFactory implements ServiceDefinitionFactory
 
 	private SiteService siteService;
 
-	private ComponentManager componentManager;
 
 	private UserDirectoryService userDirectoryService;
 
@@ -54,15 +53,11 @@ public class MeServiceDefinitionFactory implements ServiceDefinitionFactory
 	 */
 	public MeServiceDefinitionFactory()
 	{
-		componentManager = org.sakaiproject.component.cover.ComponentManager
-				.getInstance();
 		// siteService = (SiteService)
 		// componentManager.get(SiteService.class.getName());
-		sessionManager = (SessionManager) componentManager.get(SessionManager.class
-				.getName());
-		userDirectoryService = (UserDirectoryService) componentManager
-				.get(UserDirectoryService.class.getName());
-		siteService = (SiteService) componentManager.get(SiteService.class.getName());
+		sessionManager =  Kernel.sessionManager();
+		userDirectoryService = Kernel.userDirectoryService();
+		siteService = Kernel.siteService();
 
 	}
 

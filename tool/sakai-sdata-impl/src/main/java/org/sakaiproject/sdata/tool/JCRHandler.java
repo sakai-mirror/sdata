@@ -48,7 +48,7 @@ import org.apache.commons.fileupload.sdata.FileItemStream;
 import org.apache.commons.fileupload.sdata.servlet.ServletFileUpload;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.component.api.ComponentManager;
+import org.sakaiproject.Kernel;
 import org.sakaiproject.jcr.api.JCRConstants;
 import org.sakaiproject.jcr.support.api.JCRNodeFactoryService;
 import org.sakaiproject.jcr.support.api.JCRNodeFactoryServiceException;
@@ -67,12 +67,12 @@ import org.sakaiproject.tool.api.Tool;
  * of files within the jcr or a map response (directories). The resource is
  * pointed to using the URI/URL requested (the path info part), and the standard
  * Http methods do what they are expected to in the http standard. GET gets the
- * content of the file, PUT put puts a new file, the content comming from the
+ * content of the file, PUT put puts a new file, the content coming from the
  * stream of the PUT. DELETE deleted the file. HEAD gets the headers that would
  * come from a full GET.
  * </p>
  * <p>
- * The content type and content encodign headers are honored for GET,HEAD and
+ * The content type and content encoding headers are honored for GET,HEAD and
  * PUT, but other headers are not honored completely at the moment (range-*)
  * etc,
  * </p>
@@ -80,7 +80,7 @@ import org.sakaiproject.tool.api.Tool;
  * POST takes multipart uploads of content, the URL pointing to a folder and
  * each upload being the name of the file being uploaded to that folder. The
  * upload uses a streaming api, and expects that form fields are ordered, such
- * that a field starting with mimetype before the uplaod stream will specify the
+ * that a field starting with mimetype before the upload stream will specify the
  * mimetype associated with the stream.
  * </p>
  * 
@@ -107,8 +107,6 @@ public abstract class JCRHandler implements Handler
 	private static final String DEFAULT_BASE_URL = "f";
 
 	private String basePath;
-
-	private ComponentManager componentManager;
 
 	private JCRNodeFactoryService jcrNodeFactory;
 
@@ -139,14 +137,8 @@ public abstract class JCRHandler implements Handler
 			this.baseUrl = DEFAULT_BASE_URL;
 		}
 
-		componentManager = org.sakaiproject.component.cover.ComponentManager
-				.getInstance();
-
-		jcrNodeFactory = (JCRNodeFactoryService) componentManager
-				.get(JCRNodeFactoryService.class.getName());
-
+		jcrNodeFactory = Kernel.jcrNodeFactoryService();
 		resourceDefinitionFactory = getResourceDefinitionFactory(config);
-
 		resourceFunctionFactory = getResourceFunctionFactory(config);
 
 	}

@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.Kernel;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ComponentManager;
 import org.sakaiproject.sdata.tool.SDataAccessException;
@@ -38,7 +39,7 @@ import org.sakaiproject.sdata.tool.api.SecurityAssertion;
 import org.sakaiproject.user.api.UserDirectoryService;
 
 /**
- * An implementaiton of the Security Assertion that uses the http method, the
+ * An implementation of the Security Assertion that uses the http method, the
  * path and the sakai security service for perform the assertion. On check it
  * will throw SDataExceptions indicating forbidden if the path is outside its
  * configured range, or it is denied by the the Sakai security service.
@@ -159,13 +160,8 @@ public class PathSecurityAssertion implements SecurityAssertion
 		if (testMode == null)
 		{
 			inTest = false;
-			ComponentManager componentManager = org.sakaiproject.component.cover.ComponentManager
-					.getInstance();
-
-			securityService = (SecurityService) componentManager
-					.get(SecurityService.class.getName());
-			userDirectoryService = (UserDirectoryService) componentManager
-					.get(UserDirectoryService.class.getName());
+			securityService = Kernel.securityService();
+			userDirectoryService = Kernel.userDirectoryService();
 		}
 		else
 		{
@@ -176,8 +172,8 @@ public class PathSecurityAssertion implements SecurityAssertion
 
 	/**
 	 * Performs the security assertion based on the resourceLocation, from the
-	 * orriginal request and the method beign attempted. Will throw a
-	 * SDataException with Forbidden if the resoruce location is outside the
+	 * original request and the method begin attempted. Will throw a
+	 * SDataException with Forbidden if the resource location is outside the
 	 * configured range, or if permission is denied.
 	 * 
 	 * @see org.sakaiproject.sdata.tool.api.SecurityAssertion#check(java.lang.String,java.lang.String,

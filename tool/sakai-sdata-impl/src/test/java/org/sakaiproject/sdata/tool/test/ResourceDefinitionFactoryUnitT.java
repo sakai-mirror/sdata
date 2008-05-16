@@ -28,6 +28,8 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.Kernel;
+import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.ResourceDefinitionFactory;
 import org.sakaiproject.sdata.tool.api.SDataException;
@@ -38,6 +40,9 @@ import org.sakaiproject.sdata.tool.util.ResourceDefinitionFactoryImpl;
  */
 public class ResourceDefinitionFactoryUnitT extends TestCase
 {
+	
+	protected static final Map<String, Object> componentMap = new HashMap<String, Object>();
+
 
 	private static final Log log = LogFactory.getLog(ResourceDefinitionFactoryUnitT.class);
 
@@ -61,6 +66,11 @@ public class ResourceDefinitionFactoryUnitT extends TestCase
 	 */
 	protected void setUp() throws Exception
 	{
+		MockSecurityService securityService = new MockSecurityService();
+		securityService.setPass(true);
+		componentMap.put(SecurityService.class.getName(), securityService);
+		
+		Kernel.setComponentManager(new MockComponentManager(componentMap));
 		super.setUp();
 	}
 
@@ -82,7 +92,6 @@ public class ResourceDefinitionFactoryUnitT extends TestCase
 		for (String basePath : basePaths)
 		{
 			Map<String, String> config = new HashMap<String, String>();
-			config.put("testmode", "testmode");
 			ResourceDefinitionFactory rdf = new ResourceDefinitionFactoryImpl(config,"",basePath);
 			for (String testPath : testPaths)
 			{

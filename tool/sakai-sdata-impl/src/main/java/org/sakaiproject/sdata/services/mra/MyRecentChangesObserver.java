@@ -26,6 +26,10 @@ import java.util.Observer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.Kernel;
+import org.sakaiproject.db.api.SqlService;
+import org.sakaiproject.event.api.Event;
+import org.sakaiproject.event.api.UsageSession;
 
 /**
  * TODO Javadoc
@@ -49,9 +53,10 @@ public class MyRecentChangesObserver implements Observer
 		try
 		{
 
-			org.sakaiproject.event.api.Event event = (org.sakaiproject.event.api.Event) arg1;
-			org.sakaiproject.event.api.UsageSession session = org.sakaiproject.event.cover.UsageSessionService
+			Event event = (org.sakaiproject.event.api.Event) arg1;
+			UsageSession session = Kernel.usageSessionService()
 					.getSession(event.getSessionId());
+			SqlService sqlService = Kernel.sqlService();
 			String user = session.getUserId();
 			String euser = session.getUserEid();
 
@@ -59,11 +64,11 @@ public class MyRecentChangesObserver implements Observer
 			if (event.getEvent().equals("user.login"))
 			{
 
-				if (org.sakaiproject.db.cover.SqlService.dbRead(
+				if (sqlService.dbRead(
 						"select * from sdata_lastlogin where userid='" + user + "'")
 						.size() == 0)
 				{
-					org.sakaiproject.db.cover.SqlService
+					sqlService
 							.dbWrite("insert into sdata_lastlogin values('"
 									+ user
 									+ "','"
@@ -76,7 +81,7 @@ public class MyRecentChangesObserver implements Observer
 				}
 				else
 				{
-					org.sakaiproject.db.cover.SqlService
+					sqlService
 							.dbWrite("update sdata_lastlogin set userdate='"
 									+ new java.text.SimpleDateFormat(
 											"yyyy-MM-dd HH:mm:ss")
@@ -98,7 +103,7 @@ public class MyRecentChangesObserver implements Observer
 					if (event.getResource().startsWith("/content/group/"))
 					{
 
-						org.sakaiproject.db.cover.SqlService
+						sqlService
 								.dbWrite("insert into sdata_indexqueue (version, name, context, tool) values('"
 										+ new java.text.SimpleDateFormat(
 												"yyyy-MM-dd HH:mm:ss")
@@ -118,7 +123,7 @@ public class MyRecentChangesObserver implements Observer
 					else if (event.getResource().startsWith("/content/user/"))
 					{
 
-						org.sakaiproject.db.cover.SqlService
+						sqlService
 								.dbWrite("insert into sdata_indexqueue (version, name, context, tool) values('"
 										+ new java.text.SimpleDateFormat(
 												"yyyy-MM-dd HH:mm:ss")
@@ -145,7 +150,7 @@ public class MyRecentChangesObserver implements Observer
 				if (event.getResource().startsWith("/announcement/msg/"))
 				{
 
-					org.sakaiproject.db.cover.SqlService
+					sqlService
 							.dbWrite("insert into sdata_indexqueue (version, name, context, tool) values('"
 									+ new java.text.SimpleDateFormat(
 											"yyyy-MM-dd HH:mm:ss")
