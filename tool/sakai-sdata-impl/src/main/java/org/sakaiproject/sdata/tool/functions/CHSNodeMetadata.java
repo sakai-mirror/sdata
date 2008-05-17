@@ -63,6 +63,9 @@ public class CHSNodeMetadata implements SDataFunction
 			HttpServletResponse response, Object target, ResourceDefinition rp)
 			throws SDataException
 	{
+		
+		SDataFunctionUtil.checkMethod(request.getMethod(), "GET");
+
 		try
 		{
 			ContentEntity n = (ContentEntity) target;
@@ -77,14 +80,5 @@ public class CHSNodeMetadata implements SDataFunction
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sdata.tool.api.SDataFunction#isModification()
-	 */
-	public boolean isModification()
-	{
-		return false;
-	}
 
 }

@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+
 /**
  * @author ieb
  */
@@ -53,16 +54,17 @@ public class ProgressInputStream extends InputStream
 	 * @param fieldName
 	 * @param progressID
 	 */
+	@SuppressWarnings("unchecked")
 	public ProgressInputStream(InputStream in, Map<String, Object> progressMap,
 			String fieldName, long contentLength)
 	{
 		this.in = in;
 		if (progressMap != null)
 		{
-			this.progressMap = progressMap;
+			this.progressMap =  progressMap;
 			if (fieldName != null)
 			{
-				this.itemMap = (Map<String, Object>) progressMap.get(fieldName);
+				this.itemMap = (Map<String, Object>) this.progressMap.get(fieldName);
 				if (this.itemMap == null)
 				{
 					this.itemMap = new ConcurrentHashMap<String, Object>();
@@ -145,7 +147,7 @@ public class ProgressInputStream extends InputStream
 					Object o = progressMap.get(key);
 					if (o instanceof Map)
 					{
-						Map<String, Object> im = (Map<String, Object>) o;
+						Map<?, ?> im = (Map<?, ?>) o;
 						if (!"true".equals(im.get("complete")))
 						{
 							complete = false;

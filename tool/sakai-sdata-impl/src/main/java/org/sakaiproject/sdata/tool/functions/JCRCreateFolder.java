@@ -64,6 +64,7 @@ public class JCRCreateFolder implements SDataFunction
 			throws SDataException
 	{
 
+		SDataFunctionUtil.checkMethod(request.getMethod(), "POST");
 		try
 		{
 			Node n = jcrNodeFactory.createFolder(rp.getRepositoryPath());
@@ -100,14 +101,5 @@ public class JCRCreateFolder implements SDataFunction
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sdata.tool.api.SDataFunction#isModification()
-	 */
-	public boolean isModification()
-	{
-		return true;
-	}
 
 }

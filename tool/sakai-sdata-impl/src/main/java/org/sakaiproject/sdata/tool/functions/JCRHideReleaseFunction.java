@@ -48,19 +48,10 @@ public class JCRHideReleaseFunction extends JCRSDataFunction
 			HttpServletResponse response, Object target, ResourceDefinition rp)
 			throws SDataException
 	{
+		SDataFunctionUtil.checkMethod(request.getMethod(), "POST");
 		// TODO To Be implemented
 		throw new SDataException(HttpServletResponse.SC_NOT_IMPLEMENTED,
 				" Hide Release is not implemented in JCR at the moment ");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sdata.tool.api.SDataFunction#isModification()
-	 */
-	public boolean isModification()
-	{
-		return false;
 	}
 
 }

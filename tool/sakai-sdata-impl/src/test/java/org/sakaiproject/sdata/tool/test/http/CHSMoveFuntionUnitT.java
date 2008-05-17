@@ -116,8 +116,6 @@ public class CHSMoveFuntionUnitT extends BaseHandlerUnitT
 		if (enabled)
 		{
 			String testDocument = getTestDocument();
-			String sourcePath = getSourcePath();
-			String targetFolder = getTargetFolder();
 			String targetPath = getTargetPath();
 			String targetDocument = getTargetDocument();
 
@@ -133,19 +131,6 @@ public class CHSMoveFuntionUnitT extends BaseHandlerUnitT
 		}
 	}
 
-	/**
-	 * @param targetFolder
-	 * @throws IOException
-	 * @throws HttpException
-	 */
-	private void createTargetFolder(String targetFolder) throws HttpException,
-			IOException
-	{
-		PostMethod method = new PostMethod(targetFolder);
-		method.setParameter("f", "cf");
-		client.executeMethod(method);
-		int code = method.getStatusCode();
-	}
 
 	/**
 	 * @param testDocument

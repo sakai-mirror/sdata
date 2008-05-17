@@ -79,12 +79,12 @@ import org.sakaiproject.util.Validator;
  * files within the chs or a map response (directories). The resource is pointed
  * to using the URI/URL requested (the path info part), and the standard Http
  * methods do what they are expected to in the http standard. GET gets the
- * content of the file, PUT put puts a new file, the content comming from the
+ * content of the file, PUT put puts a new file, the content coming from the
  * stream of the PUT. DELETE deleted the file. HEAD gets the headers that would
  * come from a full GET.
  * </p>
  * <p>
- * The content type and content encodign headers are honored for GET,HEAD and
+ * The content type and content encoding headers are honored for GET,HEAD and
  * PUT, but other headers are not honored completely at the moment (range-*)
  * etc,
  * </p>
@@ -92,7 +92,7 @@ import org.sakaiproject.util.Validator;
  * POST takes multipart uploads of content, the URL pointing to a folder and
  * each upload being the name of the file being uploaded to that folder. The
  * upload uses a streaming api, and expects that form fields are ordered, such
- * that a field starting with mimetype before the uplaod stream will specify the
+ * that a field starting with mimetype before the upload stream will specify the
  * mimetype associated with the stream.
  * </p>
  * 
@@ -350,7 +350,6 @@ public abstract class CHSHandler implements Handler
 	 * 
 	 * @param request
 	 */
-	@SuppressWarnings("unchecked")
 	private void snoopRequest(HttpServletRequest request)
 	{
 		boolean snoop = "1".equals(request.getParameter("snoop"));
@@ -359,10 +358,10 @@ public abstract class CHSHandler implements Handler
 			StringBuilder sb = new StringBuilder("SData Request :");
 			sb.append("\n\tRequest Path :").append(request.getPathInfo());
 			sb.append("\n\tMethod :").append(request.getMethod());
-			for (Enumeration<String> hnames = request.getHeaderNames(); hnames
+			for (Enumeration<?> hnames = request.getHeaderNames(); hnames
 					.hasMoreElements();)
 			{
-				String name = hnames.nextElement();
+				String name = (String) hnames.nextElement();
 				sb.append("\n\tHeader :").append(name).append("=[").append(
 						request.getHeader(name)).append("]");
 			}
@@ -412,7 +411,6 @@ public abstract class CHSHandler implements Handler
 			}
 			else
 			{
-				ContentResource cr = (ContentResource) e;
 				response.setDateHeader(LAST_MODIFIED, new Date().getTime());
 				response.setStatus(HttpServletResponse.SC_OK);
 			}
@@ -496,7 +494,6 @@ public abstract class CHSHandler implements Handler
 			{
 				charEncoding = request.getCharacterEncoding();
 			}
-			long contentLength = request.getContentLength();
 
 			InputStream in = request.getInputStream();
 
@@ -734,8 +731,6 @@ public abstract class CHSHandler implements Handler
 		{
 			snoopRequest(request);
 
-			String range = request.getHeader("range");
-			boolean partialGet = (range != null && range.trim().length() != 0);
 
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
 			ContentEntity e = getEntity(rp.getRepositoryPath());
@@ -748,13 +743,6 @@ public abstract class CHSHandler implements Handler
 					.getFunctionDefinition());
 			if (m != null)
 			{
-				if (m.isModification())
-				{
-					throw new SDataException(
-							HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-							"Server is configured with a modification function on GET, this is not Ok, should be on POST; function was "
-									+ m);
-				}
 				m.call(this, request, response, e, rp);
 			}
 			else
@@ -772,7 +760,6 @@ public abstract class CHSHandler implements Handler
 					String currentEtag = String.valueOf(lastModified.getTime());
 					response.setHeader("ETag", currentEtag);
 
-					boolean sendContent = true;
 					long lastModifiedTime = lastModified.getTime();
 
 					if (!checkPreconditions(request, response, lastModifiedTime,
@@ -847,7 +834,6 @@ public abstract class CHSHandler implements Handler
 				}
 				else if (e instanceof ContentCollection)
 				{
-					ContentCollection cc = (ContentCollection) e;
 					setGetCacheControl(response, rp.isPrivate());
 
 					CHSNodeMap outputMap = new CHSNodeMap(e, rp.getDepth(), rp);
@@ -1062,12 +1048,6 @@ public abstract class CHSHandler implements Handler
 						.getFunctionDefinition());
 				if (m != null)
 				{
-					if (!m.isModification())
-					{
-						log
-								.warn("Non modification function mouted on POST method, probably not a good idea; function was "
-										+ m);
-					}
 					m.call(this, request, response, ce, rp);
 				}
 				else
@@ -1130,7 +1110,6 @@ public abstract class CHSHandler implements Handler
 			ServletFileUpload upload = new ServletFileUpload();
 			List<String> errors = new ArrayList<String>();
 
-			long contentLength = request.getContentLength();
 
 			// Parse the request
 			FileItemIterator iter = upload.getItemIterator(request);

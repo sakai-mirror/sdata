@@ -30,6 +30,11 @@ public class SDataAccessException extends SDataException
 {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -848371113721411771L;
+
+	/**
 	 * @param code
 	 * @param string
 	 */

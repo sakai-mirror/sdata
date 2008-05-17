@@ -44,6 +44,11 @@ import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 public class JCRNodeMap extends HashMap<String, Object>
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7045000748456348620L;
+
+	/**
 	 * @throws RepositoryException
 	 */
 	public JCRNodeMap(Node n, int depth, ResourceDefinition rp)

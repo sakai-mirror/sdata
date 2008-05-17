@@ -42,8 +42,8 @@ import org.sakaiproject.tool.api.Tool;
  * <p>
  * Loads the a list of handlers as specified in in the init params. These may be
  * off the 2 forms. Either all the properties can be specified in a single init
- * property in web.xml. The name values, seperated by = and the properties
- * seperated by ;.
+ * property in web.xml. The name values, separated by = and the properties
+ * separated by ;.
  * </p>
  * <p>
  * 
@@ -127,6 +127,11 @@ import org.sakaiproject.tool.api.Tool;
  */
 public class ControllerServlet extends HttpServlet
 {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7098194528761855627L;
 
 	private static final Log log = LogFactory.getLog(ControllerServlet.class);
 
@@ -284,7 +289,7 @@ public class ControllerServlet extends HttpServlet
 			{
 				handlerName = handler;
 				Map<String, String> handlerConfig = configMap.get(handler);
-				Class c = Class.forName(handlerConfig.get("classname"));
+				Class<?> c = (Class<?>) Class.forName(handlerConfig.get("classname"));
 				Handler h = (Handler) c.newInstance();
 				h.init(handlerConfig);
 				handlerRegister.put(handlerConfig.get("baseurl"), h);
@@ -315,9 +320,9 @@ public class ControllerServlet extends HttpServlet
 	{
 
 		Map<String, Map<String, String>> configMap = new HashMap<String, Map<String, String>>();
-		for (Enumeration<String> e = config.getInitParameterNames(); e.hasMoreElements();)
+		for (Enumeration<?> e = config.getInitParameterNames(); e.hasMoreElements();)
 		{
-			String name = e.nextElement();
+			String name = (String)e.nextElement();
 			if (name.startsWith("handler."))
 			{
 				int handlerLength = "handler.".length();

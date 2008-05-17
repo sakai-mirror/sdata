@@ -48,6 +48,11 @@ import org.sakaiproject.time.api.Time;
 public class CHSNodeMap extends HashMap<String, Object>
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8641164912506510404L;
+
 	private ContentHostingService contentHostingService;
 
 	private AuthzGroupService authZGroupService;
@@ -76,7 +81,6 @@ public class CHSNodeMap extends HashMap<String, Object>
 		{
 			put("path", rp.getExternalPath(n.getId()));
 		}
-		Map<String, String> permissions = new HashMap<String, String>();
 		put("permissions", getPermissions(n));
 
 		if (n instanceof ContentResource)
@@ -93,12 +97,12 @@ public class CHSNodeMap extends HashMap<String, Object>
 
 				Map<String, Object> nodes = new HashMap<String, Object>();
 				// list of IDs
-				List<String> l = cc.getMembers();
+				List<?> l = cc.getMembers();
 
 				int i = 0;
-				for (String memberID : l)
+				for (int k = 0; k < l.size(); k++)
 				{
-
+					String memberID = (String) l.get(k);	
 					ContentEntity cn = null;
 					try
 					{
@@ -223,13 +227,13 @@ public class CHSNodeMap extends HashMap<String, Object>
 	{
 		Map<String, Object> m = new HashMap<String, Object>();
 		ResourceProperties rp = n.getProperties();
-		for (Iterator pi = rp.getPropertyNames(); pi.hasNext();)
+		for (Iterator<?> pi = rp.getPropertyNames(); pi.hasNext();)
 		{
 			String name = (String) pi.next();
-			List l = rp.getPropertyList(name);
+			List<?> l = rp.getPropertyList(name);
 			if (l.size() > 1)
 			{
-				String[] o = (String[]) l.toArray(new String[0]);
+				String[] o = l.toArray(new String[0]);
 				m.put(name, o);
 			}
 			else if (l.size() == 1)

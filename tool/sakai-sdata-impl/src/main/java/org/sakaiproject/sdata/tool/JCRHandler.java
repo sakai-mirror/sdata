@@ -227,7 +227,6 @@ public abstract class JCRHandler implements Handler
 	 * 
 	 * @param request
 	 */
-	@SuppressWarnings("unchecked")
 	private void snoopRequest(HttpServletRequest request)
 	{
 		boolean snoop = "1".equals(request.getParameter("snoop"));
@@ -236,10 +235,10 @@ public abstract class JCRHandler implements Handler
 			StringBuilder sb = new StringBuilder("SData Request :");
 			sb.append("\n\tRequest Path :").append(request.getPathInfo());
 			sb.append("\n\tMethod :").append(request.getMethod());
-			for (Enumeration<String> hnames = request.getHeaderNames(); hnames
+			for (Enumeration<?> hnames = request.getHeaderNames(); hnames
 					.hasMoreElements();)
 			{
-				String name = hnames.nextElement();
+				String name = (String) hnames.nextElement();
 				sb.append("\n\tHeader :").append(name).append("=[").append(
 						request.getHeader(name)).append("]");
 			}
@@ -370,7 +369,6 @@ public abstract class JCRHandler implements Handler
 			{
 				charEncoding = request.getCharacterEncoding();
 			}
-			long contentLength = request.getContentLength();
 
 			InputStream in = request.getInputStream();
 			saveStream(n, in, mimeType, charEncoding, gc);
@@ -469,8 +467,6 @@ public abstract class JCRHandler implements Handler
 		{
 			snoopRequest(request);
 
-			String range = request.getHeader("range");
-			boolean partialGet = (range != null && range.trim().length() != 0);
 
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
 			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
@@ -486,13 +482,6 @@ public abstract class JCRHandler implements Handler
 					.getFunctionDefinition());
 			if (m != null)
 			{
-				if (m.isModification())
-				{
-					throw new SDataException(
-							HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-							"Server is configured with a modification function on GET, this is not Ok, should be on POST; function was "
-									+ m);
-				}
 				m.call(this, request, response, n, rp);
 			}
 			else
@@ -525,7 +514,6 @@ public abstract class JCRHandler implements Handler
 							.getTimeInMillis());
 					response.setHeader("ETag", currentEtag);
 
-					boolean sendContent = true;
 					long lastModifiedTime = lastModified.getDate().getTimeInMillis();
 
 					if (!checkPreconditions(request, response, lastModifiedTime,
@@ -806,21 +794,11 @@ public abstract class JCRHandler implements Handler
 
 				Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
 
-				if (n != null)
-				{
-					NodeType nt = n.getPrimaryNodeType();
-				}
 
 				SDataFunction m = resourceFunctionFactory.getFunction(rp
 						.getFunctionDefinition());
 				if (m != null)
 				{
-					if (!m.isModification())
-					{
-						log
-								.warn("Non modification function mouted on POST method, probably not a good idea; function was "
-										+ m);
-					}
 					m.call(this, request, response, n, rp);
 				}
 				else
@@ -886,7 +864,6 @@ public abstract class JCRHandler implements Handler
 			ServletFileUpload upload = new ServletFileUpload();
 			List<String> errors = new ArrayList<String>();
 
-			long contentLength = request.getContentLength();
 
 			// Parse the request
 			FileItemIterator iter = upload.getItemIterator(request);

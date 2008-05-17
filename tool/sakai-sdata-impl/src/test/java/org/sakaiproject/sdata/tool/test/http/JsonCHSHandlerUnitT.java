@@ -21,8 +21,6 @@
 
 package org.sakaiproject.sdata.tool.test.http;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * @author ieb
@@ -34,7 +32,6 @@ public class JsonCHSHandlerUnitT extends JsonHandlerUnitT
 
 	private static final String BASE_DATA_URL = BASE_URL + "c/private/sdata";
 
-	private static final Log log = LogFactory.getLog(JsonCHSHandlerUnitT.class);
 
 	/*
 	 * (non-Javadoc)

@@ -84,6 +84,8 @@ public class CHSHideReleaseFunction extends CHSSDataFunction
 			HttpServletResponse response, Object target, ResourceDefinition rp)
 			throws SDataException
 	{
+		
+		SDataFunctionUtil.checkMethod(request.getMethod(), "POST");
 		// parse the request
 		boolean hidden = Boolean.valueOf(request.getParameter(HIDDEN));
 		String releaseDate = request.getParameter(RELEASE_DATE);
@@ -121,14 +123,5 @@ public class CHSHideReleaseFunction extends CHSSDataFunction
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sdata.tool.api.SDataFunction#isModification()
-	 */
-	public boolean isModification()
-	{
-		return true;
-	}
 
 }

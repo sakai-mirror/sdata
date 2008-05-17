@@ -41,7 +41,6 @@ import com.meterware.httpunit.UploadFileSpec;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
-import com.meterware.servletunit.ServletUnitClient;
 
 /**
  * @author ieb
@@ -57,7 +56,6 @@ public abstract class XmlRpcHandlerUnitT extends TestCase
 
 	private static final String PASSWORD = "admin";
 
-	private ServletUnitClient client = null;
 
 	private WebConversation wc;
 
@@ -121,6 +119,7 @@ public abstract class XmlRpcHandlerUnitT extends TestCase
 		postMethod.setParameter("pw", PASSWORD);
 		postMethod.setParameter("submit", "Login");
 		WebResponse resp = wc.getResponse(postMethod);
+		assertNotNull(resp);
 	}
 
 	/**
@@ -476,7 +475,7 @@ public abstract class XmlRpcHandlerUnitT extends TestCase
 					checkHandler(resp);
 
 					int code = resp.getResponseCode();
-					assertEquals("Should have been a 204 ", 204, resp.getResponseCode());
+					assertEquals("Should have been a 204 ", 204, code);
 				}
 				try
 				{

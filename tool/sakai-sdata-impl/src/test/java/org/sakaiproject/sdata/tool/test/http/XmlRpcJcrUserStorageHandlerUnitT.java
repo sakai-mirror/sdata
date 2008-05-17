@@ -21,8 +21,6 @@
 
 package org.sakaiproject.sdata.tool.test.http;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * @author ieb
@@ -33,8 +31,6 @@ import org.apache.commons.logging.LogFactory;
  */
 public class XmlRpcJcrUserStorageHandlerUnitT extends JsonUserStorageHandlerUnitT
 {
-	private static final Log log = LogFactory
-			.getLog(XmlRpcJcrUserStorageHandlerUnitT.class);
 
 	private static final String BASE_URL = "http://localhost:8080/sdata/";
 

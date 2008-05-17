@@ -36,6 +36,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.sdata.tool.functions.CHSPermissionsFunction;
 import org.sakaiproject.sdata.tool.functions.CHSPropertiesFunction;
 
 /**
@@ -104,17 +105,17 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 		if (enabled)
 		{
 			String testDocument = getTestDocument();
-			String[] names = { "xxx:yyyy", "xxx:yyyy", "xxx:yyyy", "xxx:yyyy",
+			String[] roles = { "access", "access", "maintain", "maintain",
 
 			};
-			String[] values = { "1", "2", "3", "4"
+			String[] permissions = { "read", "write", "delete", "admin"
 
 			};
-			String[] actions = { CHSPropertiesFunction.ADD, CHSPropertiesFunction.ADD,
-					CHSPropertiesFunction.ADD, CHSPropertiesFunction.ADD };
-			setProperties(testDocument, names, values, actions);
+			String[] set = { CHSPermissionsFunction.SETVALUE, CHSPermissionsFunction.SETVALUE,
+					CHSPermissionsFunction.SETVALUE, CHSPermissionsFunction.SETVALUE };
+			setPermissions(testDocument, roles, permissions, set);
 
-			checkProperties(testDocument, names, values, actions);
+			checkPermissions(testDocument, roles, permissions, set);
 		}
 	}
 
@@ -183,8 +184,8 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 	 * @throws IOException
 	 * @throws HttpException
 	 */
-	private void checkProperties(String testDocument, String[] names, String[] values,
-			String[] actions) throws HttpException, IOException
+	private void checkPermissions(String testDocument, String[] roles, String[] permissions,
+			String[] sets) throws HttpException, IOException
 	{
 		GetMethod validate = new GetMethod(testDocument + "?f=m");
 		client.executeMethod(validate);
@@ -193,13 +194,15 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 		assertEquals("Validate failed " + validate.getStatusLine(), 200, code);
 
 		log.info("Got Result " + validate.getResponseBodyAsString());
+		
+		
 
 		Map<String, List<String>> properties = new HashMap<String, List<String>>();
-		for (int i = 0; i < names.length; i++)
+		for (int i = 0; i < roles.length; i++)
 		{
-			if (CHSPropertiesFunction.ADD.equals(actions[i]))
+			if (CHSPropertiesFunction.ADD.equals(sets[i]))
 			{
-				List<String> o = properties.get(names[i]);
+				List<String> o = properties.get(roles[i]);
 				if (o == null)
 				{
 					o = new ArrayList<String>();
@@ -258,22 +261,22 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 	 * @throws IOException
 	 * @throws HttpException
 	 */
-	private void setProperties(String testDocument, String[] names, String[] values,
-			String[] actions) throws HttpException, IOException
+	private void setPermissions(String testDocument, String[] roles, String[] permissions,
+			String[] sets) throws HttpException, IOException
 	{
 		PostMethod method = new PostMethod(testDocument);
 		method.setParameter("f", "pr");
-		for (String name : names)
+		for (String role : roles)
 		{
-			method.addParameter(CHSPropertiesFunction.NAME, name);
+			method.addParameter(CHSPermissionsFunction.ROLE, role);
 		}
-		for (String value : values)
+		for (String permission : permissions)
 		{
-			method.addParameter(CHSPropertiesFunction.VALUE, value);
+			method.addParameter(CHSPermissionsFunction.PERM, permission);
 		}
-		for (String action : actions)
+		for (String set : sets)
 		{
-			method.addParameter(CHSPropertiesFunction.ACTION, action);
+			method.addParameter(CHSPermissionsFunction.SET, set);
 		}
 
 		client.executeMethod(method);

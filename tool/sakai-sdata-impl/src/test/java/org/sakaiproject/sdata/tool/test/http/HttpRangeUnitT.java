@@ -240,7 +240,6 @@ public class HttpRangeUnitT extends TestCase
 					else if (code == 200)
 					{
 						int contentL = response.getContentLength();
-						String rangeHeader = response.getHeaderField("range");
 						log.info("Got Whole " + contentL + " bytes ");
 						DataInputStream in = new DataInputStream(response
 								.getInputStream());

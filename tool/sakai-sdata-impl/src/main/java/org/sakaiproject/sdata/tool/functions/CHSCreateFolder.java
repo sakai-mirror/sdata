@@ -53,6 +53,7 @@ public class CHSCreateFolder extends CHSSDataFunction
 			throws SDataException
 	{
 
+		SDataFunctionUtil.checkMethod(request.getMethod(), "GET");
 		try
 		{
 
@@ -82,14 +83,5 @@ public class CHSCreateFolder extends CHSSDataFunction
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sdata.tool.api.SDataFunction#isModification()
-	 */
-	public boolean isModification()
-	{
-		return true;
-	}
 
 }

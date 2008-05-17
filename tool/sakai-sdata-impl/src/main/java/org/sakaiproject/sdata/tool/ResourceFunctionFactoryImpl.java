@@ -52,9 +52,9 @@ public class ResourceFunctionFactoryImpl implements ResourceFunctionFactory
 				log.info("Loading SDataFunction " + k + ":" + config.get(k));
 				try
 				{
-					Class<SDataFunction> c = (Class<SDataFunction>) cl.loadClass(config
+					Class<?> c = (Class<?>) cl.loadClass(config
 							.get(k));
-					SDataFunction sdf = c.newInstance();
+					SDataFunction sdf = (SDataFunction) c.newInstance();
 					functions.put(k.substring("function.".length()), sdf);
 				}
 				catch (ClassNotFoundException e)

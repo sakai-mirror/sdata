@@ -52,6 +52,7 @@ public class JCRNodeMetadata extends JCRSDataFunction
 			HttpServletResponse response, Object target, ResourceDefinition rp)
 			throws SDataException
 	{
+		SDataFunctionUtil.checkMethod(request.getMethod(), "GET");
 		try
 		{
 			Node n = (Node) target;
@@ -71,14 +72,5 @@ public class JCRNodeMetadata extends JCRSDataFunction
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sdata.tool.api.SDataFunction#isModification()
-	 */
-	public boolean isModification()
-	{
-		return false;
-	}
 
 }

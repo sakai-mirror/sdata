@@ -80,10 +80,10 @@ public abstract class ProgressHandler implements Handler
 
 		if (progressID != null)
 		{
-			Map m = progressStore.get(progressID);
+			Map<String, Object> m = progressStore.get(progressID);
 			if (m != null)
 			{
-				m.put("servertime", System.currentTimeMillis());
+				m.put("servertime", String.valueOf(System.currentTimeMillis()));
 				sendMap(request, response, m);
 			}
 			else
@@ -189,7 +189,7 @@ public abstract class ProgressHandler implements Handler
 			Object o = progressStore.get(key);
 			if (o instanceof Map)
 			{
-				Map<String, Object> m = (Map<String, Object>) o;
+				Map<?, ?> m = (Map<?, ?>) o;
 				if (m.get("all-completed-at") != null)
 				{
 					long t = Long.parseLong(String.valueOf(m.get("all-completed-at")));

@@ -97,6 +97,8 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 			HttpServletResponse response, Object target, ResourceDefinition rp)
 			throws SDataException
 	{
+		SDataFunctionUtil.checkMethod(request.getMethod(), "POST");
+		
 		GroupAwareEdit edit = editEntity(handler, target, rp.getRepositoryPath());
 		ResourcePropertiesEdit properties = edit.getPropertiesEdit();
 
@@ -115,7 +117,7 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 		{
 			if (ADD.equals(actions[i]))
 			{
-				List p = properties.getPropertyList(names[i]);
+				List<?> p = properties.getPropertyList(names[i]);
 				log.info("Got Property " + p);
 				if (p == null || p.size() == 0)
 				{
@@ -160,14 +162,5 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sdata.tool.api.SDataFunction#isModification()
-	 */
-	public boolean isModification()
-	{
-		return true;
-	}
 
 }

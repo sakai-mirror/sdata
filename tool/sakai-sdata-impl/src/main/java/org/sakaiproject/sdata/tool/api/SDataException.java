@@ -30,6 +30,10 @@ package org.sakaiproject.sdata.tool.api;
 public class SDataException extends Exception
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5097176656485907953L;
 	private int code;
 
 	/**

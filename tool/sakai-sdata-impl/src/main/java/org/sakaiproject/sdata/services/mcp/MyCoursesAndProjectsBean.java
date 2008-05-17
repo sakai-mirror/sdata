@@ -30,8 +30,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.javax.PagingPosition;
@@ -69,8 +67,7 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 
 	private Map<String, Object> map2 = new HashMap<String, Object>();
 
-	private static final Log log = LogFactory.getLog(MyCoursesAndProjectsBean.class);
-
+	@SuppressWarnings("unchecked")
 	private boolean containstool(Site site, String tool)
 	{
 
@@ -513,6 +510,7 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 	 * 
 	 * @param myMappedSites
 	 */
+	@SuppressWarnings("unchecked")
 	public void setMyMappedSites(List<Map> myMappedSites)
 	{
 		MyMappedSites = myMappedSites;
@@ -523,6 +521,7 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 	 * 
 	 * @return Return a list of mapped sites
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Map> getMyMappedSites()
 	{
 		return MyMappedSites;

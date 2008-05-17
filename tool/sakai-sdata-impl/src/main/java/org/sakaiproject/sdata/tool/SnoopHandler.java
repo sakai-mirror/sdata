@@ -129,17 +129,17 @@ public class SnoopHandler implements Handler
 		StringBuilder sb = new StringBuilder("SData Request :");
 		sb.append("\n\tRequest Path :").append(request.getPathInfo());
 		sb.append("\n\tMethod :").append(request.getMethod());
-		for (Enumeration<String> hnames = request.getHeaderNames(); hnames
+		for (Enumeration<?> hnames = request.getHeaderNames(); hnames
 				.hasMoreElements();)
 		{
-			String name = hnames.nextElement();
+			String name = (String) hnames.nextElement();
 			sb.append("\n\tHeader :").append(name).append("=[").append(
 					request.getHeader(name)).append("]");
 		}
-		for (Enumeration<String> hnames = request.getParameterNames(); hnames
+		for (Enumeration<?> hnames = request.getParameterNames(); hnames
 				.hasMoreElements();)
 		{
-			String name = hnames.nextElement();
+			String name = (String) hnames.nextElement();
 			sb.append("\n\tParameter :").append(name).append("=[").append(
 					request.getParameter(name)).append("]");
 		}
@@ -166,8 +166,6 @@ public class SnoopHandler implements Handler
 	public void sendError(HttpServletRequest request, HttpServletResponse response,
 			Throwable ex) throws IOException
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	/*
@@ -179,8 +177,6 @@ public class SnoopHandler implements Handler
 	public void sendMap(HttpServletRequest request, HttpServletResponse response,
 			Map<String, Object> contetMap) throws IOException
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 }

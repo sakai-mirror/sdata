@@ -85,9 +85,6 @@ public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 		{
 			path = path.substring(0, path.length() - 1);
 		}
-		int lastSlash = path.lastIndexOf("/");
-		int leng = path.length();
-		String lastElement = path.substring(lastSlash + 1);
 
 		String v = request.getParameter("v"); // version
 		int version = -1;

@@ -73,6 +73,7 @@ public class CHSMoveFunction extends CHSSDataFunction
 			HttpServletResponse response, Object target, ResourceDefinition rp)
 			throws SDataException
 	{
+		SDataFunctionUtil.checkMethod(request.getMethod(), "POST");
 		String targetPath = request.getParameter(TO);
 		if (targetPath == null || targetPath.trim().length() == 0)
 		{
@@ -152,14 +153,5 @@ public class CHSMoveFunction extends CHSSDataFunction
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sdata.tool.api.SDataFunction#isModification()
-	 */
-	public boolean isModification()
-	{
-		return true;
-	}
 
 }

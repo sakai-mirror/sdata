@@ -103,7 +103,7 @@ public abstract class CHSSDataFunction implements SDataFunction
 	 *        used.
 	 * @param repositoryPath
 	 *        The path into the repository where the content entity is located
-	 * @return The edit object, however may return null if one cant be found.
+	 * @return The edit object, however may return null if one can't be found.
 	 * @throws SDataException
 	 *         thrown if there is a problem, the status code will indicate the
 	 *         type of problem.
@@ -113,7 +113,6 @@ public abstract class CHSSDataFunction implements SDataFunction
 	{
 		if (target instanceof GroupAwareEdit && ((GroupAwareEdit) target).isActiveEdit())
 		{
-			GroupAwareEdit gae = (GroupAwareEdit) target;
 			return (GroupAwareEdit) target;
 		}
 		try
@@ -274,5 +273,6 @@ public abstract class CHSSDataFunction implements SDataFunction
 
 		}
 	}
+
 
 }

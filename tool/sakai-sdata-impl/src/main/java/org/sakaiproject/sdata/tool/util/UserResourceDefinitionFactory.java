@@ -82,7 +82,6 @@ public class UserResourceDefinitionFactory implements ResourceDefinitionFactory
 			path = path.substring(0, path.length() - 1);
 		}
 		int lastSlash = path.lastIndexOf("/");
-		int leng = path.length();
 		String lastElement = path.substring(lastSlash + 1);
 
 		int version = -1;

@@ -112,26 +112,26 @@ public class XmlRpcJcrHandler extends JCRHandler
 	/**
 	 * @param contentMap
 	 */
-	private void dumpMap(Map<String, Object> contentMap, StringBuilder sb)
+	private void dumpMap(Map<?, ?> contentMap, StringBuilder sb)
 	{
-		for (String k : contentMap.keySet())
+		for (Object k : contentMap.keySet())
 		{
 			Object o = contentMap.get(k);
 			if (o instanceof Map)
 			{
-				sb.append(k).append(":{");
-				dumpMap((Map) o, sb);
+				sb.append(String.valueOf(k)).append(":{");
+				dumpMap((Map<?, ?>) o, sb);
 				sb.append("}\n");
 			}
 			else if (o instanceof List)
 			{
-				sb.append(k).append(":[");
-				dumpList((List) o, sb);
+				sb.append(String.valueOf(k)).append(":[");
+				dumpList((List<?>) o, sb);
 				sb.append("]\n");
 			}
 			else
 			{
-				sb.append(k).append(":").append(o).append("\n");
+				sb.append(String.valueOf(k)).append(":").append(o).append("\n");
 			}
 		}
 
@@ -141,20 +141,20 @@ public class XmlRpcJcrHandler extends JCRHandler
 	 * @param list
 	 * @param sb
 	 */
-	private void dumpList(List list, StringBuilder sb)
+	private void dumpList(List<?> list, StringBuilder sb)
 	{
 		for (Object o : list)
 		{
 			if (o instanceof Map)
 			{
 				sb.append(o).append(":{");
-				dumpMap((Map) o, sb);
+				dumpMap((Map<?, ?>) o, sb);
 				sb.append("}\n");
 			}
 			else if (o instanceof List)
 			{
 				sb.append(o).append(":[");
-				dumpList((List) o, sb);
+				dumpList((List<?>) o, sb);
 				sb.append("]\n");
 			}
 			else
