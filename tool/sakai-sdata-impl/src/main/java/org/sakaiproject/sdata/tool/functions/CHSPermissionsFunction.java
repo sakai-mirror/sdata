@@ -22,30 +22,30 @@
 package org.sakaiproject.sdata.tool.functions;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.Kernel;
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.AuthzGroupService;
 import org.sakaiproject.authz.api.AuthzPermissionException;
+import org.sakaiproject.authz.api.GroupAlreadyDefinedException;
+import org.sakaiproject.authz.api.GroupIdInvalidException;
 import org.sakaiproject.authz.api.GroupNotDefinedException;
-import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.api.RoleAlreadyDefinedException;
 import org.sakaiproject.content.api.ContentEntity;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.sdata.tool.model.CHSNodeMap;
 import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.SDataException;
+import org.sakaiproject.sdata.tool.model.CHSGroupMap;
+import org.sakaiproject.sdata.tool.model.CHSNodeMap;
 
 /**
  * <h3>Overview</h3>
@@ -89,6 +89,8 @@ import org.sakaiproject.sdata.tool.api.SDataException;
 public class CHSPermissionsFunction extends CHSSDataFunction
 {
 
+	private static final Log log = LogFactory.getLog(CHSPermissionsFunction.class);
+
 	public static final String ROLE = "role";
 
 	public static final String PERM = "perm";
@@ -110,6 +112,7 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 	private HashMap<String, String[]> permissionMap;
 
 	private AuthzGroupService authzGroupService;
+
 
 	public CHSPermissionsFunction()
 	{
@@ -153,63 +156,17 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 			}
 			catch (GroupNotDefinedException e1)
 			{
-				throw new SDataException(HttpServletResponse.SC_FORBIDDEN,
-						"User is not allowed to edit permissions on "
+				throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
+						"Realm "+authZGroupId+" does not exist for "
 								+ rp.getRepositoryPath());
 			}
 			
-			Map<String, Object> azgMap = new HashMap<String, Object>();
-			azgMap.put("id", authZGroup.getId());
-			azgMap.put("createdBy", authZGroup.getCreatedBy().getEid());
-			azgMap.put("createdTime", authZGroup.getCreatedTime().getTime());
-			azgMap.put("description", authZGroup.getDescription());
-			azgMap.put("maintain", authZGroup.getMaintainRole());
-			azgMap.put("modifiedBy", authZGroup.getModifiedBy().getEid());
-			azgMap.put("modifiedTime", authZGroup.getModifiedTime().getTime());
-			azgMap.put("providerGroupId", authZGroup.getProviderGroupId());
-			Map<String,Map<String, String>> roles = new HashMap<String,Map<String, String>>();
-			
-			Set<?> azgR = authZGroup.getRoles();
-			for ( Object roleO : azgR) {
-				Role r = (Role)roleO;
-				Map<String , String> rm = new HashMap<String, String>();
-				rm.put("description",r.getDescription());
-				rm.put("role", r.getId());
-				Set<?> functions = r.getAllowedFunctions();
-				for ( String permission : permissionMap.keySet())  {
-					String[] pf = permissionMap.get(permission);
-					rm.put(permission, "false");
-					for ( String f : pf  ) {
-						if ( functions.contains(f) ) {
-							rm.put(permission, "true");
-						}
-					}
-				}
-				roles.put(r.getId(), rm);
-			}
-			azgMap.put("roles",roles);
-			
-			
-			
-			if (authzGroupService.allowUpdate(authZGroupId))
-			{
-				List<Map<String, String>> members = new ArrayList<Map<String, String>>();
-				Set<?> azgM = authZGroup.getMembers();
-				for ( Object memberO : azgM) {
-					Member m = (Member)memberO;
-					Map<String , String> mm = new HashMap<String, String>();
-					mm.put("eid",m.getUserEid());
-					mm.put("role", m.getRole().getId());
-					members.add(mm);
-				}
-				azgMap.put("members",members);
-			}
 			
 			
 			
 			try
 			{
-				handler.sendMap(request, response, azgMap);
+				handler.sendMap(request, response, new CHSGroupMap(authZGroup,permissionMap));
 			}
 			catch (IOException e)
 			{
@@ -220,6 +177,7 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 		}
 		else
 		{
+			
 			ContentEntity ce;
 			try
 			{
@@ -227,8 +185,8 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 			}
 			catch (PermissionException e1)
 			{
-				throw new SDataException(HttpServletResponse.SC_FORBIDDEN,
-						"User is not allowed to edit permissions on "
+				throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
+						"Content Entity not found for "
 								+ rp.getRepositoryPath());
 			}
 			String authZGroupId = getAuthZGroup(ce);
@@ -246,15 +204,30 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 			}
 			catch (GroupNotDefinedException e1)
 			{
-				throw new SDataException(HttpServletResponse.SC_FORBIDDEN,
-						"User is not allowed to edit permissions on "
-								+ rp.getRepositoryPath());
-			}
-			Set<Role> rs = authZGroup.getRoles();
-			Map<String, Role> roleMap = new HashMap<String, Role>();
-			for (Role r : rs)
-			{
-				roleMap.put(r.getId(), r);
+				try
+				{
+					authZGroup = authzGroupService.addAuthzGroup(authZGroupId);
+				}
+				catch (GroupIdInvalidException e)
+				{
+					throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+							"Denied create Permissions group  "+authZGroupId+" id is invalid "
+									+ rp.getRepositoryPath());
+				}
+				catch (GroupAlreadyDefinedException e)
+				{
+					throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+							"Denied create Permissions group  "+authZGroupId+" already exists for "
+									+ rp.getRepositoryPath());
+				}
+				catch (AuthzPermissionException e)
+				{
+					throw new SDataException(HttpServletResponse.SC_FORBIDDEN,
+							"Denied create Permissions group  "+authZGroupId+" "
+									+ rp.getRepositoryPath());
+				}
+				
+				
 			}
 
 			// validate the request
@@ -269,16 +242,6 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 						"Request must contain the same number of name, value, and action parameters ");
 			}
 
-			for (String role : roles)
-			{
-				if (!roleMap.containsKey(role))
-				{
-					throw new SDataException(HttpServletResponse.SC_BAD_REQUEST,
-							"The Role " + role
-									+ " does not exist as a role on the folder ");
-
-				}
-			}
 			for (String perm : permissions)
 			{
 				if (!permissionMap.containsKey(perm))
@@ -301,21 +264,34 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 
 			// set the permissions
 			for (int i = 0; i < roles.length; i++)
-			{
-				Role r = roleMap.get(roles[i]);
+			{						
+				Role r = authZGroup.getRole(roles[i]);
+				if ( r == null ) {
+					try
+					{
+						r = authZGroup.addRole(roles[i]);
+					}
+					catch (RoleAlreadyDefinedException e)
+					{
+						log.warn("Internal Error, adding role twice "+roles[i]);
+					}
+
+				}
 				String[] functions = permissionMap.get(permissions[i]);
 				if (SETVALUE.equals(sets[i]))
 				{
 					for (String function : functions)
 					{
-						r.disallowFunction(function);
+						log.info("Allow "+function+" on "+r.getId());
+						r.allowFunction(function);
 					}
 				}
 				else
 				{
 					for (String function : functions)
 					{
-						r.allowFunction(function);
+						log.info("Dissalow "+function+" on "+r.getId());
+						r.disallowFunction(function);
 					}
 				}
 			}

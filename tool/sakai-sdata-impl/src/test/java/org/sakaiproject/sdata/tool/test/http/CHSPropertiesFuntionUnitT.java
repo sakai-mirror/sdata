@@ -119,62 +119,6 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 		}
 	}
 
-	public void testSetProperties2() throws Exception
-	{
-		if (enabled)
-		{
-			String testDocument = getTestDocument();
-			String[] names = { "1xxx:yyyy", "2xxx:yyyy", "3xxx:yyyy", "4xxx:yyyy",
-
-			};
-			String[] values = { "1", "2", "3", "4"
-
-			};
-			String[] actions = { CHSPropertiesFunction.ADD, CHSPropertiesFunction.ADD,
-					CHSPropertiesFunction.ADD, CHSPropertiesFunction.ADD };
-			setProperties(testDocument, names, values, actions);
-
-			checkProperties(testDocument, names, values, actions);
-		}
-	}
-
-	public void testSetProperties3() throws Exception
-	{
-		if (enabled)
-		{
-			String testDocument = getTestDocument();
-			String[] names = { "xxx:yyyy", "xxx:yyyy", "xxx:yyyy", "xxx:yyyy",
-
-			};
-			String[] values = { "1", "2", "3", "4"
-
-			};
-			String[] actions = { CHSPropertiesFunction.REMOVE, CHSPropertiesFunction.ADD,
-					CHSPropertiesFunction.REPLACE, CHSPropertiesFunction.ADD };
-			setProperties(testDocument, names, values, actions);
-
-			checkProperties(testDocument, names, values, actions);
-		}
-	}
-
-	public void testSetProperties4() throws Exception
-	{
-		if (enabled)
-		{
-			String testDocument = getTestDocument();
-			String[] names = { "1xxx:yyyy", "xxx:yyyy", "1xxx:yyyy", "xxx:yyyy",
-
-			};
-			String[] values = { "1", "2", "3", "4"
-
-			};
-			String[] actions = { CHSPropertiesFunction.REMOVE, CHSPropertiesFunction.ADD,
-					CHSPropertiesFunction.REPLACE, CHSPropertiesFunction.ADD };
-			setProperties(testDocument, names, values, actions);
-
-			checkProperties(testDocument, names, values, actions);
-		}
-	}
 
 	/**
 	 * @param testDocument
@@ -187,7 +131,7 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 	private void checkPermissions(String testDocument, String[] roles, String[] permissions,
 			String[] sets) throws HttpException, IOException
 	{
-		GetMethod validate = new GetMethod(testDocument + "?f=m");
+		GetMethod validate = new GetMethod(testDocument + "?f=pm");
 		client.executeMethod(validate);
 		int code = validate.getStatusCode();
 
@@ -197,58 +141,30 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 		
 		
 
-		Map<String, List<String>> properties = new HashMap<String, List<String>>();
-		for (int i = 0; i < roles.length; i++)
-		{
-			if (CHSPropertiesFunction.ADD.equals(sets[i]))
-			{
-				List<String> o = properties.get(roles[i]);
-				if (o == null)
-				{
-					o = new ArrayList<String>();
-					properties.put(names[i], o);
-				}
-				o.add(values[i]);
-			}
-			else if (CHSPropertiesFunction.REMOVE.equals(actions[i]))
-			{
-				properties.remove(names[i]);
-			}
-			else if (CHSPropertiesFunction.REPLACE.equals(actions[i]))
-			{
-				List<String> o = new ArrayList<String>();
-				o.add(values[i]);
-				properties.put(names[i], o);
-			}
-		}
 
 		String body = validate.getResponseBodyAsString();
 
 		log.info("Got response " + body);
 
 		JSONObject jsonObject = (JSONObject) JSONSerializer.toJSON(body);
+		Map<String, Boolean> permSet = new HashMap<String, Boolean>(); 
+		for ( int i = 0; i < roles.length; i++ ) {
+			String name = roles[i]+":"+permissions[i];
+			permSet.put(name, CHSPermissionsFunction.SETVALUE.equals(sets[i]));
+		}
 
-		JSONObject jsonProperties = jsonObject.getJSONObject("properties");
-		for (String key : properties.keySet())
-		{
-			List<String> a = properties.get(key);
-			if (a.size() == 1)
-			{
-				assertEquals("Property Not equals " + key, a.get(0), jsonProperties
-						.getString(key));
-			}
-			else
-			{
-				JSONArray pa = jsonProperties.getJSONArray(key);
-				assertNotNull(key + " Should not be null", pa);
-				assertTrue(key + " Should have been an array " + pa, pa.isArray());
-				assertEquals("Array Size of " + key + " does not match ", a.size(), pa
-						.size());
-				for (int i = 0; i < a.size(); i++)
-				{
-					assertEquals("Mismatch in Array ", a.get(i), pa.get(i));
-				}
-			}
+		JSONObject rolesSet = jsonObject.getJSONObject("roles");
+		for ( int i = 0; i < roles.length; i++ ) {
+			String role = roles[i];
+			String permission = permissions[i];
+			String name = role+":"+permission;
+			
+			JSONObject roleObj = rolesSet.getJSONObject(role);
+			assertNotNull("Didnt find role "+role,roleObj);
+			String p = roleObj.getString(permission);
+			assertNotNull("Didnt find permission "+permission+" "+role,p);
+			assertEquals("Permission Not set correctly ",String.valueOf(permSet.get(name)).toLowerCase(),p.toLowerCase());
+			log.info("Permission Set Ok "+name+" "+p);
 		}
 
 	}
@@ -265,7 +181,7 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 			String[] sets) throws HttpException, IOException
 	{
 		PostMethod method = new PostMethod(testDocument);
-		method.setParameter("f", "pr");
+		method.setParameter("f", "pm");
 		for (String role : roles)
 		{
 			method.addParameter(CHSPermissionsFunction.ROLE, role);
@@ -282,7 +198,9 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 		client.executeMethod(method);
 		int code = method.getStatusCode();
 
-		assertEquals("Hide Method failed " + method.getStatusLine(), 200, code);
+		assertEquals("Permissions Method failed " + method.getStatusLine(), 200, code);
+		
+		log.info("Got setPermissions result as "+method.getResponseBodyAsString());
 	}
 
 }

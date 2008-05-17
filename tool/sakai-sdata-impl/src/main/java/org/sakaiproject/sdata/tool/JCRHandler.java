@@ -805,6 +805,7 @@ public abstract class JCRHandler implements Handler
 				else
 				{
 					log.info("NOP Post performed");
+					throw new SDataException(HttpServletResponse.SC_NOT_FOUND,"Method not found ");
 				}
 
 			}

@@ -69,6 +69,7 @@ import org.sakaiproject.sdata.tool.api.ResourceDefinitionFactory;
 import org.sakaiproject.sdata.tool.api.ResourceFunctionFactory;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.SDataFunction;
+import org.sakaiproject.sdata.tool.model.CHSNodeMap;
 import org.sakaiproject.sdata.tool.util.ResourceDefinitionFactoryImpl;
 import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.util.Validator;
@@ -839,6 +840,9 @@ public abstract class CHSHandler implements Handler
 					CHSNodeMap outputMap = new CHSNodeMap(e, rp.getDepth(), rp);
 
 					sendMap(request, response, outputMap);
+				} else {
+					throw new SDataException(HttpServletResponse.SC_NOT_FOUND,"Resource Not found ");
+
 				}
 			}
 
@@ -1053,6 +1057,7 @@ public abstract class CHSHandler implements Handler
 				else
 				{
 					log.info("NOP Post performed");
+					throw new SDataException(HttpServletResponse.SC_NOT_FOUND,"Method not found ");
 				}
 
 			}
