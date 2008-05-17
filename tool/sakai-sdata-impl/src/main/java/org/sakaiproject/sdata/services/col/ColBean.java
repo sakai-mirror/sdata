@@ -31,7 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.jcr.support.api.JCRNodeFactoryService;
 import org.sakaiproject.jcr.support.api.JCRNodeFactoryServiceException;
-import org.sakaiproject.sdata.tool.JCRNodeMap;
+import org.sakaiproject.sdata.tool.model.JCRNodeMap;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.SecurityAssertion;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;

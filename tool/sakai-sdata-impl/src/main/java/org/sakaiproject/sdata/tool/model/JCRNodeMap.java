@@ -19,7 +19,7 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sdata.tool;
+package org.sakaiproject.sdata.tool.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;

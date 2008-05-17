@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.sakaiproject.Kernel;
 import org.sakaiproject.jcr.support.api.JCRNodeFactoryService;
 import org.sakaiproject.jcr.support.api.JCRNodeFactoryServiceException;
-import org.sakaiproject.sdata.tool.JCRNodeMap;
+import org.sakaiproject.sdata.tool.model.JCRNodeMap;
 import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.SDataException;

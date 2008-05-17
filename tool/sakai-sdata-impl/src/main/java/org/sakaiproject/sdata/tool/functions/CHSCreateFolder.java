@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.sdata.tool.CHSNodeMap;
+import org.sakaiproject.sdata.tool.model.CHSNodeMap;
 import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.SDataException;

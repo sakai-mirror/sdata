@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.content.api.ContentEntity;
 import org.sakaiproject.content.api.GroupAwareEdit;
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
-import org.sakaiproject.sdata.tool.CHSNodeMap;
+import org.sakaiproject.sdata.tool.model.CHSNodeMap;
 import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.SDataException;

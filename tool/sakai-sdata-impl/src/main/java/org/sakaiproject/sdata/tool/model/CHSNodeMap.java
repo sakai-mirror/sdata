@@ -19,7 +19,7 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sdata.tool;
+package org.sakaiproject.sdata.tool.model;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -39,6 +39,7 @@ import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.EntityPropertyNotDefinedException;
 import org.sakaiproject.entity.api.EntityPropertyTypeException;
 import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.sdata.tool.SDataAccessException;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.time.api.Time;
 
