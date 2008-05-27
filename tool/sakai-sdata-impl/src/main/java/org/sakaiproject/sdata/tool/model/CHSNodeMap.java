@@ -159,6 +159,7 @@ public class CHSNodeMap extends HashMap<String, Object>
 					.getId())));
 			map.put("write", String.valueOf(contentHostingService.allowUpdateResource(n
 					.getId())));
+			map.put("admin", String.valueOf(authZGroupService.allowUpdate(n.getId())));
 		}
 		else
 		{
@@ -168,8 +169,6 @@ public class CHSNodeMap extends HashMap<String, Object>
 					.allowRemoveCollection(n.getId())));
 			map.put("write", String.valueOf(contentHostingService.allowRemoveCollection(n
 					.getId())));
-			// this may need some resolution to attempt to check site.
-			map.put("admin", String.valueOf(authZGroupService.allowUpdate(n.getId())));
 		}
 		return map;
 	}
