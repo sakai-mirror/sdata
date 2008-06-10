@@ -113,14 +113,17 @@ public class CHSTagging implements Observer {
 		remove(context, entity);
 		for (String indexField : indexFields) {
 			List<?> property = properties.getPropertyList(indexField);
-			for (Iterator<?> p = property.iterator(); p.hasNext();) {
-				sqlService
-						.dbWrite(
-								"insert into sdata_property_index ( context, reference, propertyname, propertyvalue )"
-										+ "values ( ?,?,?,? ) ", new Object[] {
-										context, entity.getId(), indexField,
-										p.next() });
-			}
+			if ( property != null ) 
+			{
+				for (Iterator<?> p = property.iterator(); p.hasNext();) {
+					sqlService
+							.dbWrite(
+									"insert into sdata_property_index ( context, reference, propertyname, propertyvalue )"
+											+ "values ( ?,?,?,? ) ", new Object[] {
+											context, entity.getId(), indexField,
+											p.next() });
+				}
+			} 
 		}
 
 	}
