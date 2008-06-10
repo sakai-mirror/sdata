@@ -139,10 +139,17 @@ public class CHSTagging implements Observer {
 					&& !event.getEvent().equals("content.read")) {
 			Reference r = entityManager.newReference(event.getResource());
 			Entity e = r.getEntity();
-			if ( event.getEvent().equals("content.delete") ) {
-				remove(r.getContext(), e);
-			} else {
-				update(r.getContext(),e);	
+			if ( e != null )
+			{
+				if ( event.getEvent().equals("content.delete") ) {
+					remove(r.getContext(), e);
+				} else {
+					update(r.getContext(),e);	
+				}
+			}
+			else 
+			{
+				log.info(" Event Resource "+r+" generated null entity");
 			}
 		} 
 	}
