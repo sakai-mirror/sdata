@@ -35,6 +35,8 @@ import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.time.api.TimeService;
 import org.sakaiproject.tool.api.SessionManager;
 
+import java.io.IOException;
+
 /**
  * A service definition factory for the Quick Announcements service
  * 
@@ -74,6 +76,12 @@ public class QaDefinitionFactory implements ServiceDefinitionFactory
 	public ServiceDefinition getSpec(HttpServletRequest request,
 			HttpServletResponse response)
 	{
+
+		if (request.getRemoteUser() == null){
+			try {
+				response.sendError(HttpServletResponse.SC_FORBIDDEN, "Not Logged In");
+			} catch (IOException e) {}
+		}
 
 		return new QaBean(sessionManager, messageService, timeService, siteService,
 				announcementService, request, response);

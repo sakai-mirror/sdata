@@ -178,7 +178,7 @@ public class XmlRpcJcrHandler extends JCRHandler
 
 			SDataException sde = (SDataException) ex;
 			response.reset();
-			setHandlerHeaders(response);
+			setHandlerHeaders(request, response);
 			response.sendError(sde.getCode(), sde.getMessage());
 		}
 		else

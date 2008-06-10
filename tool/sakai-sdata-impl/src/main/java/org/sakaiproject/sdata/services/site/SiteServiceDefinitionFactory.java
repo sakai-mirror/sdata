@@ -33,6 +33,8 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
 
+import java.io.IOException;
+
 /**
  * TODO Javadoc
  * 
@@ -66,6 +68,13 @@ public class SiteServiceDefinitionFactory implements ServiceDefinitionFactory
 	public ServiceDefinition getSpec(HttpServletRequest request,
 			HttpServletResponse response)
 	{
+
+		if (request.getRemoteUser() == null){
+			try {
+				response.sendError(HttpServletResponse.SC_FORBIDDEN, "Not Logged In");
+			} catch (IOException e) {}
+		}
+
 		String siteId = request.getParameter("siteid");
 		return new SiteBean(sessionManager, siteService, authzGroupService, siteId);
 	}

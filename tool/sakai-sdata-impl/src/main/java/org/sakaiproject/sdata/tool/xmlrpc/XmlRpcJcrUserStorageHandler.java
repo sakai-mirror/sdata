@@ -108,7 +108,7 @@ public class XmlRpcJcrUserStorageHandler extends JCRUserStorageHandler
 
 			SDataException sde = (SDataException) ex;
 			response.reset();
-			setHandlerHeaders(response);
+			setHandlerHeaders(request, response);
 			response.sendError(sde.getCode(), sde.getMessage());
 		}
 		else

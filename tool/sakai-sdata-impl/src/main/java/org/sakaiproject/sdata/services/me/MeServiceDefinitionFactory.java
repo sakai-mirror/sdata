@@ -33,6 +33,8 @@ import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.user.api.UserDirectoryService;
 
+import java.io.IOException;
+
 /**
  * A Factory to generate service definition beans for Me Requests
  * 
@@ -69,6 +71,11 @@ public class MeServiceDefinitionFactory implements ServiceDefinitionFactory
 	public ServiceDefinition getSpec(HttpServletRequest request,
 			HttpServletResponse response)
 	{
+		if (request.getRemoteUser() == null){
+			try {
+				response.sendError(HttpServletResponse.SC_FORBIDDEN, "Not Logged In");
+			} catch (IOException e) {}
+		}
 		return new MeBean(siteService, sessionManager, userDirectoryService, response);
 	}
 

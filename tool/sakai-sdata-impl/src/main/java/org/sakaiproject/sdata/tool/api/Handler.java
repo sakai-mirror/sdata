@@ -243,7 +243,7 @@ public interface Handler
 	/**
 	 * @param response
 	 */
-	void setHandlerHeaders(HttpServletResponse response);
+	void setHandlerHeaders(HttpServletRequest request, HttpServletResponse response);
 
 	/**
 	 * Sends an error to the client

@@ -235,8 +235,9 @@ public class ControllerServlet extends HttpServlet
 		 * 
 		 * @see org.sakaiproject.sdata.tool.api.Handler#setHandlerHeaders(javax.servlet.http.HttpServletResponse)
 		 */
-		public void setHandlerHeaders(HttpServletResponse response)
+		public void setHandlerHeaders(HttpServletRequest request, HttpServletResponse response)
 		{
+			response.setHeader("x-sdata-url", request.getPathInfo());
 			response.setHeader("x-sdata-handler", this.getClass().getName());
 		}
 
@@ -405,7 +406,7 @@ public class ControllerServlet extends HttpServlet
 		Handler h = getHandler(request);
 		if (h != null)
 		{
-			h.setHandlerHeaders(response);
+			h.setHandlerHeaders(request, response);
 			h.doDelete(request, response);
 		}
 		else
@@ -427,7 +428,7 @@ public class ControllerServlet extends HttpServlet
 		Handler h = getHandler(request);
 		if (h != null)
 		{
-			h.setHandlerHeaders(response);
+			h.setHandlerHeaders(request, response);
 			h.doGet(request, response);
 		}
 		else
@@ -449,7 +450,7 @@ public class ControllerServlet extends HttpServlet
 		Handler h = getHandler(request);
 		if (h != null)
 		{
-			h.setHandlerHeaders(response);
+			h.setHandlerHeaders(request, response);
 			h.doHead(request, response);
 		}
 		else
@@ -471,7 +472,7 @@ public class ControllerServlet extends HttpServlet
 		Handler h = getHandler(request);
 		if (h != null)
 		{
-			h.setHandlerHeaders(response);
+			h.setHandlerHeaders(request, response);
 			h.doPost(request, response);
 		}
 		else
@@ -493,7 +494,7 @@ public class ControllerServlet extends HttpServlet
 		Handler h = getHandler(request);
 		if (h != null)
 		{
-			h.setHandlerHeaders(response);
+			h.setHandlerHeaders(request, response);
 			h.doPut(request, response);
 		}
 		else

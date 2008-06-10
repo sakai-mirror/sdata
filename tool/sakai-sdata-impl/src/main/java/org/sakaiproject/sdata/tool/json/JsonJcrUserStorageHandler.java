@@ -76,13 +76,13 @@ public class JsonJcrUserStorageHandler extends JCRUserStorageHandler
 		{
 			SDataException sde = (SDataException) ex;
 			response.reset();
-			setHandlerHeaders(response);
+			setHandlerHeaders(request, response);
 			response.sendError(sde.getCode(), sde.getMessage());
 		}
 		else
 		{
 			response.reset();
-			setHandlerHeaders(response);
+			setHandlerHeaders(request, response);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 					"Failed with " + ex.getMessage());
 		}

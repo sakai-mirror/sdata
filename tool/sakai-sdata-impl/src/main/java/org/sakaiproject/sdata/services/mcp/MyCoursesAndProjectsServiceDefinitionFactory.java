@@ -32,6 +32,8 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
 
+import java.io.IOException;
+
 /**
  * A Factory to generate Service Definition beans for MyCourses and projects.
  * 
@@ -68,6 +70,11 @@ public class MyCoursesAndProjectsServiceDefinitionFactory implements
 	public ServiceDefinition getSpec(HttpServletRequest request,
 			HttpServletResponse response)
 	{
+		if (request.getRemoteUser() == null){
+			try {
+				response.sendError(HttpServletResponse.SC_FORBIDDEN, "Not Logged In");
+			} catch (IOException e) {}
+		}
 		return new MyCoursesAndProjectsBean(sessionManager, siteService, request);
 	}
 

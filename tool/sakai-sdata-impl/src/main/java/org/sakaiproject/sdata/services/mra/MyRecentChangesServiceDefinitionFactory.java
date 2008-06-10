@@ -29,6 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 
+import java.io.IOException;
+
 /**
  * A Definition Factory for MyRecentChanges
  * 
@@ -57,6 +59,13 @@ public class MyRecentChangesServiceDefinitionFactory implements ServiceDefinitio
 		{
 			paging = Integer.parseInt(request.getParameter("page"));
 		}
+	
+		if (request.getRemoteUser() == null){
+			try {
+				response.sendError(HttpServletResponse.SC_FORBIDDEN, "Not Logged In");
+			} catch (IOException e) {}
+		}
+		
 		return new MyRecentChangesBean(paging);
 	}
 

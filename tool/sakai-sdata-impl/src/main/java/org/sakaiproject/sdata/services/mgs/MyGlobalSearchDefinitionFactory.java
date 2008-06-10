@@ -33,6 +33,8 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
 
+import java.io.IOException;
+
 /**
  * Factory for SearchDefinition service beans
  * 
@@ -138,6 +140,12 @@ public class MyGlobalSearchDefinitionFactory implements ServiceDefinitionFactory
 			currentSiteSearch = "all";
 			searchParam = "";
 			empty = true;
+		}
+
+		if (request.getRemoteUser() == null){
+			try {
+				response.sendError(HttpServletResponse.SC_FORBIDDEN, "Not Logged In");
+			} catch (IOException e) {}
 		}
 
 		return new MyGlobalSearchBean(sessionManager, siteService, contentHostingService,

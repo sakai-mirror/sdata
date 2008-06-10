@@ -29,6 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 
+import java.io.IOException;
+
 /**
  * The Service definition factory for RSS beans
  * 
@@ -51,6 +53,13 @@ public class RssServiceDefinitionFactory implements ServiceDefinitionFactory
 	public ServiceDefinition getSpec(HttpServletRequest request,
 			HttpServletResponse response)
 	{
+
+		if (request.getRemoteUser() == null){
+			try {
+				response.sendError(HttpServletResponse.SC_FORBIDDEN, "Not Logged In");
+			} catch (IOException e) {}
+		}
+
 		return new RssBean(request, response);
 	}
 
