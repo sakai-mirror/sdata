@@ -1,5 +1,7 @@
 package org.sakaiproject.sdata.services.mra;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import org.sakaiproject.announcement.api.AnnouncementMessage;
 import org.sakaiproject.announcement.api.AnnouncementService;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.db.api.SqlReader;
 import org.sakaiproject.db.api.SqlService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
@@ -110,11 +113,10 @@ public class MyRecentChangesBean implements ServiceDefinition
 	{
 
 		Date lastLogin = null;
-		List<String> lstLastLogin;
+		List<?> lstLastLogin;
 		SearchResult searchResult = null;
-		String currentpage;
 
-		List<Map> myRecentResults = new ArrayList<Map>();
+		List<Map<String,String>> myRecentResults = new ArrayList<Map<String, String>>();
 
 		List<MyRecentChangesResult> results = new ArrayList<MyRecentChangesResult>();
 
@@ -124,14 +126,23 @@ public class MyRecentChangesBean implements ServiceDefinition
 			Session currentSession = sessionManager.getCurrentSession();
 			String currentUser = currentSession.getUserId();
 
-			lstLastLogin = sqlService
-					.dbRead("select userdate from sdata_lastlogin where userid='"
-							+ currentSession.getUserId() + "'");
+			lstLastLogin = sqlService.dbRead("select userdate from sdata_lastlogin where userid= ? ", new Object[] {currentUser}, new SqlReader() {
+
+				public Object readSqlResultRecord(ResultSet result) {
+					try {
+						return result.getString(1);
+					} catch (SQLException e) {
+						return null;
+					}
+				}
+				
+			});
+			
 			if (lstLastLogin.size() != 0)
 			{
-
+				String ll = (String) lstLastLogin.get(0);
 				lastLogin = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-						.parse(lstLastLogin.get(0).substring(0, 19));
+						.parse(ll.substring(0, 19));
 
 			}
 
@@ -173,7 +184,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 			searchList = searchService.search("tool:content tool:announcement",
 					arlSiteId, 0, 50, null, "dateRelevanceSort");
 
-			int ii = -1, iii = 0;
+			int ii = -1;
 			do
 			{
 				ii += 1;
@@ -205,8 +216,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 									s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 											.format(new java.util.Date(l));
 									sqlService
-											.dbWrite("delete from sdata_indexqueue where version<'"
-													+ s + "'");
+											.dbWrite("delete from sdata_indexqueue where version<  ? ",new Object[] { s });
 								}
 							}
 
@@ -231,7 +241,6 @@ public class MyRecentChangesBean implements ServiceDefinition
 		// //////// GET INDEXED RESULTS FROM INDEXQUEUE
 		// ////////
 
-		String finalResult = "";
 
 		int totalrecordsshown = 0;
 		String sites = "";
@@ -239,17 +248,18 @@ public class MyRecentChangesBean implements ServiceDefinition
 		{
 			if (i == 0)
 			{
-				sites += "context='" + arlSiteId.get(i) + "' ";
+				sites += "context= ? ";
 			}
 			else
 			{
-				sites += "OR context='" + arlSiteId.get(i) + "' ";
+				sites += "OR context= ? ";
 			}
 		}
+		Object[] params = arlSiteId.toArray();
 
-		List<MyRecentChangesSqlresult> lst = sqlService
+		List<?> lst = sqlService
 				.dbRead("select * from sdata_indexqueue where " + sites
-						+ "order by version desc", null, new MyRecentChangesSqlreader());
+						+ " order by version desc", params, new MyRecentChangesSqlreader());
 
 		ArrayList<String> arlUsed = new ArrayList<String>();
 
@@ -258,7 +268,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 		for (int i = 0; i < lst.size(); i++)
 		{
 
-			MyRecentChangesSqlresult mres = lst.get(i);
+			MyRecentChangesSqlresult mres = (MyRecentChangesSqlresult) lst.get(i);
 
 			if (mres.getTool().equals("content"))
 			{
@@ -281,8 +291,6 @@ public class MyRecentChangesBean implements ServiceDefinition
 								ContentResource cres = contentHostingService
 										.getResource(eid);
 
-								Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-										.parse(mres.getVersion().substring(0, 19));
 
 								MyRecentChangesResult mrcs = new MyRecentChangesResult();
 
@@ -344,8 +352,6 @@ public class MyRecentChangesBean implements ServiceDefinition
 									&& totalrecordsshown < (paging) * 5)
 							{
 
-								Date d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-										.parse(mres.getVersion().substring(0, 19));
 
 								MyRecentChangesResult mrcs = new MyRecentChangesResult();
 
@@ -399,7 +405,6 @@ public class MyRecentChangesBean implements ServiceDefinition
 		{
 
 			int ii = -1;
-			int iii = 0;
 			do
 			{
 				ii += 1;
@@ -455,7 +460,6 @@ public class MyRecentChangesBean implements ServiceDefinition
 										}
 									}
 
-									Date d = new java.util.Date(l);
 
 									MyRecentChangesResult mrcs = new MyRecentChangesResult();
 
@@ -520,7 +524,6 @@ public class MyRecentChangesBean implements ServiceDefinition
 										}
 									}
 
-									Date d = new java.util.Date(l);
 
 									String[] arr = srl.getTitle().substring(9).split(
 											" From ");
@@ -571,7 +574,6 @@ public class MyRecentChangesBean implements ServiceDefinition
 		}
 
 		// END NEW STUFF
-		Date cleanDate = new Date();
 		for (MyRecentChangesResult mrcsr : results)
 		{
 
@@ -596,8 +598,6 @@ public class MyRecentChangesBean implements ServiceDefinition
 			mrcsr_map.put("reference", mrcsr.getReference());
 
 			// today in format brengen om te compairen
-			String tiday = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-			String cut = "leeg";
 			mrcsr.setCleanVersion(mrcsr.getVersion().substring(0,
 					mrcsr.getVersion().lastIndexOf('-') + 3));
 
