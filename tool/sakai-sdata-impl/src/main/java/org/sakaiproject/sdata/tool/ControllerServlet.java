@@ -227,6 +227,11 @@ public class ControllerServlet extends HttpServlet
 		public void init(Map<String, String> config) throws ServletException
 		{
 		}
+		
+		public void destroy() 
+		{
+			
+		}
 
 		/*
 		 * (non-Javadoc)
@@ -307,6 +312,14 @@ public class ControllerServlet extends HttpServlet
 		{
 			throw new ServletException("Failed to instance handler " + handlerName, e);
 		}
+	}
+	
+	@Override
+	public void destroy() {
+		for ( Handler h : handlerRegister.values()) {
+			h.destroy();
+		}
+		super.destroy();
 	}
 
 	/**

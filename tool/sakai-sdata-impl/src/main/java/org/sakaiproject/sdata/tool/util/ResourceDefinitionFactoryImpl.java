@@ -64,6 +64,11 @@ public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 		pathSecurityAssertion = new PathSecurityAssertion(config);
 		log.info("Definition Factory Created with base path as " + basePath);
 	}
+	
+	public void destroy() 
+	{
+		
+	}
 
 	/**
 	 * TODO Javadoc

@@ -101,5 +101,8 @@ public class JCRCreateFolder implements SDataFunction
 
 	}
 
+	public void destroy() 
+	{
+	}
 
 }

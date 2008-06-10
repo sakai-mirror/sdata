@@ -43,4 +43,9 @@ public interface ResourceDefinitionFactory
 	 */
 	ResourceDefinition getSpec(HttpServletRequest request) throws SDataException;
 
+	/**
+	 * Destroy the factory and cleanup any handlers that have allocated resources
+	 */
+	void destroy();
+
 }

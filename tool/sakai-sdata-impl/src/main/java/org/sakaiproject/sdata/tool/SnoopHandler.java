@@ -110,6 +110,11 @@ public class SnoopHandler implements Handler
 	public void init(Map<String, String> config) throws ServletException
 	{
 	}
+	
+	public void destroy() 
+	{
+		
+	}
 
 	/*
 	 * (non-Javadoc)

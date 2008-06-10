@@ -33,4 +33,6 @@ public interface ResourceFunctionFactory
 	 */
 	SDataFunction getFunction(String definition);
 
+	void destroy();
+
 }

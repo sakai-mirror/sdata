@@ -141,6 +141,14 @@ public abstract class JCRHandler implements Handler
 		resourceFunctionFactory = getResourceFunctionFactory(config);
 
 	}
+	
+	public void destroy() 
+	{
+		resourceDefinitionFactory.destroy();
+		resourceFunctionFactory.destroy();
+	}
+	
+	
 
 	/**
 	 * Creates a resource definition factory suitable for controlling the

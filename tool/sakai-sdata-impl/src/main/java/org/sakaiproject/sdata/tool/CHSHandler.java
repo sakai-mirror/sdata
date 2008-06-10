@@ -154,6 +154,12 @@ public abstract class CHSHandler implements Handler
 		resourceFunctionFactory = getResourceFunctionFactory(config);
 
 	}
+	
+	public void destroy() 
+	{
+		resourceDefinitionFactory.destroy();
+		resourceFunctionFactory.destroy();
+	}
 
 	private ResourceFunctionFactory getResourceFunctionFactory(Map<String, String> config)
 	{

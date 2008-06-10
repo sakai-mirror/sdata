@@ -74,6 +74,14 @@ public class ResourceFunctionFactoryImpl implements ResourceFunctionFactory
 		}
 
 	}
+	
+	public void destroy() 
+	{
+		for ( SDataFunction sdf : functions.values() ) 
+		{
+			sdf.destroy();
+		}
+	}
 
 	/*
 	 * (non-Javadoc)

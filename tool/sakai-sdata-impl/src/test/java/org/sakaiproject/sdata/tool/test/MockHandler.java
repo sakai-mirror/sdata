@@ -103,6 +103,11 @@ public class MockHandler implements Handler
 		name = config.get("name");
 
 	}
+	
+	public void destroy() 
+	{
+		
+	}
 
 	/*
 	 * (non-Javadoc)

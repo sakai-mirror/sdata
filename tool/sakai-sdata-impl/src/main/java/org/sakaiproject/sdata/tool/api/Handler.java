@@ -236,6 +236,9 @@ public interface Handler
 	 * @throws ServletException
 	 */
 	void init(Map<String, String> config) throws ServletException;
+	
+	
+	void destroy();
 
 	/**
 	 * @param response

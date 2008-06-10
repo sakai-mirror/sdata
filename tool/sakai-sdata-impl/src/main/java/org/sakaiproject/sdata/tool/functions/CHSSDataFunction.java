@@ -286,6 +286,29 @@ public abstract class CHSSDataFunction implements SDataFunction
 
 		}
 	}
+	
+	protected void cancelEntity(GroupAwareEdit edit) throws SDataException {
+		if (edit instanceof ContentCollectionEdit)
+		{
+			contentHostingService.cancelCollection((ContentCollectionEdit) edit);
+		}
+		else if (edit instanceof ContentResourceEdit)
+		{
+				contentHostingService.cancelResource((ContentResourceEdit) edit);
+		}
+		else
+		{
+			throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Cant set hidden status, unknown entity type");
+
+		}
+	}
+
+
+	
+	public void destroy() 
+	{
+	}
 
 
 }

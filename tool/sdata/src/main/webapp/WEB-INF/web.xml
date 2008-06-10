@@ -56,6 +56,7 @@
         2.function.mv=org.sakaiproject.sdata.tool.functions.CHSMoveFunction;
         2.function.pr=org.sakaiproject.sdata.tool.functions.CHSPropertiesFunction;
         2.function.pm=org.sakaiproject.sdata.tool.functions.CHSPermissionsFunction;
+        2.function.t=org.sakaiproject.sdata.tool.functions.CHSTaggingFunction;
         2.locationbase=; 2.referencebase=/content; 2.basepath=/;
         3.classname=org.sakaiproject.sdata.tool.json.JsonJcrHandler;
         3.baseurl=/f;

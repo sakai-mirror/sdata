@@ -51,4 +51,9 @@ public abstract class JCRSDataFunction implements SDataFunction
 		}
 	}
 
+	
+	public void destroy() 
+	{
+	}
+
 }

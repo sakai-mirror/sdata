@@ -51,6 +51,11 @@ public abstract class ServiceHandler implements Handler
 	{
 		serviceDefinitionFactory = getServiceDefinitionFactory(config);
 	}
+	
+	public void destroy() 
+	{
+		
+	}
 
 	/**
 	 * TODO Javadoc

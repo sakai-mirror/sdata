@@ -63,6 +63,11 @@ public class UserResourceDefinitionFactory implements ResourceDefinitionFactory
 	{
 		this.basePath = basePath;
 	}
+	
+	public void destroy() 
+	{
+		
+	}
 
 	/**
 	 * TODO Javadoc

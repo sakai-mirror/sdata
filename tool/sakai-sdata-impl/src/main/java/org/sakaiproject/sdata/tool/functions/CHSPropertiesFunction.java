@@ -22,7 +22,9 @@
 package org.sakaiproject.sdata.tool.functions;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -122,64 +124,81 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 		}
 		
 		GroupAwareEdit[] edit = new GroupAwareEdit[names.length];
-		ResourcePropertiesEdit[] properties = new ResourcePropertiesEdit[names.length];
-		for ( int i = 0; i < names.length; i++ ) {
-			edit[i] = baseEdit;
-			properties[i] = baseProperties;
-		}
-		if ( items != null ) {
-			String repositoryPath = rp.getRepositoryPath();
-			if (!repositoryPath.endsWith("/"))
-			{
-				repositoryPath = repositoryPath + "/";
+		boolean committed = false;
+		try {
+			ResourcePropertiesEdit[] properties = new ResourcePropertiesEdit[names.length];
+			for ( int i = 0; i < names.length; i++ ) {
+				edit[i] = baseEdit;
+				properties[i] = baseProperties;
 			}
-			for ( int i = 0; i < items.length; i++ ) {
-				if ( items[i].length() > 0 ) {
-					String p = repositoryPath+items[i];
-					edit[i] = editEntity(handler, null, p);
-					properties[i] = edit[i].getPropertiesEdit();
+			if ( items != null ) {
+				String repositoryPath = rp.getRepositoryPath();
+				if (!repositoryPath.endsWith("/"))
+				{
+					repositoryPath = repositoryPath + "/";
+				}
+				for ( int i = 0; i < items.length; i++ ) {
+					if ( items[i].length() > 0 ) {
+						String p = repositoryPath+items[i];
+						edit[i] = editEntity(handler, null, p);
+						properties[i] = edit[i].getPropertiesEdit();
+					}
 				}
 			}
-		}
-
-		for (int i = 0; i < names.length; i++)
-		{
-			
-			if ( log.isDebugEnabled() ) {
-				log.debug("Property  ref=["+edit[i].getId()+"] prop=["+names[i]+"] value=["+values[i]+"] action=["+actions[i]+"]");
-			}
-			if (ADD.equals(actions[i]))
+	
+			for (int i = 0; i < names.length; i++)
 			{
-				List<?> p = properties[i].getPropertyList(names[i]);
-				if (p == null || p.size() == 0)
+				
+				if ( log.isDebugEnabled() ) {
+					log.debug("Property  ref=["+edit[i].getId()+"] prop=["+names[i]+"] value=["+values[i]+"] action=["+actions[i]+"]");
+				}
+				if (ADD.equals(actions[i]))
 				{
+					List<?> p = properties[i].getPropertyList(names[i]);
+					if (p == null || p.size() == 0)
+					{
+						properties[i].addProperty(names[i], values[i]);
+					}
+					else if (p.size() == 1)
+					{
+						String value = properties[i].getProperty(names[i]);
+						properties[i].removeProperty(names[i]);
+						properties[i].addPropertyToList(names[i], value);
+						properties[i].addPropertyToList(names[i], values[i]);
+					}
+					else
+					{
+						properties[i].addPropertyToList(names[i], values[i]);
+					}
+				}
+				else if (REMOVE.equals(actions[i]))
+				{
+					properties[i].removeProperty(names[i]);
+				}
+				else if (REPLACE.equals(actions[i]))
+				{
+					properties[i].removeProperty(names[i]);
 					properties[i].addProperty(names[i], values[i]);
 				}
-				else if (p.size() == 1)
-				{
-					String value = properties[i].getProperty(names[i]);
-					properties[i].removeProperty(names[i]);
-					properties[i].addPropertyToList(names[i], value);
-					properties[i].addPropertyToList(names[i], values[i]);
-				}
-				else
-				{
-					properties[i].addPropertyToList(names[i], values[i]);
+	
+			}
+			Map<GroupAwareEdit , GroupAwareEdit> committedEdit = new HashMap<GroupAwareEdit, GroupAwareEdit>();
+			for ( int i = 0; i < edit.length; i++) {
+				log.info("Comitting "+edit[i].getId());
+				if (!committedEdit.containsKey(edit[i]) ) {
+					commitEntity(edit[i]);
+					committedEdit.put(edit[i], edit[i]);
 				}
 			}
-			else if (REMOVE.equals(actions[i]))
+			committed = true;
+		}finally {
+			if ( !committed )
 			{
-				properties[i].removeProperty(names[i]);
+				for ( int i = 0; i < edit.length; i++) 
+				{
+					cancelEntity(edit[i]);
+				}				
 			}
-			else if (REPLACE.equals(actions[i]))
-			{
-				properties[i].removeProperty(names[i]);
-				properties[i].addProperty(names[i], values[i]);
-			}
-
-		}
-		for ( int i = 0; i < edit.length; i++) {
-			commitEntity(edit[i]);
 		}
 
 		CHSNodeMap nm = new CHSNodeMap((ContentEntity) baseEdit, rp.getDepth(), rp);
@@ -194,6 +213,7 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 		}
 
 	}
+
 
 
 }

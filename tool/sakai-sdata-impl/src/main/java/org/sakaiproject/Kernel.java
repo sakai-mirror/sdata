@@ -25,6 +25,7 @@ import org.sakaiproject.announcement.api.AnnouncementService;
 import org.sakaiproject.authz.api.AuthzGroupService;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ComponentManager;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.db.api.SqlService;
 import org.sakaiproject.entity.api.EntityManager;
@@ -78,6 +79,8 @@ public class Kernel
 	private static JCRService jcrService;
 
 	private static ThreadLocalManager threadLocalManager;
+	
+	private static ServerConfigurationService serverConfigurationService;
 
 	public static ComponentManager componentManager()
 	{
@@ -256,6 +259,15 @@ public class Kernel
 					ThreadLocalManager.class.getName());
 		}
 		return threadLocalManager;
+	}
+	public static ServerConfigurationService serverConfigurationService()
+	{
+		if (serverConfigurationService == null)
+		{
+			serverConfigurationService = (ServerConfigurationService) componentManager().get(
+					ServerConfigurationService.class.getName());
+		}
+		return serverConfigurationService;
 	}
 
 	public static void setComponentManager(UnitTestComponentManager mockComponentManager)

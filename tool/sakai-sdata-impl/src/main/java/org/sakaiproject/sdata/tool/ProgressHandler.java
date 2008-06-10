@@ -152,6 +152,11 @@ public abstract class ProgressHandler implements Handler
 			baseUrl = DEFAULT_BASE_URL;
 		}
 	}
+	
+	public void destroy() 
+	{
+		
+	}
 
 	/*
 	 * (non-Javadoc)

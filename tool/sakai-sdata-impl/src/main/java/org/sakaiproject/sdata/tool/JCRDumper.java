@@ -64,6 +64,11 @@ public class JCRDumper implements Handler
 		jcrService = Kernel.jcrService();
 
 	}
+	
+	public void destroy() 
+	{
+		
+	}
 
 	/*
 	 * (non-Javadoc)

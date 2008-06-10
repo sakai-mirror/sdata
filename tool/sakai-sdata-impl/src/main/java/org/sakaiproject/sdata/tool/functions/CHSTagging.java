@@ -1,6 +1,5 @@
 package org.sakaiproject.sdata.tool.functions;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,6 +8,8 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.Kernel;
 import org.sakaiproject.db.api.SqlReader;
 import org.sakaiproject.db.api.SqlService;
@@ -21,30 +22,37 @@ import org.sakaiproject.event.api.EventTrackingService;
 
 public class CHSTagging implements Observer {
 
+	private static final Log log = LogFactory.getLog(CHSTagging.class);
 	private SqlService sqlService;
-	private boolean autoDDL;
-	private String[] indexFields;
+	private String[] indexFields = new String[] { "tag" };
 	private EventTrackingService eventTrackingService;
 	private EntityManager entityManager;
 
 	public void init() {
 		sqlService = Kernel.sqlService();
+		boolean autoDDL = Kernel.serverConfigurationService().getBoolean("auto.ddl", false);
 		if (autoDDL) {
-			sqlService.ddl(this.getClass().getClassLoader(), "tagging");
+			sqlService.ddl(this.getClass().getClassLoader(), "sdata_tagging");
 		}
 		
 		entityManager = Kernel.entityManager();
 		eventTrackingService = Kernel.eventTrackingService();
 		eventTrackingService.addLocalObserver(this);
+		log.info(" Registring "+this);
+		
+		
 	}
 	public void destroy() {
+		log.info(" Deregistering "+this);
 		eventTrackingService.deleteObserver(this);
+		log.info(" DONE Deregistering "+this);
 	}
 
 	public Map<String, Integer> getPropertyVector(String context,
 			String propertyName) {
-		List<?> results = sqlService.dbRead("select propertyvalue, count(*),  "
-				+ "  from property_index " 
+		List<?> results = sqlService.dbRead(
+				"select propertyvalue, count(*)  "
+				+ "  from sdata_property_index " 
 				+ " where context = ? "
 				+ "   and propertyname = ? " 
 				+ "  group by propertyvalue ",
@@ -60,6 +68,7 @@ public class CHSTagging implements Observer {
 					}
 
 				});
+		
 		Map<String, Integer> m = new HashMap<String, Integer>();
 		for (Iterator<?> i = results.iterator(); i.hasNext();) {
 			Object[] r = (Object[]) i.next();
@@ -83,7 +92,7 @@ public class CHSTagging implements Observer {
 		}
 
 		List<?> results = sqlService.dbRead("select reference  "
-				+ "  from property_index " + " where context = ? "
+				+ "  from sdata_property_index " + " where context = ? "
 				+ "   and propertyname = ? " + "   and propertyvalue in ( "
 				+ inTerm.toString() + ") ", params, new SqlReader() {
 
@@ -107,7 +116,7 @@ public class CHSTagging implements Observer {
 			for (Iterator<?> p = property.iterator(); p.hasNext();) {
 				sqlService
 						.dbWrite(
-								"insert into property_index ( context, reference, propertyname, propertyvalue )"
+								"insert into sdata_property_index ( context, reference, propertyname, propertyvalue )"
 										+ "values ( ?,?,?,? ) ", new Object[] {
 										context, entity.getId(), indexField,
 										p.next() });
@@ -118,7 +127,7 @@ public class CHSTagging implements Observer {
 
 	public void remove(String context, Entity entity) {
 		sqlService.dbWrite("delete " 
-				+ "  from property_index "
+				+ "  from sdata_property_index "
 				+ " where context = ? " 
 				+ "  and reference = ? ", new Object[] {
 				context, entity.getId() });
