@@ -72,7 +72,7 @@ public class MyCoursesAndProjectsServiceDefinitionFactory implements
 	{
 		if (request.getRemoteUser() == null){
 			try {
-				response.sendError(HttpServletResponse.SC_FORBIDDEN, "Not Logged In");
+				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
 			} catch (IOException e) {}
 		}
 		return new MyCoursesAndProjectsBean(sessionManager, siteService, request);

@@ -144,7 +144,7 @@ public class MyGlobalSearchDefinitionFactory implements ServiceDefinitionFactory
 
 		if (request.getRemoteUser() == null){
 			try {
-				response.sendError(HttpServletResponse.SC_FORBIDDEN, "Not Logged In");
+				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
 			} catch (IOException e) {}
 		}
 
