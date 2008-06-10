@@ -80,19 +80,24 @@ public class CHSMoveFunction extends CHSSDataFunction
 			throw new SDataException(HttpServletResponse.SC_BAD_REQUEST,
 					"No Target folder for the move specified ");
 		}
-		String reposotoryTargetPath = targetPath;
+		String repositoryTargetPath = targetPath;
 		String repositorySourcePath = rp.getRepositoryPath();
-
-		log.info("Moving " + repositorySourcePath + " to " + reposotoryTargetPath
+		
+		
+		log.info("Moving " + repositorySourcePath + " to " + repositoryTargetPath
 				+ " specified by " + targetPath);
 
 		try
 		{
-			contentHostingService.moveIntoFolder(repositorySourcePath,
-					reposotoryTargetPath);
+			ContentEntity sourceEntity = getEntity(handler, repositorySourcePath);
+			ContentEntity targetEntity = getEntity(handler, repositoryTargetPath);
+			
+			contentHostingService.moveIntoFolder(sourceEntity.getId(),
+					targetEntity.getId());
+			
 			response.setStatus(HttpServletResponse.SC_OK);
 
-			ContentEntity ce = getEntity(handler, reposotoryTargetPath);
+			ContentEntity ce = getEntity(handler, repositoryTargetPath);
 			CHSNodeMap nm = new CHSNodeMap(ce, rp.getDepth(), rp);
 			try
 			{
