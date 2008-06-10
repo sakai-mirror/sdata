@@ -42,8 +42,13 @@ import org.sakaiproject.sdata.tool.api.SDataException;
  * Set properties on the content entity.
  * </p>
  * <p>
- * Properties are specified in 3 rewquest arrays associated in order. name,
- * value, action. Thes arrays must all be specified and the same length.
+ * Properties are specified in 4 request arrays associated in order. name,
+ * value, action. These arrays must all be specified and the same length.
+ * </p>
+ * <p>
+ * <b>item (optional)</b>: A list of item names, if this parameter is present
+ * on a ContentCollection, the item specifies the target item as a child of the 
+ * ContentCollection. A blank string identifies the ContentCollection itself.
  * </p>
  * <p>
  * <b>name</b>: A list of request parameters of name <b>name</b> that specify
@@ -85,6 +90,8 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 
 	private static final Log log = LogFactory.getLog(CHSPropertiesFunction.class);
 
+	private static final String ITEMS = "item";
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -99,9 +106,10 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 	{
 		SDataFunctionUtil.checkMethod(request.getMethod(), "POST");
 		
-		GroupAwareEdit edit = editEntity(handler, target, rp.getRepositoryPath());
-		ResourcePropertiesEdit properties = edit.getPropertiesEdit();
+		GroupAwareEdit baseEdit = editEntity(handler, target, rp.getRepositoryPath());
+		ResourcePropertiesEdit baseProperties = baseEdit.getPropertiesEdit();
 
+		String[] items = request.getParameterValues(ITEMS);
 		String[] names = request.getParameterValues(NAME);
 		String[] values = request.getParameterValues(VALUE);
 		String[] actions = request.getParameterValues(ACTION);
@@ -112,44 +120,64 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 			throw new SDataException(HttpServletResponse.SC_BAD_REQUEST,
 					"Request must contain the same number of name, value, and action parameters ");
 		}
+		
+		GroupAwareEdit[] edit = new GroupAwareEdit[names.length];
+		ResourcePropertiesEdit[] properties = new ResourcePropertiesEdit[names.length];
+		for ( int i = 0; i < names.length; i++ ) {
+			edit[i] = baseEdit;
+			properties[i] = baseProperties;
+		}
+		if ( items != null ) {
+			for ( int i = 0; i < items.length; i++ ) {
+				if ( items[i].length() > 0 ) {
+					edit[i] = editEntity(handler, target, rp.getRepositoryPath()+items[i]);
+					properties[i] = edit[i].getPropertiesEdit();
+				}
+			}
+		}
 
 		for (int i = 0; i < names.length; i++)
 		{
+			
+			
+			
+			
 			if (ADD.equals(actions[i]))
 			{
-				List<?> p = properties.getPropertyList(names[i]);
+				List<?> p = properties[i].getPropertyList(names[i]);
 				log.info("Got Property " + p);
 				if (p == null || p.size() == 0)
 				{
-					properties.addProperty(names[i], values[i]);
+					properties[i].addProperty(names[i], values[i]);
 				}
 				else if (p.size() == 1)
 				{
-					String value = properties.getProperty(names[i]);
-					properties.removeProperty(names[i]);
-					properties.addPropertyToList(names[i], value);
-					properties.addPropertyToList(names[i], values[i]);
+					String value = properties[i].getProperty(names[i]);
+					properties[i].removeProperty(names[i]);
+					properties[i].addPropertyToList(names[i], value);
+					properties[i].addPropertyToList(names[i], values[i]);
 				}
 				else
 				{
-					properties.addPropertyToList(names[i], values[i]);
+					properties[i].addPropertyToList(names[i], values[i]);
 				}
 			}
 			else if (REMOVE.equals(actions[i]))
 			{
-				properties.removeProperty(names[i]);
+				properties[i].removeProperty(names[i]);
 			}
 			else if (REPLACE.equals(actions[i]))
 			{
-				properties.removeProperty(names[i]);
-				properties.addProperty(names[i], values[i]);
+				properties[i].removeProperty(names[i]);
+				properties[i].addProperty(names[i], values[i]);
 			}
 
 		}
+		for ( int i = 0; i < edit.length; i++) {
+			commitEntity(edit[i]);
+		}
 
-		commitEntity(edit);
-
-		CHSNodeMap nm = new CHSNodeMap((ContentEntity) edit, rp.getDepth(), rp);
+		CHSNodeMap nm = new CHSNodeMap((ContentEntity) baseEdit, rp.getDepth(), rp);
 		try
 		{
 			handler.sendMap(request, response, nm);
