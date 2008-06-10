@@ -21,12 +21,15 @@
 
 package org.sakaiproject.sdata.services.mra;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Observable;
 import java.util.Observer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.Kernel;
+import org.sakaiproject.db.api.SqlReader;
 import org.sakaiproject.db.api.SqlService;
 import org.sakaiproject.event.api.Event;
 import org.sakaiproject.event.api.UsageSession;
@@ -60,34 +63,53 @@ public class MyRecentChangesObserver implements Observer
 			String user = session.getUserId();
 			String euser = session.getUserEid();
 
+			Object[] params = new Object[4];
 			// log.info("MySakai Received : " + event.getEvent());
+			params[0] = new java.text.SimpleDateFormat(
+			           "yyyy-MM-dd HH:mm:ss")
+			        .format(new java.util.Date(System
+					     .currentTimeMillis()));
+			params[1] = event.getResource();
+			
 			if (event.getEvent().equals("user.login"))
 			{
 
 				if (sqlService.dbRead(
-						"select * from sdata_lastlogin where userid='" + user + "'")
+						"select * from sdata_lastlogin where userid= ? ",new Object[] { user }, new SqlReader() {
+
+							public Object readSqlResultRecord(ResultSet result) {
+								try {
+									return result.getObject(1);
+								} catch (SQLException e) {
+									return null;
+								}
+							}
+							
+						})
 						.size() == 0)
 				{
 					sqlService
-							.dbWrite("insert into sdata_lastlogin values('"
-									+ user
-									+ "','"
-									+ euser
-									+ "','"
-									+ new java.text.SimpleDateFormat(
-											"yyyy-MM-dd HH:mm:ss")
-											.format(new java.util.Date(System
-													.currentTimeMillis())) + "') ");
+							.dbWrite("insert into sdata_lastlogin values( ?,?,? )"
+									,new Object[] {
+										user,
+										euser,
+										new java.text.SimpleDateFormat(
+										"yyyy-MM-dd HH:mm:ss")
+										.format(new java.util.Date(System
+												.currentTimeMillis()))
+									});
 				}
 				else
 				{
 					sqlService
-							.dbWrite("update sdata_lastlogin set userdate='"
-									+ new java.text.SimpleDateFormat(
+							.dbWrite("update sdata_lastlogin set userdate= ? where userid= ?"
+									, new Object[] {
+											new java.text.SimpleDateFormat(
 											"yyyy-MM-dd HH:mm:ss")
 											.format(new java.util.Date(System
-													.currentTimeMillis()))
-									+ "' where userid='" + user + "'");
+													.currentTimeMillis())),
+													user
+									});
 				}
 				// log.info("MySakai Last Login Updated for " + user);
 
@@ -102,42 +124,16 @@ public class MyRecentChangesObserver implements Observer
 
 					if (event.getResource().startsWith("/content/group/"))
 					{
-
-						sqlService
-								.dbWrite("insert into sdata_indexqueue (version, name, context, tool) values('"
-										+ new java.text.SimpleDateFormat(
-												"yyyy-MM-dd HH:mm:ss")
-												.format(new java.util.Date(System
-														.currentTimeMillis()))
-										+ "','"
-										+ event.getResource()
-										+ "','"
-										+ event.getResource().replace("/content/group/",
-												"").substring(
-												0,
-												event.getResource().replace(
-														"/content/group/", "").indexOf(
-														"/")) + "','content')");
+						params[2] = getEventContext(event.getResource(),"/content/group/");
+						params[3] = "content";
 
 					}
 					else if (event.getResource().startsWith("/content/user/"))
 					{
 
-						sqlService
-								.dbWrite("insert into sdata_indexqueue (version, name, context, tool) values('"
-										+ new java.text.SimpleDateFormat(
-												"yyyy-MM-dd HH:mm:ss")
-												.format(new java.util.Date(System
-														.currentTimeMillis()))
-										+ "','"
-										+ event.getResource()
-										+ "','"
-										+ event.getResource().replace("/content/user/",
-												"").substring(
-												0,
-												event.getResource().replace(
-														"/content/user/", "")
-														.indexOf("/")) + "','content')");
+						params[2] = getEventContext(event.getResource(),"/content/user/");
+						params[3] = "content";
+
 
 					}
 
@@ -150,24 +146,17 @@ public class MyRecentChangesObserver implements Observer
 				if (event.getResource().startsWith("/announcement/msg/"))
 				{
 
-					sqlService
-							.dbWrite("insert into sdata_indexqueue (version, name, context, tool) values('"
-									+ new java.text.SimpleDateFormat(
-											"yyyy-MM-dd HH:mm:ss")
-											.format(new java.util.Date(System
-													.currentTimeMillis()))
-									+ "','"
-									+ event.getResource()
-									+ "','"
-									+ event.getResource().replace("/announcement/msg/",
-											"").substring(
-											0,
-											event.getResource().replace(
-													"/announcement/msg/", "")
-													.indexOf("/")) + "','announcement')");
-
+					params[2] = getEventContext(event.getResource(),"/announcement/msg/");
+					params[3] = "announcement";
+					
 				}
 
+			}
+			if ( params[3] != null ) 
+			{
+			  sqlService
+			    .dbWrite("insert into sdata_indexqueue (version, name, context, tool) " +
+					"values( ?,?,?,?)", params);
 			}
 
 		}
@@ -180,5 +169,14 @@ public class MyRecentChangesObserver implements Observer
 
 		}
 
+	}
+
+	private String getEventContext(String resource, String type) {
+		return resource.replace(type,
+		"").substring(
+				0,
+				resource.replace(
+						type, "").indexOf(
+						"/"));
 	}
 }

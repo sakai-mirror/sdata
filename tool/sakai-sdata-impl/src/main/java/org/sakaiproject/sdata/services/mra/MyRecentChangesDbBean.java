@@ -54,7 +54,7 @@ public class MyRecentChangesDbBean implements ServletContextListener
 		{
 			boolean exist = false;
 			boolean exist2 = false;
-			List lsts = null;
+			List<?> lsts = null;
 			lsts = Kernel.sqlService().dbRead("SHOW TABLES");
 
 			for (int i = 0; i < lsts.size(); i++)
