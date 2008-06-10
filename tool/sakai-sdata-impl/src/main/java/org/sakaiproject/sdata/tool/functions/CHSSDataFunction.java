@@ -111,7 +111,6 @@ public abstract class CHSSDataFunction implements SDataFunction
 	protected GroupAwareEdit editEntity(Handler handler, Object target,
 			String repositoryPath) throws SDataException
 	{
-		
 		if (target instanceof GroupAwareEdit && ((GroupAwareEdit) target).isActiveEdit())
 		{
 			return (GroupAwareEdit) target;
@@ -151,14 +150,6 @@ public abstract class CHSSDataFunction implements SDataFunction
 					log.debug("Resource Not Found " + repositoryPath + " " + e);
 				}
 			}
-			catch ( PermissionException e ) 
-			{
-				// this can happen if the id points to a content entity and doesnt include a tailing /
-				if (log.isDebugEnabled())
-				{
-					log.debug("Resource Not Found " + repositoryPath + " " + e);
-				}	
-			}
 			if (ce == null)
 			{
 				if (!repositoryPath.endsWith("/"))
@@ -192,14 +183,10 @@ public abstract class CHSSDataFunction implements SDataFunction
 						ce.getReference());
 				if (!canSeeHidden && !ce.isAvailable())
 				{
-					log.info(" Hidden Entity "+repositoryPath);
 					throw new SDataAccessException(HttpServletResponse.SC_FORBIDDEN,
 							"Permission denied on item");
 				}
 
-			} else {
-				log.info(" Null Entity "+ce.getId()+" "+repositoryPath);
-				
 			}
 
 			return ce;
