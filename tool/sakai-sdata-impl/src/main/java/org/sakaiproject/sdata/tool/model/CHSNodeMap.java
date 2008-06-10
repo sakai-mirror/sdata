@@ -92,79 +92,59 @@ public class CHSNodeMap extends HashMap<String, Object>
 		else
 		{
 			put("primaryNodeType", "nt:folder");
-			addFolder((ContentCollection)n, rp, depth);
-		}
-	}
-
-	private void addFolder(ContentCollection n, ResourceDefinition rp,  int depth) {
-		put("available", n.isAvailable());
-		put("hidden", n.isHidden());
-		if (!n.isHidden())
-		{
-			Time releaseDate = n.getReleaseDate();
-			if (releaseDate != null)
+			ContentCollection cc = (ContentCollection) n;
+			if (depth >= 0)
 			{
-				put("releaseDate", releaseDate.getTime());
-			}
-			Time retractDate = n.getRetractDate();
-			if (retractDate != null)
-			{
-				put("retractDate", retractDate.getTime());
-			}
-		}
 
-		ContentCollection cc = (ContentCollection) n;
-		if (depth >= 0)
-		{
+				Map<String, Object> nodes = new HashMap<String, Object>();
+				// list of IDs
+				List<?> l = cc.getMembers();
 
-			Map<String, Object> nodes = new HashMap<String, Object>();
-			// list of IDs
-			List<?> l = cc.getMembers();
-
-			int i = 0;
-			for (int k = 0; k < l.size(); k++)
-			{
-				String memberID = (String) l.get(k);	
-				ContentEntity cn = null;
-				try
+				int i = 0;
+				for (int k = 0; k < l.size(); k++)
 				{
-					cn = contentHostingService.getResource(memberID);
-				}
-				catch (Exception idex)
-				{
+					String memberID = (String) l.get(k);	
+					ContentEntity cn = null;
 					try
 					{
-						String collectionPath = memberID;
-						if (!collectionPath.endsWith("/"))
+						cn = contentHostingService.getResource(memberID);
+					}
+					catch (Exception idex)
+					{
+						try
 						{
-							collectionPath = collectionPath + "/";
+							String collectionPath = memberID;
+							if (!collectionPath.endsWith("/"))
+							{
+								collectionPath = collectionPath + "/";
+							}
+							cn = contentHostingService.getCollection(collectionPath);
 						}
-						cn = contentHostingService.getCollection(collectionPath);
+						catch (Exception ex)
+						{
+
+						}
 					}
-					catch (Exception ex)
+					if (cn != null)
 					{
 
+						try
+						{
+							Map<String, Object> m = new CHSNodeMap(cn, depth, rp);
+							m.put("position", String.valueOf(i));
+							nodes.put(getName(cn), m);
+						}
+						catch (SDataAccessException sdae)
+						{
+							// hide the item from the list
+							continue;
+						}
 					}
+					i++;
 				}
-				if (cn != null)
-				{
-
-					try
-					{
-						Map<String, Object> m = new CHSNodeMap(cn, depth, rp);
-						m.put("position", String.valueOf(i));
-						nodes.put(getName(cn), m);
-					}
-					catch (SDataAccessException sdae)
-					{
-						// hide the item from the list
-						continue;
-					}
-				}
-				i++;
+				put("nitems", nodes.size());
+				put("items", nodes);
 			}
-			put("nitems", nodes.size());
-			put("items", nodes);
 		}
 	}
 
