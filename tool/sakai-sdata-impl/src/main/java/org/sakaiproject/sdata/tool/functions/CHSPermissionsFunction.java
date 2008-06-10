@@ -62,7 +62,7 @@ import org.sakaiproject.sdata.tool.model.CHSGroupMap;
  * <li>Parameter Name: Description</li>
  * <li>f: <b>pm</b> Identifies the function</li>
  * <li>role: <b>access</b> The role to set the parameter on</li>
- * <li>perm: <b>read|write|remove|admin</b> The permission to set</li>
+ * <li>perm: <b>read|write|delete|admin</b> The permission to set</li>
  * <li>set: <b>1|0</b> Set or Unset</li>
  * </ul>
  * <h3>Description</h3>
@@ -103,7 +103,7 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 
 	public static final String WRITE = "write";
 
-	public static final String REMOVE = "remove";
+	public static final String DELETE = "delete";
 
 	public static final String ADMIN = "admin";
 
@@ -126,7 +126,7 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 		permissionMap.put(WRITE, new String[] {
 				ContentHostingService.AUTH_RESOURCE_WRITE_ANY,
 				ContentHostingService.AUTH_RESOURCE_ADD });
-		permissionMap.put(REMOVE,
+		permissionMap.put(DELETE,
 				new String[] { ContentHostingService.AUTH_RESOURCE_REMOVE_ANY });
 		permissionMap.put(ADMIN,
 				new String[] { AuthzGroupService.SECURE_UPDATE_AUTHZ_GROUP });
