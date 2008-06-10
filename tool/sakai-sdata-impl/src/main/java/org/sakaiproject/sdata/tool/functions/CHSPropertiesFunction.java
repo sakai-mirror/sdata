@@ -49,7 +49,7 @@ import org.sakaiproject.sdata.tool.api.SDataException;
  * </p>
  * <p>
  * <b>item (optional)</b>: A list of item names, if this parameter is present
- * on a ContentCollection, the item specifies the target item as a child of the 
+ * on a ContentCollection, the item specifies the target item as a child of the
  * ContentCollection. A blank string identifies the ContentCollection itself.
  * </p>
  * <p>
@@ -75,8 +75,7 @@ import org.sakaiproject.sdata.tool.api.SDataException;
  * 
  * @author ieb
  */
-public class CHSPropertiesFunction extends CHSSDataFunction
-{
+public class CHSPropertiesFunction extends CHSSDataFunction {
 
 	public static final String ADD = "a";
 
@@ -90,7 +89,8 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 
 	public static final String ACTION = "action";
 
-	private static final Log log = LogFactory.getLog(CHSPropertiesFunction.class);
+	private static final Log log = LogFactory
+			.getLog(CHSPropertiesFunction.class);
 
 	private static final String ITEM = "item";
 
@@ -104,11 +104,11 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 	 */
 	public void call(Handler handler, HttpServletRequest request,
 			HttpServletResponse response, Object target, ResourceDefinition rp)
-			throws SDataException
-	{
+			throws SDataException {
 		SDataFunctionUtil.checkMethod(request.getMethod(), "POST");
-		
-		GroupAwareEdit baseEdit = editEntity(handler, target, rp.getRepositoryPath());
+
+		GroupAwareEdit baseEdit = editEntity(handler, target, rp
+				.getRepositoryPath());
 		ResourcePropertiesEdit baseProperties = baseEdit.getPropertiesEdit();
 
 		String[] items = request.getParameterValues(ITEM);
@@ -117,34 +117,33 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 		String[] actions = request.getParameterValues(ACTION);
 
 		if (names == null || values == null || actions == null
-				|| names.length != values.length || names.length != actions.length)
-		{
+				|| names.length != values.length
+				|| names.length != actions.length) {
 			throw new SDataException(HttpServletResponse.SC_BAD_REQUEST,
 					"Request must contain the same number of name, value, and action parameters ");
 		}
-		
+
 		GroupAwareEdit[] edit = new GroupAwareEdit[names.length];
-		Map<GroupAwareEdit , GroupAwareEdit> committedEdit = new HashMap<GroupAwareEdit, GroupAwareEdit>();
+		Map<GroupAwareEdit, GroupAwareEdit> committedEdit = new HashMap<GroupAwareEdit, GroupAwareEdit>();
 
 		boolean committed = false;
 		try {
 			ResourcePropertiesEdit[] properties = new ResourcePropertiesEdit[names.length];
-			for ( int i = 0; i < names.length; i++ ) {
+			for (int i = 0; i < names.length; i++) {
 				edit[i] = baseEdit;
 				properties[i] = baseProperties;
 			}
-			if ( items != null ) {
+			if (items != null) {
 				Map<String, GroupAwareEdit> edits = new HashMap<String, GroupAwareEdit>();
 				String repositoryPath = rp.getRepositoryPath();
-				if (!repositoryPath.endsWith("/"))
-				{
+				if (!repositoryPath.endsWith("/")) {
 					repositoryPath = repositoryPath + "/";
 				}
-				for ( int i = 0; i < items.length; i++ ) {
-					if ( items[i].length() > 0 ) {
-						String p = repositoryPath+items[i];
+				for (int i = 0; i < items.length; i++) {
+					if (items[i].length() > 0) {
+						String p = repositoryPath + items[i];
 						edit[i] = edits.get(p);
-						if ( edit[i] == null ) {
+						if (edit[i] == null) {
 							edit[i] = editEntity(handler, null, p);
 							edits.put(p, edit[i]);
 						}
@@ -152,81 +151,71 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 					}
 				}
 			}
-	
-			for (int i = 0; i < names.length; i++)
-			{
-				
-				if ( log.isDebugEnabled() ) {
-					log.debug("Property  ref=["+edit[i].getId()+"] prop=["+names[i]+"] value=["+values[i]+"] action=["+actions[i]+"]");
+
+			for (int i = 0; i < names.length; i++) {
+
+				if (log.isDebugEnabled()) {
+					log.debug("Property  ref=[" + edit[i].getId() + "] prop=["
+							+ names[i] + "] value=[" + values[i] + "] action=["
+							+ actions[i] + "]");
 				}
-				if (ADD.equals(actions[i]))
-				{
-					List<?> p = properties[i].getPropertyList(names[i]);
-					if (p == null || p.size() == 0)
-					{
+				if (ADD.equals(actions[i])) {
+					if (values[i] != null && values[i].length() > 0) {
+						List<?> p = properties[i].getPropertyList(names[i]);
+						if (p == null || p.size() == 0) {
+							properties[i].addProperty(names[i], values[i]);
+						} else if (p.size() == 1) {
+							String value = properties[i].getProperty(names[i]);
+							properties[i].removeProperty(names[i]);
+							properties[i].addPropertyToList(names[i], value);
+							properties[i]
+									.addPropertyToList(names[i], values[i]);
+						} else {
+							properties[i]
+									.addPropertyToList(names[i], values[i]);
+						}
+					}
+				} else if (REMOVE.equals(actions[i])) {
+					properties[i].removeProperty(names[i]);
+				} else if (REPLACE.equals(actions[i])) {
+					properties[i].removeProperty(names[i]);
+					if (values[i] != null && values[i].length() > 0) {
 						properties[i].addProperty(names[i], values[i]);
 					}
-					else if (p.size() == 1)
-					{
-						String value = properties[i].getProperty(names[i]);
-						properties[i].removeProperty(names[i]);
-						properties[i].addPropertyToList(names[i], value);
-						properties[i].addPropertyToList(names[i], values[i]);
-					}
-					else
-					{
-						properties[i].addPropertyToList(names[i], values[i]);
-					}
 				}
-				else if (REMOVE.equals(actions[i]))
-				{
-					properties[i].removeProperty(names[i]);
-				}
-				else if (REPLACE.equals(actions[i]))
-				{
-					properties[i].removeProperty(names[i]);
-					properties[i].addProperty(names[i], values[i]);
-				}
-	
+
 			}
-			for ( int i = 0; i < edit.length; i++) {
-				if (!committedEdit.containsKey(edit[i]) ) {
+			for (int i = 0; i < edit.length; i++) {
+				if (!committedEdit.containsKey(edit[i])) {
 					commitEntity(edit[i]);
 					committedEdit.put(edit[i], edit[i]);
 				}
 			}
 			committed = true;
-		}finally {
-			if ( !committed )
-			{
-				for ( int i = 0; i < edit.length; i++) 
-				{
-					if (!committedEdit.containsKey(edit[i]) ) 
-					{
+		} finally {
+			if (!committed) {
+				for (int i = 0; i < edit.length; i++) {
+					if (!committedEdit.containsKey(edit[i])) {
 						cancelEntity(edit[i]);
 						committedEdit.put(edit[i], edit[i]);
 					}
-				}				
+				}
 			}
-			if ( !committedEdit.containsKey(baseEdit) ) 
-			{
+			if (!committedEdit.containsKey(baseEdit)) {
 				cancelEntity(baseEdit);
 			}
 		}
 
-		CHSNodeMap nm = new CHSNodeMap((ContentEntity) baseEdit, rp.getDepth(), rp);
-		try
-		{
+		CHSNodeMap nm = new CHSNodeMap((ContentEntity) baseEdit, rp.getDepth(),
+				rp);
+		try {
 			handler.sendMap(request, response, nm);
-		}
-		catch (IOException e)
-		{
-			throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"IO Error " + e.getMessage());
+		} catch (IOException e) {
+			throw new SDataException(
+					HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "IO Error "
+							+ e.getMessage());
 		}
 
 	}
-
-
 
 }

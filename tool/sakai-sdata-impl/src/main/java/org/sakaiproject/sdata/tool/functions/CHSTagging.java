@@ -153,11 +153,14 @@ public class CHSTagging implements Observer {
 			if ( property != null ) 
 			{
 				for (Iterator<?> p = property.iterator(); p.hasNext();) {
+					String prop = (String) p.next();
+					if ( prop != null && prop.length() > 0) {
 					sqlService
 							.dbWrite(
 									updateValueSQL, new Object[] {
 											context, reference, indexField,
-											p.next() });
+											prop });
+					}
 				}
 			} 
 		}
@@ -210,14 +213,6 @@ public class CHSTagging implements Observer {
 				}
 			}
 		} 
-	}
-	private String getEventContext(String resource, String type) {
-		return resource.replace(type,
-		"").substring(
-				0,
-				resource.replace(
-						type, "").indexOf(
-						"/"));
 	}
 
 }
