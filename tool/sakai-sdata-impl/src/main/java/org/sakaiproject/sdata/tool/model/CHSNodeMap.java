@@ -155,7 +155,7 @@ public class CHSNodeMap extends HashMap<String, Object>
 		{
 			map.put("read", String.valueOf(contentHostingService.allowGetResource(n
 					.getId())));
-			map.put("delete", String.valueOf(contentHostingService.allowRemoveResource(n
+			map.put("remove", String.valueOf(contentHostingService.allowRemoveResource(n
 					.getId())));
 			map.put("write", String.valueOf(contentHostingService.allowUpdateResource(n
 					.getId())));
@@ -165,7 +165,7 @@ public class CHSNodeMap extends HashMap<String, Object>
 		{
 			map.put("read", String.valueOf(contentHostingService.allowGetCollection(n
 					.getId())));
-			map.put("delete", String.valueOf(contentHostingService
+			map.put("remove", String.valueOf(contentHostingService
 					.allowRemoveCollection(n.getId())));
 			map.put("write", String.valueOf(contentHostingService.allowRemoveCollection(n
 					.getId())));
