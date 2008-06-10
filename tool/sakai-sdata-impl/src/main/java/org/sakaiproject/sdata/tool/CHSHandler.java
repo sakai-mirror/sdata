@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.sdata.FileItemIterator;
 import org.apache.commons.fileupload.sdata.FileItemStream;
 import org.apache.commons.fileupload.sdata.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.sdata.util.Streams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.Kernel;
@@ -118,6 +119,8 @@ public abstract class CHSHandler implements Handler
 	private static final String BASE_URL_INIT = "baseurl";
 
 	private static final String DEFAULT_BASE_URL = "c";
+
+	private static final Object REAL_UPLOAD_NAME = "realname";
 
 	private String basePath;
 
@@ -1127,6 +1130,8 @@ public abstract class CHSHandler implements Handler
 			FileItemIterator iter = upload.getItemIterator(request);
 			Map<String, Object> responseMap = new HashMap<String, Object>();
 			Map<String, Object> uploads = new HashMap<String, Object>();
+			Map<String, List<String>> values = new HashMap<String, List<String>>();
+			int uploadNumber = 0;
 			while (iter.hasNext())
 			{
 				FileItemStream item = iter.next();
@@ -1149,9 +1154,16 @@ public abstract class CHSHandler implements Handler
 					{
 						if (name != null && name.trim().length() > 0)
 						{
-							String mimeType = ContentTypes.getContentType(name, item
+							
+							List<String> realNames = values.get(REAL_UPLOAD_NAME);
+							String finalName = name;
+							if ( realNames != null && realNames.size() > uploadNumber ) {
+								finalName = realNames.get(uploadNumber);
+							}
+							
+							String mimeType = ContentTypes.getContentType(finalName, item
 									.getContentType());
-							String resourceName = rp.getRepositoryPath() + "/" + name;
+							String resourceName = rp.getRepositoryPath() + "/" + finalName;
 							ContentEntity ce = getEntity(resourceName);
 							ContentResourceEdit target = null;
 							if (ce != null)
@@ -1176,15 +1188,16 @@ public abstract class CHSHandler implements Handler
 							{
 								uploadMap.put("contentLength", (int) size);
 							}
-							uploadMap.put("name", name);
+							uploadMap.put("name", finalName);
 							uploadMap.put("url", rp.getExternalPath(rp
-									.getRepositoryPath(name)));
+									.getRepositoryPath(finalName)));
 							uploadMap.put("mimeType", mimeType);
 							uploadMap.put("lastModified", lastModified.getTime());
 							uploadMap.put("status", "ok");
 
 							uploads.put(fieldName, uploadMap);
 							uploadMap = new HashMap<String, Object>();
+							uploadNumber++;
 						}
 					}
 					catch (Exception ex)
@@ -1208,6 +1221,15 @@ public abstract class CHSHandler implements Handler
 
 					}
 
+				} else {
+					String value = Streams.asString(stream);
+					List<String> valueList = values.get(name);
+					if ( valueList == null ) {
+						valueList = new ArrayList<String>();
+						values.put(name,valueList);
+						
+					}
+					valueList.add(value);
 				}
 			}
 			responseMap.put("success", true);
