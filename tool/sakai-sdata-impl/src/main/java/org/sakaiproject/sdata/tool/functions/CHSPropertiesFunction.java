@@ -90,7 +90,7 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 
 	private static final Log log = LogFactory.getLog(CHSPropertiesFunction.class);
 
-	private static final String ITEMS = "item";
+	private static final String ITEM = "item";
 
 	/*
 	 * (non-Javadoc)
@@ -109,7 +109,7 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 		GroupAwareEdit baseEdit = editEntity(handler, target, rp.getRepositoryPath());
 		ResourcePropertiesEdit baseProperties = baseEdit.getPropertiesEdit();
 
-		String[] items = request.getParameterValues(ITEMS);
+		String[] items = request.getParameterValues(ITEM);
 		String[] names = request.getParameterValues(NAME);
 		String[] values = request.getParameterValues(VALUE);
 		String[] actions = request.getParameterValues(ACTION);
@@ -128,9 +128,15 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 			properties[i] = baseProperties;
 		}
 		if ( items != null ) {
+			String repositoryPath = rp.getRepositoryPath();
+			if (!repositoryPath.endsWith("/"))
+			{
+				repositoryPath = repositoryPath + "/";
+			}
 			for ( int i = 0; i < items.length; i++ ) {
 				if ( items[i].length() > 0 ) {
-					edit[i] = editEntity(handler, target, rp.getRepositoryPath()+items[i]);
+					String p = repositoryPath+items[i];
+					edit[i] = editEntity(handler, null, p);
 					properties[i] = edit[i].getPropertiesEdit();
 				}
 			}
@@ -139,13 +145,12 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 		for (int i = 0; i < names.length; i++)
 		{
 			
-			
-			
-			
+			if ( log.isDebugEnabled() ) {
+				log.debug("Property  ref=["+edit[i].getId()+"] prop=["+names[i]+"] value=["+values[i]+"] action=["+actions[i]+"]");
+			}
 			if (ADD.equals(actions[i]))
 			{
 				List<?> p = properties[i].getPropertyList(names[i]);
-				log.info("Got Property " + p);
 				if (p == null || p.size() == 0)
 				{
 					properties[i].addProperty(names[i], values[i]);
