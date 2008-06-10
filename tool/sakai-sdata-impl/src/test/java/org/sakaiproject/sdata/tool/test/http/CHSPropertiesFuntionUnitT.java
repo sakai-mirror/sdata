@@ -47,7 +47,7 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 
 	private static final String BASE_URL = "http://localhost:8080/sdata/";
 
-	private static final String BASE_DATA_URL = BASE_URL + "c/private/sdata/";
+	private static final String BASE_DATA_URL = BASE_URL + "c/private/sdata";
 
 	private static final Log log = LogFactory.getLog(CHSPropertiesFuntionUnitT.class);
 
@@ -119,24 +119,6 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 		}
 	}
 
-	public void testSetPropertiesCollection() throws Exception
-	{
-		if (enabled)
-		{
-			String testDocument = getBaseDataUrl();
-			String[] roles = { "access", "access", "maintain", "maintain",
-
-			};
-			String[] permissions = { "read", "write", "delete", "admin"
-
-			};
-			String[] set = { CHSPermissionsFunction.SETVALUE, CHSPermissionsFunction.SETVALUE,
-					CHSPermissionsFunction.SETVALUE, CHSPermissionsFunction.SETVALUE };
-			setPermissions(testDocument, roles, permissions, set);
-
-			checkPermissions(testDocument, roles, permissions, set);
-		}
-	}
 
 	/**
 	 * @param testDocument
@@ -149,7 +131,6 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 	private void checkPermissions(String testDocument, String[] roles, String[] permissions,
 			String[] sets) throws HttpException, IOException
 	{
-		log.info("Validating Document "+testDocument);
 		GetMethod validate = new GetMethod(testDocument + "?f=pm");
 		client.executeMethod(validate);
 		int code = validate.getStatusCode();

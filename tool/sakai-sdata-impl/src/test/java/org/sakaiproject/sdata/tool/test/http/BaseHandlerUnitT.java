@@ -120,10 +120,7 @@ public abstract class BaseHandlerUnitT extends TestCase
 		postMethod.setParameter("eid", USERNAME);
 		postMethod.setParameter("pw", PASSWORD);
 		postMethod.setParameter("submit", "Login");
-		postMethod.setRequestHeader(new Header("User-Agent","Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_4_11; en) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.1 Safari/525.18"));
-
-		postMethod.setDoAuthentication(false);
-		postMethod.setFollowRedirects(false);
+		postMethod.setDoAuthentication(true);
 
 		log.info("Performing Login " + LOGIN_BASE_URL);
 		client.executeMethod(postMethod);
@@ -183,7 +180,7 @@ public abstract class BaseHandlerUnitT extends TestCase
 			login();
 			PutMethod method = new PutMethod(document);
 			method.setRequestHeader("Content-Type", "text/html");
-			method.setRequestHeader("Content-Encoding", "UTF-8");				
+			method.setRequestHeader("Content-Encoding", "UTF-8");
 			method.setRequestEntity(new ByteArrayRequestEntity(buffer, "text/html"));
 			client.executeMethod(method);
 			int code = method.getStatusCode();
