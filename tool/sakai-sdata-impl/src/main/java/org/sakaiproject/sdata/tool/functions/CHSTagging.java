@@ -149,7 +149,7 @@ public class CHSTagging implements Observer {
 			}
 			else 
 			{
-				log.info(" Event Resource "+r+" generated null entity");
+				log.warn(" Event Resource "+r+" generated null entity");
 			}
 		} 
 	}
