@@ -124,6 +124,8 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 		}
 		
 		GroupAwareEdit[] edit = new GroupAwareEdit[names.length];
+		Map<GroupAwareEdit , GroupAwareEdit> committedEdit = new HashMap<GroupAwareEdit, GroupAwareEdit>();
+
 		boolean committed = false;
 		try {
 			ResourcePropertiesEdit[] properties = new ResourcePropertiesEdit[names.length];
@@ -187,9 +189,7 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 				}
 	
 			}
-			Map<GroupAwareEdit , GroupAwareEdit> committedEdit = new HashMap<GroupAwareEdit, GroupAwareEdit>();
 			for ( int i = 0; i < edit.length; i++) {
-				log.info("Comitting "+edit[i].getId());
 				if (!committedEdit.containsKey(edit[i]) ) {
 					commitEntity(edit[i]);
 					committedEdit.put(edit[i], edit[i]);
@@ -201,10 +201,17 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 			{
 				for ( int i = 0; i < edit.length; i++) 
 				{
-					cancelEntity(edit[i]);
+					if (!committedEdit.containsKey(edit[i]) ) 
+					{
+						cancelEntity(edit[i]);
+						committedEdit.put(edit[i], edit[i]);
+					}
 				}				
 			}
-			cancelEntity(baseEdit);
+			if ( !committedEdit.containsKey(baseEdit) ) 
+			{
+				cancelEntity(baseEdit);
+			}
 		}
 
 		CHSNodeMap nm = new CHSNodeMap((ContentEntity) baseEdit, rp.getDepth(), rp);
