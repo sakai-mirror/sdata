@@ -103,7 +103,7 @@ public class CHSPermissionsFunction extends CHSSDataFunction {
 
 	public static final String WRITE = "write";
 
-	public static final String DELETE = "delete";
+	public static final String REMOVE = "remove";
 
 	public static final String ADMIN = "admin";
 
@@ -126,7 +126,7 @@ public class CHSPermissionsFunction extends CHSSDataFunction {
 				ContentHostingService.AUTH_RESOURCE_ADD });
 		permissionMap
 				.put(
-						DELETE,
+						REMOVE,
 						new String[] { ContentHostingService.AUTH_RESOURCE_REMOVE_ANY });
 		permissionMap.put(ADMIN,
 				new String[] { AuthzGroupService.SECURE_UPDATE_AUTHZ_GROUP });

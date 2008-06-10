@@ -108,7 +108,7 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 			String[] roles = { "access", "access", "maintain", "maintain",
 
 			};
-			String[] permissions = { "read", "write", "delete", "admin"
+			String[] permissions = { "read", "write", "remove", "admin"
 
 			};
 			String[] set = { CHSPermissionsFunction.SETVALUE, CHSPermissionsFunction.SETVALUE,
@@ -127,7 +127,7 @@ public class CHSPropertiesFuntionUnitT extends BaseHandlerUnitT
 			String[] roles = { "access", "access", "maintain", "maintain",
 
 			};
-			String[] permissions = { "read", "write", "delete", "admin"
+			String[] permissions = { "read", "write", "remove", "admin"
 
 			};
 			String[] set = { CHSPermissionsFunction.SETVALUE, CHSPermissionsFunction.SETVALUE,
