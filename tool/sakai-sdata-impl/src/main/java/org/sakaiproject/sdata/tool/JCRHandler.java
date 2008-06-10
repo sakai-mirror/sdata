@@ -984,7 +984,6 @@ public abstract class JCRHandler implements Handler
 	 */
 	public void setHandlerHeaders(HttpServletResponse response)
 	{
-		log.info("Setting SData Header " + this.getClass().getName());
 		response.setHeader("x-sdata-handler", this.getClass().getName());
 	}
 }
