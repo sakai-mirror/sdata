@@ -95,6 +95,10 @@ public class SiteBean implements ServiceDefinition
 			e.printStackTrace();
 		}
 
+		for (Site site : mysites)
+		{
+			log.error(site.getTitle() + " - " + site.getId());
+		}
 
 		/*
 		 * See whether the user is allowed to see this page
