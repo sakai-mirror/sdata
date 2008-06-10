@@ -22,49 +22,56 @@
 package org.sakaiproject.sdata.tool.functions;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.Kernel;
-import org.sakaiproject.entity.api.EntityManager;
+import org.sakaiproject.content.api.ContentEntity;
+import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.SDataException;
+import org.sakaiproject.sdata.tool.model.CHSNodeMap;
 
 /**
  * <p>
  * Get the list of tags on a site context.
  * </p>
  * <p>
- * <b>f=t</b>: Path  specifies the context.
+ * <b>f=t</b>: Path specifies the context.
  * </p>
  * <p>
  * <b>n</b>: The Name of the property
+ * 
  * @author ieb
  */
-public class CHSTaggingFunction extends CHSSDataFunction
-{
-
+public class CHSTaggingFunction extends CHSSDataFunction {
 
 	private static final String PROPERTY_NAME = "n";
+	private static final String PROPERTY_QUERY = "a";
+	private static final String PROPERTY_QUERY_VALUE = "q";
+	private static final String PROPERTY_NRESULTS = "c";
+	private static final String PROPERTY_START = "s";
+	private static final String ALL_TAGS = "a";
+	private static final String LIST_TAGS = "l";
+
 	private CHSTagging chsTagging;
 
-	
 	public CHSTaggingFunction() {
 		chsTagging = new CHSTagging();
 		chsTagging.init();
 	}
-	
+
 	@Override
 	public void destroy() {
 		chsTagging.destroy();
 		super.destroy();
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -75,36 +82,75 @@ public class CHSTaggingFunction extends CHSSDataFunction
 	 */
 	public void call(Handler handler, HttpServletRequest request,
 			HttpServletResponse response, Object target, ResourceDefinition rp)
-			throws SDataException
-	{
+			throws SDataException {
 		SDataFunctionUtil.checkMethod(request.getMethod(), "GET");
-		
+
 		String propertyName = request.getParameter(PROPERTY_NAME);
-		
+		String query = request.getParameter(PROPERTY_QUERY);
+		String nresultsParam = request.getParameter(PROPERTY_NRESULTS);
+		String startParam = request.getParameter(PROPERTY_START);
+		if (query == null || query.trim().length() == 0) {
+			query = ALL_TAGS;
+		}
+		int start = 0;
+		int nresults = 10;
+		if (startParam != null && startParam.length() > 0) {
+			try {
+				start = Integer.parseInt(startParam);
+			} catch (Exception ex) {
+			}
+		}
+		if (nresultsParam != null && nresultsParam.length() > 0) {
+			try {
+				nresults = Integer.parseInt(nresultsParam);
+			} catch (Exception ex) {
+			}
+		}
+
 		String path = rp.getRepositoryPath();
-		if  ( !path.endsWith("/") ) {
-			path = path+"/";
+		if (!path.endsWith("/")) {
+			path = path + "/";
 		}
 		String[] parts = path.split("/");
 		String context = parts[2];
-				
-		Map<String, Integer> distribution = chsTagging.getPropertyVector(context, propertyName);
-		
+
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("context", context);
 		result.put("name", propertyName);
-		result.put("distribution", distribution);
-		try
-		{
-			handler.sendMap(request, response, result);
+		if (ALL_TAGS.equals(query)) {
+			Map<String, Integer> distribution = chsTagging.getPropertyVector(
+					context, propertyName);
+
+			result.put("distribution", distribution);
+		} else if (LIST_TAGS.equals(query)) {
+			String queryValue = request.getParameter(PROPERTY_QUERY_VALUE);
+			String[] values = queryValue.split(",");
+
+			List<String> hits = chsTagging.getPropertyMatches(context,
+					propertyName, values, start, nresults);
+			List<Map<String, Object>> hitResults = new ArrayList<Map<String, Object>>();
+			for (String hit : hits) {
+				try {
+					if (hit.startsWith("/content")) {
+						hit = hit.substring("/content".length());
+					}
+					ContentEntity ce = getEntity(handler, hit);
+					if (ce != null) {
+						hitResults.add(new CHSNodeMap(ce, 0, rp));
+					}
+				} catch (PermissionException e) {
+				}
+			}
+			result.put("hits", hitResults);
 		}
-		catch (IOException e)
-		{
-			throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"IO Error " + e.getMessage());
+		try {
+			handler.sendMap(request, response, result);
+		} catch (IOException e) {
+			throw new SDataException(
+					HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "IO Error "
+							+ e.getMessage());
 		}
 
 	}
-
 
 }

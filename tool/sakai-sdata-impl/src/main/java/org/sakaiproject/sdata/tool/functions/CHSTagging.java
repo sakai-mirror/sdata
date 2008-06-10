@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,6 +28,11 @@ public class CHSTagging implements Observer {
 	private String[] indexFields = new String[] { "tag" };
 	private EventTrackingService eventTrackingService;
 	private EntityManager entityManager;
+	private String propertiesVectorSQL;
+	private String propertyMatchesSQL1;
+	private String propertyMatchesSQL2;
+	private String updateValueSQL;
+	private String deleteValueSQL;
 
 	public void init() {
 		sqlService = Kernel.sqlService();
@@ -34,6 +40,36 @@ public class CHSTagging implements Observer {
 		if (autoDDL) {
 			sqlService.ddl(this.getClass().getClassLoader(), "sdata_tagging");
 		}
+		
+		
+		// this should allow the SQL to go into property files.
+		String vendor = sqlService.getVendor();
+		try {
+			Properties p = new Properties();
+			p.load(this.getClass().getClassLoader().getResourceAsStream(vendor+"/sdata_tagging_queries.sql"));
+			propertiesVectorSQL = p.getProperty("propertiesVectorSQL");
+			propertyMatchesSQL1 = p.getProperty("propertyMatchesSQL1");
+			propertyMatchesSQL2 = p.getProperty("propertyMatchesSQL2");
+			updateValueSQL = p.getProperty("updateValueSQL");
+			deleteValueSQL = p.getProperty("deleteValueSQL");
+		} catch (Exception e) {
+			propertiesVectorSQL = "select propertyvalue, count(*)  "
+			+ "  from sdata_property_index " 
+			+ " where context = ? "
+			+ "   and propertyname = ? " 
+			+ "  group by propertyvalue ";
+			propertyMatchesSQL1 = "select reference  "
+				+ "  from sdata_property_index " + " where context = ? "
+				+ "   and propertyname = ? " + "   and propertyvalue in ( ";
+			propertyMatchesSQL2 = ") LIMIT ? OFFSET ?  ";
+			updateValueSQL = "insert into sdata_property_index ( context, reference, propertyname, propertyvalue )"
+				+ "values ( ?,?,?,? ) ";
+			deleteValueSQL = "delete " 
+				+ "  from sdata_property_index "
+				+ " where context = ? " 
+				+ "  and reference = ? ";
+		}
+		
 		
 		entityManager = Kernel.entityManager();
 		eventTrackingService = Kernel.eventTrackingService();
@@ -51,11 +87,7 @@ public class CHSTagging implements Observer {
 	public Map<String, Integer> getPropertyVector(String context,
 			String propertyName) {
 		List<?> results = sqlService.dbRead(
-				"select propertyvalue, count(*)  "
-				+ "  from sdata_property_index " 
-				+ " where context = ? "
-				+ "   and propertyname = ? " 
-				+ "  group by propertyvalue ",
+				propertiesVectorSQL,
 				new Object[] { context, propertyName }, new SqlReader() {
 
 					public Object readSqlResultRecord(ResultSet result) {
@@ -79,22 +111,22 @@ public class CHSTagging implements Observer {
 	}
 
 	public List<String> getPropertyMatches(String context, String propertyName,
-			String[] propertyValue) {
-		Object[] params = new Object[propertyValue.length + 2];
+			String[] propertyValue, int start, int nresults) {
+		Object[] params = new Object[propertyValue.length + 4];
 		params[0] = context;
 		params[1] = propertyName;
 		StringBuilder inTerm = new StringBuilder();
-		params[3] = propertyValue[0];
+		params[2] = propertyValue[0];
 		inTerm.append("?");
 		for (int i = 1; i < propertyValue.length; i++) {
 			params[i + 2] = propertyValue[i];
 			inTerm.append(",?");
 		}
+		params[propertyValue.length+2] = nresults;
+		params[propertyValue.length+3] = start;
 
-		List<?> results = sqlService.dbRead("select reference  "
-				+ "  from sdata_property_index " + " where context = ? "
-				+ "   and propertyname = ? " + "   and propertyvalue in ( "
-				+ inTerm.toString() + ") ", params, new SqlReader() {
+		List<?> results = sqlService.dbRead(propertyMatchesSQL1
+				+ inTerm.toString() + propertyMatchesSQL2, params, new SqlReader() {
 
 			public Object readSqlResultRecord(ResultSet result) {
 				try {
@@ -123,8 +155,7 @@ public class CHSTagging implements Observer {
 				for (Iterator<?> p = property.iterator(); p.hasNext();) {
 					sqlService
 							.dbWrite(
-									"insert into sdata_property_index ( context, reference, propertyname, propertyvalue )"
-											+ "values ( ?,?,?,? ) ", new Object[] {
+									updateValueSQL, new Object[] {
 											context, reference, indexField,
 											p.next() });
 				}
@@ -151,10 +182,7 @@ public class CHSTagging implements Observer {
 			log.debug("Removing Properties for "+context+" "+reference);
 		}
 		
-		sqlService.dbWrite("delete " 
-				+ "  from sdata_property_index "
-				+ " where context = ? " 
-				+ "  and reference = ? ", new Object[] {
+		sqlService.dbWrite(deleteValueSQL, new Object[] {
 				context, reference });
 	}
 	public void update(Observable o, Object evt) {
