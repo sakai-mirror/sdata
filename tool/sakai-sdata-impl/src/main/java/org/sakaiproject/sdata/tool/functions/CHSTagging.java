@@ -108,9 +108,14 @@ public class CHSTagging implements Observer {
 		return (List<String>) results;
 	}
 
-	public void update(String context, Entity entity) {
+	public void update(String reference, Entity entity) {
 		ResourceProperties properties = entity.getProperties();
-		remove(context, entity);
+		String context = getContext(reference);
+		remove(context,reference);
+		if ( log.isDebugEnabled() ) 
+		{
+			log.info("Adding Properties for "+context+" "+reference);
+		}
 		for (String indexField : indexFields) {
 			List<?> property = properties.getPropertyList(indexField);
 			if ( property != null ) 
@@ -120,7 +125,7 @@ public class CHSTagging implements Observer {
 							.dbWrite(
 									"insert into sdata_property_index ( context, reference, propertyname, propertyvalue )"
 											+ "values ( ?,?,?,? ) ", new Object[] {
-											context, entity.getId(), indexField,
+											context, reference, indexField,
 											p.next() });
 				}
 			} 
@@ -128,31 +133,53 @@ public class CHSTagging implements Observer {
 
 	}
 
-	public void remove(String context, Entity entity) {
+	public void remove(String reference) {
+		remove(getContext(reference), reference);
+	}
+	private String getContext(String reference) {
+		String[] parts = reference.split("/");
+		String context = "";
+		if ( parts.length > 3 ) {
+			context = parts[3];
+		}
+		return context;
+	}
+	public void remove(String context, String reference) 
+	{
+		if ( log.isDebugEnabled() ) 
+		{
+			log.debug("Removing Properties for "+context+" "+reference);
+		}
+		
 		sqlService.dbWrite("delete " 
 				+ "  from sdata_property_index "
 				+ " where context = ? " 
 				+ "  and reference = ? ", new Object[] {
-				context, entity.getId() });
+				context, reference });
 	}
 	public void update(Observable o, Object evt) {
 
 		Event event = (org.sakaiproject.event.api.Event) evt;
 		if (event.getEvent().startsWith("content")
 					&& !event.getEvent().equals("content.read")) {
+			
 			Reference r = entityManager.newReference(event.getResource());
-			Entity e = r.getEntity();
-			if ( e != null )
+			if ( event.getEvent().equals("content.delete") ) 
 			{
-				if ( event.getEvent().equals("content.delete") ) {
-					remove(r.getContext(), e);
-				} else {
-					update(r.getContext(),e);	
-				}
-			}
+				
+				remove(event.getResource());
+			} 
 			else 
 			{
-				log.warn(" Event Resource "+r+" generated null entity");
+				Entity e = r.getEntity();
+				if ( e != null )
+				{
+					update(event.getResource(),e);	
+				}
+				else 
+				{
+					log.warn(" Event Resource "+r+" generated null entity");
+				}
 			}
 		} 
 	}
