@@ -154,12 +154,12 @@ public class CHSPropertiesFunction extends CHSSDataFunction {
 
 			for (int i = 0; i < names.length; i++) {
 
-				if (log.isDebugEnabled()) {
-					log.debug("Property  ref=[" + edit[i].getId() + "] prop=["
-							+ names[i] + "] value=[" + values[i] + "] action=["
-							+ actions[i] + "]");
-				}
 				if (ADD.equals(actions[i])) {
+					if (log.isDebugEnabled()) {
+						log.info("ADD Property  ref=[" + edit[i].getId() + "] prop=["
+								+ names[i] + "] value=[" + values[i] + "] action=["
+								+ actions[i] + "]");
+					}
 					if (values[i] != null && values[i].length() > 0) {
 						List<?> p = properties[i].getPropertyList(names[i]);
 						if (p == null || p.size() == 0) {
@@ -176,8 +176,18 @@ public class CHSPropertiesFunction extends CHSSDataFunction {
 						}
 					}
 				} else if (REMOVE.equals(actions[i])) {
+					if (log.isDebugEnabled()) {
+						log.info("REMOVE Property  ref=[" + edit[i].getId() + "] prop=["
+								+ names[i] + "] value=[" + values[i] + "] action=["
+								+ actions[i] + "]");
+					}
 					properties[i].removeProperty(names[i]);
 				} else if (REPLACE.equals(actions[i])) {
+					if (log.isDebugEnabled()) {
+						log.info("REPLACE Property  ref=[" + edit[i].getId() + "] prop=["
+								+ names[i] + "] value=[" + values[i] + "] action=["
+								+ actions[i] + "]");
+					}
 					properties[i].removeProperty(names[i]);
 					if (values[i] != null && values[i].length() > 0) {
 						properties[i].addProperty(names[i], values[i]);
