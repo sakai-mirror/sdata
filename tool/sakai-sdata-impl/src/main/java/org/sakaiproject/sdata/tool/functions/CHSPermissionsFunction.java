@@ -38,14 +38,12 @@ import org.sakaiproject.authz.api.GroupIdInvalidException;
 import org.sakaiproject.authz.api.GroupNotDefinedException;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.api.RoleAlreadyDefinedException;
-import org.sakaiproject.content.api.ContentEntity;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.model.CHSGroupMap;
-import org.sakaiproject.sdata.tool.model.CHSNodeMap;
 
 /**
  * <h3>Overview</h3>
@@ -137,10 +135,11 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 		SDataFunctionUtil.checkMethod(request.getMethod(), "GET|POST");
 		if ("GET".equals(request.getMethod()))
 		{
-			ContentEntity ce;
+			
 			try
 			{
-				ce = getEntity(handler, rp.getRepositoryPath());
+				// check we can read the entity, but dont keep it
+				getEntity(handler, rp.getRepositoryPath());
 			}
 			catch (PermissionException e1)
 			{
@@ -148,16 +147,17 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 						"User is not allowed to edit permissions on "
 								+ rp.getRepositoryPath());
 			}
-			String authZGroupId = getAuthZGroup(ce);
+			
+			String ref = contentHostingService.getReference(rp.getRepositoryPath());			
 			AuthzGroup authZGroup;
 			try
 			{
-				authZGroup = authzGroupService.getAuthzGroup(authZGroupId);
+				authZGroup = authzGroupService.getAuthzGroup(ref);
 			}
 			catch (GroupNotDefinedException e1)
 			{
 				throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
-						"Realm "+authZGroupId+" does not exist for "
+						"Realm "+ref+" does not exist for "
 								+ rp.getRepositoryPath());
 			}
 			
@@ -178,52 +178,44 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 		else
 		{
 			
-			ContentEntity ce;
-			try
-			{
-				ce = getEntity(handler, rp.getRepositoryPath());
-			}
-			catch (PermissionException e1)
-			{
-				throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
-						"Content Entity not found for "
-								+ rp.getRepositoryPath());
-			}
-			String authZGroupId = getAuthZGroup(ce);
-			if (!authzGroupService.allowUpdate(authZGroupId))
-			{
+			try {
+				// check we can read the entity, but dont keep it
+				getEntity(handler, rp.getRepositoryPath());
+			} catch ( PermissionException ex1 ) {
 				throw new SDataException(HttpServletResponse.SC_FORBIDDEN,
 						"User is not allowed to edit permissions on "
-								+ rp.getRepositoryPath());
+								+ rp.getRepositoryPath());				
 			}
+			String ref = contentHostingService.getReference(rp.getRepositoryPath());
+			
 			// get the roles
-			AuthzGroup authZGroup;
+			AuthzGroup authZGroup = null;
 			try
 			{
-				authZGroup = authzGroupService.getAuthzGroup(authZGroupId);
+				authZGroup = authzGroupService.getAuthzGroup(ref);
 			}
 			catch (GroupNotDefinedException e1)
 			{
 				try
 				{
-					authZGroup = authzGroupService.addAuthzGroup(authZGroupId);
+					authZGroup = authzGroupService.addAuthzGroup(ref);
 				}
 				catch (GroupIdInvalidException e)
 				{
 					throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-							"Denied create Permissions group  "+authZGroupId+" id is invalid "
+							"Denied create Permissions group  "+ref+" id is invalid "
 									+ rp.getRepositoryPath());
 				}
 				catch (GroupAlreadyDefinedException e)
 				{
 					throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-							"Denied create Permissions group  "+authZGroupId+" already exists for "
+							"Denied create Permissions group  "+ref+" already exists for "
 									+ rp.getRepositoryPath());
 				}
 				catch (AuthzPermissionException e)
 				{
 					throw new SDataException(HttpServletResponse.SC_FORBIDDEN,
-							"Denied create Permissions group  "+authZGroupId+" "
+							"Denied create Permissions group  "+ref+" "
 									+ rp.getRepositoryPath());
 				}
 				
@@ -310,11 +302,11 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 						"User is not allowed to edit permissions on "
 								+ rp.getRepositoryPath());
 			}
+			
 
-			CHSNodeMap nm = new CHSNodeMap(ce, rp.getDepth(), rp);
 			try
 			{
-				handler.sendMap(request, response, nm);
+				handler.sendMap(request, response, new CHSGroupMap(authZGroup,permissionMap));
 			}
 			catch (IOException e)
 			{
@@ -323,11 +315,6 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 			}
 		}
 
-	}
-
-	private String getAuthZGroup(ContentEntity ce)
-	{
-		return ce.getId();
 	}
 
 }
