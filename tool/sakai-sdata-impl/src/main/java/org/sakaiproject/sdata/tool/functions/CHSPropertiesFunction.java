@@ -132,6 +132,7 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 				properties[i] = baseProperties;
 			}
 			if ( items != null ) {
+				Map<String, GroupAwareEdit> edits = new HashMap<String, GroupAwareEdit>();
 				String repositoryPath = rp.getRepositoryPath();
 				if (!repositoryPath.endsWith("/"))
 				{
@@ -140,7 +141,11 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 				for ( int i = 0; i < items.length; i++ ) {
 					if ( items[i].length() > 0 ) {
 						String p = repositoryPath+items[i];
-						edit[i] = editEntity(handler, null, p);
+						edit[i] = edits.get(p);
+						if ( edit[i] == null ) {
+							edit[i] = editEntity(handler, null, p);
+							edits.put(p, edit[i]);
+						}
 						properties[i] = edit[i].getPropertiesEdit();
 					}
 				}
@@ -199,6 +204,7 @@ public class CHSPropertiesFunction extends CHSSDataFunction
 					cancelEntity(edit[i]);
 				}				
 			}
+			cancelEntity(baseEdit);
 		}
 
 		CHSNodeMap nm = new CHSNodeMap((ContentEntity) baseEdit, rp.getDepth(), rp);
