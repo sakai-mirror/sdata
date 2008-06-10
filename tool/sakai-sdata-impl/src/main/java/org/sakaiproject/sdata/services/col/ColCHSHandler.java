@@ -30,13 +30,14 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 /**
+ * A collections handler for CHS that will generate a listing of a collection in JSON form.
  * @author ieb
  */
 public class ColCHSHandler extends JSONServiceHandler
 {
 
 	/**
-	 * TODO Javadoc
+	 * Seialization version number
 	 */
 	private static final long serialVersionUID = 1L;
 

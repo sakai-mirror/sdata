@@ -36,7 +36,7 @@ import org.sakaiproject.time.api.TimeService;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
- * TODO Javadoc
+ * The Quick Announcements Bean
  * 
  * @author
  */
@@ -45,10 +45,15 @@ public class QaBean implements ServiceDefinition
 	private Map<String, Object> map2 = new HashMap<String, Object>();;
 
 	/**
-	 * TODO Javadoc
+	 * Create a Quick announcements bean injecting the necessary services
 	 * 
 	 * @param sessionManager
+	 * @param messageservice
+	 * @param timeService
 	 * @param siteService
+	 * @param announcementService
+	 * @param request
+	 * @param response
 	 */
 	public QaBean(SessionManager sessionManager, MessageService messageservice,
 			TimeService timeService, SiteService siteService,

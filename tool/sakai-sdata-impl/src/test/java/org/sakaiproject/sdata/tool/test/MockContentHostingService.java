@@ -64,7 +64,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public MockContentHostingService()
 	{
-		// TODO Auto-generated constructor stub
 	}
 
 	/*
@@ -76,7 +75,6 @@ public class MockContentHostingService implements ContentHostingService
 			throws IdInvalidException, InconsistentException, IdUsedException,
 			PermissionException, ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -92,7 +90,6 @@ public class MockContentHostingService implements ContentHostingService
 			IdUsedException, PermissionException, OverQuotaException,
 			ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -108,7 +105,6 @@ public class MockContentHostingService implements ContentHostingService
 			InconsistentException, IdUsedException, PermissionException,
 			OverQuotaException, ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -120,7 +116,6 @@ public class MockContentHostingService implements ContentHostingService
 	public ContentCollectionEdit addCollection(String arg0) throws IdUsedException,
 			IdInvalidException, PermissionException, InconsistentException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -134,7 +129,6 @@ public class MockContentHostingService implements ContentHostingService
 			throws IdUsedException, IdInvalidException, PermissionException,
 			InconsistentException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -148,7 +142,6 @@ public class MockContentHostingService implements ContentHostingService
 			throws PermissionException, IdUnusedException, IdUsedException,
 			IdLengthException, IdInvalidException, TypeException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -163,7 +156,6 @@ public class MockContentHostingService implements ContentHostingService
 			Collection arg2) throws IdUsedException, IdInvalidException,
 			PermissionException, InconsistentException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -179,7 +171,6 @@ public class MockContentHostingService implements ContentHostingService
 			Collection arg2, boolean arg3, Time arg4, Time arg5) throws IdUsedException,
 			IdInvalidException, PermissionException, InconsistentException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -193,7 +184,6 @@ public class MockContentHostingService implements ContentHostingService
 			throws PermissionException, IdUnusedException, TypeException, InUseException,
 			ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -206,7 +196,6 @@ public class MockContentHostingService implements ContentHostingService
 			IdUsedException, IdInvalidException, InconsistentException,
 			ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -221,7 +210,6 @@ public class MockContentHostingService implements ContentHostingService
 			IdInvalidException, IdUnusedException, OverQuotaException,
 			ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -237,7 +225,6 @@ public class MockContentHostingService implements ContentHostingService
 			IdUsedException, IdInvalidException, InconsistentException,
 			OverQuotaException, ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -254,7 +241,6 @@ public class MockContentHostingService implements ContentHostingService
 			throws PermissionException, IdUsedException, IdInvalidException,
 			InconsistentException, OverQuotaException, ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -271,7 +257,6 @@ public class MockContentHostingService implements ContentHostingService
 			InconsistentException, IdLengthException, OverQuotaException,
 			ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -289,7 +274,6 @@ public class MockContentHostingService implements ContentHostingService
 			IdInvalidException, InconsistentException, IdLengthException,
 			OverQuotaException, ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -309,7 +293,6 @@ public class MockContentHostingService implements ContentHostingService
 			InconsistentException, IdLengthException, OverQuotaException,
 			ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -320,7 +303,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean allowAddAttachmentResource()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -331,7 +313,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean allowAddCollection(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -342,7 +323,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean allowAddProperty(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -353,7 +333,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean allowAddResource(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -365,7 +344,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean allowCopy(String arg0, String arg1)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -376,7 +354,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean allowGetCollection(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -387,7 +364,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean allowGetProperties(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -398,7 +374,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean allowGetResource(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -409,7 +384,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean allowRemoveCollection(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -420,7 +394,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean allowRemoveProperty(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -431,7 +404,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean allowRemoveResource(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -443,7 +415,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean allowRename(String arg0, String arg1)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -454,7 +425,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean allowUpdateCollection(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -465,7 +435,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean allowUpdateResource(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -477,7 +446,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public String archiveResources(List arg0, Document arg1, Stack arg2, String arg3)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -488,7 +456,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public void cancelCollection(ContentCollectionEdit arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -499,7 +466,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public void cancelResource(ContentResourceEdit arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -511,7 +477,6 @@ public class MockContentHostingService implements ContentHostingService
 	public void checkCollection(String arg0) throws IdUnusedException, TypeException,
 			PermissionException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -523,7 +488,6 @@ public class MockContentHostingService implements ContentHostingService
 	public void checkResource(String arg0) throws PermissionException, IdUnusedException,
 			TypeException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -534,7 +498,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public void commitCollection(ContentCollectionEdit arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -546,7 +509,6 @@ public class MockContentHostingService implements ContentHostingService
 	public void commitResource(ContentResourceEdit arg0) throws OverQuotaException,
 			ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -559,7 +521,6 @@ public class MockContentHostingService implements ContentHostingService
 	public void commitResource(ContentResourceEdit arg0, int arg1)
 			throws OverQuotaException, ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -570,7 +531,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean containsLockedNode(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -584,7 +544,6 @@ public class MockContentHostingService implements ContentHostingService
 			IdUnusedException, TypeException, InUseException, OverQuotaException,
 			IdUsedException, ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -599,7 +558,6 @@ public class MockContentHostingService implements ContentHostingService
 			IdUsedException, ServerOverloadException, InconsistentException,
 			IdLengthException, IdUniquenessException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -610,7 +568,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public void createDropboxCollection()
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -621,7 +578,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public void createDropboxCollection(String arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -632,7 +588,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public void createIndividualDropbox(String arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -644,7 +599,6 @@ public class MockContentHostingService implements ContentHostingService
 	public ContentCollectionEdit editCollection(String arg0) throws IdUnusedException,
 			TypeException, PermissionException, InUseException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -656,7 +610,6 @@ public class MockContentHostingService implements ContentHostingService
 	public ContentResourceEdit editResource(String arg0) throws PermissionException,
 			IdUnusedException, TypeException, InUseException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -667,7 +620,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public void eliminateDuplicates(Collection arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -679,7 +631,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public List findResources(String arg0, String arg1, String arg2)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -690,7 +641,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public List getAllEntities(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -701,7 +651,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public List getAllResources(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -713,7 +662,6 @@ public class MockContentHostingService implements ContentHostingService
 	public ContentCollection getCollection(String arg0) throws IdUnusedException,
 			TypeException, PermissionException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -724,7 +672,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public Map getCollectionMap()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -736,7 +683,6 @@ public class MockContentHostingService implements ContentHostingService
 	public int getCollectionSize(String arg0) throws IdUnusedException, TypeException,
 			PermissionException
 	{
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -747,7 +693,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public String getContainingCollectionId(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -759,7 +704,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public int getDepth(String arg0, String arg1)
 	{
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -770,7 +714,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public String getDropboxCollection()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -781,7 +724,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public String getDropboxCollection(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -792,7 +734,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public String getDropboxDisplayName()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -803,7 +744,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public String getDropboxDisplayName(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -814,7 +754,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public Collection getGroupsWithAddPermission(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -825,7 +764,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public Collection getGroupsWithReadAccess(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -836,7 +774,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public Collection getGroupsWithRemovePermission(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -847,7 +784,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public String getIndividualDropboxId(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -858,7 +794,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public Collection getLocks(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -870,7 +805,6 @@ public class MockContentHostingService implements ContentHostingService
 	public ResourceProperties getProperties(String arg0) throws PermissionException,
 			IdUnusedException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -881,7 +815,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public long getQuota(ContentCollection arg0)
 	{
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -892,7 +825,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public String getReference(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -904,7 +836,6 @@ public class MockContentHostingService implements ContentHostingService
 	public ContentResource getResource(String arg0) throws PermissionException,
 			IdUnusedException, TypeException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -916,7 +847,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public Collection<ContentResource> getResourcesOfType(String arg0, int arg1, int arg2)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -927,7 +857,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public String getSiteCollection(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -938,7 +867,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public String getUrl(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -950,7 +878,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public String getUrl(String arg0, String arg1)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -961,7 +888,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public String getUuid(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -972,7 +898,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean isAttachmentResource(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -983,7 +908,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean isAvailabilityEnabled()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -994,7 +918,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean isAvailable(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -1005,7 +928,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean isCollection(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -1016,7 +938,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean isContentHostingHandlersEnabled()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -1027,7 +948,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean isDropboxMaintainer()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -1038,7 +958,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean isDropboxMaintainer(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -1049,7 +968,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean isInDropbox(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -1060,7 +978,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean isInheritingPubView(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -1071,7 +988,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean isLocked(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -1082,7 +998,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean isPubView(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -1093,7 +1008,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean isRootCollection(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -1104,7 +1018,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean isShortRefs()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -1115,7 +1028,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean isSortByPriorityEnabled()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -1127,7 +1039,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public void lockObject(String arg0, String arg1, String arg2, boolean arg3)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -1141,7 +1052,6 @@ public class MockContentHostingService implements ContentHostingService
 			IdUnusedException, TypeException, InUseException, OverQuotaException,
 			IdUsedException, InconsistentException, ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1153,7 +1063,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public Comparator newContentHostingComparator(String arg0, boolean arg1)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1164,7 +1073,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public ResourcePropertiesEdit newResourceProperties()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1175,7 +1083,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public void removeAllLocks(String arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -1187,7 +1094,6 @@ public class MockContentHostingService implements ContentHostingService
 	public void removeCollection(String arg0) throws IdUnusedException, TypeException,
 			PermissionException, InUseException, ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -1199,7 +1105,6 @@ public class MockContentHostingService implements ContentHostingService
 	public void removeCollection(ContentCollectionEdit arg0) throws TypeException,
 			PermissionException, InconsistentException, ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -1211,7 +1116,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public void removeLock(String arg0, String arg1)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -1225,7 +1129,6 @@ public class MockContentHostingService implements ContentHostingService
 			throws PermissionException, IdUnusedException, TypeException, InUseException,
 			ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1237,7 +1140,6 @@ public class MockContentHostingService implements ContentHostingService
 	public void removeResource(String arg0) throws PermissionException,
 			IdUnusedException, TypeException, InUseException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -1248,7 +1150,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public void removeResource(ContentResourceEdit arg0) throws PermissionException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -1262,7 +1163,6 @@ public class MockContentHostingService implements ContentHostingService
 			IdUnusedException, TypeException, InUseException, OverQuotaException,
 			InconsistentException, IdUsedException, ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1273,7 +1173,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public String resolveUuid(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1285,7 +1184,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public void setPubView(String arg0, boolean arg1)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -1297,7 +1195,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public void setUuid(String arg0, String arg1) throws IdInvalidException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -1311,7 +1208,6 @@ public class MockContentHostingService implements ContentHostingService
 			throws PermissionException, IdUnusedException, TypeException, InUseException,
 			OverQuotaException, ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1322,7 +1218,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean usingResourceTypeRegistry()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -1335,7 +1230,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public String archive(String arg0, Document arg1, Stack arg2, String arg3, List arg4)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1346,7 +1240,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public Entity getEntity(Reference arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1358,7 +1251,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public Collection getEntityAuthzGroups(Reference arg0, String arg1)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1369,7 +1261,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public String getEntityDescription(Reference arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1380,7 +1271,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public ResourceProperties getEntityResourceProperties(Reference arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1391,7 +1281,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public String getEntityUrl(Reference arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1402,7 +1291,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public HttpAccess getHttpAccess()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1413,7 +1301,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public String getLabel()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1427,7 +1314,6 @@ public class MockContentHostingService implements ContentHostingService
 	public String merge(String arg0, Element arg1, String arg2, String arg3, Map arg4,
 			Map arg5, Set arg6)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1439,7 +1325,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean parseEntityReference(String arg0, Reference arg1)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -1450,7 +1335,6 @@ public class MockContentHostingService implements ContentHostingService
 	 */
 	public boolean willArchiveMerge()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 

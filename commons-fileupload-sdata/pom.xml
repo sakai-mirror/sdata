@@ -131,10 +131,6 @@
     <sourceDirectory>src/java</sourceDirectory>
     <testSourceDirectory>src/test</testSourceDirectory>
     <plugins>
-      <!--
-       TODO: remove the following when commons-parent is released
-             or switch to commons-parent 2-SNAPSHOT version
-       -->
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>

@@ -34,7 +34,7 @@ import org.sakaiproject.sdata.tool.api.SecurityAssertion;
 import org.sakaiproject.tool.api.Tool;
 
 /**
- * TODO Javadoc
+ * Base Class for a resource definition factory
  * 
  * @author ieb
  */
@@ -71,7 +71,7 @@ public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Get the ResourceDefinition bean based on the request
 	 * 
 	 * @param path
 	 * @return

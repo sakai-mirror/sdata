@@ -48,7 +48,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public void addAll(ResourceProperties arg0)
 	{
-		// TODO Auto-generated method stub
+
 
 	}
 
@@ -59,7 +59,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public void addAll(Properties arg0)
 	{
-		// TODO Auto-generated method stub
+
 
 	}
 
@@ -71,7 +71,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public void addProperty(String arg0, String arg1)
 	{
-		// TODO Auto-generated method stub
+
 
 	}
 
@@ -83,7 +83,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public void addPropertyToList(String arg0, String arg1)
 	{
-		// TODO Auto-generated method stub
+
 
 	}
 
@@ -94,7 +94,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public void clear()
 	{
-		// TODO Auto-generated method stub
+
 
 	}
 
@@ -105,7 +105,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public Object get(String arg0)
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -117,7 +117,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	public boolean getBooleanProperty(String arg0)
 			throws EntityPropertyNotDefinedException, EntityPropertyTypeException
 	{
-		// TODO Auto-generated method stub
+
 		return false;
 	}
 
@@ -128,7 +128,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public ContentHandler getContentHander()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -140,7 +140,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	public long getLongProperty(String arg0) throws EntityPropertyNotDefinedException,
 			EntityPropertyTypeException
 	{
-		// TODO Auto-generated method stub
+
 		return 0;
 	}
 
@@ -151,7 +151,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropAssignmentDeleted()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -162,7 +162,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropCalendarLocation()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -173,7 +173,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropCalendarType()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -184,7 +184,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropChatRoom()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -195,7 +195,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropCollectionBodyQuota()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -206,7 +206,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropContentLength()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -217,7 +217,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropContentType()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -228,7 +228,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropCopyright()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -239,7 +239,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropCopyrightAlert()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -250,7 +250,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropCopyrightChoice()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -261,7 +261,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropCreationDate()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -272,7 +272,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropCreator()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -283,7 +283,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropDescription()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -294,7 +294,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropDisplayName()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -305,7 +305,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropIsCollection()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -316,7 +316,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropModifiedBy()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -327,7 +327,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropModifiedDate()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -338,7 +338,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropNewAssignmentCheckAddDueDate()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -349,7 +349,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropNewAssignmentCheckAutoAnnounce()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -360,7 +360,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropReplyStyle()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -371,7 +371,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropStructObjType()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -382,7 +382,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropSubmissionPreviousFeedbackComment()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -393,7 +393,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropSubmissionPreviousFeedbackText()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -404,7 +404,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropSubmissionPreviousGrades()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -415,7 +415,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropSubmissionScaledPreviousGrades()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -426,7 +426,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getNamePropTo()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -437,7 +437,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getProperty(String arg0)
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -448,7 +448,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getPropertyFormatted(String arg0)
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -459,7 +459,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public List getPropertyList(String arg0)
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -470,7 +470,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public Iterator getPropertyNames()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -482,7 +482,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	public Time getTimeProperty(String arg0) throws EntityPropertyNotDefinedException,
 			EntityPropertyTypeException
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -493,7 +493,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public String getTypeUrl()
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
@@ -504,7 +504,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public boolean isLiveProperty(String arg0)
 	{
-		// TODO Auto-generated method stub
+
 		return false;
 	}
 
@@ -515,7 +515,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public void removeProperty(String arg0)
 	{
-		// TODO Auto-generated method stub
+
 
 	}
 
@@ -526,7 +526,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public void set(ResourceProperties arg0)
 	{
-		// TODO Auto-generated method stub
+
 
 	}
 
@@ -538,7 +538,7 @@ public class MockResourceProperites implements ResourcePropertiesEdit
 	 */
 	public Element toXml(Document arg0, Stack arg1)
 	{
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 

@@ -246,7 +246,7 @@ public abstract class CHSHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Gets an ContentEntity based on a repository path.
 	 * 
 	 * @param repositoryPath
 	 * @return
@@ -316,7 +316,8 @@ public abstract class CHSHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Extract the last modified date from the ContentResource, if none is present then 
+	 * assume that the last modified date is now.
 	 * 
 	 * @param cr
 	 * @return
@@ -338,7 +339,8 @@ public abstract class CHSHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Set the last modified date in the COntentResourceEdit to the supplied lastModified
+	 * date.
 	 * 
 	 * @param cre
 	 * @param lastModified
@@ -353,8 +355,7 @@ public abstract class CHSHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
-	 * 
+	 * If the request parameter "snoop" = 1 then dump the request to the logs
 	 * @param request
 	 */
 	private void snoopRequest(HttpServletRequest request)
@@ -564,15 +565,16 @@ public abstract class CHSHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Add a file to CHS, based on the supplied repository path, returning the uncommitted 
+	 * edit object
 	 * 
-	 * @param repositoryPath
-	 * @return
-	 * @throws ServerOverloadException
-	 * @throws InconsistentException
-	 * @throws IdInvalidException
-	 * @throws IdUsedException
-	 * @throws PermissionException
+	 * @param repositoryPath the path into the repository
+	 * @return an uncommitted edit object
+	 * @throws ServerOverloadException if the server has too many request
+	 * @throws InconsistentException 
+	 * @throws IdInvalidException If the id is invalid (repository path)
+	 * @throws IdUsedException If the file already exists
+	 * @throws PermissionException if permission was denied.
 	 */
 	private ContentResourceEdit addFile(String repositoryPath)
 			throws PermissionException, IdUsedException, IdInvalidException,
@@ -586,9 +588,9 @@ public abstract class CHSHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Get a folder
 	 * 
-	 * @param s
+	 * @param s the repository path, with or without trailing / (added if no present)
 	 */
 	protected ContentCollection getFolder(String path)
 	{
@@ -698,17 +700,15 @@ public abstract class CHSHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Save a stream of data to the underlying store
 	 * 
-	 * @param n
-	 * @param in
-	 * @param mimeType
-	 * @param charEncoding
-	 * @param gc
-	 * @throws ServerOverloadException
-	 * @throws OverQuotaException
-	 * @throws
-	 * @throws RepositoryException
+	 * @param cre The content resource edit object
+	 * @param in the input stream
+	 * @param mimeType the mime type of the stream
+	 * @param charEncoding the expected modification date
+	 * @param lastModified the date on which the stream was last modified.
+	 * @throws ServerOverloadException If the server was overloaded
+	 * @throws OverQuotaException If the user has no more file storage quota
 	 */
 	private long saveStream(ContentResourceEdit cre, InputStream in, String mimeType,
 			String charEncoding, Calendar lastModified) throws OverQuotaException,
@@ -886,14 +886,15 @@ public abstract class CHSHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Check the HTTP headers to see if they valid relative to the spec, if valid fill the 
+	 * ranges array with start and end byte offsets
 	 * 
-	 * @param request
-	 * @param response
-	 * @param lastModifiedTime
-	 * @param currentEtag
-	 * @param ranges
-	 * @return
+	 * @param request The http request object
+	 * @param response the http response object
+	 * @param lastModifiedTime the time the target entity was last modified (in the server) 
+	 * @param currentEtag the etag for the target entity. (in the server)
+	 * @param ranges an array of range offsets into the stream, filled with the current start and end, modified to contain the requested start and end
+	 * @return true if the response is ok
 	 * @throws IOException
 	 */
 	private boolean checkRanges(HttpServletRequest request, HttpServletResponse response,
@@ -1006,7 +1007,8 @@ public abstract class CHSHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Set the cache control headers in the response to values that will work for all versions
+	 * of HTTP
 	 * 
 	 * @param response
 	 */
@@ -1081,13 +1083,12 @@ public abstract class CHSHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Process a multipart upload, that may contain one or more parts each tagetted at a different file
 	 * 
-	 * @param request
-	 * @param response
-	 * @param path
-	 * @param rp
-	 * @throws ServletException
+	 * @param request THe request object
+	 * @param response the response object
+	 * @param rp THe resource definition from which the location in the repository will be derived
+	 * @throws ServletException 
 	 * @throws IOException
 	 */
 	private void doMumtipartUpload(HttpServletRequest request,
@@ -1224,7 +1225,7 @@ public abstract class CHSHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * The base path of this handler
 	 * 
 	 * @return the basePath
 	 */
@@ -1234,7 +1235,7 @@ public abstract class CHSHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * The base path of this handler
 	 * 
 	 * @param basePath
 	 *        the basePath to set

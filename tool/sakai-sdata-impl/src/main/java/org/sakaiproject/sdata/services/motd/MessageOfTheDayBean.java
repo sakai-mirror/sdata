@@ -28,6 +28,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.message.api.Message;
 import org.sakaiproject.message.api.MessageService;
@@ -38,12 +40,15 @@ import org.sakaiproject.time.api.TimeService;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
- * TODO Javadoc
+ * Message of the Day Bean generates the message of the day feed connecting to the underlying 
+ * Announcement API
  * 
  * @author
  */
 public class MessageOfTheDayBean implements ServiceDefinition
 {
+
+	private static final Log log = LogFactory.getLog(MessageOfTheDayBean.class);
 
 	private Map<String, Object> map2 = new HashMap<String, Object>();;
 
@@ -52,9 +57,11 @@ public class MessageOfTheDayBean implements ServiceDefinition
 	private List<Map> MyMotds = new ArrayList<Map>();
 
 	/**
-	 * TODO Javadoc
+	 * Create a Message of the Dat bean injecting the requred services
 	 * 
 	 * @param sessionManager
+	 * @param messageservice
+	 * @param timeService
 	 * @param siteService
 	 */
 	public MessageOfTheDayBean(SessionManager sessionManager,
@@ -64,7 +71,7 @@ public class MessageOfTheDayBean implements ServiceDefinition
 
 		try
 		{
-			// log.error(messageservice.toString());
+			log.error(messageservice);
 
 			// hardcoded because there does not seem to be a good way to do it
 			String ref = "/announcement/channel/!site/motd"; // messageservice.channelReference("!site",

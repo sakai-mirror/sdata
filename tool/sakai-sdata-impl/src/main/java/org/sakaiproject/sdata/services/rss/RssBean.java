@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * TODO Javadoc
+ * A RSS service definition bean
  * 
  * @author
  */
@@ -57,7 +57,7 @@ public class RssBean implements ServiceDefinition
 	private RssFeed rssFeed = new RssFeed();
 
 	/**
-	 * TODO Javadoc
+	 * Construct the service defintion bean for RSS
 	 * 
 	 * @param sessionManager
 	 * @param siteService

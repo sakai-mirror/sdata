@@ -33,7 +33,7 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 
 /**
- * TODO Javadoc
+ * Abstract base class for all service handlers.
  * 
  * @author ieb
  */
@@ -58,7 +58,7 @@ public abstract class ServiceHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Get the service definition factory for this service.
 	 * 
 	 * @return
 	 * @throws ServletException
@@ -67,7 +67,7 @@ public abstract class ServiceHandler implements Handler
 			throws ServletException;
 
 	/**
-	 * TODO Javadoc
+	 * Get the service definition factory, based on a configuration
 	 * 
 	 * @param config
 	 * @return

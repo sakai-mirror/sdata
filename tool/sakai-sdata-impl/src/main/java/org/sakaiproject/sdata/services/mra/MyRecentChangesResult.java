@@ -22,7 +22,7 @@
 package org.sakaiproject.sdata.services.mra;
 
 /**
- * TODO Javadoc
+ * Bean to represent recent changes
  * 
  * @author
  */
@@ -36,7 +36,7 @@ public class MyRecentChangesResult extends MyRecentChangesSqlresult
 	private String cleanVersion;
 
 	/**
-	 * TODO Javadoc
+	 * Construct by injection
 	 * 
 	 * @param context
 	 * @param name
@@ -54,7 +54,7 @@ public class MyRecentChangesResult extends MyRecentChangesSqlresult
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Empty constructor
 	 */
 	public MyRecentChangesResult()
 	{
@@ -62,7 +62,7 @@ public class MyRecentChangesResult extends MyRecentChangesSqlresult
 	}
 
 	/**
-	 * TODO Javadoc
+	 * The Site name of the change
 	 * 
 	 * @param sitename
 	 */
@@ -72,7 +72,7 @@ public class MyRecentChangesResult extends MyRecentChangesSqlresult
 	}
 
 	/**
-	 * TODO Javadoc
+	 * The site name of the change
 	 * 
 	 * @return
 	 */
@@ -82,7 +82,7 @@ public class MyRecentChangesResult extends MyRecentChangesSqlresult
 	}
 
 	/**
-	 * TODO Javadoc
+	 * The reference
 	 * 
 	 * @param reference
 	 */
@@ -92,7 +92,7 @@ public class MyRecentChangesResult extends MyRecentChangesSqlresult
 	}
 
 	/**
-	 * TODO Javadoc
+	 * The reference
 	 * 
 	 * @return
 	 */
@@ -102,7 +102,7 @@ public class MyRecentChangesResult extends MyRecentChangesSqlresult
 	}
 
 	/**
-	 * TODO Javadoc
+	 * 
 	 * 
 	 * @param cleanVersion
 	 */
@@ -112,7 +112,6 @@ public class MyRecentChangesResult extends MyRecentChangesSqlresult
 	}
 
 	/**
-	 * TODO Javadoc
 	 * 
 	 * @return
 	 */

@@ -26,12 +26,17 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  * @author ieb
  */
 public class ProgressInputStream extends InputStream
 {
+
+	private static final Log log = LogFactory.getLog(ProgressInputStream.class);
 
 	private InputStream in;
 
@@ -115,8 +120,7 @@ public class ProgressInputStream extends InputStream
 			}
 			catch (InterruptedException e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.warn(e.getMessage());
 			}
 		}
 		long now = System.currentTimeMillis();

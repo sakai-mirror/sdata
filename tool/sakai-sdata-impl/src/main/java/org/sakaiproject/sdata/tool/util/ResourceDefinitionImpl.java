@@ -28,7 +28,7 @@ import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.SecurityAssertion;
 
 /**
- * TODO Javadoc
+ * A default ResoruceDefition bean for file system services and functions.
  * 
  * @author ieb
  */
@@ -54,7 +54,7 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 	protected String method;
 
 	/**
-	 * TODO Javadoc
+	 * Create a filesystem or content resource definition bean
 	 * 
 	 * @param request
 	 * @param inbasePath
@@ -108,7 +108,8 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Clean the path up, removing // and training /, this is per the JCR spec, 
+	 * however CHS requires a trailing / on all collections, which (IMHO) is wrong.
 	 * 
 	 * @param repoPath2
 	 * @return
@@ -129,7 +130,7 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Get the repository path of this bean
 	 * 
 	 * @return
 	 */
@@ -139,7 +140,7 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Convert the path to an external path removing any repository prefix.
 	 * 
 	 * @param path2
 	 * @return
@@ -158,7 +159,7 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Get the repository path for a given local resource
 	 * 
 	 * @param name
 	 * @return
@@ -188,6 +189,9 @@ public class ResourceDefinitionImpl implements ResourceDefinition
 		return function;
 	}
 
+	/**
+	 * Get the depth of the request for recursive queries.
+	 */
 	public int getDepth()
 	{
 		return depth;

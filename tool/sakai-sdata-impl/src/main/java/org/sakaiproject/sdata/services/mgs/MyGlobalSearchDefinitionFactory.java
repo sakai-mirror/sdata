@@ -34,7 +34,7 @@ import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
- * TODO Javadoc
+ * Factory for SearchDefinition service beans
  * 
  * @author
  */
@@ -48,7 +48,7 @@ public class MyGlobalSearchDefinitionFactory implements ServiceDefinitionFactory
 	private ContentHostingService contentHostingService;
 
 	/**
-	 * TODO Javadoc
+	 * Create a new Global Search definition factory.
 	 */
 	public MyGlobalSearchDefinitionFactory()
 	{

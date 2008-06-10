@@ -61,7 +61,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public long getBodySizeK()
 	{
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -72,7 +71,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public int getMemberCount()
 	{
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -83,7 +81,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public List getMemberResources()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -94,7 +91,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public List getMembers()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -105,7 +101,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public Time getReleaseDate()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -116,7 +111,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public Time getRetractDate()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -127,7 +121,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public ContentCollection getContainingCollection()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -138,7 +131,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public ContentHostingHandler getContentHandler()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -149,7 +141,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public ContentEntity getMember(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -160,7 +151,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public String getResourceType()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -171,7 +161,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public String getUrl(boolean arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -182,7 +171,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public ContentEntity getVirtualContentEntity()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -193,7 +181,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public boolean isCollection()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -204,7 +191,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public boolean isResource()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -215,7 +201,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public void setContentHandler(ContentHostingHandler arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -226,7 +211,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public void setVirtualContentEntity(ContentEntity arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -237,7 +221,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public AccessMode getAccess()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -248,7 +231,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public Collection getGroupObjects()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -259,7 +241,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public Collection getGroups()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -270,7 +251,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public AccessMode getInheritedAccess()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -281,7 +261,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public Collection getInheritedGroupObjects()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -292,7 +271,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public Collection getInheritedGroups()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -303,7 +281,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public boolean isAvailable()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -314,7 +291,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public boolean isHidden()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -325,7 +301,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public String getId()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -336,7 +311,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public ResourceProperties getProperties()
 	{
-		// TODO Auto-generated method stub
 		return new MockResourceProperites();
 	}
 
@@ -347,7 +321,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public String getReference()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -358,7 +331,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public String getReference(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -369,7 +341,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public String getUrl()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -380,7 +351,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public String getUrl(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -392,7 +362,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public Element toXml(Document arg0, Stack arg1)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -403,7 +372,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public void setPriorityMap(Map arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -414,7 +382,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public ResourcePropertiesEdit getPropertiesEdit()
 	{
-		// TODO Auto-generated method stub
 		return new MockResourceProperites();
 	}
 
@@ -425,7 +392,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public boolean isActiveEdit()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -436,7 +402,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public void clearGroupAccess() throws InconsistentException, PermissionException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -447,7 +412,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public void clearPublicAccess() throws InconsistentException, PermissionException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -459,7 +423,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public void setAvailability(boolean arg0, Time arg1, Time arg2)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -471,7 +434,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	public void setGroupAccess(Collection arg0) throws InconsistentException,
 			PermissionException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -482,7 +444,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public void setHidden()
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -493,7 +454,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public void setPublicAccess() throws InconsistentException, PermissionException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -504,7 +464,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public void setReleaseDate(Time arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -515,7 +474,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public void setResourceType(String arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -526,7 +484,6 @@ public class MockContentCollection implements ContentCollectionEdit
 	 */
 	public void setRetractDate(Time arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 

@@ -33,9 +33,9 @@ import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
- * TODO javadoc
+ * A Factory to generate Service Definition beans for MyCourses and projects.
  * 
- * @author
+ * @author ieb
  */
 public class MyCoursesAndProjectsServiceDefinitionFactory implements
 		ServiceDefinitionFactory

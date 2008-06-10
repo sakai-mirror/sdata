@@ -41,7 +41,7 @@ public class JsonJcrUserStorageHandler extends JCRUserStorageHandler
 {
 
 	/**
-	 * TODO Javadoc
+	 * Create a JSON Jcr User storage handler
 	 */
 	public JsonJcrUserStorageHandler()
 	{

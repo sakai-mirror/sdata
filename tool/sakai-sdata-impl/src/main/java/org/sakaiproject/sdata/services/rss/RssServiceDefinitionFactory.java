@@ -30,16 +30,13 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 
 /**
- * TODO Javadoc
+ * The Service definition factory for RSS beans
  * 
  * @author
  */
 public class RssServiceDefinitionFactory implements ServiceDefinitionFactory
 {
 
-	/**
-	 * TODO Javadoc
-	 */
 	public RssServiceDefinitionFactory()
 	{
 

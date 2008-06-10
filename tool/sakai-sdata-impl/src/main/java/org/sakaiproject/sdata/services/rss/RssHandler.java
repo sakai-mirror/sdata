@@ -29,16 +29,13 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 /**
- * TODO Javadoc
+ * The Handler for the RSS service, based on JSON serialization
  * 
  * @author
  */
 public class RssHandler extends JSONServiceHandler
 {
 
-	/**
-	 * TODO Javadoc
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/*

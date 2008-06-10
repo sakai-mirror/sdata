@@ -37,7 +37,7 @@ import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.tool.api.Tool;
 
 /**
- * TODO Javadoc
+ * Dumps the contents of a JCR node
  * 
  * @author ieb
  */
@@ -117,7 +117,6 @@ public class JCRDumper implements Handler
 	public void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -130,7 +129,6 @@ public class JCRDumper implements Handler
 	public void doHead(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -143,7 +141,6 @@ public class JCRDumper implements Handler
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -156,7 +153,6 @@ public class JCRDumper implements Handler
 	public void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
-		// TODO Auto-generated method stub
 
 	}
 

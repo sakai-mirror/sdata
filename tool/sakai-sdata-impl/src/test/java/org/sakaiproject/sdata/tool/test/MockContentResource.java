@@ -61,7 +61,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public void setContent(byte[] arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -72,7 +71,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public void setContent(InputStream arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -83,7 +81,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public void setContentLength(int arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -94,7 +91,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public void setContentType(String arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -105,7 +101,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public byte[] getContent() throws ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -116,7 +111,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public int getContentLength()
 	{
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -127,7 +121,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public String getContentType()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -138,7 +131,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public InputStream streamContent() throws ServerOverloadException
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -149,7 +141,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public ContentCollection getContainingCollection()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -160,7 +151,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public ContentHostingHandler getContentHandler()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -171,7 +161,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public ContentEntity getMember(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -182,7 +171,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public String getResourceType()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -193,7 +181,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public String getUrl(boolean arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -204,7 +191,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public ContentEntity getVirtualContentEntity()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -215,7 +201,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public boolean isCollection()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -226,7 +211,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public boolean isResource()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -237,7 +221,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public void setContentHandler(ContentHostingHandler arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -248,7 +231,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public void setVirtualContentEntity(ContentEntity arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -259,7 +241,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public AccessMode getAccess()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -270,7 +251,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public Collection getGroupObjects()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -281,7 +261,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public Collection getGroups()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -292,7 +271,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public AccessMode getInheritedAccess()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -303,7 +281,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public Collection getInheritedGroupObjects()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -314,7 +291,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public Collection getInheritedGroups()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -325,7 +301,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public Time getReleaseDate()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -336,7 +311,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public Time getRetractDate()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -347,7 +321,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public boolean isAvailable()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -358,7 +331,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public boolean isHidden()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -379,7 +351,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public ResourceProperties getProperties()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -390,7 +361,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public String getReference()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -401,7 +371,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public String getReference(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -412,7 +381,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public String getUrl()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -423,7 +391,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public String getUrl(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -435,7 +402,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public Element toXml(Document arg0, Stack arg1)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -446,7 +412,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public ResourcePropertiesEdit getPropertiesEdit()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -457,7 +422,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public boolean isActiveEdit()
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -468,7 +432,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public void clearGroupAccess() throws InconsistentException, PermissionException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -479,7 +442,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public void clearPublicAccess() throws InconsistentException, PermissionException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -491,7 +453,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public void setAvailability(boolean arg0, Time arg1, Time arg2)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -503,7 +464,6 @@ public class MockContentResource implements ContentResourceEdit
 	public void setGroupAccess(Collection arg0) throws InconsistentException,
 			PermissionException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -514,7 +474,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public void setHidden()
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -525,7 +484,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public void setPublicAccess() throws InconsistentException, PermissionException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -536,7 +494,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public void setReleaseDate(Time arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -547,7 +504,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public void setResourceType(String arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -558,7 +514,6 @@ public class MockContentResource implements ContentResourceEdit
 	 */
 	public void setRetractDate(Time arg0)
 	{
-		// TODO Auto-generated method stub
 
 	}
 

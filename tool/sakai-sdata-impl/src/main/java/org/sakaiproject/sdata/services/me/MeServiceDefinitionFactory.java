@@ -34,7 +34,7 @@ import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.user.api.UserDirectoryService;
 
 /**
- * TODO Javadoc
+ * A Factory to generate service definition beans for Me Requests
  * 
  * @author
  */
@@ -48,7 +48,7 @@ public class MeServiceDefinitionFactory implements ServiceDefinitionFactory
 	private UserDirectoryService userDirectoryService;
 
 	/**
-	 * TODO Javadoc
+	 * Create a new MeServiceDefintionFactory
 	 */
 	public MeServiceDefinitionFactory()
 	{

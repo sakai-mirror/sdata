@@ -87,7 +87,6 @@ public class RssItem implements Comparable<RssItem>
 
 	public int compareTo(RssItem o)
 	{
-		// TODO Auto-generated method stub
 		if (o.getPubDate().before(pubDate))
 		{
 			return 0;

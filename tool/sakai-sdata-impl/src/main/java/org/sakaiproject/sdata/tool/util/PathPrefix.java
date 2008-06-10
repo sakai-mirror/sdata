@@ -29,7 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * TODO Javadoc
+ * Generate a path prefix based on the user id
  * 
  * @author ieb
  */
@@ -39,7 +39,9 @@ public class PathPrefix
 	private static final Log log = LogFactory.getLog(PathPrefix.class);
 
 	/**
-	 * TODO Javadoc
+	 * Generate a path using a SHA-1 hash split into path parts to generate a unique
+	 * path to the user information, that will not result in too many objects in each
+	 * folder.
 	 * 
 	 * @param user
 	 * @return

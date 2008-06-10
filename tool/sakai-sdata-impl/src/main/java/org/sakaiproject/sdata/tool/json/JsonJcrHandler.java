@@ -40,7 +40,7 @@ import org.sakaiproject.sdata.tool.api.SDataException;
 public class JsonJcrHandler extends JCRHandler
 {
 	/**
-	 * TODO Javadoc
+	 * Create a JSon JCR Handler
 	 */
 	public JsonJcrHandler()
 	{

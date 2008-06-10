@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.Kernel;
 import org.sakaiproject.announcement.api.AnnouncementMessage;
 import org.sakaiproject.announcement.api.AnnouncementService;
@@ -33,12 +35,14 @@ import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
- * TODO Javadoc
+ * A service definition bean for recent changes that the current user can see.
  * 
  * @author
  */
 public class MyRecentChangesBean implements ServiceDefinition
 {
+
+	private static final Log log = LogFactory.getLog(MyRecentChangesBean.class);
 
 	private List<Site> mySites;
 
@@ -59,7 +63,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 	private SessionManager sessionManager;
 
 	/**
-	 * TODO Javadoc
+	 * Create a recent changes bean with the number of pages.
 	 * 
 	 * @param paging
 	 */
@@ -78,31 +82,27 @@ public class MyRecentChangesBean implements ServiceDefinition
 		}
 		catch (PermissionException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn(e.getMessage());
 		}
 		catch (IdUnusedException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn(e.getMessage());
 		}
 		catch (TypeException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn(e.getMessage());
 		}
 		catch (ParseException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn(e.getMessage());
 		}
 
 	} // END CONSTRUCTOR
 
 	/**
-	 * TODO Javadoc
+	 * Perform a search for recent changes using the search engine
 	 * 
-	 * @param paging
+	 * @param paging the number of results to load
 	 * @throws PermissionException
 	 * @throws IdUnusedException
 	 * @throws TypeException
@@ -166,7 +166,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 				}
 				catch (IdUnusedException e)
 				{
-					e.printStackTrace();
+					log.debug("Failed to find site ",e);
 				}
 				for (int i = 0; i < mySites.size(); i++)
 				{
@@ -180,8 +180,7 @@ public class MyRecentChangesBean implements ServiceDefinition
 			}
 			catch (Exception e)
 			{
-				// TODO: handle exception
-				e.printStackTrace();
+				log.warn("Failed in My RecentChanges ",e);
 			}
 
 			// ////////
@@ -306,7 +305,6 @@ public class MyRecentChangesBean implements ServiceDefinition
 
 									for (Site s : mySites)
 									{
-										// TODO
 										if (mres.getContext().equals(s.getId()))
 										{
 
@@ -367,7 +365,6 @@ public class MyRecentChangesBean implements ServiceDefinition
 
 									for (Site s : mySites)
 									{
-										// TODO
 										if (mres.getContext().equals(s.getId()))
 										{
 
@@ -633,7 +630,6 @@ public class MyRecentChangesBean implements ServiceDefinition
 
 			if (lastLogin == null)
 			{
-				// TODO
 				resultMap.put("lastLogin", "NO USER LOGGED IN");
 
 			}

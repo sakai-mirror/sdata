@@ -35,7 +35,7 @@ import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 
 /**
- * TODO Javadoc
+ * A base class for Handling JSON service requests
  * 
  * @author ieb
  */
@@ -43,7 +43,7 @@ public class JSONServiceHandler extends ServiceHandler
 {
 
 	/**
-	 * TODO Javadoc
+	 * The serialization version number
 	 */
 	private static final long serialVersionUID = 1L;
 

@@ -29,16 +29,12 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 /**
- * TODO Javadoc
- * 
+ * A Handler for Quick Announcements for JSON feeds 
  * @author
  */
 public class QaHandler extends JSONServiceHandler
 {
 
-	/**
-	 * TODO Javadoc
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/*

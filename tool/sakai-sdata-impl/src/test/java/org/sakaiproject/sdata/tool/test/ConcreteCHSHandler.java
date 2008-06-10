@@ -59,7 +59,6 @@ public class ConcreteCHSHandler extends CHSHandler
 	public void sendError(HttpServletRequest request, HttpServletResponse response,
 			Throwable ex) throws IOException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -72,7 +71,6 @@ public class ConcreteCHSHandler extends CHSHandler
 	public void sendMap(HttpServletRequest request, HttpServletResponse response,
 			Map<String, Object> contetMap) throws IOException
 	{
-		// TODO Auto-generated method stub
 
 	}
 

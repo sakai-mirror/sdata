@@ -138,12 +138,9 @@ public class ControllerServlet extends HttpServlet
 	private Map<String, Handler> handlerRegister;
 
 	/**
-	 * TODO Javadoc
+	 * Dummy handler used for all those requests that cant be matched.
 	 */
-	private Handler nullHandler = new /**
-										 * @author ieb
-										 */
-	Handler()
+	private Handler nullHandler = new 	Handler()
 	{
 
 		private Random r = new Random(System.currentTimeMillis());
@@ -246,21 +243,19 @@ public class ControllerServlet extends HttpServlet
 		public void sendError(HttpServletRequest request, HttpServletResponse response,
 				Throwable ex) throws IOException
 		{
-			// TODO Auto-generated method stub
 
 		}
 
 		public void sendMap(HttpServletRequest request, HttpServletResponse response,
 				Map<String, Object> contetMap) throws IOException
 		{
-			// TODO Auto-generated method stub
 
 		}
 
 	};
 
 	/**
-	 * TODO Javadoc
+	 * Construct a Controller servlet
 	 */
 	public ControllerServlet()
 	{
@@ -323,7 +318,7 @@ public class ControllerServlet extends HttpServlet
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Load the configuration map from the serlet init params (multiple params)
 	 * 
 	 * @param config
 	 * @return
@@ -362,10 +357,10 @@ public class ControllerServlet extends HttpServlet
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Load the configuration map from a single string that is parsed
 	 * 
-	 * @param config
-	 * @return
+	 * @param config configuration in a string
+	 * @return a map of all configuration properties
 	 */
 	private Map<String, Map<String, String>> loadConfigMap(String config)
 	{
@@ -508,7 +503,7 @@ public class ControllerServlet extends HttpServlet
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Get the handler mapped to a request path.
 	 * 
 	 * @param request
 	 * @return

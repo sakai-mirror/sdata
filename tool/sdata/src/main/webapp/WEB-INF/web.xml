@@ -119,13 +119,6 @@
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
 
-
-  <listener>
-    <listener-class>
-      org.sakaiproject.sdata.services.mra.MyRecentChangesDbBean
-    </listener-class>
-  </listener>
-
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>

@@ -39,7 +39,7 @@ public abstract class JCRUserStorageHandler extends JCRHandler
 {
 
 	/**
-	 * TODO Javadoc
+	 * Create a JCR version of the User Storage handler
 	 */
 	public JCRUserStorageHandler()
 	{

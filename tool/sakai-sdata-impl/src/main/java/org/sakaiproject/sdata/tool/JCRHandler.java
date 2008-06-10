@@ -754,7 +754,7 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Set the cache control headers suitable for all HTTP protocol versions
 	 * 
 	 * @param response
 	 */
@@ -835,12 +835,12 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * Perform a mime multipart upload into the JCR repository based on a location specified by 
+	 * the rp parameter. The parts of the multipart upload are relative to the current request path
 	 * 
-	 * @param request
-	 * @param response
-	 * @param path
-	 * @param rp
+	 * @param request the request object of the current request.
+	 * @param response the response object of the current request
+	 * @param rp the resource definition for the current request
 	 * @throws ServletException
 	 * @throws IOException
 	 */
@@ -965,7 +965,7 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * The base path of the handler
 	 * 
 	 * @return the basePath
 	 */
@@ -975,7 +975,7 @@ public abstract class JCRHandler implements Handler
 	}
 
 	/**
-	 * TODO Javadoc
+	 * The base path of the handler
 	 * 
 	 * @param basePath
 	 *        the basePath to set

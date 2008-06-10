@@ -29,6 +29,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
@@ -44,12 +46,14 @@ import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 
 /**
- * TODO Javadoc
+ * The MeBean provides a service to get hold of information about the current user.
  * 
  * @author
  */
 public class MeBean implements ServiceDefinition
 {
+
+	private static final Log log = LogFactory.getLog(MeBean.class);
 
 	private Session currentSession;
 
@@ -58,7 +62,7 @@ public class MeBean implements ServiceDefinition
 	private Map<String, Object> map = new HashMap<String, Object>();
 
 	/**
-	 * TODO Javadoc
+	 * Create a me bean using the request and the injected services.
 	 * 
 	 * @param sessionManager
 	 * @param siteService
@@ -76,8 +80,7 @@ public class MeBean implements ServiceDefinition
 		}
 		catch (UserNotDefinedException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.debug(e);
 		}
 
 		// serialize user object
@@ -91,8 +94,7 @@ public class MeBean implements ServiceDefinition
 			}
 			catch (IOException e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error(e);
 			}
 
 		}
@@ -107,17 +109,19 @@ public class MeBean implements ServiceDefinition
 
 				map.put("workspace", myWorkSite.getId());
 
-				List<SitePage> pages = (List<SitePage>) myWorkSite.getOrderedPages();
+				List<?> pages = (List<?>) myWorkSite.getOrderedPages();
 
-				for (SitePage page : pages)
+				for (Iterator<?> ipage = pages.iterator(); ipage.hasNext(); )
 				{
+					SitePage page = (SitePage) ipage.next();
 
-					List<ToolConfiguration> lst = (List<ToolConfiguration>) page
+					List<?> lst =  page
 							.getTools();
 
-					for (ToolConfiguration conf : lst)
+					for (Iterator<?> iconf = lst.iterator(); iconf.hasNext(); ) 
 					{
-
+						ToolConfiguration conf = (ToolConfiguration) iconf.next();
+				
 						Tool t = conf.getTool();
 
 						if (t != null && t.getId() != null)
@@ -141,8 +145,7 @@ public class MeBean implements ServiceDefinition
 			}
 			catch (IdUnusedException e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error(e);
 			}
 
 			map.put("userid", user.getId());
@@ -171,11 +174,11 @@ public class MeBean implements ServiceDefinition
 
 			Map<String, Object> properties = new HashMap<String, Object>();
 			ResourceProperties p = user.getProperties();
-			for (Iterator<String> i = p.getPropertyNames(); i.hasNext();)
+			for (Iterator<?> i = p.getPropertyNames(); i.hasNext();)
 			{
 
-				String pname = i.next();
-				List<String> l = p.getPropertyList(pname);
+				String pname = (String) i.next();
+				List<?> l = p.getPropertyList(pname);
 				if (l.size() == 1)
 				{
 					properties.put(pname, l.get(0));

@@ -30,13 +30,14 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 /**
+ * Generates a json representation of a collection
  * @author ieb
  */
 public class ColHandler extends JSONServiceHandler
 {
 
 	/**
-	 * TODO Javadoc
+	 * Seialization version number
 	 */
 	private static final long serialVersionUID = 1L;
 

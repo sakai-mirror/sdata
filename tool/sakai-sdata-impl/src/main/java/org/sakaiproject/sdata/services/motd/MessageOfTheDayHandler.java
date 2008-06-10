@@ -29,16 +29,13 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 /**
- * TODO Javadoc
+ * Handler for message of the day serice, in JSON form
  * 
  * @author
  */
 public class MessageOfTheDayHandler extends JSONServiceHandler
 {
 
-	/**
-	 * TODO Javadoc
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/*

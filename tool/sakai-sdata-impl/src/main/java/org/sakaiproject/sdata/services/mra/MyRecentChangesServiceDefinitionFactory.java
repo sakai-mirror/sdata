@@ -30,7 +30,7 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 
 /**
- * TODO Javadoc
+ * A Definition Factory for MyRecentChanges
  * 
  * @author
  */
@@ -38,7 +38,6 @@ public class MyRecentChangesServiceDefinitionFactory implements ServiceDefinitio
 {
 
 	/**
-	 * TODO Javadoc
 	 */
 	public MyRecentChangesServiceDefinitionFactory()
 	{

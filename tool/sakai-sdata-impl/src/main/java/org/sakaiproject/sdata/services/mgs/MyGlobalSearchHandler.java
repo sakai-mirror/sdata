@@ -29,16 +29,13 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 /**
- * TODO Javadoc
+ * A Handler for GLobal search
  * 
  * @author
  */
 public class MyGlobalSearchHandler extends JSONServiceHandler
 {
 
-	/**
-	 * TODO Javadoc
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/*

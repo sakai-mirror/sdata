@@ -36,7 +36,7 @@ import org.sakaiproject.time.api.TimeService;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
- * TODO Javadoc
+ * A service definition factory for the Quick Announcements service
  * 
  * @author
  */
@@ -54,14 +54,14 @@ public class QaDefinitionFactory implements ServiceDefinitionFactory
 	private TimeService timeService;
 
 	/**
-	 * TODO Javadoc
+	 * Create a the Quick Announcements Service Definition Factory
 	 */
 	public QaDefinitionFactory()
 	{
 		siteService = Kernel.siteService();
 		sessionManager = Kernel.sessionManager();
 		announcementService = Kernel.announcementService();
-		messageService = Kernel.messageService();
+		messageService = Kernel.announcementService();
 		timeService = Kernel.timeService();
 	}
 

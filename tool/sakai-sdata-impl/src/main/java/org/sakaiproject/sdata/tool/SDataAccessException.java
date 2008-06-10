@@ -41,7 +41,6 @@ public class SDataAccessException extends SDataException
 	public SDataAccessException(int code, String string)
 	{
 		super(code, string);
-		// TODO Auto-generated constructor stub
 	}
 
 }

@@ -134,6 +134,7 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 		entitiyManager = Kernel.entityManager();
 	}
 
+	// FIXME: permissions are not getting set, and not gettingset on the right realm, we need to work out what is right
 	@SuppressWarnings("unchecked")
 	public void call(Handler handler, HttpServletRequest request,
 			HttpServletResponse response, Object target, ResourceDefinition rp)
@@ -219,6 +220,8 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 			String ref = contentHostingService.getReference(rp.getRepositoryPath());
 			
 			// get the roles
+			
+			
 			AuthzGroup authZGroup = null;
 			try
 			{
@@ -251,6 +254,8 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 				
 				
 			}
+			
+			log.info("Created AuthZGroup for "+authZGroup.getId());
 
 			// validate the request
 			String[] roles = request.getParameterValues(ROLE);

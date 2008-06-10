@@ -183,15 +183,6 @@ public class Kernel
 		return announcementService;
 	}
 
-	public static MessageService messageService()
-	{
-		if (messageService == null)
-		{
-			messageService = (MessageService) componentManager().get(
-					MessageService.class.getName());
-		}
-		return messageService;
-	}
 
 	public static TimeService timeService()
 	{

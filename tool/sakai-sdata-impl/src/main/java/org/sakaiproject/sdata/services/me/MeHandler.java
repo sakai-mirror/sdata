@@ -29,16 +29,13 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 /**
- * TODO Javadoc
+ * A Me Handler to manage requests, and respond in JSON format
  * 
  * @author
  */
 public class MeHandler extends JSONServiceHandler
 {
 
-	/**
-	 * TODO Javadoc
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/*

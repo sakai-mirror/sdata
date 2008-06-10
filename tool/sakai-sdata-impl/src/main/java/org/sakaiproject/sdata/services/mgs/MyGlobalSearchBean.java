@@ -45,7 +45,7 @@ import org.sakaiproject.site.api.SiteService.SortType;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
- * TODO Javadoc
+ * Service bean for Global search giving access to the search service in Sakai
  * 
  * @author
  */
@@ -66,7 +66,7 @@ public class MyGlobalSearchBean implements ServiceDefinition
 	private Site currentSite = null;
 
 	/**
-	 * TODO Javadoc
+	 * Create a search bean injecting the necessary services
 	 * 
 	 * @param sessionManager
 	 * @param siteService
@@ -91,8 +91,7 @@ public class MyGlobalSearchBean implements ServiceDefinition
 			}
 			catch (IdUnusedException e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error(e);
 			}
 
 			for (Site s : sites)
@@ -318,8 +317,7 @@ public class MyGlobalSearchBean implements ServiceDefinition
 				map2.put("total", "0");
 				map2.put("items", searchList);
 
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				log.warn(e1.getMessage());
 			}
 
 		}

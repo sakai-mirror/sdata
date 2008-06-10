@@ -35,7 +35,7 @@ import org.sakaiproject.time.api.TimeService;
 import org.sakaiproject.tool.api.SessionManager;
 
 /**
- * TODO Javadoc
+ * Definition Factory for Message of the Day service
  * 
  * @author
  */
@@ -51,14 +51,14 @@ public class MessageOfTheDayDefinitionFactory implements ServiceDefinitionFactor
 	private TimeService timeService;
 
 	/**
-	 * TODO Javadoc
+	 * Create a message of the day service
 	 */
 	public MessageOfTheDayDefinitionFactory()
 	{
 		siteService = Kernel.siteService();
 		sessionManager = Kernel.sessionManager();
 
-		messageService = Kernel.messageService();
+		messageService = Kernel.announcementService();
 
 		timeService = Kernel.timeService();
 	}

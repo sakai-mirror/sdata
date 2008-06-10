@@ -50,8 +50,6 @@ public class MockComponentManager implements UnitTestComponentManager
 	 */
 	public void close()
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	/*
@@ -61,7 +59,6 @@ public class MockComponentManager implements UnitTestComponentManager
 	 */
 	public boolean contains(Class arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -72,7 +69,6 @@ public class MockComponentManager implements UnitTestComponentManager
 	 */
 	public boolean contains(String arg0)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -83,7 +79,6 @@ public class MockComponentManager implements UnitTestComponentManager
 	 */
 	public Object get(Class arg0)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -104,7 +99,6 @@ public class MockComponentManager implements UnitTestComponentManager
 	 */
 	public Properties getConfig()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -115,7 +109,6 @@ public class MockComponentManager implements UnitTestComponentManager
 	 */
 	public Set getRegisteredInterfaces()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -137,7 +130,6 @@ public class MockComponentManager implements UnitTestComponentManager
 	 */
 	public void loadComponent(Class arg0, Object arg1)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -149,7 +141,6 @@ public class MockComponentManager implements UnitTestComponentManager
 	 */
 	public void loadComponent(String arg0, Object arg1)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -160,7 +151,6 @@ public class MockComponentManager implements UnitTestComponentManager
 	 */
 	public void waitTillConfigured()
 	{
-		// TODO Auto-generated method stub
 
 	}
 

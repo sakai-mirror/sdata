@@ -25,11 +25,13 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 
+import org.sakaiproject.Kernel;
+import org.sakaiproject.event.api.EventTrackingService;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 
 /**
- * TODO Javadoc
+ * The Handler for recent changes.
  * 
  * @author
  */
@@ -37,7 +39,14 @@ public class MyRecentChangesHandler extends JSONServiceHandler
 {
 
 	private static final long serialVersionUID = 1L;
+	private EventTrackingService eventTrackingService;
+	private MyRecentChangesObserver observer;
 
+    public MyRecentChangesHandler() {
+    	observer = new MyRecentChangesObserver();
+    	eventTrackingService = Kernel.eventTrackingService();
+    	eventTrackingService.addLocalObserver(observer);
+    }	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -48,6 +57,16 @@ public class MyRecentChangesHandler extends JSONServiceHandler
 			throws ServletException
 	{
 		return new MyRecentChangesServiceDefinitionFactory();
+	}
+	
+	@Override
+	public void init(Map<String, String> config) throws ServletException {
+		super.init(config);
+	}
+	@Override
+	public void destroy() {
+		eventTrackingService.deleteObserver(observer);
+		super.destroy();
 	}
 
 	/*

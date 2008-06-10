@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.db.api.SqlReader;
 
 /**
- * TODO Javadoc
+ *  reader to read MyRecentChanges
  * 
  * @author
  */

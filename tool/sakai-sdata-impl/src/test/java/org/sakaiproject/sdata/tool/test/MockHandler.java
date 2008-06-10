@@ -139,7 +139,6 @@ public class MockHandler implements Handler
 	public void sendError(HttpServletRequest request, HttpServletResponse response,
 			Throwable ex) throws IOException
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -152,7 +151,6 @@ public class MockHandler implements Handler
 	public void sendMap(HttpServletRequest request, HttpServletResponse response,
 			Map<String, Object> contetMap) throws IOException
 	{
-		// TODO Auto-generated method stub
 
 	}
 

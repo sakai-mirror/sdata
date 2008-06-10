@@ -30,6 +30,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.javax.PagingPosition;
@@ -57,6 +59,8 @@ import org.sakaiproject.tool.api.Tool;
  */
 public class MyCoursesAndProjectsBean implements ServiceDefinition
 {
+
+	private static final Log log = LogFactory.getLog(MyCoursesAndProjectsBean.class);
 
 	private List<Site> mysites;
 
@@ -137,8 +141,7 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 					}
 					catch (IdUnusedException e)
 					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.error(e);
 					}
 
 					for (Site site : mysites)
@@ -392,16 +395,14 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 				}
 				catch (IdUnusedException e)
 				{
-					// TODO Auto-generated catch block
 					map2.put("status", "failed");
+					log.warn(e.getMessage());
 					e.printStackTrace();
 				}
 				catch (PermissionException e)
 				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.warn(e.getMessage());
 					map2.put("status", "permission denied");
-					e.printStackTrace();
 				}
 				finally
 				{
@@ -431,14 +432,12 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 				}
 				catch (IdUnusedException e)
 				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.warn(e.getMessage());
 					map2.put("status", "failed");
 				}
 				catch (PermissionException e)
 				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.warn(e.getMessage());
 					map2.put("status", "failed");
 
 				}

@@ -218,7 +218,7 @@ public class StreamRequestFilter extends RequestFilter
 		// set this as the current session
 		sessionManager.setCurrentSession(s);
 
-		// if we had a cookie and we have no session, clear the cookie TODO:
+		// if we had a cookie and we have no session, clear the cookie 
 		// detect closed session in the request
 		if ((s == null) && (c != null))
 		{
