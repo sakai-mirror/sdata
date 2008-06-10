@@ -53,7 +53,7 @@ public class CHSCreateFolder extends CHSSDataFunction
 			throws SDataException
 	{
 
-		SDataFunctionUtil.checkMethod(request.getMethod(), "POST");
+		SDataFunctionUtil.checkMethod(request.getMethod(), "GET");
 		try
 		{
 
