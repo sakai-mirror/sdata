@@ -114,6 +114,7 @@ public class CHSNodeMap extends HashMap<String, Object>
 		}
 
 		ContentCollection cc = (ContentCollection) n;
+		put("members",cc.getMemberCount());
 		if (depth >= 0)
 		{
 
