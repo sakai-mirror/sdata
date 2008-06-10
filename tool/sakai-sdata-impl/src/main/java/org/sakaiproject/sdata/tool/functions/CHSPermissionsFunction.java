@@ -62,7 +62,7 @@ import org.sakaiproject.sdata.tool.model.CHSGroupMap;
  * <li>Parameter Name: Description</li>
  * <li>f: <b>pm</b> Identifies the function</li>
  * <li>role: <b>access</b> The role to set the parameter on</li>
- * <li>perm: <b>read|write|remove|admin</b> The permission to set</li>
+ * <li>perm: <b>read|write|delete|admin</b> The permission to set</li>
  * <li>set: <b>1|0</b> Set or Unset</li>
  * </ul>
  * <h3>Description</h3>
@@ -88,10 +88,10 @@ import org.sakaiproject.sdata.tool.model.CHSGroupMap;
  * 
  * @author ieb
  */
-public class CHSPermissionsFunction extends CHSSDataFunction
-{
+public class CHSPermissionsFunction extends CHSSDataFunction {
 
-	private static final Log log = LogFactory.getLog(CHSPermissionsFunction.class);
+	private static final Log log = LogFactory
+			.getLog(CHSPermissionsFunction.class);
 
 	public static final String ROLE = "role";
 
@@ -103,7 +103,7 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 
 	public static final String WRITE = "write";
 
-	public static final String REMOVE = "remove";
+	public static final String DELETE = "delete";
 
 	public static final String ADMIN = "admin";
 
@@ -117,235 +117,247 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 
 	private EntityManager entitiyManager;
 
-
-	public CHSPermissionsFunction()
-	{
+	public CHSPermissionsFunction() {
 		permissionMap = new HashMap<String, String[]>();
-		permissionMap
-				.put(READ, new String[] { ContentHostingService.AUTH_RESOURCE_READ });
+		permissionMap.put(READ,
+				new String[] { ContentHostingService.AUTH_RESOURCE_READ });
 		permissionMap.put(WRITE, new String[] {
 				ContentHostingService.AUTH_RESOURCE_WRITE_ANY,
 				ContentHostingService.AUTH_RESOURCE_ADD });
-		permissionMap.put(REMOVE,
-				new String[] { ContentHostingService.AUTH_RESOURCE_REMOVE_ANY });
+		permissionMap
+				.put(
+						DELETE,
+						new String[] { ContentHostingService.AUTH_RESOURCE_REMOVE_ANY });
 		permissionMap.put(ADMIN,
 				new String[] { AuthzGroupService.SECURE_UPDATE_AUTHZ_GROUP });
 		authzGroupService = Kernel.authzGroupService();
 		entitiyManager = Kernel.entityManager();
 	}
 
-	// FIXME: permissions are not getting set, and not gettingset on the right realm, we need to work out what is right
+	// FIXME: permissions are not getting set, and not getting set on the right
+	// realm, we need to work out what is right
 	@SuppressWarnings("unchecked")
 	public void call(Handler handler, HttpServletRequest request,
 			HttpServletResponse response, Object target, ResourceDefinition rp)
-			throws SDataException
-	{
+			throws SDataException {
 		SDataFunctionUtil.checkMethod(request.getMethod(), "GET|POST");
-		if ("GET".equals(request.getMethod()))
-		{
-			
-			try
-			{
-				// check we can read the entity, but dont keep it
-				getEntity(handler, rp.getRepositoryPath());
-			}
-			catch (PermissionException e1)
-			{
-				throw new SDataException(HttpServletResponse.SC_FORBIDDEN,
-						"User is not allowed to edit permissions on "
-								+ rp.getRepositoryPath());
-			}
-			
-			
-			String ref = contentHostingService.getReference(rp.getRepositoryPath());
-			log.info("Got Reference "+ref);
-			Reference reference = entitiyManager.newReference(ref);
-			Collection<?> groups = reference.getAuthzGroups();			
-			AuthzGroup authZGroup = null;
-			String authZGroupId = null;
-			for ( Iterator<?> igroups = groups.iterator(); igroups.hasNext(); ) {
-				String groupId = (String) igroups.next();
-				try
-				{
-					if ( authZGroupId == null  ) {
-						authZGroup = authzGroupService.getAuthzGroup(groupId);
-						authZGroupId = groupId;
-					} else {
-						if ( authZGroupId.length() < groupId.length()) {
-							authZGroup = authzGroupService.getAuthzGroup(groupId);
-							authZGroupId = groupId;
-						}
-					}
-					break;
-				}
-				catch (GroupNotDefinedException e1)
-				{
-					log.info("Didnt get "+groupId);
-				}
-			}
-				
-			if ( authZGroup == null ) 
-			{
-				throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
-						"Realm "+ref+" does not exist for "
-								+ rp.getRepositoryPath());
-			}
-			log.info("Got "+authZGroup+" for "+authZGroupId);
-			
-			
-			
-			
-			try
-			{
-				handler.sendMap(request, response, new CHSGroupMap(authZGroup,permissionMap));
-			}
-			catch (IOException e)
-			{
-				throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-						"IO Error " + e.getMessage());
-			}
+		if ("GET".equals(request.getMethod())) {
 
-		}
-		else
-		{
-			
 			try {
 				// check we can read the entity, but dont keep it
 				getEntity(handler, rp.getRepositoryPath());
-			} catch ( PermissionException ex1 ) {
+			} catch (PermissionException e1) {
 				throw new SDataException(HttpServletResponse.SC_FORBIDDEN,
 						"User is not allowed to edit permissions on "
-								+ rp.getRepositoryPath());				
+								+ rp.getRepositoryPath());
 			}
-			String ref = contentHostingService.getReference(rp.getRepositoryPath());
-			
-			// get the roles
-			
-			
-			AuthzGroup authZGroup = null;
-			try
-			{
-				authZGroup = authzGroupService.getAuthzGroup(ref);
-			}
-			catch (GroupNotDefinedException e1)
-			{
-				try
-				{
-					authZGroup = authzGroupService.addAuthzGroup(ref);
-				}
-				catch (GroupIdInvalidException e)
-				{
-					throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-							"Denied create Permissions group  "+ref+" id is invalid "
-									+ rp.getRepositoryPath());
-				}
-				catch (GroupAlreadyDefinedException e)
-				{
-					throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-							"Denied create Permissions group  "+ref+" already exists for "
-									+ rp.getRepositoryPath());
-				}
-				catch (AuthzPermissionException e)
-				{
-					throw new SDataException(HttpServletResponse.SC_FORBIDDEN,
-							"Denied create Permissions group  "+ref+" "
-									+ rp.getRepositoryPath());
-				}
-				
-				
-			}
-			
-			log.info("Created AuthZGroup for "+authZGroup.getId());
 
+			String ref = contentHostingService.getReference(rp
+					.getRepositoryPath());
+			log.info("Got Reference " + ref);
+			Reference reference = entitiyManager.newReference(ref);
+			Collection<?> groups = reference.getAuthzGroups();
+			AuthzGroup authZGroup = null;
+			String authZGroupId = null;
+			for (Iterator<?> igroups = groups.iterator(); igroups.hasNext();) {
+				String groupId = (String) igroups.next();
+				try {
+					if (authZGroupId == null) {
+						authZGroup = authzGroupService.getAuthzGroup(groupId);
+						authZGroupId = groupId;
+					} else {
+						if (authZGroupId.length() < groupId.length()) {
+							authZGroup = authzGroupService
+									.getAuthzGroup(groupId);
+							authZGroupId = groupId;
+						}
+					}
+				} catch (GroupNotDefinedException e1) {
+					log.info("Didnt get " + groupId);
+				}
+			}
+
+			if (authZGroup == null) {
+				throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
+						"Realm " + ref + " does not exist for "
+								+ rp.getRepositoryPath());
+			}
+			log.info("Got " + authZGroup + " for " + authZGroupId);
+
+			try {
+				handler.sendMap(request, response, new CHSGroupMap(authZGroup,
+						permissionMap));
+			} catch (IOException e) {
+				throw new SDataException(
+						HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						"IO Error " + e.getMessage());
+			}
+
+		} else {
 			// validate the request
 			String[] roles = request.getParameterValues(ROLE);
 			String[] permissions = request.getParameterValues(PERM);
 			String[] sets = request.getParameterValues(SET);
+			
 
 			if (roles == null || permissions == null || sets == null
-					|| roles.length != permissions.length || roles.length != sets.length)
-			{
+					|| roles.length != permissions.length
+					|| roles.length != sets.length) {
 				throw new SDataException(HttpServletResponse.SC_BAD_REQUEST,
 						"Request must contain the same number of name, value, and action parameters ");
 			}
+			
+			
+			
+			
+			
+			
 
-			for (String perm : permissions)
-			{
-				if (!permissionMap.containsKey(perm))
-				{
-					throw new SDataException(HttpServletResponse.SC_BAD_REQUEST,
-							"The Permission " + perm
+			for (String perm : permissions) {
+				
+				if (!permissionMap.containsKey(perm)) {
+					log.warn("The Permission "
+							+ perm
+							+ " does not exist as a permission on the folder ");
+					throw new SDataException(
+							HttpServletResponse.SC_BAD_REQUEST,
+							"The Permission "
+									+ perm
 									+ " does not exist as a permission on the folder ");
 
 				}
 			}
-			for (String set : sets)
-			{
-				if ((SETVALUE.equals(set) && UNSETVALUE.equals(set)))
-				{
-					throw new SDataException(HttpServletResponse.SC_BAD_REQUEST,
-							"The request can only be set(1) or unset(0) ");
+			for (String set : sets) {
+				if ((!SETVALUE.equals(set) && !UNSETVALUE.equals(set))) {
+					log.warn("The request can only be set(1) or unset(0), found "+set);
+
+					throw new SDataException(
+							HttpServletResponse.SC_BAD_REQUEST,
+							"The request can only be set(1) or unset(0), found "+set);
 
 				}
 			}
 
-			// set the permissions
-			for (int i = 0; i < roles.length; i++)
-			{						
-				Role r = authZGroup.getRole(roles[i]);
-				if ( r == null ) {
-					try
-					{
-						r = authZGroup.addRole(roles[i]);
-					}
-					catch (RoleAlreadyDefinedException e)
-					{
-						log.warn("Internal Error, adding role twice "+roles[i]);
-					}
-
-				}
-				String[] functions = permissionMap.get(permissions[i]);
-				if (SETVALUE.equals(sets[i]))
-				{
-					for (String function : functions)
-					{
-						log.info("Allow "+function+" on "+r.getId());
-						r.allowFunction(function);
-					}
-				}
-				else
-				{
-					for (String function : functions)
-					{
-						log.info("Dissalow "+function+" on "+r.getId());
-						r.disallowFunction(function);
-					}
-				}
-			}
-			try
-			{
-				authzGroupService.save(authZGroup);
-			}
-			catch (GroupNotDefinedException e1)
-			{
-				throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
-						"Auth Group Does not exist " + rp.getRepositoryPath());
-			}
-			catch (AuthzPermissionException e1)
-			{
+			try {
+				// check we can read the entity, but dont keep it
+				getEntity(handler, rp.getRepositoryPath());
+			} catch (PermissionException ex1) {
 				throw new SDataException(HttpServletResponse.SC_FORBIDDEN,
 						"User is not allowed to edit permissions on "
 								+ rp.getRepositoryPath());
 			}
-			
+			String ref = contentHostingService.getReference(rp
+					.getRepositoryPath());
 
-			try
-			{
-				handler.sendMap(request, response, new CHSGroupMap(authZGroup,permissionMap));
+			// get the roles
+			Reference reference = entitiyManager.newReference(ref);
+			Collection<?> groups = reference.getAuthzGroups();
+
+			// If this is the base group, then we want the site realm, otherwise
+			// we want the longest realm
+			String[] parts = ref.split("/");
+			boolean base = parts.length == 4;
+
+			String authZGroupId = null;
+			for (Iterator<?> igroups = groups.iterator(); igroups.hasNext();) {
+				String groupId = (String) igroups.next();
+				if (base) {
+					if (groupId.startsWith("/site")) {
+						authZGroupId = groupId;
+						break;
+					}
+				} else {
+					if (authZGroupId == null) {
+						authZGroupId = groupId;
+					} else {
+						if (authZGroupId.length() < groupId.length()) {
+							authZGroupId = groupId;
+						}
+					}
+				}
 			}
-			catch (IOException e)
-			{
-				throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+
+			if (authZGroupId == null) {
+				throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
+						"Realm " + ref + " does not exist for "
+								+ rp.getRepositoryPath());
+			}
+			AuthzGroup authZGroup = null;
+
+			try {
+				authZGroup = authzGroupService.getAuthzGroup(authZGroupId);
+			} catch (GroupNotDefinedException e1) {
+				try {
+					authZGroup = authzGroupService.addAuthzGroup(authZGroupId);
+				} catch (GroupIdInvalidException e) {
+					throw new SDataException(
+							HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+							"Denied create Permissions group  " + ref
+									+ " id is invalid "
+									+ rp.getRepositoryPath());
+				} catch (GroupAlreadyDefinedException e) {
+					throw new SDataException(
+							HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+							"Denied create Permissions group  " + ref
+									+ " already exists for "
+									+ rp.getRepositoryPath());
+				} catch (AuthzPermissionException e) {
+					throw new SDataException(HttpServletResponse.SC_FORBIDDEN,
+							"Denied create Permissions group  " + ref + " "
+									+ rp.getRepositoryPath());
+				}
+
+			}
+			
+			log.info("Got " + authZGroup + " for " + authZGroupId+" with "+roles.length+" permissions ");
+
+			// set the permissions
+			log.info(" Processing Roles "+roles.length);
+			for (int i = 0; i < roles.length; i++) {
+				log.info(" Processing "+roles[i]+" "+sets[i]+" "+permissions[i]);
+				Role r = authZGroup.getRole(roles[i]);
+				if (r == null) {
+					try {
+						
+						r = authZGroup.addRole(roles[i]);
+						log.warn("Adding Role "
+								+ roles[i]);
+					} catch (RoleAlreadyDefinedException e) {
+						log.warn("Internal Error, adding role twice "
+								+ roles[i]);
+					}
+
+				}
+				String[] functions = permissionMap.get(permissions[i]);
+				if (SETVALUE.equals(sets[i])) {
+					for (String function : functions) {
+						log.info("Allow " + function + " on " + r.getId());
+						r.allowFunction(function);
+					}
+				} else {
+					for (String function : functions) {
+						log.info("Dissalow " + function + " on " + r.getId());
+						r.disallowFunction(function);
+					}
+				}
+			}
+			try {
+				authzGroupService.save(authZGroup);
+			} catch (GroupNotDefinedException e1) {
+				throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
+						"Auth Group Does not exist " + rp.getRepositoryPath());
+			} catch (AuthzPermissionException e1) {
+				throw new SDataException(HttpServletResponse.SC_FORBIDDEN,
+						"User is not allowed to edit permissions on "
+								+ rp.getRepositoryPath());
+			}
+
+			try {
+				handler.sendMap(request, response, new CHSGroupMap(authZGroup,
+						permissionMap));
+			} catch (IOException e) {
+				throw new SDataException(
+						HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 						"IO Error " + e.getMessage());
 			}
 		}
