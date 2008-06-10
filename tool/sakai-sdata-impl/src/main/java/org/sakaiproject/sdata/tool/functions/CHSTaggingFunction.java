@@ -112,36 +112,45 @@ public class CHSTaggingFunction extends CHSSDataFunction {
 			path = path + "/";
 		}
 		String[] parts = path.split("/");
-		String context = parts[2];
-
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put("context", context);
 		result.put("name", propertyName);
-		if (ALL_TAGS.equals(query)) {
-			Map<String, Integer> distribution = chsTagging.getPropertyVector(
-					context, propertyName);
+		result.put("path", path);
+		if (parts.length > 2) {
+			String context = parts[2];
 
-			result.put("distribution", distribution);
-		} else if (LIST_TAGS.equals(query)) {
-			String queryValue = request.getParameter(PROPERTY_QUERY_VALUE);
-			String[] values = queryValue.split(",");
+			result.put("context", context);
+			if (ALL_TAGS.equals(query)) {
+				Map<String, Integer> distribution = chsTagging
+						.getPropertyVector(context, propertyName);
 
-			List<String> hits = chsTagging.getPropertyMatches(context,
-					propertyName, values, start, nresults);
-			List<Map<String, Object>> hitResults = new ArrayList<Map<String, Object>>();
-			for (String hit : hits) {
-				try {
-					if (hit.startsWith("/content")) {
-						hit = hit.substring("/content".length());
+				result.put("distribution", distribution);
+			} else if (LIST_TAGS.equals(query)) {
+				String queryValue = request.getParameter(PROPERTY_QUERY_VALUE);
+				String[] values = queryValue.split(",");
+
+				List<String> hits = chsTagging.getPropertyMatches(context,
+						propertyName, values, start, nresults);
+				List<Map<String, Object>> hitResults = new ArrayList<Map<String, Object>>();
+				for (String hit : hits) {
+					try {
+						if (hit.startsWith("/content")) {
+							hit = hit.substring("/content".length());
+						}
+						ContentEntity ce = getEntity(handler, hit);
+						if (ce != null) {
+							hitResults.add(new CHSNodeMap(ce, 0, rp));
+						}
+					} catch (PermissionException e) {
 					}
-					ContentEntity ce = getEntity(handler, hit);
-					if (ce != null) {
-						hitResults.add(new CHSNodeMap(ce, 0, rp));
-					}
-				} catch (PermissionException e) {
 				}
+				result.put("hits", hitResults);
 			}
-			result.put("hits", hitResults);
+		} else {
+			result
+					.put(
+							"error",
+							"The Path does not contain enough elements to represent a context, and so no tags can be found ");
+
 		}
 		try {
 			handler.sendMap(request, response, result);
