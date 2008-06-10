@@ -22,9 +22,7 @@
 package org.sakaiproject.sdata.tool.functions;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,8 +39,6 @@ import org.sakaiproject.authz.api.GroupNotDefinedException;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.api.RoleAlreadyDefinedException;
 import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.entity.api.EntityManager;
-import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
@@ -115,8 +111,6 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 
 	private AuthzGroupService authzGroupService;
 
-	private EntityManager entitiyManager;
-
 
 	public CHSPermissionsFunction()
 	{
@@ -131,7 +125,6 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 		permissionMap.put(ADMIN,
 				new String[] { AuthzGroupService.SECURE_UPDATE_AUTHZ_GROUP });
 		authzGroupService = Kernel.authzGroupService();
-		entitiyManager = Kernel.entityManager();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -155,41 +148,18 @@ public class CHSPermissionsFunction extends CHSSDataFunction
 								+ rp.getRepositoryPath());
 			}
 			
-			
-			String ref = contentHostingService.getReference(rp.getRepositoryPath());
-			log.info("Got Reference "+ref);
-			Reference reference = entitiyManager.newReference(ref);
-			Collection<?> groups = reference.getAuthzGroups();			
-			AuthzGroup authZGroup = null;
-			String authZGroupId = null;
-			for ( Iterator<?> igroups = groups.iterator(); igroups.hasNext(); ) {
-				String groupId = (String) igroups.next();
-				try
-				{
-					if ( authZGroupId == null  ) {
-						authZGroup = authzGroupService.getAuthzGroup(groupId);
-						authZGroupId = groupId;
-					} else {
-						if ( authZGroupId.length() < groupId.length()) {
-							authZGroup = authzGroupService.getAuthzGroup(groupId);
-							authZGroupId = groupId;
-						}
-					}
-					break;
-				}
-				catch (GroupNotDefinedException e1)
-				{
-					log.info("Didnt get "+groupId);
-				}
+			String ref = contentHostingService.getReference(rp.getRepositoryPath());			
+			AuthzGroup authZGroup;
+			try
+			{
+				authZGroup = authzGroupService.getAuthzGroup(ref);
 			}
-				
-			if ( authZGroup == null ) 
+			catch (GroupNotDefinedException e1)
 			{
 				throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
 						"Realm "+ref+" does not exist for "
 								+ rp.getRepositoryPath());
 			}
-			log.info("Got "+authZGroup+" for "+authZGroupId);
 			
 			
 			
