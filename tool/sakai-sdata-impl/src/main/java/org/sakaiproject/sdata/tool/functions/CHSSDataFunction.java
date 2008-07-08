@@ -191,8 +191,9 @@ public abstract class CHSSDataFunction implements SDataFunction
 			if (ce != null)
 			{
 				String lock = ContentHostingService.AUTH_RESOURCE_HIDDEN;
-				boolean canSeeHidden = Kernel.securityService().unlock(lock,
-						ce.getReference());
+				String userId = Kernel.sessionManager().getCurrentSessionUserId();
+				boolean canSeeHidden = Kernel.securityService().unlock(userId,lock,
+						ce.getReference(),ce.getGroups());
 				if (!canSeeHidden && !ce.isAvailable())
 				{
 					log.info(" Hidden Entity "+repositoryPath);

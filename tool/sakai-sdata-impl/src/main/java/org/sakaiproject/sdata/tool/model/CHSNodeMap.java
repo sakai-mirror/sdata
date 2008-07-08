@@ -83,7 +83,8 @@ public class CHSNodeMap extends HashMap<String, Object>
 			throws SDataException
 	{
 		String lock = ContentHostingService.AUTH_RESOURCE_HIDDEN;
-		boolean canSeeHidden = Kernel.securityService().unlock(lock, n.getReference());
+		String userId = sessionManager.getCurrentSessionUserId();
+		boolean canSeeHidden = Kernel.securityService().unlock(userId, lock, n.getReference(), n.getGroups());
 		if (!canSeeHidden && !n.isAvailable())
 		{
 			throw new SDataAccessException(403, "Permission denied on item");
