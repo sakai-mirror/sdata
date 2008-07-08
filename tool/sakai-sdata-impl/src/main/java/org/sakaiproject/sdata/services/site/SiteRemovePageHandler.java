@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.Kernel;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
@@ -43,10 +44,15 @@ public class SiteRemovePageHandler extends JSONServiceHandler
 			Site site = siteService.getSite(siteId);
 			SitePage page = site.getPage(pageId);
 			site.removePage(page);
+			siteService.save(site);
 		}
 		catch (IdUnusedException iue)
 		{
 			sendError(request, response, iue);
+		}
+		catch (PermissionException pe)
+		{
+			sendError(request, response, pe);
 		}
 	}
 }
