@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.sakaiproject.Kernel;
 import org.sakaiproject.announcement.api.AnnouncementService;
 import org.sakaiproject.message.api.MessageService;
+import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.site.api.SiteService;
@@ -74,13 +75,11 @@ public class QaDefinitionFactory implements ServiceDefinitionFactory
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	public ServiceDefinition getSpec(HttpServletRequest request,
-			HttpServletResponse response)
+			HttpServletResponse response) throws SDataException
 	{
 
 		if (request.getRemoteUser() == null){
-			try {
-				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
-			} catch (IOException e) {}
+			throw new SDataException(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
 		}
 
 		return new QaBean(sessionManager, messageService, timeService, siteService,

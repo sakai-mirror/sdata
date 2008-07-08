@@ -26,6 +26,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 
@@ -52,7 +53,7 @@ public class MyRecentChangesServiceDefinitionFactory implements ServiceDefinitio
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	public ServiceDefinition getSpec(HttpServletRequest request,
-			HttpServletResponse response)
+			HttpServletResponse response) throws SDataException
 	{
 		int paging = 1;
 		if (request.getParameter("page") != null)
@@ -61,9 +62,7 @@ public class MyRecentChangesServiceDefinitionFactory implements ServiceDefinitio
 		}
 	
 		if (request.getRemoteUser() == null){
-			try {
-				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
-			} catch (IOException e) {}
+			throw new SDataException(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
 		}
 		
 		return new MyRecentChangesBean(paging);

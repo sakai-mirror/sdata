@@ -193,6 +193,7 @@ public abstract class JCRHandler implements Handler
 			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
 			if (n == null)
 			{
+				response.reset();
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				return;
 			}
@@ -287,6 +288,7 @@ public abstract class JCRHandler implements Handler
 			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
 			if (n == null)
 			{
+				response.reset();
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				return;
 			}
@@ -357,6 +359,7 @@ public abstract class JCRHandler implements Handler
 				NodeType nt = n.getPrimaryNodeType();
 				if (!JCRConstants.NT_FILE.equals(nt.getName()))
 				{
+					response.reset();
 					response.sendError(HttpServletResponse.SC_BAD_REQUEST,
 							"Content Can only be put to a file, resource type is "
 									+ nt.getName());
@@ -484,6 +487,7 @@ public abstract class JCRHandler implements Handler
 			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
 			if (n == null)
 			{
+				response.reset();
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				return;
 			}
@@ -674,6 +678,7 @@ public abstract class JCRHandler implements Handler
 			String[] s = range.split("=");
 			if (!"bytes".equals(s[0]))
 			{
+				response.reset();
 				response
 						.sendError(416,
 								"System only supports single range responses, specified in bytes");
@@ -683,6 +688,7 @@ public abstract class JCRHandler implements Handler
 			String[] r = range.split(",");
 			if (r.length > 1)
 			{
+				response.reset();
 				response.sendError(416, "System only supports single range responses");
 				return false;
 			}
@@ -721,6 +727,7 @@ public abstract class JCRHandler implements Handler
 		long ifUnmodifiedSince = request.getDateHeader("if-unmodified-since");
 		if (ifUnmodifiedSince > 0 && (lastModifiedTime >= ifUnmodifiedSince))
 		{
+			response.reset();
 			response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
 			return false;
 		}
@@ -729,6 +736,7 @@ public abstract class JCRHandler implements Handler
 		if (ifMatch != null && ifMatch.indexOf(currentEtag) < 0)
 		{
 			// ifMatch was present, but the currentEtag didnt match
+			response.reset();
 			response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
 			return false;
 		}
@@ -737,12 +745,14 @@ public abstract class JCRHandler implements Handler
 		{
 			if ("GET|HEAD".indexOf(request.getMethod()) >= 0)
 			{
+				response.reset();
 				response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
 
 			}
 			else
 			{
 				// ifMatch was present, but the currentEtag didnt match
+				response.reset();
 				response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
 			}
 			return false;
@@ -750,6 +760,7 @@ public abstract class JCRHandler implements Handler
 		long ifModifiedSince = request.getDateHeader("if-modified-since");
 		if ((ifModifiedSince > 0) && (lastModifiedTime <= ifModifiedSince))
 		{
+			response.reset();
 			response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
 			return false;
 		}
@@ -858,6 +869,7 @@ public abstract class JCRHandler implements Handler
 				Node n = jcrNodeFactory.createFolder(rp.getRepositoryPath());
 				if (n == null)
 				{
+					response.reset();
 					response.sendError(HttpServletResponse.SC_BAD_REQUEST,
 							"Unable to uplaod to location " + rp.getRepositoryPath());
 					return;

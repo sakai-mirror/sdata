@@ -408,6 +408,7 @@ public abstract class CHSHandler implements Handler
 			ContentEntity e = getEntity(rp.getRepositoryPath());
 			if (e == null)
 			{
+				response.reset();
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				return;
 			}
@@ -483,6 +484,7 @@ public abstract class CHSHandler implements Handler
 			}
 			else
 			{
+				response.reset();
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST,
 						"Content Can only be put to a file ");
 				return;
@@ -746,6 +748,7 @@ public abstract class CHSHandler implements Handler
 			ContentEntity e = getEntity(rp.getRepositoryPath());
 			if (e == null)
 			{
+				response.reset();
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				return;
 			}
@@ -817,6 +820,7 @@ public abstract class CHSHandler implements Handler
 							log.warn("Failed to get Input Stream from content Resource ["
 									+ in + "] ContentResource[" + cr + "] ID["
 									+ cr.getId() + "]");
+							response.reset();
 							response.sendError(
 									HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 									"Failed to get Input Stream from content Resource ["
@@ -927,6 +931,7 @@ public abstract class CHSHandler implements Handler
 			String[] s = range.split("=");
 			if (!"bytes".equals(s[0]))
 			{
+				response.reset();
 				response
 						.sendError(416,
 								"System only supports single range responses, specified in bytes");
@@ -936,6 +941,7 @@ public abstract class CHSHandler implements Handler
 			String[] r = range.split(",");
 			if (r.length > 1)
 			{
+				response.reset();
 				response.sendError(416, "System only supports single range responses");
 				return false;
 			}
@@ -974,6 +980,7 @@ public abstract class CHSHandler implements Handler
 		long ifUnmodifiedSince = request.getDateHeader("if-unmodified-since");
 		if (ifUnmodifiedSince > 0 && (lastModifiedTime >= ifUnmodifiedSince))
 		{
+			response.reset();
 			response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
 			return false;
 		}
@@ -982,6 +989,7 @@ public abstract class CHSHandler implements Handler
 		if (ifMatch != null && ifMatch.indexOf(currentEtag) < 0)
 		{
 			// ifMatch was present, but the currentEtag didnt match
+			response.reset();
 			response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
 			return false;
 		}
@@ -990,12 +998,14 @@ public abstract class CHSHandler implements Handler
 		{
 			if ("GET|HEAD".indexOf(request.getMethod()) >= 0)
 			{
+				response.reset();
 				response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
 
 			}
 			else
 			{
 				// ifMatch was present, but the currentEtag didnt match
+				response.reset();
 				response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
 			}
 			return false;
@@ -1003,6 +1013,7 @@ public abstract class CHSHandler implements Handler
 		long ifModifiedSince = request.getDateHeader("if-modified-since");
 		if ((ifModifiedSince > 0) && (lastModifiedTime <= ifModifiedSince))
 		{
+			response.reset();
 			response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
 			return false;
 		}
@@ -1106,9 +1117,8 @@ public abstract class CHSHandler implements Handler
 				ContentCollection e = getFolder(rp.getRepositoryPath());
 				if (e == null)
 				{
-					response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+					throw new SDataException(HttpServletResponse.SC_BAD_REQUEST,
 							"Unable to uplaod to location " + rp.getRepositoryPath());
-					return;
 				}
 			}
 			catch (Exception ex)

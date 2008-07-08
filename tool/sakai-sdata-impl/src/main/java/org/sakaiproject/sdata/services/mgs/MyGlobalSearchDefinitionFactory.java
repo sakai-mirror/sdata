@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.Kernel;
 import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.site.api.SiteService;
@@ -66,7 +67,7 @@ public class MyGlobalSearchDefinitionFactory implements ServiceDefinitionFactory
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	public ServiceDefinition getSpec(HttpServletRequest request,
-			HttpServletResponse response)
+			HttpServletResponse response) throws SDataException
 	{
 		// final Log log =
 		// LogFactory.getLog(MyFileFinderDefinitionFactory.class);
@@ -143,9 +144,7 @@ public class MyGlobalSearchDefinitionFactory implements ServiceDefinitionFactory
 		}
 
 		if (request.getRemoteUser() == null){
-			try {
-				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
-			} catch (IOException e) {}
+			throw new SDataException(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
 		}
 
 		return new MyGlobalSearchBean(sessionManager, siteService, contentHostingService,

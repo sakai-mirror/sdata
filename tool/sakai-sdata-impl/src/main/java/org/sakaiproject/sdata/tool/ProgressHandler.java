@@ -56,6 +56,7 @@ public abstract class ProgressHandler implements Handler
 	public void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
+		response.reset();
 		response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
 	}
 
@@ -112,6 +113,7 @@ public abstract class ProgressHandler implements Handler
 	public void doHead(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
+		response.reset();
 		response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
 	}
 
@@ -124,6 +126,7 @@ public abstract class ProgressHandler implements Handler
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
+		response.reset();
 		response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
 	}
 
@@ -136,6 +139,7 @@ public abstract class ProgressHandler implements Handler
 	public void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
+		response.reset();
 		response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
 	}
 

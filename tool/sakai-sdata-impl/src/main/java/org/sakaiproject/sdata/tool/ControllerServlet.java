@@ -411,6 +411,7 @@ public class ControllerServlet extends HttpServlet
 		}
 		else
 		{
+			response.reset();
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, "No Handler Found");
 		}
 	}
@@ -433,6 +434,7 @@ public class ControllerServlet extends HttpServlet
 		}
 		else
 		{
+			response.reset();
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, "No Handler Found");
 		}
 	}
@@ -455,6 +457,7 @@ public class ControllerServlet extends HttpServlet
 		}
 		else
 		{
+			response.reset();
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, "No Handler Found");
 		}
 	}
@@ -477,6 +480,7 @@ public class ControllerServlet extends HttpServlet
 		}
 		else
 		{
+			response.reset();
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, "No Handler Found");
 		}
 	}
@@ -499,6 +503,7 @@ public class ControllerServlet extends HttpServlet
 		}
 		else
 		{
+			response.reset();
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, "No Handler Found");
 		}
 	}

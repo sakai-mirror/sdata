@@ -33,6 +33,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
@@ -66,9 +67,10 @@ public class MeBean implements ServiceDefinition
 	 * 
 	 * @param sessionManager
 	 * @param siteService
+	 * @throws SDataException 
 	 */
 	public MeBean(SiteService siteService, SessionManager sessionManager,
-			UserDirectoryService userDirectoryService, HttpServletResponse response)
+			UserDirectoryService userDirectoryService, HttpServletResponse response) throws SDataException
 	{
 		User user = null;
 		currentSession = sessionManager.getCurrentSession();
@@ -88,14 +90,7 @@ public class MeBean implements ServiceDefinition
 		if (user == null)
 		{
 
-			try
-			{
-				response.sendError(401);
-			}
-			catch (IOException e)
-			{
-				log.error(e);
-			}
+			throw new SDataException(HttpServletResponse.SC_NOT_FOUND,"User not found");
 
 		}
 		else

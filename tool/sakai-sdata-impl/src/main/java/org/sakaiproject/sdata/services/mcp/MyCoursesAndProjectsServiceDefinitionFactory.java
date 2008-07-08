@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.component.api.ComponentManager;
+import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.site.api.SiteService;
@@ -68,12 +69,10 @@ public class MyCoursesAndProjectsServiceDefinitionFactory implements
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	public ServiceDefinition getSpec(HttpServletRequest request,
-			HttpServletResponse response)
+			HttpServletResponse response) throws SDataException
 	{
 		if (request.getRemoteUser() == null){
-			try {
-				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
-			} catch (IOException e) {}
+			throw new SDataException(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
 		}
 		return new MyCoursesAndProjectsBean(sessionManager, siteService, request);
 	}

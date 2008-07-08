@@ -158,6 +158,7 @@ public abstract class ServiceHandler implements Handler
 	public void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
+		response.reset();
 		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 	}
 
@@ -170,6 +171,7 @@ public abstract class ServiceHandler implements Handler
 	public void doHead(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
+		response.reset();
 		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 	}
 
@@ -182,6 +184,7 @@ public abstract class ServiceHandler implements Handler
 	public void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
+		response.reset();
 		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 	}
 

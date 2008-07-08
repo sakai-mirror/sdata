@@ -30,6 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sdata.tool.ServiceHandler;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
@@ -46,6 +48,7 @@ public class JSONServiceHandler extends ServiceHandler
 	 * The serialization version number
 	 */
 	private static final long serialVersionUID = 1L;
+	private static final Log log = LogFactory.getLog(JSONServiceHandler.class);
 
 	/*
 	 * (non-Javadoc)
@@ -78,6 +81,7 @@ public class JSONServiceHandler extends ServiceHandler
 		}
 		else
 		{
+			log.info(" SData Failed "+request.getRequestURI(),ex);
 			response.reset();
 			setHandlerHeaders(request, response);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
