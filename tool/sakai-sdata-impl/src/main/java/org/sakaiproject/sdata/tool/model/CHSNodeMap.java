@@ -21,27 +21,40 @@
 
 package org.sakaiproject.sdata.tool.model;
 
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.Kernel;
+import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.AuthzGroupService;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
+import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentEntity;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.entity.api.EntityPropertyNotDefinedException;
 import org.sakaiproject.entity.api.EntityPropertyTypeException;
+import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.sdata.tool.SDataAccessException;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
+import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.time.api.Time;
+import org.sakaiproject.tool.api.SessionManager;
 
 /**
  * @author ieb
@@ -54,17 +67,22 @@ public class CHSNodeMap extends HashMap<String, Object>
 	 */
 	private static final long serialVersionUID = 8641164912506510404L;
 
+	private static final Log log = LogFactory.getLog(CHSNodeMap.class);
+
 	private ContentHostingService contentHostingService;
 
 	private AuthzGroupService authZGroupService;
 
+	private EntityManager entityManager;
+
+	private SessionManager sessionManager;
+
 	/**
-	 * @throws SDataAccessException
-	 *         if the item is not available to the current user¤
+	 * @throws SDataException 
 	 * @throws RepositoryException
 	 */
 	public CHSNodeMap(ContentEntity n, int depth, ResourceDefinition rp)
-			throws SDataAccessException
+			throws SDataException
 	{
 		String lock = ContentHostingService.AUTH_RESOURCE_HIDDEN;
 		boolean canSeeHidden = Kernel.securityService().unlock(lock, n.getReference());
@@ -74,6 +92,8 @@ public class CHSNodeMap extends HashMap<String, Object>
 		}
 		contentHostingService = Kernel.contentHostingService();
 		authZGroupService = Kernel.authzGroupService();
+		entityManager = Kernel.entityManager();
+		sessionManager = Kernel.sessionManager();
 		depth--;
 		put("mixinNodeType", getMixinTypes(n));
 		put("properties", getProperties(n));
@@ -96,7 +116,7 @@ public class CHSNodeMap extends HashMap<String, Object>
 		}
 	}
 
-	private void addFolder(ContentCollection n, ResourceDefinition rp,  int depth) {
+	private void addFolder(ContentCollection n, ResourceDefinition rp,  int depth) throws SDataException {
 		put("available", n.isAvailable());
 		put("hidden", n.isHidden());
 		if (!n.isHidden())
@@ -169,9 +189,14 @@ public class CHSNodeMap extends HashMap<String, Object>
 		}
 	}
 
-	private Map<String, String> getPermissions(ContentEntity n)
+	private Map<String, String> getPermissions(ContentEntity n) throws SDataException
 	{
 		Map<String, String> map = new HashMap<String, String>();
+		
+		
+		
+		
+		
 		if (n instanceof ContentCollection)
 		{
 			map.put("read", String.valueOf(contentHostingService.allowGetResource(n
@@ -180,7 +205,38 @@ public class CHSNodeMap extends HashMap<String, Object>
 					.getId())));
 			map.put("write", String.valueOf(contentHostingService.allowUpdateResource(n
 					.getId())));
-			map.put("admin", String.valueOf(authZGroupService.allowUpdate(n.getId())));
+			
+			String ref = n.getReference();
+			Reference reference = entityManager.newReference(n.getReference());
+			Collection<?> groups = reference.getAuthzGroups();
+			AuthzGroup authZGroup = null;
+			String authZGroupId = null;
+			for (Iterator<?> igroups = groups.iterator(); igroups.hasNext();) {
+				String groupId = (String) igroups.next();
+				try {
+					if (authZGroupId == null) {
+						authZGroup = authZGroupService.getAuthzGroup(groupId);
+						authZGroupId = groupId;
+					} else {
+						if (authZGroupId.length() < groupId.length()) {
+							authZGroup = authZGroupService
+									.getAuthzGroup(groupId);
+							authZGroupId = groupId;
+						}
+					}
+				} catch (GroupNotDefinedException e1) {
+					
+					log.error("Didnt get " + groupId);
+				}
+			}
+
+			if (authZGroup == null) {
+				throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
+						"Realm " + ref + " does not exist for "
+								+ n.getReference());
+			}
+
+			map.put("admin", String.valueOf(authZGroup.isAllowed(sessionManager.getCurrentSessionUserId(), AuthzGroupService.SECURE_UPDATE_AUTHZ_GROUP)));
 		}
 		else
 		{
