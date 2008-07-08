@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -183,6 +184,8 @@ public class SiteBean implements ServiceDefinition
 						if (t != null && t.getId() != null)
 						{
 							tool.put("title", conf.getTool().getTitle());
+							Set<Object> config = t.getFinalConfig().keySet();
+							tool.put("layouthint", conf.getLayoutHints());
 						}
 						else
 						{
