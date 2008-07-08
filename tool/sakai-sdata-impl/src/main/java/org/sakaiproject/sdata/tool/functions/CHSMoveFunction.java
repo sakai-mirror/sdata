@@ -135,8 +135,9 @@ public class CHSMoveFunction extends CHSSDataFunction
 		}
 		catch (OverQuotaException e)
 		{
-			logException("OverQuotaException ", e);
-			throw new SDataException(HttpServletResponse.SC_FORBIDDEN, "Overquota ");
+			log.warn("Over Quota Exception on commit " + e.getMessage());
+			throw new SDataException(HttpServletResponse.SC_PAYMENT_REQUIRED,
+					"Over quota");
 		}
 		catch (IdUsedException e)
 		{
