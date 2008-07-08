@@ -21,8 +21,15 @@ public class SiteRemovePageHandler extends JSONServiceHandler
 	@Override
 	public void init(Map<String, String> config) throws ServletException
 	{
-		super.init(config);
 		siteService = Kernel.siteService();
+	}
+
+	@Override
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException
+	{
+		response.reset();
+		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 	}
 
 	@Override

@@ -163,6 +163,7 @@ public class SiteBean implements ServiceDefinition
 
 					HashMap<String, Object> mpages = new HashMap<String, Object>();
 
+					mpages.put("id", page.getId());
 					mpages.put("name", page.getTitle());
 					mpages.put("layout", page.getLayoutTitle());
 					mpages.put("number", number);

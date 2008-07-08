@@ -110,10 +110,9 @@
         20.baseurl=/colchs; 20.locationbase=; 20.referencebase=/content;
         20.basepath=/;
         21.classname=org.sakaiproject.sdata.services.mpt.MyPersonalToolsHandler;
-        21.baseurl=/mpt
+        21.baseurl=/mpt;
 		22.classname=org.sakaiproject.sdata.services.site.SiteRemovePageHandler;
-		22.baseurl=/siterp
-
+		22.baseurl=/siterp;
       </param-value>
     </init-param>
     <load-on-startup>100</load-on-startup>
