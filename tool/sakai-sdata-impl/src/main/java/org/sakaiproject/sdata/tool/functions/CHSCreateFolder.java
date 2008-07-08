@@ -57,8 +57,8 @@ public class CHSCreateFolder extends CHSSDataFunction
 		try
 		{
 
-			ContentCollectionEdit edit = contentHostingService.addCollection(rp
-					.getRepositoryPath());
+			String realPath = rp.getRepositoryPath().replace("\'", "_").replace("\"", "_");
+			ContentCollectionEdit edit = contentHostingService.addCollection(realPath);
 			edit.getPropertiesEdit().addProperty(
 					ResourceProperties.PROP_DISPLAY_NAME,
 					rp.getRepositoryPath().substring(
