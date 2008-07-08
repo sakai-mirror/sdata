@@ -527,6 +527,12 @@ public abstract class CHSHandler implements Handler
 						+ rp.getRepositoryPath());
 			}
 		}
+ 		catch (OverQuotaException e)
+                {
+                       log.warn("Over Quota Exception on commit " + e.getMessage());
+                       sendError(request,response,new SDataException(HttpServletResponse.SC_PAYMENT_REQUIRED,
+                                                "Over quota"));
+                }
 		catch (SDataException e)
 		{
 			sendError(request, response, e);
@@ -1211,6 +1217,12 @@ public abstract class CHSHandler implements Handler
 							uploadNumber++;
 						}
 					}
+ 					catch (OverQuotaException ex)
+                			{
+                       				log.warn("Over Quota Exception on commit " + ex.getMessage());
+                       				throw new SDataException(HttpServletResponse.SC_PAYMENT_REQUIRED,
+                                                	"Over quota");
+                			}
 					catch (Exception ex)
 					{
 						log.error("Failed to Upload Content", ex);
