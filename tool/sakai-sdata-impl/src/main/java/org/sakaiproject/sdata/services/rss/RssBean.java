@@ -170,17 +170,17 @@ public class RssBean implements ServiceDefinition
 
 			if (n.getNodeName().equals("title"))
 			{
-				title = getTextValue(n);
+				title = getTextValue(n).replace("\"", "&quot;").replace("'", "&quot;").replace("\\n", "");
 			}
 
 			if (n.getNodeName().equals("link"))
 			{
-				link = getTextValue(n);
+				link = getTextValue(n).replace("\"", "&quot;").replace("'", "&quot;").replace("\\n", "");
 			}
 
 			if (n.getNodeName().equals("description"))
 			{
-				description = getTextValue(n);
+				description = getTextValue(n).replace("\"", "&quot;").replace("'", "&quot;").replace("\\n", "");
 			}
 
 			if (n.getNodeName().equals("pubDate"))

@@ -1170,6 +1170,7 @@ public abstract class CHSHandler implements Handler
 							if ( realNames != null && realNames.size() > uploadNumber ) {
 								finalName = realNames.get(uploadNumber);
 							}
+							finalName = finalName.replace("\"", "_").replace("'", "_");
 							
 							String mimeType = ContentTypes.getContentType(finalName, item
 									.getContentType());
