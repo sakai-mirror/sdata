@@ -31,8 +31,11 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.Kernel;
+import org.sakaiproject.authz.api.AuthzGroupService;
+import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.util.PathSecurityAssertion;
+import org.sakaiproject.tool.api.SessionManager;
 
 /**
  * @author ieb
@@ -108,8 +111,12 @@ public class PathSecurityAssertionUnitT extends TestCase
 						"locks",
 						"GET:content.read,PUT:content.write,HEAD:content.read,POST:content.write,DELETE:content.delete");
 		psa = new PathSecurityAssertion(config);
-		MockSecurityService mss = new MockSecurityService();
-		psa.setSecurityService(mss);
+		MockAuthZGroupService mockAuthzGroupService = new MockAuthZGroupService();
+		EntityManager mockEntityManager = new MockEntityManager();
+		SessionManager mockSessionManager = new MockSessionManager();
+		psa.setAuthzGroupService(mockAuthzGroupService);
+		psa.setEntityManager(mockEntityManager);
+		psa.setSessionManager(mockSessionManager);
 
 		for (String test : tests)
 		{
@@ -119,12 +126,12 @@ public class PathSecurityAssertionUnitT extends TestCase
 				if ("true".equals(t[0]))
 				{
 					log.info("Setting Pass");
-					mss.setPass(true);
+					mockAuthzGroupService.setPass(true);
 				}
 				else
 				{
 					log.info("Setting Fail");
-					mss.setPass(false);
+					mockAuthzGroupService.setPass(false);
 				}
 				psa.check(t[1], t[2]);
 				// assertEquals("Expected Test Fail for " + test, "true", t[3]);

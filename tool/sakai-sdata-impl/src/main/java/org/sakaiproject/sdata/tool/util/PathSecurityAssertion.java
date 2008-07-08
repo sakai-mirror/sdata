@@ -22,6 +22,7 @@
 package org.sakaiproject.sdata.tool.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +32,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.Kernel;
+import org.sakaiproject.authz.api.AuthzGroupService;
 import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.entity.api.EntityManager;
+import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.sdata.tool.SDataAccessException;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.SecurityAssertion;
+import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.user.api.UserDirectoryService;
 
 /**
@@ -89,15 +94,7 @@ public class PathSecurityAssertion implements SecurityAssertion
 	 */
 	private String baseLocation;
 
-	/**
-	 * The sakai security service
-	 */
-	private SecurityService securityService;
 
-	/**
-	 * The Sakai security Service
-	 */
-	private UserDirectoryService userDirectoryService;
 
 	/**
 	 * A map mapping http methods to locks
@@ -111,6 +108,12 @@ public class PathSecurityAssertion implements SecurityAssertion
 	private String baseReference;
 
 	private boolean inTest = false;
+
+	private EntityManager entityManager;
+
+	private AuthzGroupService authzGroupService;
+
+	private SessionManager sessionManager;
 
 	/**
 	 * Construct a PathSecurityAssertion class based on the standard
@@ -159,8 +162,9 @@ public class PathSecurityAssertion implements SecurityAssertion
 		if (testMode == null)
 		{
 			inTest = false;
-			securityService = Kernel.securityService();
-			userDirectoryService = Kernel.userDirectoryService();
+			entityManager = Kernel.entityManager();
+			authzGroupService = Kernel.authzGroupService();
+			sessionManager = Kernel.sessionManager();
 		}
 		else
 		{
@@ -180,7 +184,7 @@ public class PathSecurityAssertion implements SecurityAssertion
 	 */
 	public void check(String method, String resourceLocation) throws SDataException
 	{
-		if (inTest && securityService == null)
+		if (inTest || entityManager == null )
 		{
 			return;
 		}
@@ -194,121 +198,38 @@ public class PathSecurityAssertion implements SecurityAssertion
 		}
 		String resourceReference = baseReference
 				+ resourceLocation.substring(baseLocation.length());
+		Reference ref = entityManager.newReference(resourceReference);
+		
+		// the main problem here is how do we know if this is a collection or a resource, as the trailing / matters.
+		
+		Collection<?> groups = ref.getAuthzGroups();
 		String resourceLock = getResourceLock(method);
+		
+		String userId = sessionManager.getCurrentSessionUserId();
 
-		if (securityService.unlock(resourceLock, resourceReference))
+		if (authzGroupService.isAllowed(userId, resourceLock, groups))
 		{
 			log.info("Granted [" + method + "]:[" + resourceLock + "] on ["
 					+ resourceReference + "]");
 			return;
 		}
-		else
-		{
-			log.info("Denied [" + method + "]:[" + resourceLock + "] on ["
-					+ resourceReference + "]");
-
-		}
-
-		try
-		{
-			String[] elements = resourceReference.trim().split("/");
-			List<String> elementsList = new ArrayList<String>();
-			for (String e : elements)
+		// make certain this is not a collection
+		if ( !resourceReference.endsWith("/") ) {
+			resourceReference = resourceReference + "/";
+			ref = entityManager.newReference(resourceReference);
+			groups = ref.getAuthzGroups();
+			if (authzGroupService.isAllowed(userId, resourceLock, groups))
 			{
-				elementsList.add(e);
+				log.info("Granted [" + method + "]:[" + resourceLock + "] on ["
+						+ resourceReference + "]");
+				return;
 			}
-			log.info("Respurce Reference " + resourceReference + ":[" + elementsList
-					+ "]");
-
-			if (elements.length > 3)
-			{
-				if (resourceReference.startsWith("/content/user"))
-				{
-					if (securityService.unlock(resourceLock, "/site/" + elements[3]))
-					{
-						log.info("Granted [" + method + "]:[" + resourceLock + "] on ["
-								+ "/site/" + elements[3] + "]");
-						return;
-					}
-					else
-					{
-						log.info("Denied [" + method + "]:[" + resourceLock + "] on ["
-								+ "/site/" + elements[3] + "]");
-
-					}
-				}
-				if (resourceReference.startsWith("/content/group"))
-				{
-					if (securityService.unlock(resourceLock, "/site/" + elements[3]))
-					{
-						log.info("Granted [" + method + "]:[" + resourceLock + "] on ["
-								+ "/site/" + elements[3] + "]");
-						return;
-					}
-					else
-					{
-						log.info("Denied [" + method + "]:[" + resourceLock + "] on ["
-								+ "/site/" + elements[3] + "]");
-
-					}
-				}
-			}
-			if (elements.length > 4)
-			{
-				if (resourceReference.startsWith("/content"))
-				{
-					if (securityService.unlock(resourceLock, resourceReference))
-					{
-						log.info("Granted [" + method + "]:[" + resourceLock + "] on ["
-								+ resourceReference + "]");
-						return;
-					}
-					else
-					{
-						log.info("Denied [" + method + "]:[" + resourceLock + "] on ["
-								+ resourceReference + "]");
-
-					}
-				}
-				StringBuilder sb = new StringBuilder();
-				for (int i = 1; i < elements.length; i++)
-				{
-					sb.append("/").append(elements[i]);
-					if (i > 3)
-					{
-						if (securityService.unlock(resourceLock, sb.toString()))
-						{
-							log.info("Granted [" + method + "]:[" + resourceLock
-									+ "] on [" + sb.toString() + "]");
-							return;
-						}
-						else
-						{
-							log.info("Denied [" + method + "]:[" + resourceLock
-									+ "] on [" + sb.toString() + "]");
-
-						}
-					}
-				}
-			}
-			log.info("All Denied " + method + ":" + resourceLock + " on "
-					+ resourceLocation + " baseReference:[" + baseReference
-					+ "] baseLocation:[" + baseLocation + "]");
-			throw new SDataAccessException(HttpServletResponse.SC_FORBIDDEN,
-					"Access denied for operation " + method);
 		}
-		catch (SDataAccessException sdae)
-		{
-			throw sdae;
-		}
-		catch (Exception pex)
-		{
-			log.info("Denied " + method + ":" + resourceLock + " on " + resourceLocation
-					+ " ref  " + resourceReference);
-			throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Access denied for operation " + method + " cause:"
-							+ pex.getMessage());
-		}
+		log.info("All Denied " + method + ":" + resourceLock + " on "
+				+ resourceLocation + " baseReference:[" + baseReference
+				+ "] baseLocation:[" + baseLocation + "]");
+		throw new SDataAccessException(HttpServletResponse.SC_FORBIDDEN,
+				"Access denied for operation " + method);
 	}
 
 	/**
@@ -322,38 +243,29 @@ public class PathSecurityAssertion implements SecurityAssertion
 		return locks.get(method);
 	}
 
-	/**
-	 * @return the securityService
-	 */
-	public SecurityService getSecurityService()
-	{
-		return securityService;
+
+	public EntityManager getEntityManager() {
+		return entityManager;
 	}
 
-	/**
-	 * @param securityService
-	 *        the securityService to set
-	 */
-	public void setSecurityService(SecurityService securityService)
-	{
-		this.securityService = securityService;
+	public void setEntityManager(EntityManager entityManager) {
+		this.entityManager = entityManager;
 	}
 
-	/**
-	 * @return the userDirectoryService
-	 */
-	public UserDirectoryService getUserDirectoryService()
-	{
-		return userDirectoryService;
+	public AuthzGroupService getAuthzGroupService() {
+		return authzGroupService;
 	}
 
-	/**
-	 * @param userDirectoryService
-	 *        the userDirectoryService to set
-	 */
-	public void setUserDirectoryService(UserDirectoryService userDirectoryService)
-	{
-		this.userDirectoryService = userDirectoryService;
+	public void setAuthzGroupService(AuthzGroupService authzGroupService) {
+		this.authzGroupService = authzGroupService;
+	}
+
+	public SessionManager getSessionManager() {
+		return sessionManager;
+	}
+
+	public void setSessionManager(SessionManager sessionManager) {
+		this.sessionManager = sessionManager;
 	}
 
 }
