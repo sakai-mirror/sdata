@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,8 +39,10 @@ import org.sakaiproject.authz.api.AuthzPermissionException;
 import org.sakaiproject.authz.api.GroupAlreadyDefinedException;
 import org.sakaiproject.authz.api.GroupIdInvalidException;
 import org.sakaiproject.authz.api.GroupNotDefinedException;
+import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.api.RoleAlreadyDefinedException;
+import org.sakaiproject.content.api.ContentEntity;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.entity.api.Reference;
@@ -48,6 +51,7 @@ import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.model.CHSGroupMap;
+import org.sakaiproject.sdata.tool.model.CHSNodeMap;
 
 /**
  * <h3>Overview</h3>
@@ -143,18 +147,21 @@ public class CHSPermissionsFunction extends CHSSDataFunction {
 		SDataFunctionUtil.checkMethod(request.getMethod(), "GET|POST");
 		if ("GET".equals(request.getMethod())) {
 
+			ContentEntity ce = null;
 			try {
 				// check we can read the entity, but dont keep it
-				getEntity(handler, rp.getRepositoryPath());
+				ce = getEntity(handler, rp.getRepositoryPath());
 			} catch (PermissionException e1) {
 				throw new SDataException(HttpServletResponse.SC_FORBIDDEN,
 						"User is not allowed to edit permissions on "
 								+ rp.getRepositoryPath());
 			}
 
-			String ref = contentHostingService.getReference(rp
-					.getRepositoryPath());
-			log.info("Got Reference " + ref);
+			String ref = ce.getReference();
+			if ( log.isDebugEnabled() ) 
+			{
+				log.debug("Got Reference " + ref);
+			}
 			Reference reference = entitiyManager.newReference(ref);
 			Collection<?> groups = reference.getAuthzGroups();
 			AuthzGroup authZGroup = null;
@@ -173,7 +180,10 @@ public class CHSPermissionsFunction extends CHSSDataFunction {
 						}
 					}
 				} catch (GroupNotDefinedException e1) {
-					log.info("Didnt get " + groupId);
+					if ( log.isDebugEnabled() ) 
+					{
+						log.debug("Didnt get " + groupId);
+					}
 				}
 			}
 
@@ -182,8 +192,10 @@ public class CHSPermissionsFunction extends CHSSDataFunction {
 						"Realm " + ref + " does not exist for "
 								+ rp.getRepositoryPath());
 			}
-			log.info("Got " + authZGroup + " for " + authZGroupId);
-
+			if ( log.isDebugEnabled() ) 
+			{
+				log.debug("Got " + authZGroup + " for " + authZGroupId+" as "+CHSNodeMap.authZGroupToString(authZGroup));
+			}
 			try {
 				handler.sendMap(request, response, new CHSGroupMap(authZGroup,
 						permissionMap));
@@ -238,19 +250,23 @@ public class CHSPermissionsFunction extends CHSSDataFunction {
 				}
 			}
 
+			ContentEntity ce = null;
 			try {
 				// check we can read the entity, but dont keep it
-				getEntity(handler, rp.getRepositoryPath());
+				ce = getEntity(handler, rp.getRepositoryPath());
 			} catch (PermissionException ex1) {
 				throw new SDataException(HttpServletResponse.SC_FORBIDDEN,
 						"User is not allowed to edit permissions on "
 								+ rp.getRepositoryPath());
 			}
-			String ref = contentHostingService.getReference(rp
-					.getRepositoryPath());
+			String ref = ce.getReference();
 
 			// get the roles
 			Reference reference = entitiyManager.newReference(ref);
+			if ( log.isDebugEnabled() ) 
+			{
+				log.debug("Got Reference "+reference+" for "+ref);
+			}
 			Collection<?> groups = reference.getAuthzGroups();
 
 			// If this is the base group, then we want the site realm, otherwise
@@ -258,6 +274,42 @@ public class CHSPermissionsFunction extends CHSSDataFunction {
 			String[] parts = ref.split("/");
 			boolean base = parts.length == 4;
 
+			
+			// get the parent
+/*
+Disabled
+			AuthzGroup parentAuthZGroup = null;
+			String parentAuthZGroupId = null;
+			for (Iterator<?> igroups = groups.iterator(); igroups.hasNext();) {
+				String groupId = (String) igroups.next();
+				try {
+					if (parentAuthZGroupId == null) {
+						parentAuthZGroup = authzGroupService.getAuthzGroup(groupId);
+						parentAuthZGroupId = groupId;
+					} else {
+						if (parentAuthZGroupId.length() < groupId.length()) {
+							parentAuthZGroup = authzGroupService
+									.getAuthzGroup(groupId);
+							parentAuthZGroupId = groupId;
+						}
+					}
+				} catch (GroupNotDefinedException e1) {
+					if ( log.isDebugEnabled() )
+					{
+						log.info("Didnt get " + groupId);
+					}
+				}
+			}
+
+			if (parentAuthZGroup == null) {
+				throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
+						"Realm " + ref + " does not exist for "
+								+ rp.getRepositoryPath());
+			}
+*/
+
+			
+			// get the group relevant to this item
 			String authZGroupId = null;
 			for (Iterator<?> igroups = groups.iterator(); igroups.hasNext();) {
 				String groupId = (String) igroups.next();
@@ -276,6 +328,11 @@ public class CHSPermissionsFunction extends CHSSDataFunction {
 					}
 				}
 			}
+			
+			
+			
+			
+			
 
 			if (authZGroupId == null) {
 				throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
@@ -284,6 +341,10 @@ public class CHSPermissionsFunction extends CHSSDataFunction {
 			}
 			AuthzGroup authZGroup = null;
 
+			if ( log.isDebugEnabled()  )
+			{
+				log.info("Selecting "+authZGroupId);
+			}
 			try {
 				authZGroup = authzGroupService.getAuthzGroup(authZGroupId);
 			} catch (GroupNotDefinedException e1) {
@@ -308,23 +369,34 @@ public class CHSPermissionsFunction extends CHSSDataFunction {
 				}
 
 			}
+			if ( log.isDebugEnabled() )
+			{
+				log.debug("Got " + authZGroup + " for " + authZGroupId+" with "+roles.length+" permissions ");
+				log.info(" Processing Roles "+roles.length);
+			}
 			
-			log.info("Got " + authZGroup + " for " + authZGroupId+" with "+roles.length+" permissions ");
-
 			// set the permissions
-			log.info(" Processing Roles "+roles.length);
 			for (int i = 0; i < roles.length; i++) {
-				log.info(" Processing "+roles[i]+" "+sets[i]+" "+permissions[i]);
+				if ( log.isDebugEnabled() )
+				{
+					log.debug(" Processing "+roles[i]+" "+sets[i]+" "+permissions[i]);
+				}
 				Role r = authZGroup.getRole(roles[i]);
 				if (r == null) {
 					try {
 						
 						r = authZGroup.addRole(roles[i]);
-						log.warn("Adding Role "
+						if ( log.isDebugEnabled() )
+						{
+							log.debug("Adding Role "
 								+ roles[i]);
+						}
 					} catch (RoleAlreadyDefinedException e) {
-						log.warn("Internal Error, adding role twice "
+						if ( log.isDebugEnabled() )
+						{
+							log.debug("Internal Error, adding role twice "
 								+ roles[i]);
+						}
 					}
 
 				}
@@ -341,6 +413,23 @@ public class CHSPermissionsFunction extends CHSSDataFunction {
 					}
 				}
 			}
+			
+			if ( log.isDebugEnabled() )
+			{
+				log.debug("After Edit AZG is "+CHSNodeMap.authZGroupToString(authZGroup));
+			}
+
+
+/* Disabled
+			// update membership, when this is permanent and not linked to the parent.
+			
+			Set<?> members = parentAuthZGroup.getMembers();
+			for ( Iterator<?> i = members.iterator(); i.hasNext(); ) {
+				Member m = (Member) i.next();
+				authZGroup.addMember(m.getUserId(), m.getRole().getId(), m.isActive(), m.isProvided());
+			}
+*/			
+			
 			try {
 				authzGroupService.save(authZGroup);
 			} catch (GroupNotDefinedException e1) {
@@ -364,4 +453,5 @@ public class CHSPermissionsFunction extends CHSSDataFunction {
 
 	}
 
+	
 }

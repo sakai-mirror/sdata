@@ -21,7 +21,6 @@
 
 package org.sakaiproject.sdata.tool.model;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -31,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
@@ -199,16 +197,24 @@ public class CHSNodeMap extends HashMap<String, Object>
 		
 		if (n instanceof ContentCollection)
 		{
-			map.put("read", String.valueOf(contentHostingService.allowGetResource(n
+			map.put("read", String.valueOf(contentHostingService.allowGetCollection(n
 					.getId())));
-			map.put("remove", String.valueOf(contentHostingService.allowRemoveResource(n
+			map.put("remove", String.valueOf(contentHostingService.allowRemoveCollection(n
 					.getId())));
-			map.put("write", String.valueOf(contentHostingService.allowUpdateResource(n
+			map.put("write", String.valueOf(contentHostingService.allowUpdateCollection(n
 					.getId())));
 			
 			String ref = n.getReference();
+			
+			
 			Reference reference = entityManager.newReference(n.getReference());
+			if ( log.isDebugEnabled() )
+			{
+				log.debug("Got Reference "+reference+" for "+n.getReference());
+			}
 			Collection<?> groups = reference.getAuthzGroups();
+			
+			
 			AuthzGroup authZGroup = null;
 			String authZGroupId = null;
 			for (Iterator<?> igroups = groups.iterator(); igroups.hasNext();) {
@@ -225,29 +231,56 @@ public class CHSNodeMap extends HashMap<String, Object>
 						}
 					}
 				} catch (GroupNotDefinedException e1) {
-					
-					log.error("Didnt get " + groupId);
+					if ( log.isDebugEnabled() )
+					{
+						log.debug("Didnt get " + groupId);
+					}
 				}
 			}
-
+			if ( log.isDebugEnabled() )
+			{
+				log.debug("Got " + authZGroupId+" as "+authZGroup);
+			}	
+				
 			if (authZGroup == null) {
 				throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
 						"Realm " + ref + " does not exist for "
 								+ n.getReference());
 			}
-
+			String user = sessionManager.getCurrentSessionUserId();
+			if ( log.isDebugEnabled() )
+			{
+				log.debug("Checking "+user+" against "+authZGroupToString(authZGroup));
+			}
 			map.put("admin", String.valueOf(authZGroup.isAllowed(sessionManager.getCurrentSessionUserId(), AuthzGroupService.SECURE_UPDATE_AUTHZ_GROUP)));
 		}
 		else
 		{
-			map.put("read", String.valueOf(contentHostingService.allowGetCollection(n
+			map.put("read", String.valueOf(contentHostingService.allowGetResource(n
 					.getId())));
 			map.put("remove", String.valueOf(contentHostingService
-					.allowRemoveCollection(n.getId())));
-			map.put("write", String.valueOf(contentHostingService.allowRemoveCollection(n
+					.allowRemoveResource(n.getId())));
+			map.put("write", String.valueOf(contentHostingService.allowUpdateResource(n
 					.getId())));
 		}
 		return map;
+	}
+
+	public static String authZGroupToString(AuthzGroup authZGroup) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n");
+		Set<?> roles = authZGroup.getRoles();
+		for ( Iterator<?> i = roles.iterator(); i.hasNext();  ) {
+			Role r = (Role) i.next();
+			sb.append("\t").append(r.getId()).append(":{");
+			Set<?> funcs = r.getAllowedFunctions();
+			for ( Iterator<?> fi = funcs.iterator(); fi.hasNext();) {
+				String f = (String) fi.next();
+				sb.append(f).append(",");
+			}
+			sb.append("}\n");
+		}
+		return sb.toString();
 	}
 
 	/**
