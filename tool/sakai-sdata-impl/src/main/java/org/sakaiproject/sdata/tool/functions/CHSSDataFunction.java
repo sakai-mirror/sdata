@@ -192,6 +192,8 @@ public abstract class CHSSDataFunction implements SDataFunction
 			{
 				String lock = ContentHostingService.AUTH_RESOURCE_HIDDEN;
 				String userId = Kernel.sessionManager().getCurrentSessionUserId();
+				
+				
 				boolean canSeeHidden = Kernel.securityService().unlock(userId,lock,
 						ce.getReference(),ce.getGroups());
 				if (!canSeeHidden && !ce.isAvailable())

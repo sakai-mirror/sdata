@@ -84,15 +84,20 @@ public class CHSNodeMap extends HashMap<String, Object>
 	{
 		String lock = ContentHostingService.AUTH_RESOURCE_HIDDEN;
 		sessionManager = Kernel.sessionManager();
+		entityManager = Kernel.entityManager();
 		String userId = sessionManager.getCurrentSessionUserId();
-		boolean canSeeHidden = Kernel.securityService().unlock(userId, lock, n.getReference(), n.getGroups());
+		String reference = n.getReference();
+		Reference referenceObj = entityManager.newReference(reference);
+		Collection<?> groups = referenceObj.getAuthzGroups();
+		
+		boolean canSeeHidden = Kernel.securityService().unlock(userId, lock, reference, groups);
+		
 		if (!canSeeHidden && !n.isAvailable())
 		{
 			throw new SDataAccessException(403, "Permission denied on item");
 		}
 		contentHostingService = Kernel.contentHostingService();
 		authZGroupService = Kernel.authzGroupService();
-		entityManager = Kernel.entityManager();
 		depth--;
 		put("mixinNodeType", getMixinTypes(n));
 		put("properties", getProperties(n));

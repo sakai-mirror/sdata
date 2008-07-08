@@ -29,6 +29,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
@@ -55,6 +56,7 @@ import org.sakaiproject.content.api.ContentEntity;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ContentResourceEdit;
+import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.event.api.NotificationService;
 import org.sakaiproject.exception.IdInvalidException;
@@ -308,8 +310,15 @@ public abstract class CHSHandler implements Handler
 		{
 			String lock = ContentHostingService.AUTH_RESOURCE_HIDDEN;
 			String userId = Kernel.sessionManager().getCurrentSessionUserId();
-			boolean canSeeHidden = Kernel.securityService().unlock(userId,lock,
-					ce.getReference(),ce.getGroups());
+			
+			String reference = ce.getReference();
+			Reference referenceObj = Kernel.entityManager().newReference(reference);
+			Collection<?> groups = referenceObj.getAuthzGroups();
+			
+			boolean canSeeHidden = Kernel.securityService().unlock(userId, lock, reference, groups);
+
+			
+			
 			if (!canSeeHidden && !ce.isAvailable())
 			{
 				throw new SDataAccessException(403, "Permission denied on item");
