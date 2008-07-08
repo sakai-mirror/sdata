@@ -234,8 +234,6 @@ public class MyGlobalSearchBean implements ServiceDefinition
 
 				arl2.add(currentSite.getId());
 				
-				arl2.addAll(getPublicSites(currentUser,roleService));
-
 				SearchService search = Kernel.searchService();
 				int currentPage = 0;
 
