@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.Kernel;
+import org.sakaiproject.announcement.api.AnnouncementService;
 import org.sakaiproject.message.api.MessageService;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
@@ -49,6 +50,8 @@ public class MessageOfTheDayDefinitionFactory implements ServiceDefinitionFactor
 	private MessageService messageService;
 
 	private TimeService timeService;
+	
+	private AnnouncementService announcementService;
 
 	/**
 	 * Create a message of the day service
@@ -57,7 +60,7 @@ public class MessageOfTheDayDefinitionFactory implements ServiceDefinitionFactor
 	{
 		siteService = Kernel.siteService();
 		sessionManager = Kernel.sessionManager();
-
+		announcementService = Kernel.announcementService();
 		messageService = Kernel.announcementService();
 
 		timeService = Kernel.timeService();
@@ -74,7 +77,7 @@ public class MessageOfTheDayDefinitionFactory implements ServiceDefinitionFactor
 	{
 
 		return new MessageOfTheDayBean(sessionManager, messageService, timeService,
-				siteService, response);
+				siteService, response, request, announcementService);
 	}
 
 	/*

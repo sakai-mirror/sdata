@@ -27,9 +27,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.announcement.api.AnnouncementMessage;
+import org.sakaiproject.announcement.api.AnnouncementService;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.message.api.Message;
 import org.sakaiproject.message.api.MessageService;
@@ -66,51 +69,83 @@ public class MessageOfTheDayBean implements ServiceDefinition
 	 */
 	public MessageOfTheDayBean(SessionManager sessionManager,
 			MessageService messageservice, TimeService timeService,
-			SiteService siteService, HttpServletResponse response)
+			SiteService siteService, HttpServletResponse response, HttpServletRequest request,
+			AnnouncementService announcementService)
 	{
+		
+		if (request.getMethod().toLowerCase().equals("get")){
 
-		try
-		{
-			
-
-			// hardcoded because there does not seem to be a good way to do it
-			String ref = "/announcement/channel/!site/motd"; // messageservice.channelReference("!site",
-			// SiteService.MAIN_CONTAINER);
-			// making up a date that is wayyy in the past
-			Time reallyLongTimeAgo = timeService.newTime(0);
-			if (messageservice == null)
+			try
 			{
-				map.put("motdBody", "No Announcement Service Available on this server");
-				map.put("motdUrl", "#");
-				MyMotds.add(map);
-				map2.put("items", MyMotds);
-
-			}
-			else
-			{
-				List<Message> messages = messageservice.getMessages(ref,
-						reallyLongTimeAgo, 1, false, false, false);
-				if (messages.size() <= 0)
+				
+	
+				// hardcoded because there does not seem to be a good way to do it
+				String ref = "/announcement/channel/!site/motd"; // messageservice.channelReference("!site",
+				// SiteService.MAIN_CONTAINER);
+				// making up a date that is wayyy in the past
+				Time reallyLongTimeAgo = timeService.newTime(0);
+				if (messageservice == null)
 				{
-					map.put("motdBody", "No Message of the day set");
+					map.put("motdBody", "No Announcement Service Available on this server");
+					map.put("motdTitle", "");
 					map.put("motdUrl", "#");
 					MyMotds.add(map);
 					map2.put("items", MyMotds);
+	
 				}
 				else
 				{
-					Message motd = messages.get(0);
-					map.put("motdBody", motd.getBody());
-					map.put("motdUrl", motd.getUrl());
-					MyMotds.add(map);
-					map2.put("items", MyMotds);
-
+					List<AnnouncementMessage> messages = messageservice.getMessages(ref,
+							reallyLongTimeAgo, 1, false, false, false);
+					if (messages.size() <= 0)
+					{
+						map.put("motdBody", "No Message of the day set");
+						map.put("motdTitle", "");
+						map.put("motdUrl", "#");
+						MyMotds.add(map);
+						map2.put("items", MyMotds);
+					}
+					else
+					{
+						AnnouncementMessage motd = messages.get(0);
+						map.put("motdBody", motd.getBody());
+						map.put("motdTitle", motd.getAnnouncementHeader().getSubject());
+						map.put("motdUrl", motd.getUrl());
+						MyMotds.add(map);
+						map2.put("items", MyMotds);
+	
+					}
 				}
 			}
-		}
-		catch (PermissionException e)
-		{
-			throw new RuntimeException("He's dead Jim! : " + e.getMessage(), e);
+			catch (PermissionException e)
+			{
+				throw new RuntimeException("He's dead Jim! : " + e.getMessage(), e);
+			}
+		
+		} else if (request.getMethod().toLowerCase().equals("post")){
+			
+			try
+			{
+
+				String subject = request.getParameter("subject");
+				String body = request.getParameter("body");
+
+				AnnouncementMessage edit = announcementService.getAnnouncementChannel(
+						"/announcement/channel/!site/motd").addAnnouncementMessage(
+						subject, false, null, body);
+				// announcementService.getAnnouncementChannel("/announcement/channel/"
+				// + siteId + "/main").commitMessage(edit);
+
+				map2.put("status", "success");
+
+			}
+			catch (Exception ex)
+			{
+
+				map2.put("status", "failed");
+
+			}
+			
 		}
 
 	}
