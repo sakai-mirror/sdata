@@ -68,12 +68,6 @@ public class SiteServiceDefinitionFactory implements ServiceDefinitionFactory
 	public ServiceDefinition getSpec(HttpServletRequest request,
 			HttpServletResponse response)
 	{
-
-		if (request.getRemoteUser() == null){
-			try {
-				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
-			} catch (IOException e) {}
-		}
 		
 		boolean writeevent = false;
 		if (request.getParameter("writeevent") != null){
@@ -81,7 +75,7 @@ public class SiteServiceDefinitionFactory implements ServiceDefinitionFactory
 		}
 
 		String siteId = request.getParameter("siteid");
-		return new SiteBean(sessionManager, siteService, authzGroupService, siteId, writeevent);
+		return new SiteBean(sessionManager, siteService, authzGroupService, siteId, writeevent, request, response);
 	}
 
 	/*

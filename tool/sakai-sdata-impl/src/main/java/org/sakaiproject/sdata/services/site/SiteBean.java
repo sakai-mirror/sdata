@@ -21,10 +21,14 @@
 
 package org.sakaiproject.sdata.services.site;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -70,7 +74,8 @@ public class SiteBean implements ServiceDefinition
 	 * @param siteService
 	 */
 	public SiteBean(SessionManager sessionManager, SiteService siteService,
-			AuthzGroupService authzGroupService, String siteId, boolean writeevent)
+			AuthzGroupService authzGroupService, String siteId, boolean writeevent, 
+			HttpServletRequest request, HttpServletResponse response)
 	{
 		boolean siteExists = true;
 		String status = "900";
@@ -92,10 +97,7 @@ public class SiteBean implements ServiceDefinition
 					.getUserId()))));
 
 		}
-		catch (IdUnusedException e)
-		{
-			e.printStackTrace();
-		}
+		catch (IdUnusedException e){}
 
 
 		/*
@@ -123,12 +125,14 @@ public class SiteBean implements ServiceDefinition
 					member = true;
 				}
 			}
+			
+			
 
 			if (member == false)
 			{
 				status = "902";
 
-				if (theSite.isAllowed(curUser, "read"))
+				if (theSite.isAllowed(curUser, "site.visit") || theSite.isPubView())
 				{
 					status = "904";
 					member = true;
@@ -136,7 +140,6 @@ public class SiteBean implements ServiceDefinition
 				else if (theSite.isJoinable())
 				{
 					status = "905";
-
 				}
 			}
 
@@ -220,7 +223,12 @@ public class SiteBean implements ServiceDefinition
 		{
 
 			status = "901";
-			e.printStackTrace();
+			
+			if (request.getRemoteUser() == null){
+				try {
+					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
+				} catch (IOException ex) {}
+			}
 
 		}
 
