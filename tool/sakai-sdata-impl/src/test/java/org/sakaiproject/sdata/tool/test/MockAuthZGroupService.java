@@ -1,5 +1,6 @@
 package org.sakaiproject.sdata.tool.test;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -239,4 +240,19 @@ public class MockAuthZGroupService  implements AuthzGroupService{
 	public void setPass(boolean pass) {
 		this.pass = pass;
 	}
+
+	public List getAuthzUserGroupIds(ArrayList arg0, String arg1) {
+		return null;
+	}
+
+	public Map<String, Integer> getUserCountIsAllowed(String arg0,
+			Collection<String> arg1) {
+		return null;
+	}
+
+	public Set<String[]> getUsersIsAllowedByGroup(String arg0,
+			Collection<String> arg1) {
+		return null;
+	}
+ 
 }

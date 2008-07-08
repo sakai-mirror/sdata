@@ -33,7 +33,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.Kernel;
-import org.sakaiproject.authz.api.RoleService;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.sdata.tool.api.SDataException;
@@ -79,7 +78,7 @@ public class MyGlobalSearchBean implements ServiceDefinition
 	 */
 	@SuppressWarnings("unchecked")
 	public MyGlobalSearchBean(SessionManager sessionManager, SiteService siteService,
-			ContentHostingService contentHostingService, RoleService roleService, HttpServletResponse response,
+			ContentHostingService contentHostingService, HttpServletResponse response,
 			String page, String searchParam, Boolean empty, String cSite) throws SDataException
 	{
 
@@ -111,7 +110,7 @@ public class MyGlobalSearchBean implements ServiceDefinition
 
 			}
 			
-			arl.addAll(getPublicSites(currentUser,roleService));
+			arl.addAll(getPublicSites(currentUser));
 			
 			
 
@@ -369,21 +368,11 @@ public class MyGlobalSearchBean implements ServiceDefinition
 
 
 
-	private Collection<? extends String> getPublicSites(String currentUser, RoleService roleService) {
+	private Collection<? extends String> getPublicSites(String currentUser) {
 		
         List<String> contexts = new ArrayList<String>();
 		if ( currentUser != null ) {
            List<String> roles = new ArrayList<String>();
-           String[] hiddenRoles = roleService.findGuestRoleMembership(currentUser);
-           for ( String hr : hiddenRoles ) {
-                   roles.add(hr);
-           }
-           List<String> permissions = new ArrayList<String>();
-           permissions.add("site.visit");
-           String[] publicSites = roleService.findRealmIds(roles, permissions, "site", 0, 200);
-           for ( String siteId : publicSites ) {
-                   contexts.add(siteId);
-           }
            if ( currentUser != null ) {
                    contexts.add(".auth");
            }
