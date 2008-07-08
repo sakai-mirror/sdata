@@ -196,21 +196,13 @@ public class MyGlobalSearchBean implements ServiceDefinition
 						}
 					}
 
-					if (resBis.size() <= 0)
-					{
-
-						map2.put("total", totalfilesshown);
-						map2.put("items", searchList);
-
-					}
-					else
-					{
+					
 						map2.put("searchString", searchParam);
 						map2.put("total", totalfilesshown);
 						map2.put("items", searchList);
 						map2.put("status", "succes");
 						map2.put("totalResults", res.getFullSize());
-					}
+					
 				}
 				catch (Exception e)
 				{
@@ -310,21 +302,13 @@ public class MyGlobalSearchBean implements ServiceDefinition
 					}
 				}
 
-				if (resBis.size() <= 0)
-				{
-
-					map2.put("total", totalfilesshown);
-					map2.put("items", searchList);
-
-				}
-				else
-				{
+				
 					map2.put("searchString", searchParam);
 					map2.put("total", totalfilesshown);
 					map2.put("items", searchList);
 					map2.put("status", "succes");
 					map2.put("totalResults", res.getFullSize());
-				}
+				
 			}
 			catch (IdUnusedException e1)
 			{
