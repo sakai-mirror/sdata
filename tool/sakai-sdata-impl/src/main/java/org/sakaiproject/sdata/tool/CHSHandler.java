@@ -1039,10 +1039,10 @@ public abstract class CHSHandler implements Handler
 			// response.addHeader("Cache-Control", "must-revalidate");
 			response.addHeader("Cache-Control", "public");
 		}
-		response.addHeader("Cache-Control", "max-age=60");
-		response.addHeader("Cache-Control", "s-maxage=60");
+		response.addHeader("Cache-Control", "max-age=600");
+		response.addHeader("Cache-Control", "s-maxage=600");
 		response.setDateHeader("Date", System.currentTimeMillis());
-		response.setDateHeader("Expires", System.currentTimeMillis() + 60000);
+		response.setDateHeader("Expires", System.currentTimeMillis() + 600000);
 
 	}
 
