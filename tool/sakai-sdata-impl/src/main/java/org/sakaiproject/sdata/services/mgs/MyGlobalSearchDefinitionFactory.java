@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.Kernel;
+import org.sakaiproject.authz.api.RoleService;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
@@ -50,6 +51,8 @@ public class MyGlobalSearchDefinitionFactory implements ServiceDefinitionFactory
 
 	private ContentHostingService contentHostingService;
 
+	private RoleService roleService;
+
 	/**
 	 * Create a new Global Search definition factory.
 	 */
@@ -58,6 +61,7 @@ public class MyGlobalSearchDefinitionFactory implements ServiceDefinitionFactory
 		siteService = Kernel.siteService();
 		sessionManager = Kernel.sessionManager();
 		contentHostingService = Kernel.contentHostingService();
+		roleService = (RoleService) Kernel.componentManager().get(RoleService.class.getName());
 	}
 
 	/*
@@ -147,7 +151,7 @@ public class MyGlobalSearchDefinitionFactory implements ServiceDefinitionFactory
 			throw new SDataException(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
 		}
 
-		return new MyGlobalSearchBean(sessionManager, siteService, contentHostingService,
+		return new MyGlobalSearchBean(sessionManager, siteService, contentHostingService, roleService,
 				response, page, searchParam, empty, currentSiteSearch);
 	}
 

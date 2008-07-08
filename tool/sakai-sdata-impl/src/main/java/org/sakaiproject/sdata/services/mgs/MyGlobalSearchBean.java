@@ -22,6 +22,7 @@
 package org.sakaiproject.sdata.services.mgs;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,8 +33,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.Kernel;
+import org.sakaiproject.authz.api.RoleService;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.search.api.SearchList;
 import org.sakaiproject.search.api.SearchResult;
@@ -51,7 +54,7 @@ import org.sakaiproject.tool.api.SessionManager;
  */
 public class MyGlobalSearchBean implements ServiceDefinition
 {
-	private List<Map> searchList = new ArrayList<Map>();
+	private List<Map<String, String>> searchList = new ArrayList<Map<String, String>>();
 
 	private Map<String, Object> map2 = new HashMap<String, Object>();
 
@@ -65,18 +68,24 @@ public class MyGlobalSearchBean implements ServiceDefinition
 
 	private Site currentSite = null;
 
+	private SiteService siteService;
+
 	/**
 	 * Create a search bean injecting the necessary services
 	 * 
 	 * @param sessionManager
 	 * @param siteService
+	 * @throws SDataException 
 	 */
 	@SuppressWarnings("unchecked")
 	public MyGlobalSearchBean(SessionManager sessionManager, SiteService siteService,
-			ContentHostingService contentHostingService, HttpServletResponse response,
-			String page, String searchParam, Boolean empty, String cSite)
+			ContentHostingService contentHostingService, RoleService roleService, HttpServletResponse response,
+			String page, String searchParam, Boolean empty, String cSite) throws SDataException
 	{
 
+		this.siteService = siteService;
+		String currentUser = sessionManager.getCurrentSessionUserId();
+		
 		if (cSite.equals("all"))
 		{
 
@@ -86,7 +95,7 @@ public class MyGlobalSearchBean implements ServiceDefinition
 			try
 			{
 				sites.add(0, (siteService.getSite(siteService
-						.getUserSiteId(sessionManager.getCurrentSession().getUserId()))));
+						.getUserSiteId(currentUser))));
 
 			}
 			catch (IdUnusedException e)
@@ -100,6 +109,10 @@ public class MyGlobalSearchBean implements ServiceDefinition
 				arl.add(s.getId());
 
 			}
+			
+			arl.addAll(getPublicSites(currentUser,roleService));
+			
+			
 
 			if (!empty)
 			{
@@ -152,9 +165,9 @@ public class MyGlobalSearchBean implements ServiceDefinition
 							{
 								context += s;
 							}
-							Site resultsite = siteService.getSite(context);
-							search_result.put("site", resultsite.getTitle());
-							search_result.put("siteId", context);
+							search_result.put("site", getSiteContext(context));
+							
+							search_result.put("siteId", getSiteId(context));
 							search_result.put("score", String.valueOf(bis.getScore()));
 							searchList.add(search_result);
 
@@ -200,8 +213,8 @@ public class MyGlobalSearchBean implements ServiceDefinition
 				}
 				catch (Exception e)
 				{
-
-					map2.put("status", "failed");
+					log.warn("Failed to perform search ",e);
+					throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,"Failed "+e);
 				}
 			}
 			else
@@ -220,6 +233,8 @@ public class MyGlobalSearchBean implements ServiceDefinition
 				currentSite = siteService.getSite(cSite);
 
 				arl2.add(currentSite.getId());
+				
+				arl2.addAll(getPublicSites(currentUser,roleService));
 
 				SearchService search = Kernel.searchService();
 				int currentPage = 0;
@@ -268,10 +283,9 @@ public class MyGlobalSearchBean implements ServiceDefinition
 						{
 							context += s;
 						}
-						Site resultsite = siteService.getSite(context);
-						search_result.put("site", resultsite.getTitle());
+						search_result.put("site", getSiteContext(context));
 						searchList.add(search_result);
-						search_result.put("siteId", context);
+						search_result.put("siteId", getSiteId(context));
 						resBis.add(bis);
 					}
 					else
@@ -323,6 +337,73 @@ public class MyGlobalSearchBean implements ServiceDefinition
 		}
 
 	}
+
+	
+
+	private String getSiteId(String context) {
+		if ( ".anon".equals(context) ) {
+			return "";
+		} else if ( ".auth".equals(context) ) {
+			return "";
+		} else if ( ".private".equals(context) ) {
+			return "";
+		} else if ( context != null && context.startsWith(".") ) {	
+			return "";
+		} else {
+			try {
+				siteService.getSite(context);
+				return context;
+			} catch (Exception ex) {
+				return "";
+			}
+		}
+	}
+
+
+
+	private String getSiteContext(String context) {
+		if ( ".anon".equals(context) ) {
+			return "Public";
+		} else if ( ".auth".equals(context) ) {
+			return "Restricted";
+		} else if ( ".private".equals(context) ) {
+			return "Private";
+		} else if ( context != null && context.startsWith(".") ) {	
+			char[] c = context.toCharArray();
+			c[1] = Character.toTitleCase(c[1]);
+			return new String(c,1,c.length-1);
+		} else {
+			try {
+				Site resultsite = siteService.getSite(context);
+				return resultsite.getTitle();
+			} catch (Exception ex) {
+				return "Unknown";
+			}
+			
+		}
+	}
+
+
+
+	private Collection<? extends String> getPublicSites(String currentUser, RoleService roleService) {
+               List<String> roles = new ArrayList<String>();
+               String[] hiddenRoles = roleService.findGuestRoleMembership(currentUser);
+               for ( String hr : hiddenRoles ) {
+                       roles.add(hr);
+               }
+               List<String> permissions = new ArrayList<String>();
+               permissions.add("site.visit");
+               String[] publicSites = roleService.findRealmIds(roles, permissions, "site", 0, 200);
+               List<String> contexts = new ArrayList<String>();
+               for ( String siteId : publicSites ) {
+                       contexts.add(siteId);
+               }
+               if ( currentUser != null ) {
+                       contexts.add(".auth");
+               }
+               contexts.add(".anon");
+               return contexts;
+       }
 
 	/*
 	 * (non-Javadoc)
