@@ -74,9 +74,14 @@ public class SiteServiceDefinitionFactory implements ServiceDefinitionFactory
 				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
 			} catch (IOException e) {}
 		}
+		
+		boolean writeevent = false;
+		if (request.getParameter("writeevent") != null){
+			writeevent = true;
+		}
 
 		String siteId = request.getParameter("siteid");
-		return new SiteBean(sessionManager, siteService, authzGroupService, siteId);
+		return new SiteBean(sessionManager, siteService, authzGroupService, siteId, writeevent);
 	}
 
 	/*

@@ -31,6 +31,8 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.AuthzGroupService;
 import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.event.api.Event;
+import org.sakaiproject.event.api.EventTrackingService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.site.api.Site;
@@ -68,7 +70,7 @@ public class SiteBean implements ServiceDefinition
 	 * @param siteService
 	 */
 	public SiteBean(SessionManager sessionManager, SiteService siteService,
-			AuthzGroupService authzGroupService, String siteId)
+			AuthzGroupService authzGroupService, String siteId, boolean writeevent)
 	{
 		boolean siteExists = true;
 		String status = "900";
@@ -185,6 +187,12 @@ public class SiteBean implements ServiceDefinition
 
 					arlpages.add(mpages);
 
+				}
+				
+				if (writeevent == true){
+					EventTrackingService ets = org.sakaiproject.event.cover.EventTrackingService.getInstance();
+					Event event = ets.newEvent("pres.begin", "/site/" + siteId, true);
+					ets.post(event);
 				}
 
 				ArrayList<HashMap<String, String>> roles = new ArrayList<HashMap<String, String>>();
