@@ -194,7 +194,7 @@ public class CHSPermissionsFunction extends CHSSDataFunction {
 			}
 			if ( log.isDebugEnabled() ) 
 			{
-				log.debug("Got " + authZGroup + " for " + authZGroupId+" as "+CHSNodeMap.authZGroupToString(authZGroup));
+				log.debug("Got " + authZGroup + " for " + authZGroupId+" as "+authZGroupToString(authZGroup));
 			}
 			try {
 				handler.sendMap(request, response, new CHSGroupMap(authZGroup,
@@ -275,38 +275,6 @@ public class CHSPermissionsFunction extends CHSSDataFunction {
 			boolean base = parts.length == 4;
 
 			
-			// get the parent
-/*
-Disabled
-			AuthzGroup parentAuthZGroup = null;
-			String parentAuthZGroupId = null;
-			for (Iterator<?> igroups = groups.iterator(); igroups.hasNext();) {
-				String groupId = (String) igroups.next();
-				try {
-					if (parentAuthZGroupId == null) {
-						parentAuthZGroup = authzGroupService.getAuthzGroup(groupId);
-						parentAuthZGroupId = groupId;
-					} else {
-						if (parentAuthZGroupId.length() < groupId.length()) {
-							parentAuthZGroup = authzGroupService
-									.getAuthzGroup(groupId);
-							parentAuthZGroupId = groupId;
-						}
-					}
-				} catch (GroupNotDefinedException e1) {
-					if ( log.isDebugEnabled() )
-					{
-						log.info("Didnt get " + groupId);
-					}
-				}
-			}
-
-			if (parentAuthZGroup == null) {
-				throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
-						"Realm " + ref + " does not exist for "
-								+ rp.getRepositoryPath());
-			}
-*/
 
 			
 			// get the group relevant to this item
@@ -416,19 +384,9 @@ Disabled
 			
 			if ( log.isDebugEnabled() )
 			{
-				log.debug("After Edit AZG is "+CHSNodeMap.authZGroupToString(authZGroup));
+				log.debug("After Edit AZG is "+authZGroupToString(authZGroup));
 			}
 
-
-/* Disabled
-			// update membership, when this is permanent and not linked to the parent.
-			
-			Set<?> members = parentAuthZGroup.getMembers();
-			for ( Iterator<?> i = members.iterator(); i.hasNext(); ) {
-				Member m = (Member) i.next();
-				authZGroup.addMember(m.getUserId(), m.getRole().getId(), m.isActive(), m.isProvided());
-			}
-*/			
 			
 			try {
 				authzGroupService.save(authZGroup);
@@ -453,5 +411,21 @@ Disabled
 
 	}
 
+	public static String authZGroupToString(AuthzGroup authZGroup) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n");
+		Set<?> roles = authZGroup.getRoles();
+		for ( Iterator<?> i = roles.iterator(); i.hasNext();  ) {
+			Role r = (Role) i.next();
+			sb.append("\t").append(r.getId()).append(":{");
+			Set<?> funcs = r.getAllowedFunctions();
+			for ( Iterator<?> fi = funcs.iterator(); fi.hasNext();) {
+				String f = (String) fi.next();
+				sb.append(f).append(",");
+			}
+			sb.append("}\n");
+		}
+		return sb.toString();
+	}
 	
 }

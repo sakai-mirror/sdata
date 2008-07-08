@@ -212,47 +212,10 @@ public class CHSNodeMap extends HashMap<String, Object>
 			{
 				log.debug("Got Reference "+reference+" for "+n.getReference());
 			}
-			Collection<?> groups = reference.getAuthzGroups();
 			
-			
-			AuthzGroup authZGroup = null;
-			String authZGroupId = null;
-			for (Iterator<?> igroups = groups.iterator(); igroups.hasNext();) {
-				String groupId = (String) igroups.next();
-				try {
-					if (authZGroupId == null) {
-						authZGroup = authZGroupService.getAuthzGroup(groupId);
-						authZGroupId = groupId;
-					} else {
-						if (authZGroupId.length() < groupId.length()) {
-							authZGroup = authZGroupService
-									.getAuthzGroup(groupId);
-							authZGroupId = groupId;
-						}
-					}
-				} catch (GroupNotDefinedException e1) {
-					if ( log.isDebugEnabled() )
-					{
-						log.debug("Didnt get " + groupId);
-					}
-				}
-			}
-			if ( log.isDebugEnabled() )
-			{
-				log.debug("Got " + authZGroupId+" as "+authZGroup);
-			}	
-				
-			if (authZGroup == null) {
-				throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
-						"Realm " + ref + " does not exist for "
-								+ n.getReference());
-			}
+			Collection<?> groups = reference.getAuthzGroups();			
 			String user = sessionManager.getCurrentSessionUserId();
-			if ( log.isDebugEnabled() )
-			{
-				log.debug("Checking "+user+" against "+authZGroupToString(authZGroup));
-			}
-			map.put("admin", String.valueOf(authZGroup.isAllowed(sessionManager.getCurrentSessionUserId(), AuthzGroupService.SECURE_UPDATE_AUTHZ_GROUP)));
+			map.put("admin", String.valueOf(authZGroupService.isAllowed(sessionManager.getCurrentSessionUserId(), AuthzGroupService.SECURE_UPDATE_AUTHZ_GROUP, groups)));
 		}
 		else
 		{
@@ -266,22 +229,6 @@ public class CHSNodeMap extends HashMap<String, Object>
 		return map;
 	}
 
-	public static String authZGroupToString(AuthzGroup authZGroup) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("\n");
-		Set<?> roles = authZGroup.getRoles();
-		for ( Iterator<?> i = roles.iterator(); i.hasNext();  ) {
-			Role r = (Role) i.next();
-			sb.append("\t").append(r.getId()).append(":{");
-			Set<?> funcs = r.getAllowedFunctions();
-			for ( Iterator<?> fi = funcs.iterator(); fi.hasNext();) {
-				String f = (String) fi.next();
-				sb.append(f).append(",");
-			}
-			sb.append("}\n");
-		}
-		return sb.toString();
-	}
 
 	/**
 	 * @param n
