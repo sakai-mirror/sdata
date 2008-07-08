@@ -56,6 +56,7 @@ import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ContentResourceEdit;
 import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.event.api.NotificationService;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
@@ -729,7 +730,7 @@ public abstract class CHSHandler implements Handler
 		cre.setContentType(mimeType);
 		setLastModified(cre, lastModified.getTime());
 		cre.setContent(in);
-		contentHostingService.commitResource(cre);
+		contentHostingService.commitResource(cre, NotificationService.NOTI_NONE);
 
 		return cre.getContentLength();
 	}
