@@ -21,14 +21,22 @@
 
 package org.sakaiproject.sdata.services.qa;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.announcement.api.AnnouncementMessage;
+import org.sakaiproject.announcement.api.AnnouncementMessageEdit;
 import org.sakaiproject.announcement.api.AnnouncementService;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.message.api.MessageEdit;
 import org.sakaiproject.message.api.MessageService;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.site.api.SiteService;
@@ -61,27 +69,78 @@ public class QaBean implements ServiceDefinition
 			HttpServletResponse response)
 	{
 
-		try
-		{
-
+		if (request.getMethod().toLowerCase().equals("get")){
+			
 			String siteId = request.getParameter("siteid");
-			String subject = request.getParameter("subject");
-			String body = request.getParameter("body");
-
-			AnnouncementMessage edit = announcementService.getAnnouncementChannel(
-					"/announcement/channel/" + siteId + "/main").addAnnouncementMessage(
-					subject, false, null, body);
-			// announcementService.getAnnouncementChannel("/announcement/channel/"
-			// + siteId + "/main").commitMessage(edit);
-
-			map2.put("status", "success");
-
-		}
-		catch (Exception ex)
-		{
-
-			map2.put("status", "failed");
-
+			
+			try {
+				
+				ArrayList <Object> result = new ArrayList<Object>();
+				List <AnnouncementMessage> arl = announcementService.getAnnouncementChannel("/announcement/channel/" + siteId + "/main")
+					.getMessages(null, true);
+				for (AnnouncementMessage msg : arl){
+					HashMap<String, String> map = new HashMap<String, String>();
+					map.put("id", msg.getId());
+					map.put("url", msg.getUrl());
+					map.put("title", msg.getAnnouncementHeader().getSubject());
+					map.put("body", msg.getBody());
+					map.put("author", msg.getAnnouncementHeader().getFrom().getDisplayName());
+					SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+					map.put("date", format.format(new Date(msg.getHeader().getDate().getTime())));
+					result.add(map);
+				}
+				map2.put("items", result);
+				
+			} catch (PermissionException e) {
+				map2.put("status", "failed");
+				e.printStackTrace();
+			} catch (IdUnusedException e) {
+				map2.put("status", "failed");
+				e.printStackTrace();
+			}
+			
+			
+			
+		} else {
+		
+			try
+			{
+	
+				String siteId = request.getParameter("siteid");
+				String subject = request.getParameter("subject");
+				String body = request.getParameter("body");
+				String action = request.getParameter("action");
+				
+				if (action != null && action.equals("update")){
+					
+					String anncid = request.getParameter("action");
+					AnnouncementMessageEdit edit = announcementService.getAnnouncementChannel(
+							"/announcement/channel/" + siteId + "/main").editAnnouncementMessage(anncid);
+					edit.setBody(body);
+					edit.getAnnouncementHeaderEdit().setSubject(subject);
+					
+					map2.put("status", "success");
+					
+				} else {
+				
+					AnnouncementMessage edit = announcementService.getAnnouncementChannel(
+							"/announcement/channel/" + siteId + "/main").addAnnouncementMessage(
+							subject, false, null, body);
+					// announcementService.getAnnouncementChannel("/announcement/channel/"
+					// + siteId + "/main").commitMessage(edit);
+		
+					map2.put("status", "success");
+					
+				}
+	
+			}
+			catch (Exception ex)
+			{
+	
+				map2.put("status", "failed");
+	
+			}
+		
 		}
 
 	}
