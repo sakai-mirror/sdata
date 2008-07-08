@@ -112,6 +112,7 @@ public class SiteBean implements ServiceDefinition
 
 			map2.put("title", theSite.getTitle());
 			map2.put("id", siteId);
+			map2.put("icon", theSite.getIconUrl());
 
 			if (!theSite.isPublished())
 			{
