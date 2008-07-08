@@ -83,6 +83,7 @@ public class CHSNodeMap extends HashMap<String, Object>
 			throws SDataException
 	{
 		String lock = ContentHostingService.AUTH_RESOURCE_HIDDEN;
+		sessionManager = Kernel.sessionManager();
 		String userId = sessionManager.getCurrentSessionUserId();
 		boolean canSeeHidden = Kernel.securityService().unlock(userId, lock, n.getReference(), n.getGroups());
 		if (!canSeeHidden && !n.isAvailable())
@@ -92,7 +93,6 @@ public class CHSNodeMap extends HashMap<String, Object>
 		contentHostingService = Kernel.contentHostingService();
 		authZGroupService = Kernel.authzGroupService();
 		entityManager = Kernel.entityManager();
-		sessionManager = Kernel.sessionManager();
 		depth--;
 		put("mixinNodeType", getMixinTypes(n));
 		put("properties", getProperties(n));
