@@ -76,6 +76,8 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 	{
 
 		boolean containstool = false;
+		
+		String[] toolcheck = tool.split("[|]");
 
 		List<SitePage> pages = (List<SitePage>) site.getOrderedPages();
 
@@ -85,9 +87,11 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 			for (ToolConfiguration conf : lst)
 			{
 				Tool t = conf.getTool();
-				if (t != null && t.getId() != null && t.getId().equals(tool))
-				{
-					containstool = true;
+				for (String s: toolcheck){
+					if (t != null && t.getId() != null && t.getId().equals(s))
+					{
+						containstool = true;
+					}
 				}
 			}
 		}
@@ -215,10 +219,10 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 
 						for (Site site : mysites)
 						{
-							if (site.getUserRole(currentSession.getUserId()).getId()
-									.equals(site.getMaintainRole()))
+							
+							if (site.isAllowed( currentSession.getUserId(), request.getParameter("toolaction")))
 							{
-
+								
 								if (containstool(site, request.getParameter("tool")))
 								{
 									Map<String, Object> map = new HashMap<String, Object>();
