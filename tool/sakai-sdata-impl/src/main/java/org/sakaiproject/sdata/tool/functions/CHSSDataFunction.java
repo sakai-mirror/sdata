@@ -33,6 +33,9 @@ import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ContentResourceEdit;
 import org.sakaiproject.content.api.GroupAwareEdit;
+import org.sakaiproject.event.api.Notification;
+import org.sakaiproject.event.api.NotificationAction;
+import org.sakaiproject.event.api.NotificationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.OverQuotaException;
@@ -249,11 +252,15 @@ public abstract class CHSSDataFunction implements SDataFunction
 		}
 	}
 
+	protected void commitEntity(GroupAwareEdit edit) throws SDataException
+	{
+		commitEntity(edit,NotificationService.NOTI_NONE);
+	}
 	/**
 	 * @param edit
 	 * @throws SDataException
 	 */
-	protected void commitEntity(GroupAwareEdit edit) throws SDataException
+	protected void commitEntity(GroupAwareEdit edit, int notification) throws SDataException
 	{
 		if (edit instanceof ContentCollectionEdit)
 		{
@@ -263,7 +270,7 @@ public abstract class CHSSDataFunction implements SDataFunction
 		{
 			try
 			{
-				contentHostingService.commitResource((ContentResourceEdit) edit);
+				contentHostingService.commitResource((ContentResourceEdit) edit, notification);
 			}
 			catch (OverQuotaException e)
 			{
