@@ -71,7 +71,7 @@ public class MessageOfTheDayBean implements ServiceDefinition
 
 		try
 		{
-			log.error(messageservice);
+			
 
 			// hardcoded because there does not seem to be a good way to do it
 			String ref = "/announcement/channel/!site/motd"; // messageservice.channelReference("!site",
