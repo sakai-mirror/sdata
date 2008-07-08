@@ -19,6 +19,7 @@ import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.db.api.SqlReader;
 import org.sakaiproject.db.api.SqlService;
+import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
@@ -316,8 +317,11 @@ public class MyRecentChangesBean implements ServiceDefinition
 									mrcs.setTool(mres.getTool());
 									mrcs.setVersion(mres.getVersion());
 									mrcs.setContext(mres.getContext());
-									mrcs.setName(cres.getUrl().substring(
-											cres.getUrl().lastIndexOf("/") + 1));
+									ResourceProperties rp = cres.getProperties();
+									String displayNameProp = rp.getNamePropDisplayName();
+									String title = rp.getProperty(displayNameProp);
+
+									mrcs.setName(title);
 									mrcs.setReference(cres.getReference());
 									results.add(mrcs);
 
