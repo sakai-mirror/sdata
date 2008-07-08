@@ -1223,10 +1223,10 @@ public abstract class CHSHandler implements Handler
 
 				} else {
 					String value = Streams.asString(stream);
-					List<String> valueList = values.get(name);
+					List<String> valueList = values.get(fieldName);
 					if ( valueList == null ) {
 						valueList = new ArrayList<String>();
-						values.put(name,valueList);
+						values.put(fieldName,valueList);
 						
 					}
 					valueList.add(value);
