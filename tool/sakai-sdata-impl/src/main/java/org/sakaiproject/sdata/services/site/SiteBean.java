@@ -132,11 +132,14 @@ public class SiteBean implements ServiceDefinition
 			if (member == false)
 			{
 				status = "902";
-
-				if (theSite.isAllowed(curUser, "site.visit") || theSite.isPubView())
+				
+				if (theSite.isAllowed(curUser, "site.visit"))
 				{
 					status = "904";
 					member = true;
+				} else if (request.getRemoteUser() == null){
+					member = false;
+					status = "901";
 				}
 				else if (theSite.isJoinable())
 				{
@@ -217,8 +220,15 @@ public class SiteBean implements ServiceDefinition
 				{
 					log.info("Roles undefined for " + siteId);
 				}
-			}
+			} else {
+				
+				if (request.getRemoteUser() == null){
+					try {
+						response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
+					} catch (IOException ex) {}
+				}
 
+			}
 		}
 		catch (IdUnusedException e)
 		{
