@@ -122,7 +122,7 @@ public class SiteBean implements ServiceDefinition
 
 			for (Site site : mysites)
 			{
-				if (site.getId().equals(siteId))
+				if (site.getId().equals(siteId) || site.getId().equals("!admin") || site.getId().equals("~admin"))
 				{
 					member = true;
 				}
