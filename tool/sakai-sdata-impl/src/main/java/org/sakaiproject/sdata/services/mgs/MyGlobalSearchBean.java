@@ -92,6 +92,7 @@ public class MyGlobalSearchBean implements ServiceDefinition
 			List<Site> sites = (List<Site>) siteService.getSites(SelectionType.ACCESS,
 					null, null, null, SortType.TITLE_ASC, null);
 
+			
 			try
 			{
 				sites.add(0, (siteService.getSite(siteService
@@ -226,6 +227,7 @@ public class MyGlobalSearchBean implements ServiceDefinition
 		}
 		else
 		{ // als men op currentSite heeft geklikt
+			
 
 			try
 			{
@@ -384,24 +386,27 @@ public class MyGlobalSearchBean implements ServiceDefinition
 
 
 	private Collection<? extends String> getPublicSites(String currentUser, RoleService roleService) {
-               List<String> roles = new ArrayList<String>();
-               String[] hiddenRoles = roleService.findGuestRoleMembership(currentUser);
-               for ( String hr : hiddenRoles ) {
-                       roles.add(hr);
-               }
-               List<String> permissions = new ArrayList<String>();
-               permissions.add("site.visit");
-               String[] publicSites = roleService.findRealmIds(roles, permissions, "site", 0, 200);
-               List<String> contexts = new ArrayList<String>();
-               for ( String siteId : publicSites ) {
-                       contexts.add(siteId);
-               }
-               if ( currentUser != null ) {
-                       contexts.add(".auth");
-               }
-               contexts.add(".anon");
-               return contexts;
-       }
+		
+        List<String> contexts = new ArrayList<String>();
+		if ( currentUser != null ) {
+           List<String> roles = new ArrayList<String>();
+           String[] hiddenRoles = roleService.findGuestRoleMembership(currentUser);
+           for ( String hr : hiddenRoles ) {
+                   roles.add(hr);
+           }
+           List<String> permissions = new ArrayList<String>();
+           permissions.add("site.visit");
+           String[] publicSites = roleService.findRealmIds(roles, permissions, "site", 0, 200);
+           for ( String siteId : publicSites ) {
+                   contexts.add(siteId);
+           }
+           if ( currentUser != null ) {
+                   contexts.add(".auth");
+           }
+		}
+        contexts.add(".anon");
+        return contexts;
+    }
 
 	/*
 	 * (non-Javadoc)

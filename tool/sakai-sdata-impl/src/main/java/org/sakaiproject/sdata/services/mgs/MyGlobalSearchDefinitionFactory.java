@@ -147,9 +147,6 @@ public class MyGlobalSearchDefinitionFactory implements ServiceDefinitionFactory
 			empty = true;
 		}
 
-		if (request.getRemoteUser() == null){
-			throw new SDataException(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
-		}
 
 		return new MyGlobalSearchBean(sessionManager, siteService, contentHostingService, roleService,
 				response, page, searchParam, empty, currentSiteSearch);
