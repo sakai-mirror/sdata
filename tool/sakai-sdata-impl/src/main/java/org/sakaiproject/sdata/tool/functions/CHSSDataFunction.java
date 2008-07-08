@@ -268,8 +268,8 @@ public abstract class CHSSDataFunction implements SDataFunction
 			catch (OverQuotaException e)
 			{
 				log.warn("Over Quota Exception on commit " + e.getMessage());
-				throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-						"Cant set hidden status");
+				throw new SDataException(HttpServletResponse.SC_PAYMENT_REQUIRED,
+						"Over quota");
 			}
 			catch (ServerOverloadException e)
 			{
