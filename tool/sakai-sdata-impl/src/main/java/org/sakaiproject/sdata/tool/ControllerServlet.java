@@ -21,7 +21,12 @@
 
 package org.sakaiproject.sdata.tool;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
@@ -285,32 +290,38 @@ public class ControllerServlet extends HttpServlet
 			}
 			char[] buffer = new char[2048];
 			handlerRegister = new HashMap<String, Handler>();
-			Enumeration<URL> configs = getClass().getClassLoader().getResources("META-INF/sdata.config");
-			while ( configs.hasMoreElements() ) {
-				URL jarConfig = configs.nextElement();
-				String jarLocation = jarConfig.toString();
-				log.info("++Start Loading definitions from "+jarLocation);
-				Map<String, Map<String, String>> configMap = loadConfigMap(jarConfig);
+			String configLocation = config.getServletContext().getRealPath("/WEB-INF/config");
+			File configLocationFile = new File(configLocation);
+			File[] configFiles = configLocationFile.listFiles(new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					return name.endsWith(".sdata");
+				}
+			});
+			for ( File configFile : configFiles ) {
+				log.info("++Start Loading definitions from "+configFile.getAbsolutePath());
+				Map<String, Map<String, String>> configMap = loadConfigMap(configFile);
 				for (String handler : configMap.keySet())
 				{
-					handlerName = jarLocation+":"+handler;
-					Map<String, String> handlerConfig = configMap.get(handler);
-					Class<?> c = (Class<?>) Class.forName(handlerConfig.get("classname"));
-					Handler h = (Handler) c.newInstance();
-					h.init(handlerConfig);
-					String baseUrl = handlerConfig.get("baseurl");
-					if ( handlerRegister.containsKey(baseUrl) ) {
-						throw new ServletException("Duplicate Specifiation for  "+baseUrl+" mapped to "+handlerRegister.get(baseUrl)+" would have been overwritten by "+h);
-					} else {
-						handlerRegister.put(baseUrl, h);
+					try {
+						handlerName = configFile.getAbsolutePath()+":"+handler;
+						Map<String, String> handlerConfig = configMap.get(handler);
+						Class<?> c = (Class<?>) Class.forName(handlerConfig.get("classname"));
+						Handler h = (Handler) c.newInstance();
+						h.init(handlerConfig);
+						String baseUrl = handlerConfig.get("baseurl");
+						if ( handlerRegister.containsKey(baseUrl) ) {
+							throw new ServletException("Duplicate Specifiation for  "+baseUrl+" mapped to "+handlerRegister.get(baseUrl)+" would have been overwritten by "+h);
+						} else {
+							handlerRegister.put(baseUrl, h);
+						}
+					}
+					catch (ClassNotFoundException e)
+					{
+						log.info("-- Ignored "+handler+" from, ClassNotFound , config:"+configFile.getAbsolutePath()+" "+e.getMessage());						
 					}
 				}
-				log.info("--Done Loading definitions from "+jarLocation);
+				log.info("--Done Loading definitions from "+configFile.getAbsolutePath());
 			}
-		}
-		catch (ClassNotFoundException e)
-		{
-			throw new ServletException("Failed to instance handler " + handlerName, e);
 		}
 		catch (InstantiationException e)
 		{
@@ -342,11 +353,13 @@ public class ControllerServlet extends HttpServlet
 	 * @return a map of all configuration properties
 	 * @throws IOException 
 	 */
-	private Map<String, Map<String, String>> loadConfigMap(URL config) throws IOException
+	private Map<String, Map<String, String>> loadConfigMap(File configFile) throws IOException
 	{
 		
 		Properties p = new Properties();
-		p.load(config.openStream());
+		InputStream in = new FileInputStream(configFile);
+		p.load(in);
+		in.close();
 		
 		Map<String, Map<String, String>> configMap = new HashMap<String, Map<String, String>>();
 		for (Object k : p.keySet())

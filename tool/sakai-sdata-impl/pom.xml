@@ -37,17 +37,6 @@
   <inceptionYear>2007</inceptionYear>
   <packaging>jar</packaging>
   <build>
-    <resources>
-      <resource>
-        <targetPath>META-INF</targetPath>
-        <filtering>false</filtering>
-        <directory>${basedir}/src/main/sdata-config</directory>
-        <includes>
-          <include>**/*.config</include>
-        </includes>
-      </resource>
-    </resources>
-	
     <testResources>
       <testResource>
         <directory>${basedir}/src/test</directory>
