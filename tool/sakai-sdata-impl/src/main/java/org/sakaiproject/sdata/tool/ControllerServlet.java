@@ -22,9 +22,13 @@
 package org.sakaiproject.sdata.tool;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
 
 import javax.servlet.ServletConfig;
@@ -260,6 +264,7 @@ public class ControllerServlet extends HttpServlet
 	 */
 	public ControllerServlet()
 	{
+		
 	}
 
 	/*
@@ -273,27 +278,34 @@ public class ControllerServlet extends HttpServlet
 		String handlerName = null;
 		try
 		{
-			super.init(config);
+			try {
+				super.init(config);
+			} catch ( NullPointerException npe ) {
+				log.info("NPE In super, in test mode this is ok ");
+			}
+			char[] buffer = new char[2048];
 			handlerRegister = new HashMap<String, Handler>();
-
-			String configData = config.getInitParameter("config");
-			Map<String, Map<String, String>> configMap = null;
-			if (configData != null && configData.trim().length() > 0)
-			{
-				configMap = loadConfigMap(configData);
-			}
-			else
-			{
-				configMap = loadConfigMap(config);
-			}
-			for (String handler : configMap.keySet())
-			{
-				handlerName = handler;
-				Map<String, String> handlerConfig = configMap.get(handler);
-				Class<?> c = (Class<?>) Class.forName(handlerConfig.get("classname"));
-				Handler h = (Handler) c.newInstance();
-				h.init(handlerConfig);
-				handlerRegister.put(handlerConfig.get("baseurl"), h);
+			Enumeration<URL> configs = getClass().getClassLoader().getResources("META-INF/sdata.config");
+			while ( configs.hasMoreElements() ) {
+				URL jarConfig = configs.nextElement();
+				String jarLocation = jarConfig.toString();
+				log.info("++Start Loading definitions from "+jarLocation);
+				Map<String, Map<String, String>> configMap = loadConfigMap(jarConfig);
+				for (String handler : configMap.keySet())
+				{
+					handlerName = jarLocation+":"+handler;
+					Map<String, String> handlerConfig = configMap.get(handler);
+					Class<?> c = (Class<?>) Class.forName(handlerConfig.get("classname"));
+					Handler h = (Handler) c.newInstance();
+					h.init(handlerConfig);
+					String baseUrl = handlerConfig.get("baseurl");
+					if ( handlerRegister.containsKey(baseUrl) ) {
+						throw new ServletException("Duplicate Specifiation for  "+baseUrl+" mapped to "+handlerRegister.get(baseUrl)+" would have been overwritten by "+h);
+					} else {
+						handlerRegister.put(baseUrl, h);
+					}
+				}
+				log.info("--Done Loading definitions from "+jarLocation);
 			}
 		}
 		catch (ClassNotFoundException e)
@@ -307,6 +319,10 @@ public class ControllerServlet extends HttpServlet
 		catch (IllegalAccessException e)
 		{
 			throw new ServletException("Failed to instance handler " + handlerName, e);
+		} 
+		catch (IOException e) 
+		{
+			throw new ServletException("Failed to instance handler " + handlerName, e);
 		}
 	}
 	
@@ -318,61 +334,25 @@ public class ControllerServlet extends HttpServlet
 		super.destroy();
 	}
 
-	/**
-	 * Load the configuration map from the serlet init params (multiple params)
-	 * 
-	 * @param config
-	 * @return
-	 */
-
-	private Map<String, Map<String, String>> loadConfigMap(ServletConfig config)
-	{
-
-		Map<String, Map<String, String>> configMap = new HashMap<String, Map<String, String>>();
-		for (Enumeration<?> e = config.getInitParameterNames(); e.hasMoreElements();)
-		{
-			String name = (String)e.nextElement();
-			if (name.startsWith("handler."))
-			{
-				int handlerLength = "handler.".length();
-				int endkey = name.indexOf(".", handlerLength + 1);
-
-				String key = name.substring(handlerLength, endkey);
-				String valuekey = name.substring(endkey + 1);
-				String value = config.getInitParameter(name);
-				if (log.isDebugEnabled())
-				{
-					log.debug("Adding Key[" + key + "] [" + handlerLength + "-" + endkey
-							+ "] keyValue[" + valuekey + "] Value[" + value + "]");
-				}
-				Map<String, String> handlerConfig = configMap.get(key);
-				if (handlerConfig == null)
-				{
-					handlerConfig = new HashMap<String, String>();
-					configMap.put(key, handlerConfig);
-				}
-				handlerConfig.put(valuekey, value);
-			}
-		}
-		return configMap;
-	}
 
 	/**
 	 * Load the configuration map from a single string that is parsed
 	 * 
 	 * @param config configuration in a string
 	 * @return a map of all configuration properties
+	 * @throws IOException 
 	 */
-	private Map<String, Map<String, String>> loadConfigMap(String config)
+	private Map<String, Map<String, String>> loadConfigMap(URL config) throws IOException
 	{
-
+		
+		Properties p = new Properties();
+		p.load(config.openStream());
+		
 		Map<String, Map<String, String>> configMap = new HashMap<String, Map<String, String>>();
-		String[] pairs = config.trim().split(";");
-		for (String pair : pairs)
+		for (Object k : p.keySet())
 		{
-			String[] nv = pair.trim().split("=", 2);
-			String name = nv[0].trim();
-			String value = nv[1].trim();
+			String name = String.valueOf(k).trim();
+			String value = String.valueOf(p.get(k)).trim();
 			int endkey = name.indexOf(".");
 
 			String key = name.substring(0, endkey);
