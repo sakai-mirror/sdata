@@ -73,3 +73,6 @@
 20.basepath=/
 21.classname=org.sakaiproject.sdata.services.mpt.MyPersonalToolsHandler
 21.baseurl=/mpt
+22.classname=org.sakaiproject.sdata.services.site.SiteRemovePageHandler
+22.baseurl=/siterp
+
