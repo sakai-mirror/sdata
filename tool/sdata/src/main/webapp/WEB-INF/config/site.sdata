@@ -1,0 +1,8 @@
+1.classname=org.sakaiproject.sdata.services.site.SiteHandler
+1.baseurl=/site
+2.classname=org.sakaiproject.sdata.services.site.SiteRemovePageHandler
+2.baseurl=/siterp
+3.classname=org.sakaiproject.sdata.services.site.ToolsAvailableHandler
+3.baseurl=/tools
+4.classname=org.sakaiproject.sdata.services.site.SiteAddToolHandler
+4.baseurl=/siteat

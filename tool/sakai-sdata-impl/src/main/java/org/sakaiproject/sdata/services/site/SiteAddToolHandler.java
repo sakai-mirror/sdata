@@ -1,6 +1,7 @@
 package org.sakaiproject.sdata.services.site;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -14,15 +15,19 @@ import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.tool.api.ToolManager;
 
-public class SiteRemovePageHandler extends JSONServiceHandler
+public class SiteAddToolHandler extends JSONServiceHandler
 {
 	private SiteService siteService;
+	private ToolManager toolManager;
 
 	@Override
 	public void init(Map<String, String> config) throws ServletException
 	{
 		siteService = Kernel.siteService();
+		toolManager = (ToolManager) Kernel.componentManager().get(ToolManager.class.getName());
 	}
 
 	@Override
@@ -37,19 +42,35 @@ public class SiteRemovePageHandler extends JSONServiceHandler
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
-		// harvest the inputs
+		// harvest inputs
 		String siteId = request.getParameter("siteid");
-		String pageId = request.getParameter("pageId");
+		String ati = request.getParameter("addToolIds");
+		String rti = request.getParameter("removeToolIds");
+		String[] addToolIds = ati.split(",");
+		String[] removeToolIds = rti.split(",");
+
 		try
 		{
-			// get the site requested
+			// get the site to work with
 			Site site = siteService.getSite(siteId);
 
-			// get the page requested
-			SitePage page = site.getPage(pageId);
+			for (String toolId : addToolIds)
+			{
+				// get the requested tool
+				Tool tool = toolManager.getTool(toolId);
 
-			// remove the page and save the site
-			site.removePage(page);
+				// create a page with the same name as the tool and add the tool
+				SitePage page = site.addPage();
+				page.setTitle(tool.getTitle());
+				page.addTool(tool);
+			}
+
+			for (String toolId : removeToolIds)
+			{
+				// site.getPage();
+			}
+
+			// save the new page
 			siteService.save(site);
 		}
 		catch (IdUnusedException iue)
