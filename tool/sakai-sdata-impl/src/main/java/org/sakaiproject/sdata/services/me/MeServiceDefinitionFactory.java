@@ -32,6 +32,7 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.user.api.PreferencesService;
 import org.sakaiproject.user.api.UserDirectoryService;
 
 import java.io.IOException;
@@ -50,6 +51,10 @@ public class MeServiceDefinitionFactory implements ServiceDefinitionFactory
 
 	private UserDirectoryService userDirectoryService;
 
+	private UserLocale userLocal;
+
+	private PreferencesService preferencesService;
+
 	/**
 	 * Create a new MeServiceDefintionFactory
 	 */
@@ -60,6 +65,9 @@ public class MeServiceDefinitionFactory implements ServiceDefinitionFactory
 		sessionManager = Kernel.sessionManager();
 		userDirectoryService = Kernel.userDirectoryService();
 		siteService = Kernel.siteService();
+		preferencesService = (PreferencesService) Kernel.componentManager().get(PreferencesService.class.getName());
+		
+		userLocal = new UserLocale(sessionManager,preferencesService);
 
 	}
 
@@ -75,7 +83,7 @@ public class MeServiceDefinitionFactory implements ServiceDefinitionFactory
 		if (request.getRemoteUser() == null){
 			throw new SDataException(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
 		}
-		return new MeBean(siteService, sessionManager, userDirectoryService, response);
+		return new MeBean(request,userLocal, preferencesService, siteService, sessionManager, userDirectoryService, response);
 	}
 
 	/*

@@ -21,12 +21,15 @@
 
 package org.sakaiproject.sdata.services.me;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
@@ -42,6 +45,8 @@ import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.user.api.Preferences;
+import org.sakaiproject.user.api.PreferencesService;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
@@ -64,12 +69,14 @@ public class MeBean implements ServiceDefinition
 
 	/**
 	 * Create a me bean using the request and the injected services.
+	 * @param preferencesService 
+	 * @param userLocal 
 	 * 
 	 * @param sessionManager
 	 * @param siteService
 	 * @throws SDataException 
 	 */
-	public MeBean(SiteService siteService, SessionManager sessionManager,
+	public MeBean(HttpServletRequest request, UserLocale userLocal, PreferencesService preferencesService, SiteService siteService, SessionManager sessionManager,
 			UserDirectoryService userDirectoryService, HttpServletResponse response) throws SDataException
 	{
 		User user = null;
@@ -184,12 +191,45 @@ public class MeBean implements ServiceDefinition
 				}
 			}
 			map.put("properties", properties);
+			
+			// send the locale back to the user
+			map.put("userLocale", localeToMap(userLocal.getLocale(request.getLocale())));
+			List<Map<String,Object>> localeList = new ArrayList<Map<String, Object>>();
+			for ( Enumeration<?> locales = request.getLocales(); locales.hasMoreElements(); ) {
+				localeList.add(localeToMap((Locale)locales.nextElement()));
+			}
+			
+			// add the preferences
+			Preferences preferences = preferencesService.getPreferences(user.getId());
+			ResourceProperties rproperties = preferences.getProperties();
+			Map<String, Object> preferenceMap = new HashMap<String, Object>();
+			for ( Iterator<?> pi = rproperties.getPropertyNames(); pi.hasNext(); ) {
+				String pkey = (String) pi.next();
+				preferenceMap.put(pkey, rproperties.get(pkey));
+				
+			}
+			map.put("preferences",preferenceMap);
 
 			// map2.put("items", user);
 			map2.put("items", map);
+			
 
 		}
 
+	}
+
+	private Map<String, Object> localeToMap(Locale l) {
+		Map<String, Object> localeMap = new HashMap<String, Object>();
+		localeMap.put("country", l.getCountry());
+		localeMap.put("displayCountry", l.getDisplayCountry(l));
+		localeMap.put("displayLanguage", l.getDisplayLanguage(l));
+		localeMap.put("displayName", l.getDisplayName(l));
+		localeMap.put("displayVariant", l.getDisplayVariant(l));
+		localeMap.put("ISO3Country", l.getISO3Country());
+		localeMap.put("ISO3Language", l.getISO3Language());
+		localeMap.put("language", l.getLanguage());
+		localeMap.put("variant", l.getVariant());
+		return localeMap;
 	}
 
 	/*
