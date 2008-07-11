@@ -1,9 +1,5 @@
 package org.sakaiproject.sdata.services.site;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,50 +7,43 @@ import javax.servlet.http.HttpServletResponse;
 import org.sakaiproject.Kernel;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
+import org.sakaiproject.sdata.tool.api.Handler;
+import org.sakaiproject.sdata.tool.api.ResourceDefinition;
+import org.sakaiproject.sdata.tool.api.SDataException;
+import org.sakaiproject.sdata.tool.api.SDataFunction;
+import org.sakaiproject.sdata.tool.functions.SDataFunctionUtil;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.tool.api.ToolManager;
 
-public class SiteAddToolHandler extends JSONServiceHandler
+public class SiteAddToolHandler implements SDataFunction
 {
 	private SiteService siteService;
 	private ToolManager toolManager;
 
-	@Override
-	public void init(Map<String, String> config) throws ServletException
+	public SiteAddToolHandler() throws ServletException
 	{
 		siteService = Kernel.siteService();
 		toolManager = (ToolManager) Kernel.componentManager().get(ToolManager.class.getName());
 	}
 
-	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
+	public void call(Handler handler, HttpServletRequest request, HttpServletResponse response,
+			Object target, ResourceDefinition rp) throws SDataException
 	{
-		response.reset();
-		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-	}
-
-	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
-	{
+		SDataFunctionUtil.checkMethod(request.getMethod(), "POST");
 		// harvest inputs
 		String siteId = request.getParameter("siteid");
-		String ati = request.getParameter("addToolIds");
-		String rti = request.getParameter("removeToolIds");
-		String[] addToolIds = ati.split(",");
-		String[] removeToolIds = rti.split(",");
+		String tools = request.getParameter("tools");
+		String[] toolIds = tools.split(",");
 
 		try
 		{
 			// get the site to work with
 			Site site = siteService.getSite(siteId);
 
-			for (String toolId : addToolIds)
+			for (String toolId : toolIds)
 			{
 				// get the requested tool
 				Tool tool = toolManager.getTool(toolId);
@@ -65,21 +54,20 @@ public class SiteAddToolHandler extends JSONServiceHandler
 				page.addTool(tool);
 			}
 
-			for (String toolId : removeToolIds)
-			{
-				// site.getPage();
-			}
-
 			// save the new page
 			siteService.save(site);
 		}
 		catch (IdUnusedException iue)
 		{
-			sendError(request, response, iue);
+			throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, iue.getMessage());
 		}
 		catch (PermissionException pe)
 		{
-			sendError(request, response, pe);
+			throw new SDataException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, pe.getMessage());
 		}
+	}
+
+	public void destroy()
+	{
 	}
 }
