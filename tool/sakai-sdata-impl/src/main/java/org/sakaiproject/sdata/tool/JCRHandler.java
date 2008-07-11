@@ -53,7 +53,6 @@ import org.sakaiproject.Kernel;
 import org.sakaiproject.jcr.api.JCRConstants;
 import org.sakaiproject.jcr.support.api.JCRNodeFactoryService;
 import org.sakaiproject.jcr.support.api.JCRNodeFactoryServiceException;
-import org.sakaiproject.sdata.tool.api.Handler;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.ResourceDefinitionFactory;
 import org.sakaiproject.sdata.tool.api.ResourceFunctionFactory;
@@ -88,7 +87,7 @@ import org.sakaiproject.tool.api.Tool;
  * 
  * @author ieb
  */
-public abstract class JCRHandler implements Handler
+public abstract class JCRHandler extends AbstractHandler
 {
 	private static final Log log = LogFactory.getLog(JCRHandler.class);
 

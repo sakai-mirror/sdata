@@ -23,15 +23,12 @@ package org.sakaiproject.sdata.tool.test;
 
 import static org.sakaiproject.sdata.tool.test.CHSHandlerUnitT.log;
 
-import java.io.IOException;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentResourceEdit;
 import org.sakaiproject.sdata.tool.CHSHandler;
+import org.sakaiproject.sdata.tool.api.HandlerSerialzer;
 
 /**
  * @author ieb
@@ -39,6 +36,12 @@ import org.sakaiproject.sdata.tool.CHSHandler;
 public class ConcreteCHSHandler extends CHSHandler
 {
 
+	
+	private HandlerSerialzer serializer;
+
+	public ConcreteCHSHandler() {
+		serializer = new NullHandlerSerializer();
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -50,29 +53,6 @@ public class ConcreteCHSHandler extends CHSHandler
 		super.init(config);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sdata.tool.api.Handler#sendError(javax.servlet.http.HttpServletRequest,
-	 *      javax.servlet.http.HttpServletResponse, java.lang.Throwable)
-	 */
-	public void sendError(HttpServletRequest request, HttpServletResponse response,
-			Throwable ex) throws IOException
-	{
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sdata.tool.api.Handler#sendMap(javax.servlet.http.HttpServletRequest,
-	 *      javax.servlet.http.HttpServletResponse, java.util.Map)
-	 */
-	public void sendMap(HttpServletRequest request, HttpServletResponse response,
-			Map<String, Object> contetMap) throws IOException
-	{
-
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -101,6 +81,11 @@ public class ConcreteCHSHandler extends CHSHandler
 	public String testGetName(ContentResourceEdit contentResource)
 	{
 		return getName(contentResource);
+	}
+
+	@Override
+	public HandlerSerialzer getSerializer() {
+		return serializer;
 	}
 
 }

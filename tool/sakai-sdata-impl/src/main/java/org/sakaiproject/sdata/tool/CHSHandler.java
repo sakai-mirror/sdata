@@ -103,7 +103,7 @@ import org.sakaiproject.util.Validator;
  * 
  * @author ieb
  */
-public abstract class CHSHandler implements Handler
+public abstract class CHSHandler extends  AbstractHandler
 {
 	private static final Log log = LogFactory.getLog(CHSHandler.class);
 
