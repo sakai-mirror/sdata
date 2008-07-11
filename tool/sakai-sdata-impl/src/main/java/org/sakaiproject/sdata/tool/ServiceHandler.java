@@ -37,7 +37,7 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
  * 
  * @author ieb
  */
-public abstract class ServiceHandler implements Handler
+public abstract class ServiceHandler extends AbstractHandler
 {
 
 	private ServiceDefinitionFactory serviceDefinitionFactory = null;

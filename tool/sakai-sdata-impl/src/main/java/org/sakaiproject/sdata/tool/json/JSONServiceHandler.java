@@ -21,19 +21,10 @@
 
 package org.sakaiproject.sdata.tool.json;
 
-import java.io.IOException;
-import java.util.Map;
-
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONObject;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sdata.tool.ServiceHandler;
-import org.sakaiproject.sdata.tool.api.SDataException;
+import org.sakaiproject.sdata.tool.api.HandlerSerialzer;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 
 /**
@@ -41,14 +32,21 @@ import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
  * 
  * @author ieb
  */
-public class JSONServiceHandler extends ServiceHandler
-{
+public class JSONServiceHandler extends ServiceHandler {
 
 	/**
 	 * The serialization version number
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final Log log = LogFactory.getLog(JSONServiceHandler.class);
+
+	private HandlerSerialzer serializer;
+
+	/**
+	 * Create a JSON CHS User storage handler
+	 */
+	public JSONServiceHandler() {
+		serializer = new JsonHandlerSerializer();
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -57,54 +55,13 @@ public class JSONServiceHandler extends ServiceHandler
 	 */
 	@Override
 	protected ServiceDefinitionFactory getServiceDefinitionFactory()
-			throws ServletException
-	{
+			throws ServletException {
 		throw new ServletException("No Default ServiceDefinitionFactory");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sdata.tool.ServiceServlet#sendError(javax.servlet.http.HttpServletRequest,
-	 *      javax.servlet.http.HttpServletResponse, java.lang.Throwable)
-	 */
-	public void sendError(HttpServletRequest request, HttpServletResponse response,
-			Throwable ex) throws IOException
-	{
-
-		if (ex instanceof SDataException)
-		{
-			SDataException sde = (SDataException) ex;
-			response.reset();
-			setHandlerHeaders(request, response);
-			response.sendError(sde.getCode(), sde.getMessage());
-		}
-		else
-		{
-			log.info(" SData Failed "+request.getRequestURI(),ex);
-			response.reset();
-			setHandlerHeaders(request, response);
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Failed with " + ex.getMessage());
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sdata.tool.ServiceServlet#sendMap(javax.servlet.http.HttpServletRequest,
-	 *      javax.servlet.http.HttpServletResponse, java.util.Map)
-	 */
-	public void sendMap(HttpServletRequest request, HttpServletResponse response,
-			Map<String, Object> contentMap) throws IOException
-	{
-		JSONObject jsonObject = JSONObject.fromObject(contentMap);
-		byte[] b = jsonObject.toString().getBytes("UTF-8");
-		response.setContentType("text/javascript");
-		response.setCharacterEncoding("UTF-8");
-		response.setContentLength(b.length);
-		response.getOutputStream().write(b);
-
+	@Override
+	public HandlerSerialzer getSerializer() {
+		return serializer;
 	}
 
 }

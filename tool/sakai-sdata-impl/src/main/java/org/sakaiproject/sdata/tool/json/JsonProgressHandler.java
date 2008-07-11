@@ -21,75 +21,28 @@
 
 package org.sakaiproject.sdata.tool.json;
 
-import java.io.IOException;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import net.sf.json.JSONObject;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sdata.tool.ProgressHandler;
-import org.sakaiproject.sdata.tool.api.SDataException;
+import org.sakaiproject.sdata.tool.api.HandlerSerialzer;
 
 /**
  * A ProgressHandler that serializes responses using JSON
  * 
  * @author ieb
  */
-public class JsonProgressHandler extends ProgressHandler
-{
+public class JsonProgressHandler extends ProgressHandler {
 
-	private static final Log log = LogFactory.getLog(JsonProgressHandler.class);
+	private HandlerSerialzer serializer;
 
 	/**
-	 * Build a Json progress handler
+	 * Create a JSON CHS User storage handler
 	 */
-	public JsonProgressHandler()
-	{
+	public JsonProgressHandler() {
+		serializer = new JsonHandlerSerializer();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sdata.tool.JCRServlet#sendMap(java.util.Map)
-	 */
-	public void sendMap(HttpServletRequest request, HttpServletResponse response,
-			Map<String, Object> contetMap) throws IOException
-	{
-		JSONObject jsonObject = JSONObject.fromObject(contetMap);
-		log.info(jsonObject.toString());
-		byte[] b = jsonObject.toString().getBytes("UTF-8");
-		response.setContentType("text/javascript");
-		response.setCharacterEncoding("UTF-8");
-		response.setContentLength(b.length);
-		response.getOutputStream().write(b);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sdata.tool.JCRServlet#sendError(java.lang.Throwable)
-	 */
-	public void sendError(HttpServletRequest request, HttpServletResponse response,
-			Throwable ex) throws IOException
-	{
-		if (ex instanceof SDataException)
-		{
-			SDataException sde = (SDataException) ex;
-			response.reset();
-			setHandlerHeaders(request, response);
-			response.sendError(sde.getCode(), sde.getMessage());
-		}
-		else
-		{
-			response.reset();
-			setHandlerHeaders(request, response);
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Failed with " + ex.getMessage());
-		}
+	@Override
+	public HandlerSerialzer getSerializer() {
+		return serializer;
 	}
 
 }

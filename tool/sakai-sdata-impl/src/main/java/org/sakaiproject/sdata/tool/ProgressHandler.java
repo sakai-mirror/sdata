@@ -29,14 +29,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.sdata.tool.api.Handler;
-
 /**
  * Gives acess to an uplaod progress map based on an id
  * 
  * @author ieb
  */
-public abstract class ProgressHandler implements Handler
+public abstract class ProgressHandler extends  AbstractHandler
 {
 
 	private static Map<String, Map<String, Object>> progressStore = new ConcurrentHashMap<String, Map<String, Object>>();
