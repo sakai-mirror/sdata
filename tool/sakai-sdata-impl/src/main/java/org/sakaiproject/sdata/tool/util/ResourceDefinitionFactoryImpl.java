@@ -47,7 +47,7 @@ public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 
 	private String baseUrl;
 
-	private SecurityAssertion pathSecurityAssertion;
+	private SecurityAssertion securityAssertion;
 
 	/**
 	 * construct a resource definition factory with a base URL and a base Path.
@@ -61,10 +61,19 @@ public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 	{
 		this.basePath = basePath;
 		this.baseUrl = baseUrl;
-		pathSecurityAssertion = new PathSecurityAssertion(config);
+		securityAssertion = new PathSecurityAssertion(config);
 		log.info("Definition Factory Created with base path as " + basePath);
 	}
-	
+
+	public ResourceDefinitionFactoryImpl(Map<String, String> config, String baseUrl,
+			String basePath, SecurityAssertion securityAssertion)
+	{
+		this.basePath = basePath;
+		this.baseUrl = baseUrl;
+		this.securityAssertion = securityAssertion;
+		log.info("Definition Factory Created with base path as " + basePath);
+	}
+
 	public void destroy() 
 	{
 		
@@ -105,7 +114,7 @@ public class ResourceDefinitionFactoryImpl implements ResourceDefinitionFactory
 			depth = Integer.parseInt(d);
 		}
 		return new ResourceDefinitionImpl(request.getMethod(), f, depth, basePath, path,
-				version, pathSecurityAssertion);
+				version, securityAssertion);
 	}
 
 }

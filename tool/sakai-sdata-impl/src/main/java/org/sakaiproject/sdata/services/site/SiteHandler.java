@@ -22,86 +22,90 @@
 package org.sakaiproject.sdata.services.site;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.Kernel;
+import org.sakaiproject.authz.api.AuthzGroup;
+import org.sakaiproject.authz.api.AuthzGroupService;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.entity.api.Entity;
+import org.sakaiproject.entity.api.EntityManager;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.event.api.Event;
+import org.sakaiproject.event.api.EventTrackingService;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.sdata.tool.AbstractHandler;
 import org.sakaiproject.sdata.tool.ResourceFunctionFactoryImpl;
+import org.sakaiproject.sdata.tool.api.HandlerSerialzer;
 import org.sakaiproject.sdata.tool.api.ResourceDefinition;
 import org.sakaiproject.sdata.tool.api.ResourceDefinitionFactory;
 import org.sakaiproject.sdata.tool.api.ResourceFunctionFactory;
 import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.SDataFunction;
-import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
-import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
+import org.sakaiproject.sdata.tool.json.JsonHandlerSerializer;
+import org.sakaiproject.sdata.tool.util.NullSecurityAssertion;
 import org.sakaiproject.sdata.tool.util.ResourceDefinitionFactoryImpl;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SitePage;
+import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.site.api.SiteService.SelectionType;
+import org.sakaiproject.site.api.SiteService.SortType;
+import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.tool.api.ToolManager;
 
 /**
  * Handles calls for site related data
  */
-public class SiteHandler extends JSONServiceHandler
+public class SiteHandler extends AbstractHandler
 {
-	private static final long serialVersionUID = 1L;
-
-	private static final String BASE_PATH_INIT = "basepath";
-	private static final String BASE_URL_INIT = "baseurl";
-
-	private static final String DEFAULT_BASE_PATH = "/sakai/sdata";
-	private static final String DEFAULT_BASE_URL = "site";
-
-	private String basePath;
-	private String baseUrl;
-
+	private SiteService siteService;
 	private ResourceDefinitionFactory resourceDefinitionFactory;
 	private ResourceFunctionFactory resourceFunctionFactory;
+	private HandlerSerialzer serializer;
 
-	@Override
+	private List<Site> mySites;
+	private Session currentSession;
+	private static final Log log = LogFactory.getLog(SiteBean.class);
+
+	private SessionManager sessionManager;
+	private AuthzGroupService authzGroupService;
+	private ToolManager toolManager;
+	private EntityManager entityManager;
+
 	public void init(Map<String, String> config) throws ServletException
 	{
-		super.init(config);
-		basePath = config.get(BASE_PATH_INIT);
-		if (basePath == null)
-		{
-			this.basePath = DEFAULT_BASE_PATH;
-		}
-
-		baseUrl = config.get(BASE_URL_INIT);
-		if (baseUrl == null)
-		{
-			this.baseUrl = DEFAULT_BASE_URL;
-		}
-		resourceDefinitionFactory = getResourceDefinitionFactory(config);
-		resourceFunctionFactory = getResourceFunctionFactory(config);
+		siteService = Kernel.siteService();
+		String basePath = config.get("basepath");
+		String baseUrl = config.get("baseurl");
+		resourceDefinitionFactory = new ResourceDefinitionFactoryImpl(config, baseUrl, basePath,
+				new NullSecurityAssertion());
+		resourceFunctionFactory = new ResourceFunctionFactoryImpl(config);
+		serializer = new JsonHandlerSerializer();
+		sessionManager = Kernel.sessionManager();
+		authzGroupService = Kernel.authzGroupService();
+		toolManager = (ToolManager) Kernel.componentManager().get(ToolManager.class.getName());
+		entityManager = Kernel.entityManager();
 	}
 
-	public void destroy()
-	{
-		resourceDefinitionFactory.destroy();
-		resourceFunctionFactory.destroy();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sdata.tool.json.JSONServiceServlet#getServiceDefinitionFactory()
-	 */
 	@Override
-	protected ServiceDefinitionFactory getServiceDefinitionFactory() throws ServletException
+	public HandlerSerialzer getSerializer()
 	{
-		return new SiteServiceDefinitionFactory();
-	}
-
-	/**
-	 * Creates a resource definition factory suitable for controlling the storage of items
-	 * 
-	 * @param config
-	 * @return
-	 */
-	protected ResourceDefinitionFactory getResourceDefinitionFactory(Map<String, String> config)
-	{
-		return new ResourceDefinitionFactoryImpl(config, baseUrl, basePath);
+		return serializer;
 	}
 
 	@Override
@@ -112,14 +116,29 @@ public class SiteHandler extends JSONServiceHandler
 		{
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
 			SDataFunction m = resourceFunctionFactory.getFunction(rp.getFunctionDefinition());
-			if (m != null)
-				m.call(this, request, response, null, rp);
+			Reference ref = entityManager.newReference(rp.getRepositoryPath());
+			Site site = (Site) ref.getEntity();
+
+			Map<String, Object> out = null;
+			if (site != null && m != null)
+				m.call(this, request, response, site, rp);
 			else
-				super.doGet(request, response);
+				out = siteInfo(site, request, response);
+			siteService.save(site);
+			if (out != null)
+				sendMap(request, response, out);
 		}
-		catch (SDataException sde)
+		catch (IdUnusedException iue)
 		{
-			sendError(request, response, sde);
+			throw new ServletException(iue.getMessage(), iue);
+		}
+		catch (SDataException se)
+		{
+			throw new ServletException(se.getMessage(), se);
+		}
+		catch (PermissionException pe)
+		{
+			throw new ServletException(pe.getMessage(), pe);
 		}
 	}
 
@@ -127,30 +146,219 @@ public class SiteHandler extends JSONServiceHandler
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException
 	{
-		// TODO Auto-generated method stub
-		super.doPost(request, response);
 	}
 
-	/**
-	 * @param config
-	 * @return
-	 */
-	private ResourceFunctionFactory getResourceFunctionFactory(Map<String, String> config)
+	public void destroy()
 	{
-		return new ResourceFunctionFactoryImpl(config);
+		resourceDefinitionFactory.destroy();
+		resourceFunctionFactory.destroy();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeorg.sakaiproject.sdata.tool.ServiceServlet#getServiceDefinitionFactory(javax.servlet.
-	 * ServletConfig)
-	 */
-	@Override
-	protected ServiceDefinitionFactory getServiceDefinitionFactory(Map<String, String> config)
-			throws ServletException
+	public void setHandlerHeaders(HttpServletRequest request, HttpServletResponse response)
 	{
-		return new SiteServiceDefinitionFactory();
+		response.setHeader("x-sdata-handler", this.getClass().getName());
+		response.setHeader("x-sdata-url", request.getPathInfo());
 	}
 
+	private Site getSite(String siteId) throws IdUnusedException
+	{
+		Site site = siteService.getSite(siteId);
+		return site;
+	}
+
+	private Map<String, Object> siteInfo(Site site, HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		String status = "900";
+		List<Map<String, Object>> arlpages = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> tools = new ArrayList<Map<String, Object>>();
+
+		String curUser = sessionManager.getCurrentSessionUserId();
+
+		/*
+		 * Determine the sites the current user is a member of
+		 */
+		currentSession = sessionManager.getCurrentSession();
+		mySites = ((List<Site>) siteService.getSites(SelectionType.ACCESS, null, null, null,
+				SortType.TITLE_ASC, null));
+
+		try
+		{
+			mySites.add(0, (siteService.getSite(siteService.getUserSiteId(currentSession
+					.getUserId()))));
+		}
+		catch (IdUnusedException e)
+		{
+		}
+
+		/*
+		 * See whether the user is allowed to see this page
+		 */
+		Map<String, Object> map2 = new HashMap<String, Object>();
+		if (site == null)
+		{
+			status = "901";
+		}
+		else
+		{
+			boolean member = false;
+
+			map2.put("title", site.getTitle());
+			map2.put("id", site.getId());
+			map2.put("icon", site.getIconUrl());
+			map2.put("skin", site.getSkin());
+
+			if (!site.isPublished())
+				status = "903";
+
+			for (Site mysite : mySites)
+				if (mysite.getId().equals(site.getId()) || mysite.getId().equals("!admin")
+						|| mysite.getId().equals("~admin"))
+					member = true;
+
+			if (member == false)
+			{
+				status = "902";
+
+				if (site.isAllowed(curUser, "site.visit"))
+				{
+					status = "904";
+					member = true;
+				}
+				else if (request.getRemoteUser() == null)
+				{
+					member = false;
+					status = "901";
+				}
+				else if (site.isJoinable())
+				{
+					status = "905";
+				}
+			}
+
+			int number = 0;
+
+			if (member)
+			{
+				List<SitePage> pages = (List<SitePage>) site.getOrderedPages();
+
+				for (SitePage page : pages)
+				{
+					number++;
+
+					HashMap<String, Object> mpages = new HashMap<String, Object>();
+
+					mpages.put("id", page.getId());
+					mpages.put("name", page.getTitle());
+					mpages.put("layout", page.getLayoutTitle());
+					mpages.put("number", number);
+					mpages.put("popup", page.isPopUp());
+
+					ArrayList<HashMap<String, Object>> arltools = new ArrayList<HashMap<String, Object>>();
+					List<ToolConfiguration> lst = (List<ToolConfiguration>) page.getTools();
+
+					mpages
+							.put("iconclass", "icon-"
+									+ lst.get(0).getToolId().replaceAll("[.]", "-"));
+
+					for (ToolConfiguration conf : lst)
+					{
+						HashMap<String, Object> tool = new HashMap<String, Object>();
+						tool.put("url", conf.getId());
+						Tool t = conf.getTool();
+
+						if (t != null && t.getId() != null)
+						{
+							tool.put("title", conf.getTool().getTitle());
+							Set<Object> config = t.getFinalConfig().keySet();
+							tool.put("layouthint", conf.getLayoutHints());
+						}
+						else
+						{
+							tool.put("title", page.getTitle());
+						}
+						arltools.add(tool);
+					}
+
+					mpages.put("tools", arltools);
+
+					arlpages.add(mpages);
+
+				}
+
+				if (request.getParameter("writeevent") != null)
+				{
+					EventTrackingService ets = org.sakaiproject.event.cover.EventTrackingService
+							.getInstance();
+					Event event = ets.newEvent("pres.begin", "/site/" + site.getId(), true);
+					ets.post(event);
+				}
+
+				ArrayList<HashMap<String, String>> roles = new ArrayList<HashMap<String, String>>();
+				try
+				{
+					AuthzGroup group = authzGroupService.getAuthzGroup("/site/" + site.getId());
+					for (Object o : group.getRoles())
+					{
+						Role r = (Role) o;
+						HashMap<String, String> map = new HashMap<String, String>();
+						map.put("id", r.getId());
+						map.put("description", r.getDescription());
+						roles.add(map);
+					}
+					map2.put("roles", roles);
+				}
+				catch (Exception ex)
+				{
+					log.info("Roles undefined for " + site.getId());
+				}
+				tools = buildAvailableTools(site);
+			}
+			else
+			{
+				if (request.getRemoteUser() == null)
+				{
+					try
+					{
+						response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
+					}
+					catch (IOException ex)
+					{
+					}
+				}
+			}
+		}
+		map2.put("status", status);
+		map2.put("pages", arlpages);
+		map2.put("allTools", tools);
+		return map2;
+	}
+
+	private List<Map<String, Object>> buildAvailableTools(Site site)
+	{
+		// set the category to the site type if site type isn't null
+		HashSet<String> cats = null;
+		if (site.getType() != null)
+		{
+			cats = new HashSet<String>();
+			cats.add(site.getType());
+		}
+
+		// look up tools based on category (site type)
+		Set<Tool> tools = toolManager.findTools(null, null);
+
+		// create a list of maps that hold tool info
+		List<Map<String, Object>> toolsOut = new ArrayList<Map<String, Object>>();
+		for (Tool tool : tools)
+		{
+			// put certain tool attributes into the outbound map
+			HashMap<String, Object> toolOut = new HashMap<String, Object>();
+			toolOut.put("id", tool.getId());
+			toolOut.put("title", tool.getTitle());
+			toolOut.put("description", tool.getDescription());
+			toolOut.put("iconclass", "icon-" + tool.getId().replaceAll("[.]", "-"));
+			toolsOut.add(toolOut);
+		}
+		return toolsOut;
+	}
 }
