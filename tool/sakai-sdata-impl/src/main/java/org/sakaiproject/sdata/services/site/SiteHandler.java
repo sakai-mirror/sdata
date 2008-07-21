@@ -71,8 +71,7 @@ import org.sakaiproject.tool.api.ToolManager;
 /**
  * Handles calls for site related data
  */
-public class SiteHandler extends AbstractHandler
-{
+public class SiteHandler extends AbstractHandler {
 	private SiteService siteService;
 	private ResourceDefinitionFactory resourceDefinitionFactory;
 	private ResourceFunctionFactory resourceFunctionFactory;
@@ -87,88 +86,74 @@ public class SiteHandler extends AbstractHandler
 	private ToolManager toolManager;
 	private EntityManager entityManager;
 
-	public void init(Map<String, String> config) throws ServletException
-	{
+	public void init(Map<String, String> config) throws ServletException {
 		siteService = Kernel.siteService();
 		String basePath = config.get("basepath");
 		String baseUrl = config.get("baseurl");
-		resourceDefinitionFactory = new ResourceDefinitionFactoryImpl(config, baseUrl, basePath,
-				new NullSecurityAssertion());
+		resourceDefinitionFactory = new ResourceDefinitionFactoryImpl(config,
+				baseUrl, basePath, new NullSecurityAssertion());
 		resourceFunctionFactory = new ResourceFunctionFactoryImpl(config);
 		serializer = new JsonHandlerSerializer();
 		sessionManager = Kernel.sessionManager();
 		authzGroupService = Kernel.authzGroupService();
-		toolManager = (ToolManager) Kernel.componentManager().get(ToolManager.class.getName());
+		toolManager = (ToolManager) Kernel.componentManager().get(
+				ToolManager.class.getName());
 		entityManager = Kernel.entityManager();
 	}
 
 	@Override
-	public HandlerSerialzer getSerializer()
-	{
+	public HandlerSerialzer getSerializer() {
 		return serializer;
 	}
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
-	{
-		try
-		{
+			throws ServletException, IOException {
+		try {
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
-			SDataFunction m = resourceFunctionFactory.getFunction(rp.getFunctionDefinition());
+			SDataFunction m = resourceFunctionFactory.getFunction(rp
+					.getFunctionDefinition());
 			Reference ref = entityManager.newReference(rp.getRepositoryPath());
 			Site site = (Site) ref.getEntity();
 
 			Map<String, Object> out = null;
-			if (site != null && m != null)
+			if (site != null && m != null) {
 				m.call(this, request, response, site, rp);
-			else
+			} else {
 				out = siteInfo(site, request, response);
-			siteService.save(site);
-			if (out != null)
+			}
+			if (out != null) {
 				sendMap(request, response, out);
-		}
-		catch (IdUnusedException iue)
-		{
-			throw new ServletException(iue.getMessage(), iue);
-		}
-		catch (SDataException se)
-		{
-			throw new ServletException(se.getMessage(), se);
-		}
-		catch (PermissionException pe)
-		{
-			throw new ServletException(pe.getMessage(), pe);
+			}
+		} catch (Exception ex) {
+			sendError(request, response, ex);
 		}
 	}
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
-	{
+			throws ServletException, IOException {
+		sendError(request, response, new SDataException(HttpServletResponse.SC_NOT_IMPLEMENTED,"POST Method not implemented"));
 	}
 
-	public void destroy()
-	{
+	public void destroy() {
 		resourceDefinitionFactory.destroy();
 		resourceFunctionFactory.destroy();
 	}
 
-	public void setHandlerHeaders(HttpServletRequest request, HttpServletResponse response)
-	{
+	public void setHandlerHeaders(HttpServletRequest request,
+			HttpServletResponse response) {
 		response.setHeader("x-sdata-handler", this.getClass().getName());
 		response.setHeader("x-sdata-url", request.getPathInfo());
 	}
 
-	private Site getSite(String siteId) throws IdUnusedException
-	{
+	private Site getSite(String siteId) throws IdUnusedException {
 		Site site = siteService.getSite(siteId);
 		return site;
 	}
 
 	private Map<String, Object> siteInfo(Site site, HttpServletRequest request,
-			HttpServletResponse response)
-	{
+			HttpServletResponse response) {
 		String status = "900";
 		List<Map<String, Object>> arlpages = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> tools = new ArrayList<Map<String, Object>>();
@@ -179,28 +164,22 @@ public class SiteHandler extends AbstractHandler
 		 * Determine the sites the current user is a member of
 		 */
 		currentSession = sessionManager.getCurrentSession();
-		mySites = ((List<Site>) siteService.getSites(SelectionType.ACCESS, null, null, null,
-				SortType.TITLE_ASC, null));
+		mySites = ((List<Site>) siteService.getSites(SelectionType.ACCESS,
+				null, null, null, SortType.TITLE_ASC, null));
 
-		try
-		{
-			mySites.add(0, (siteService.getSite(siteService.getUserSiteId(currentSession
-					.getUserId()))));
-		}
-		catch (IdUnusedException e)
-		{
+		try {
+			mySites.add(0, (siteService.getSite(siteService
+					.getUserSiteId(currentSession.getUserId()))));
+		} catch (IdUnusedException e) {
 		}
 
 		/*
 		 * See whether the user is allowed to see this page
 		 */
 		Map<String, Object> map2 = new HashMap<String, Object>();
-		if (site == null)
-		{
+		if (site == null) {
 			status = "901";
-		}
-		else
-		{
+		} else {
 			boolean member = false;
 
 			map2.put("title", site.getTitle());
@@ -212,38 +191,31 @@ public class SiteHandler extends AbstractHandler
 				status = "903";
 
 			for (Site mysite : mySites)
-				if (mysite.getId().equals(site.getId()) || mysite.getId().equals("!admin")
+				if (mysite.getId().equals(site.getId())
+						|| mysite.getId().equals("!admin")
 						|| mysite.getId().equals("~admin"))
 					member = true;
 
-			if (member == false)
-			{
+			if (member == false) {
 				status = "902";
 
-				if (site.isAllowed(curUser, "site.visit"))
-				{
+				if (site.isAllowed(curUser, "site.visit")) {
 					status = "904";
 					member = true;
-				}
-				else if (request.getRemoteUser() == null)
-				{
+				} else if (request.getRemoteUser() == null) {
 					member = false;
 					status = "901";
-				}
-				else if (site.isJoinable())
-				{
+				} else if (site.isJoinable()) {
 					status = "905";
 				}
 			}
 
 			int number = 0;
 
-			if (member)
-			{
+			if (member) {
 				List<SitePage> pages = (List<SitePage>) site.getOrderedPages();
 
-				for (SitePage page : pages)
-				{
+				for (SitePage page : pages) {
 					number++;
 
 					HashMap<String, Object> mpages = new HashMap<String, Object>();
@@ -255,26 +227,22 @@ public class SiteHandler extends AbstractHandler
 					mpages.put("popup", page.isPopUp());
 
 					ArrayList<HashMap<String, Object>> arltools = new ArrayList<HashMap<String, Object>>();
-					List<ToolConfiguration> lst = (List<ToolConfiguration>) page.getTools();
+					List<ToolConfiguration> lst = (List<ToolConfiguration>) page
+							.getTools();
 
-					mpages
-							.put("iconclass", "icon-"
-									+ lst.get(0).getToolId().replaceAll("[.]", "-"));
+					mpages.put("iconclass", "icon-"
+							+ lst.get(0).getToolId().replaceAll("[.]", "-"));
 
-					for (ToolConfiguration conf : lst)
-					{
+					for (ToolConfiguration conf : lst) {
 						HashMap<String, Object> tool = new HashMap<String, Object>();
 						tool.put("url", conf.getId());
 						Tool t = conf.getTool();
 
-						if (t != null && t.getId() != null)
-						{
+						if (t != null && t.getId() != null) {
 							tool.put("title", conf.getTool().getTitle());
 							Set<Object> config = t.getFinalConfig().keySet();
 							tool.put("layouthint", conf.getLayoutHints());
-						}
-						else
-						{
+						} else {
 							tool.put("title", page.getTitle());
 						}
 						arltools.add(tool);
@@ -286,20 +254,30 @@ public class SiteHandler extends AbstractHandler
 
 				}
 
-				if (request.getParameter("writeevent") != null)
-				{
+				if (request.getParameter("writeevent") != null) {
 					EventTrackingService ets = org.sakaiproject.event.cover.EventTrackingService
 							.getInstance();
-					Event event = ets.newEvent("pres.begin", "/site/" + site.getId(), true);
-					ets.post(event);
+					try {
+						Event event = ets.newEvent("pres.begin", "/site/"
+								+ site.getId(), true);
+						ets.post(event);
+					} catch (Exception ex) {
+						log.warn("Failed to register pres.begin event ", ex);
+					}
+					try {
+						Event event = ets.newEvent("site.visit", "/site/"
+								+ site.getId(), true);
+						ets.post(event);
+					} catch (Exception ex) {
+						log.warn("Failed to register site.visit event ", ex);
+					}
 				}
 
 				ArrayList<HashMap<String, String>> roles = new ArrayList<HashMap<String, String>>();
-				try
-				{
-					AuthzGroup group = authzGroupService.getAuthzGroup("/site/" + site.getId());
-					for (Object o : group.getRoles())
-					{
+				try {
+					AuthzGroup group = authzGroupService.getAuthzGroup("/site/"
+							+ site.getId());
+					for (Object o : group.getRoles()) {
 						Role r = (Role) o;
 						HashMap<String, String> map = new HashMap<String, String>();
 						map.put("id", r.getId());
@@ -307,23 +285,16 @@ public class SiteHandler extends AbstractHandler
 						roles.add(map);
 					}
 					map2.put("roles", roles);
-				}
-				catch (Exception ex)
-				{
+				} catch (Exception ex) {
 					log.info("Roles undefined for " + site.getId());
 				}
 				tools = buildAvailableTools(site);
-			}
-			else
-			{
-				if (request.getRemoteUser() == null)
-				{
-					try
-					{
-						response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
-					}
-					catch (IOException ex)
-					{
+			} else {
+				if (request.getRemoteUser() == null) {
+					try {
+						response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+								"Not Logged In");
+					} catch (IOException ex) {
 					}
 				}
 			}
@@ -334,12 +305,10 @@ public class SiteHandler extends AbstractHandler
 		return map2;
 	}
 
-	private List<Map<String, Object>> buildAvailableTools(Site site)
-	{
+	private List<Map<String, Object>> buildAvailableTools(Site site) {
 		// set the category to the site type if site type isn't null
 		HashSet<String> cats = null;
-		if (site.getType() != null)
-		{
+		if (site.getType() != null) {
 			cats = new HashSet<String>();
 			cats.add(site.getType());
 		}
@@ -349,14 +318,14 @@ public class SiteHandler extends AbstractHandler
 
 		// create a list of maps that hold tool info
 		List<Map<String, Object>> toolsOut = new ArrayList<Map<String, Object>>();
-		for (Tool tool : tools)
-		{
+		for (Tool tool : tools) {
 			// put certain tool attributes into the outbound map
 			HashMap<String, Object> toolOut = new HashMap<String, Object>();
 			toolOut.put("id", tool.getId());
 			toolOut.put("title", tool.getTitle());
 			toolOut.put("description", tool.getDescription());
-			toolOut.put("iconclass", "icon-" + tool.getId().replaceAll("[.]", "-"));
+			toolOut.put("iconclass", "icon-"
+					+ tool.getId().replaceAll("[.]", "-"));
 			toolsOut.add(toolOut);
 		}
 		return toolsOut;
