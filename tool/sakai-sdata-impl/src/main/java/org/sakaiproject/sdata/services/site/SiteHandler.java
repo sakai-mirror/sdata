@@ -113,8 +113,15 @@ public class SiteHandler extends AbstractHandler {
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
 			SDataFunction m = resourceFunctionFactory.getFunction(rp
 					.getFunctionDefinition());
-			Reference ref = entityManager.newReference(rp.getRepositoryPath());
+			String reference = rp.getRepositoryPath();
+			log.info("Site Handler Reference = "+reference);
+			if ( "/site".equals(reference) ) {
+				reference = reference+"/"+request.getParameter("siteid");
+			}
+			Reference ref = entityManager.newReference(reference);
 			Site site = (Site) ref.getEntity();
+			
+			
 
 			Map<String, Object> out = null;
 			if (site != null && m != null) {
@@ -133,7 +140,25 @@ public class SiteHandler extends AbstractHandler {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		sendError(request, response, new SDataException(HttpServletResponse.SC_NOT_IMPLEMENTED,"POST Method not implemented"));
+		try {
+			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
+			SDataFunction m = resourceFunctionFactory.getFunction(rp
+					.getFunctionDefinition());
+			Reference ref = entityManager.newReference(rp.getRepositoryPath());
+			Site site = (Site) ref.getEntity();
+
+			Map<String, Object> out = null;
+			if (site != null && m != null) {
+				m.call(this, request, response, site, rp);
+			} else {
+				throw new SDataException(HttpServletResponse.SC_BAD_REQUEST,"No function found");
+			}
+			if (out != null) {
+				sendMap(request, response, out);
+			}
+		} catch (Exception ex) {
+			sendError(request, response, ex);
+		}
 	}
 
 	public void destroy() {
