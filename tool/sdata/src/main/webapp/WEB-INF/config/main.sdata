@@ -71,3 +71,5 @@
 19.basepath=/
 20.classname=org.sakaiproject.sdata.services.mpt.MyPersonalToolsHandler
 20.baseurl=/mpt
+21.classname=org.sakaiproject.sdata.services.newsite.NewSiteHandler
+21.baseurl=/newsite
