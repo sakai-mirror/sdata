@@ -310,6 +310,13 @@ public class SiteHandler extends AbstractHandler {
 						roles.add(map);
 					}
 					map2.put("roles", roles);
+					
+					if (site.isAllowed(curUser, "site.upd")){
+						map2.put("isMaintainer", true);
+					} else {
+						map2.put("isMaintainer", false);
+					}
+					
 				} catch (Exception ex) {
 					log.info("Roles undefined for " + site.getId());
 				}
