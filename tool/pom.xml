@@ -10,7 +10,7 @@
   <name>Sakai SData Tool</name>
   <groupId>org.sakaiproject.sdata</groupId>
   <artifactId>tool</artifactId>
-    <organization>
+  <organization>
     <name>Timefields Ltd</name>
     <url>http://www.tfd.co.uk/</url>
   </organization>
@@ -20,157 +20,80 @@
     <module>sakai-sdata-impl</module>
     <module>sdata</module>
   </modules>
- <dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.sakaiproject.kernel</groupId>
+      <artifactId>sakai-kernel-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject.kernel</groupId>
+      <artifactId>sakai-component-manager</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject.kernel</groupId>
+      <artifactId>sakai-kernel-util</artifactId>
+    </dependency>
     <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
       <version>1.0</version>
     </dependency>
+<!--org.sakaiprojectsakai-jcr-util${sakai.version}-->
+<!--org.sakaiprojectsakai-jcr-api${sakai.version}-->
+<!--org.sakaiprojectsakai-component${sakai.version}jar-->
+<!--org.sakaiprojectsakai-component-api${sakai.version}jar-->
+<!--org.sakaiprojectsakai-tool-api${sakai.version}jar-->
+<!--org.sakaiprojectsakai-db-api${sakai.version}jar-->
     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-jcr-util</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-jcr-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-component</artifactId>
-      <version>${sakai.version}</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-component-api</artifactId>
-      <version>${sakai.version}</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-tool-api</artifactId>
-      <version>${sakai.version}</version>
-      <type>jar</type>
-    </dependency>
-    
-     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-db-api</artifactId>
-      <version>${sakai.version}</version>
-      <type>jar</type>
-    </dependency>
-	 <dependency>
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
       <version>3.0</version>
       <type>jar</type>
     </dependency>
-    
-    
-     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-event-api</artifactId>
-      <version>${sakai.version}</version>
-      <type>jar</type>
-    </dependency>
-    
-        <dependency>
+<!--org.sakaiprojectsakai-event-api${sakai.version}jar-->
+    <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-search-api</artifactId>
       <version>${sakai.version}</version>
       <type>jar</type>
     </dependency>
-    
-     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-site-api</artifactId>
-      <version>${sakai.version}</version>
-      <type>jar</type>
-    </dependency>
-    
-       <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-authz-api</artifactId>
-      <version>${sakai.version}</version>
-      <type>jar</type>
-    </dependency>
-    
-      <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-content-api</artifactId>
-      <version>${sakai.version}</version>
-      <type>jar</type>
-    </dependency>
-    
-      <dependency>
+<!--org.sakaiprojectsakai-site-api${sakai.version}jar-->
+<!--org.sakaiprojectsakai-authz-api${sakai.version}jar-->
+<!--org.sakaiprojectsakai-content-api${sakai.version}jar-->
+    <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-announcement-api</artifactId>
       <version>${sakai.version}</version>
       <type>jar</type>
     </dependency>
-    
-      <dependency>
+    <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-message-api</artifactId>
       <version>${sakai.version}</version>
       <type>jar</type>
     </dependency>
-    
-      <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-entity-api</artifactId>
-      <version>${sakai.version}</version>
-      <type>jar</type>
-    </dependency>
-    
-    
+<!--org.sakaiprojectsakai-entity-api${sakai.version}jar-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-search-api</artifactId>
       <version>${sakai.version}</version>
       <type>jar</type>
     </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-util-api</artifactId>
-      <version>${sakai.version}</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-util</artifactId>
-      <version>${sakai.version}</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-tool-servlet</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    
-     <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-user-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-
+<!--org.sakaiprojectsakai-util-api${sakai.version}jar-->
+<!--org.sakaiprojectsakai-util${sakai.version}jar-->
+<!--org.sakaiprojectsakai-tool-servlet${sakai.version}-->
+<!--org.sakaiprojectsakai-user-api${sakai.version}-->
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>1.0.4</version>
     </dependency>
-    
-
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <version>${sakai.servletapi.version}</version>
       <type>jar</type>
     </dependency>
-
-
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
@@ -190,14 +113,11 @@
       <version>SNAPSHOT</version>
       <type>jar</type>
     </dependency>
-
     <dependency>
       <groupId>org.apache.xmlrpc</groupId>
       <artifactId>xmlrpc-common</artifactId>
       <version>3.1</version>
       <type>jar</type>
     </dependency>
-
-
   </dependencies>
 </project>

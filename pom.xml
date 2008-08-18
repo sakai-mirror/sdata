@@ -11,63 +11,61 @@
     <url>http://www.tfd.co.uk/</url>
   </organization>
   <issueManagement>
-     <system>jira</system>
-     <url>http://bugs.sakaiproject.org/jira/browse/SAK</url>
+    <system>jira</system>
+    <url>http://bugs.sakaiproject.org/jira/browse/SAK</url>
   </issueManagement>
   <ciManagement>
-     <system>continuum</system>
-     <notifiers>
-        <notifier>
-            <type>mail</type>
-            <address>builds@collab.sakaiproject.org</address>
-        </notifier>
-     </notifiers>
+    <system>continuum</system>
+    <notifiers>
+      <notifier>
+        <type>mail</type>
+        <address>builds@collab.sakaiproject.org</address>
+      </notifier>
+    </notifiers>
   </ciManagement>
   <inceptionYear>2003</inceptionYear>
   <prerequisites>
     <maven>2.0.6</maven>
   </prerequisites>
-  <!-- Mailing Lists ======================================================= -->
-
-    <mailingLists>
-        <mailingList>
-            <name>Sakai User List</name>
-            <subscribe>https://collab.sakaiproject.org</subscribe>
-            <unsubscribe>https://collab.sakaiproject.org</unsubscribe>
-            <post>sakai-user@collab.sakaiproject.org</post>
-            <archive>http://news.gmane.org/group/gmane.comp.cms.sakai.user/last=/force_load=t</archive>
-        </mailingList>
-        <mailingList>
-            <name>Sakai Developer List</name>
-            <subscribe>https://collab.sakaiproject.org</subscribe>
-            <unsubscribe>https://collab.sakaiproject.org</unsubscribe>
-            <post>sakai-dev@collab.sakaiproject.org</post>
-            <archive>http://news.gmane.org/group/gmane.comp.cms.sakai.dev/last=/force_load=t</archive>
-        </mailingList>
-        <mailingList>
-            <name>Sakai SCM List</name>
-            <subscribe>https://collab.sakaiproject.org</subscribe>
-            <unsubscribe>https://collab.sakaiproject.org</unsubscribe>
-            <post>source@collab.sakaiproject.org</post>
-        </mailingList>
-    </mailingLists>
-    <licenses>
-        <license>
-            <name>Educational Community License, Version 1.0</name>
-            <url>http://www.opensource.org/licenses/ecl1.php</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-   <scm>
-     <connection>scm:svn:https://source.sakaiproject.org/contrib/tfd/trunk/sdata</connection>
-     <developerConnection>scm:svn:https://source.sakaiproject.org/contrib/tfd/trunk/sdata</developerConnection>
-     <url>https://source.sakaiproject.org/contrib/tfd/trunk/sdata</url>
-   </scm> 
+<!-- Mailing Lists ======================================================= -->
+  <mailingLists>
+    <mailingList>
+      <name>Sakai User List</name>
+      <subscribe>https://collab.sakaiproject.org</subscribe>
+      <unsubscribe>https://collab.sakaiproject.org</unsubscribe>
+      <post>sakai-user@collab.sakaiproject.org</post>
+      <archive>http://news.gmane.org/group/gmane.comp.cms.sakai.user/last=/force_load=t</archive>
+    </mailingList>
+    <mailingList>
+      <name>Sakai Developer List</name>
+      <subscribe>https://collab.sakaiproject.org</subscribe>
+      <unsubscribe>https://collab.sakaiproject.org</unsubscribe>
+      <post>sakai-dev@collab.sakaiproject.org</post>
+      <archive>http://news.gmane.org/group/gmane.comp.cms.sakai.dev/last=/force_load=t</archive>
+    </mailingList>
+    <mailingList>
+      <name>Sakai SCM List</name>
+      <subscribe>https://collab.sakaiproject.org</subscribe>
+      <unsubscribe>https://collab.sakaiproject.org</unsubscribe>
+      <post>source@collab.sakaiproject.org</post>
+    </mailingList>
+  </mailingLists>
+  <licenses>
+    <license>
+      <name>Educational Community License, Version 1.0</name>
+      <url>http://www.opensource.org/licenses/ecl1.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:svn:https://source.sakaiproject.org/contrib/tfd/trunk/sdata</connection>
+    <developerConnection>scm:svn:https://source.sakaiproject.org/contrib/tfd/trunk/sdata</developerConnection>
+    <url>https://source.sakaiproject.org/contrib/tfd/trunk/sdata</url>
+  </scm>
   <properties>
-	<sakai.version>SNAPSHOT</sakai.version>
-	<sakai.servletapi.version>2.4</sakai.servletapi.version>
+    <sakai.version>SNAPSHOT</sakai.version>
+    <sakai.servletapi.version>2.4</sakai.servletapi.version>
   </properties>
-  
   <distributionManagement>
     <repository>
       <uniqueVersion>false</uniqueVersion>
@@ -82,28 +80,28 @@
       <url>file:///tmp/site</url>
     </site>
   </distributionManagement>
-<pluginRepositories>
-  <pluginRepository>
-    <id>codehaus snapshot repository</id>
-    <url>http://snapshots.repository.codehaus.org/</url>
-    <releases>
-      <enabled>true</enabled>
-    </releases>
-  </pluginRepository>
-  <pluginRepository>
-    <id>Sakai Plugin Repo</id>
-    <url>http://source.sakaiproject.org/maven2</url>
-    <releases>
-      <enabled>true</enabled>
-    </releases>
-  </pluginRepository>
-</pluginRepositories>
-<repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>codehaus snapshot repository</id>
+      <url>http://snapshots.repository.codehaus.org/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </pluginRepository>
+    <pluginRepository>
+      <id>Sakai Plugin Repo</id>
+      <url>http://source.sakaiproject.org/maven2</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
+  <repositories>
     <repository>
       <id>sakai-maven</id>
       <name>Sakai Maven Repo</name>
       <layout>default</layout>
-            <url>http://source.sakaiproject.org/maven2</url>
+      <url>http://source.sakaiproject.org/maven2</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
@@ -112,7 +110,7 @@
       <id>sakai-ibiblio-mirror</id>
       <name>Sakai Ibiblio Mirror Repo</name>
       <layout>default</layout>
-            <url>http://source.sakaiproject.org/maven2-ibiblio</url>
+      <url>http://source.sakaiproject.org/maven2-ibiblio</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
@@ -121,164 +119,115 @@
       <id>default</id>
       <name>Maven Repository Switchboard</name>
       <layout>default</layout>
-            <url>http://repo1.maven.org/maven2</url>
+      <url>http://repo1.maven.org/maven2</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
     </repository>
     <repository>
-    	<id>apache-repo</id>
-    	<name>apache-repo</name>
-    	<layout>default</layout>
-    	<url>http://myfaces.zones.apache.org/dist/maven-repository</url>
-		<snapshots>
-			<enabled>false</enabled>
-		</snapshots>
+      <id>apache-repo</id>
+      <name>apache-repo</name>
+      <layout>default</layout>
+      <url>http://myfaces.zones.apache.org/dist/maven-repository</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
-</repositories>
+  </repositories>
   <dependencyManagement>
-     <dependencies>
-           <dependency>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sakai-announcement-api</artifactId>
-                <version>${sakai.version}</version>
-		<scope>provided</scope>
-	   </dependency>
-           <dependency>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sakai-authz-api</artifactId>
-                <version>${sakai.version}</version>
-		<scope>provided</scope>
-	   </dependency>
-           <dependency>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sakai-message-api</artifactId>
-                <version>${sakai.version}</version>
-		<scope>provided</scope>
-	   </dependency>
-           <dependency>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sakai-util-api</artifactId>
-                <version>${sakai.version}</version>
-		<scope>provided</scope>
-	   </dependency>
-           <dependency>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sakai-component</artifactId>
-                <version>${sakai.version}</version>
-		<scope>provided</scope>
-	   </dependency>
-           <dependency>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sakai-component-api</artifactId>
-                <version>${sakai.version}</version>
-		<scope>provided</scope>
-	   </dependency>
-           <dependency>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sakai-content-api</artifactId>
-                <version>${sakai.version}</version>
-		<scope>provided</scope>
-	   </dependency>
-           <dependency>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sakai-search-api</artifactId>
-                <version>${sakai.version}</version>
-		<scope>provided</scope>
-	   </dependency>
-           <dependency>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sakai-db-api</artifactId>
-                <version>${sakai.version}</version>
-		<scope>provided</scope>
-	   </dependency>
-           <dependency>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sakai-site-api</artifactId>
-                <version>${sakai.version}</version>
-		<scope>provided</scope>
-	   </dependency>
-           <dependency>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sakai-entity-api</artifactId>
-                <version>${sakai.version}</version>
-		<scope>provided</scope>
-	   </dependency>
-           <dependency>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sakai-tool-api</artifactId>
-                <version>${sakai.version}</version>
-		<scope>provided</scope>
-	   </dependency>
-           <dependency>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sakai-event-api</artifactId>
-                <version>${sakai.version}</version>
-		<scope>provided</scope>
-	   </dependency>
-           <dependency>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sakai-tool-servlet</artifactId>
-                <version>${sakai.version}</version>
-		<scope>provided</scope>
-	   </dependency>
-           <dependency>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sakai-jcr-api</artifactId>
-                <version>${sakai.version}</version>
-		<scope>provided</scope>
-	   </dependency>
-           <dependency>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sakai-user-api</artifactId>
-                <version>${sakai.version}</version>
-		<scope>provided</scope>
-	   </dependency>
-           <dependency>
-                <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>3.1</version>
-                <scope>provided</scope>
-           </dependency>
-           <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-                <version>${sakai.servletapi.version}</version>
-                <scope>provided</scope>
-           </dependency>
-           <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>2.3</version>
-                <scope>provided</scope>
-           </dependency>
-           <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>1.0.4</version>
-                <scope>provided</scope>
-           </dependency>
-           <dependency>
-                <groupId>javax.jcr</groupId>
-                <artifactId>jcr</artifactId>
-                <version>1.0</version>
-                <scope>provided</scope>
-           </dependency>
-           <dependency>
-                <groupId>xml-apis</groupId>
-                <artifactId>xml-apis</artifactId>
-                <version>1.0.b2</version>
-                <scope>provided</scope>
-           </dependency>
-           <dependency>
-                <groupId>xml-apis</groupId>
-                <artifactId>xmlParserAPIs</artifactId>
-                <version>2.0.2</version>
-                <scope>provided</scope>
-           </dependency>
-	</dependencies>
+    <dependencies>
+      <dependency>
+        <groupId>org.sakaiproject.kernel</groupId>
+        <artifactId>sakai-kernel-api</artifactId>
+        <version>1.0RC2-SNAPSHOT</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.sakaiproject.kernel</groupId>
+        <artifactId>sakai-component-manager</artifactId>
+        <version>1.0RC2-SNAPSHOT</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.sakaiproject.kernel</groupId>
+        <artifactId>sakai-kernel-util</artifactId>
+        <version>1.0RC2-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sakaiproject</groupId>
+        <artifactId>sakai-announcement-api</artifactId>
+        <version>${sakai.version}</version>
+        <scope>provided</scope>
+      </dependency>
+<!--org.sakaiprojectsakai-authz-api${sakai.version}provided-->
+      <dependency>
+        <groupId>org.sakaiproject</groupId>
+        <artifactId>sakai-message-api</artifactId>
+        <version>${sakai.version}</version>
+        <scope>provided</scope>
+      </dependency>
+<!--org.sakaiprojectsakai-util-api${sakai.version}provided-->
+<!--org.sakaiprojectsakai-component${sakai.version}provided-->
+<!--org.sakaiprojectsakai-component-api${sakai.version}provided-->
+<!--org.sakaiprojectsakai-content-api${sakai.version}provided-->
+      <dependency>
+        <groupId>org.sakaiproject</groupId>
+        <artifactId>sakai-search-api</artifactId>
+        <version>${sakai.version}</version>
+        <scope>provided</scope>
+      </dependency>
+<!--org.sakaiprojectsakai-db-api${sakai.version}provided-->
+<!--org.sakaiprojectsakai-site-api${sakai.version}provided-->
+<!--org.sakaiprojectsakai-entity-api${sakai.version}provided-->
+<!--org.sakaiprojectsakai-tool-api${sakai.version}provided-->
+<!--org.sakaiprojectsakai-event-api${sakai.version}provided-->
+<!--org.sakaiprojectsakai-tool-servlet${sakai.version}provided-->
+<!--org.sakaiprojectsakai-jcr-api${sakai.version}provided-->
+<!--org.sakaiprojectsakai-user-api${sakai.version}provided-->
+      <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <version>3.1</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>${sakai.servletapi.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>2.3</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>1.0.4</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>javax.jcr</groupId>
+        <artifactId>jcr</artifactId>
+        <version>1.0</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>xml-apis</groupId>
+        <artifactId>xml-apis</artifactId>
+        <version>1.0.b2</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>xml-apis</groupId>
+        <artifactId>xmlParserAPIs</artifactId>
+        <version>2.0.2</version>
+        <scope>provided</scope>
+      </dependency>
+    </dependencies>
   </dependencyManagement>
-
 <!-- unit tests are a global dependency -->
   <dependencies>
     <dependency>
@@ -288,97 +237,95 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-   <reporting>
-      <plugins>
-         <plugin>
-            <!-- javadocs -->
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-               <debug>true</debug>
-               <links>
-                  <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
-               </links> 
-               <breakiterator>true</breakiterator>
-               <verbose>false</verbose>
-               <aggregate>true</aggregate>
-               <maxmemory>512m</maxmemory>
-               <additionalJOption>-J-Xms168m -J-Xmx512m -J-XX:PermSize=128m -J-XX:NewSize=64m</additionalJOption>
-               <version>2.3</version>
-            </configuration>
-         </plugin>
-         <plugin>
-            <!-- junit test reports -->
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-         </plugin>
-         <plugin>
-            <!-- unit test coverage reporting -->
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>cobertura-maven-plugin</artifactId>
-            <version>2.0</version>
-         </plugin>
-         <plugin>
-            <!-- Code analysis report -->
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-pmd-plugin</artifactId>
-            <configuration>
-               <targetJdk>1.5</targetJdk>
-               <rulesets>
-                  <ruleset>/rulesets/basic.xml</ruleset>
-                  <ruleset>/rulesets/codesize.xml</ruleset>
-                  <ruleset>/rulesets/design.xml</ruleset>
-                  <ruleset>/rulesets/finalizers.xml</ruleset>
-                  <ruleset>/rulesets/imports.xml</ruleset>
-                  <ruleset>/rulesets/logging-java.xml</ruleset>
-                  <ruleset>/rulesets/migrating.xml</ruleset>
-                  <ruleset>/rulesets/strings.xml</ruleset>
-                  <ruleset>/rulesets/unusedcode.xml</ruleset>
-               </rulesets>
-             <!--  <format>xml</format> -->
-               <linkXref>true</linkXref>
-               <sourceEncoding>utf-8</sourceEncoding>
-               <minimumTokens>100</minimumTokens>
-            </configuration>
-         </plugin>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-changelog-plugin</artifactId>
-            <configuration>
-               <type>range</type>
-               <range>90</range>
-            </configuration>
-         </plugin>
-         <plugin>
-            <!-- TODO tags report -->
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>taglist-maven-plugin</artifactId>
-            <configuration>
-               <tags>
-                  <tag>TODO</tag>
-                  <tag>FIXME</tag>
-                  <tag>@deprecated</tag>
-               </tags>
-            </configuration>
-         </plugin>
-         <plugin>
-            <!-- jdepend code analysis -->
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>jdepend-maven-plugin</artifactId>
-         </plugin>
-         <plugin>
-            <!-- jxr source code cross linking -->
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jxr-plugin</artifactId>
-            <configuration>
-               <linkJavadoc>true</linkJavadoc>
-               <javadocDir>apidocs</javadocDir>
-            </configuration>
-         </plugin>
-      </plugins>
-   </reporting>
-
+  <reporting>
+    <plugins>
+      <plugin>
+<!-- javadocs -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <debug>true</debug>
+          <links>
+            <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
+          </links>
+          <breakiterator>true</breakiterator>
+          <verbose>false</verbose>
+          <aggregate>true</aggregate>
+          <maxmemory>512m</maxmemory>
+          <additionalJOption>-J-Xms168m -J-Xmx512m -J-XX:PermSize=128m -J-XX:NewSize=64m</additionalJOption>
+          <version>2.3</version>
+        </configuration>
+      </plugin>
+      <plugin>
+<!-- junit test reports -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+      <plugin>
+<!-- unit test coverage reporting -->
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.0</version>
+      </plugin>
+      <plugin>
+<!-- Code analysis report -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <configuration>
+          <targetJdk>1.5</targetJdk>
+          <rulesets>
+            <ruleset>/rulesets/basic.xml</ruleset>
+            <ruleset>/rulesets/codesize.xml</ruleset>
+            <ruleset>/rulesets/design.xml</ruleset>
+            <ruleset>/rulesets/finalizers.xml</ruleset>
+            <ruleset>/rulesets/imports.xml</ruleset>
+            <ruleset>/rulesets/logging-java.xml</ruleset>
+            <ruleset>/rulesets/migrating.xml</ruleset>
+            <ruleset>/rulesets/strings.xml</ruleset>
+            <ruleset>/rulesets/unusedcode.xml</ruleset>
+          </rulesets>
+<!--  <format>xml</format> -->
+          <linkXref>true</linkXref>
+          <sourceEncoding>utf-8</sourceEncoding>
+          <minimumTokens>100</minimumTokens>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changelog-plugin</artifactId>
+        <configuration>
+          <type>range</type>
+          <range>90</range>
+        </configuration>
+      </plugin>
+      <plugin>
+<!-- TODO tags report -->
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>taglist-maven-plugin</artifactId>
+        <configuration>
+          <tags>
+            <tag>TODO</tag>
+            <tag>FIXME</tag>
+            <tag>@deprecated</tag>
+          </tags>
+        </configuration>
+      </plugin>
+      <plugin>
+<!-- jdepend code analysis -->
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jdepend-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+<!-- jxr source code cross linking -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <configuration>
+          <linkJavadoc>true</linkJavadoc>
+          <javadocDir>apidocs</javadocDir>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
   <build>
     <directory>target</directory>
     <outputDirectory>target/classes</outputDirectory>
@@ -391,49 +338,48 @@
       <testResource>
         <directory>${basedir}/src/test/java</directory>
         <excludes>
-	  <exclude>**/*.java</exclude>
+          <exclude>**/*.java</exclude>
         </excludes>
         <includes>
           <include>**/*</include>
         </includes>
       </testResource>
       <testResource>
-	   <directory>${basedir}/src/test/respources</directory>
-           <includes>
-		<include>**/*</include>
-           </includes>
+        <directory>${basedir}/src/test/respources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
       </testResource>
     </testResources>
-
     <resources>
-	<resource>
-	   <directory>${basedir}/src/main/java</directory>
-           <excludes>
-		<exclude>**/*.java</exclude>
-           </excludes>
-           <includes>
-		<include>**/*</include>
-           </includes>
-	</resource>
-	<resource>
-	   <directory>${basedir}/src/main/resources</directory>
-           <includes>
-		<include>**/*</include>
-           </includes>
-	</resource>
-        <resource>
-           <directory>${basedir}/src/main/sql</directory>
-           <includes>
-             <include>**/*.sql</include>
-           </includes>
-         </resource>
-        <resource>
-           <directory>${basedir}/src/main/config</directory>
-           <includes>
-             <include>**/*.properties</include>
-             <include>**/*.xml</include>
-           </includes>
-         </resource>
+      <resource>
+        <directory>${basedir}/src/main/java</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${basedir}/src/main/sql</directory>
+        <includes>
+          <include>**/*.sql</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${basedir}/src/main/config</directory>
+        <includes>
+          <include>**/*.properties</include>
+          <include>**/*.xml</include>
+        </includes>
+      </resource>
     </resources>
     <plugins>
       <plugin>
@@ -458,7 +404,6 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <inherited>true</inherited>
         <groupId>org.sakaiproject.maven.plugins</groupId>
