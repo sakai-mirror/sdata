@@ -4,7 +4,7 @@
   <parent>
     <artifactId>tool</artifactId>
     <groupId>org.sakaiproject.sdata</groupId>
-    <version>SNAPSHOT</version>
+    <version>2.6.0RC1-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <name>SData Tool</name>
@@ -21,7 +21,7 @@
     <dependency>
       <groupId>org.sakaiproject.sdata.tool</groupId>
       <artifactId>sakai-sdata-impl</artifactId>
-      <version>SNAPSHOT</version>
+      <version>2.6.0RC1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
