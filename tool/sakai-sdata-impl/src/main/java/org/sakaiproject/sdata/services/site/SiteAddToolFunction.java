@@ -1,5 +1,9 @@
 package org.sakaiproject.sdata.services.site;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +19,7 @@ import org.sakaiproject.sdata.tool.functions.SDataFunctionUtil;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.tool.api.ToolManager;
 
@@ -35,6 +40,8 @@ public class SiteAddToolFunction implements SDataFunction {
 		try {
 			Site site = (Site) target;
 
+			Map<String, Object> map = new HashMap<String, Object>();
+			
 			// harvest inputs
 			String tools = request.getParameter("tools");
 			String[] toolIds = tools.split(",");
@@ -47,16 +54,22 @@ public class SiteAddToolFunction implements SDataFunction {
 				SitePage page = site.addPage();
 				page.setTitle(tool.getTitle());
 				page.addTool(tool);
+				
+				List<ToolConfiguration> lst = (List<ToolConfiguration>) page.getTools();
+				for (ToolConfiguration conf : lst) {
+					map.put("tool", conf.getId());
+				}			
+				
 			}
 
 			siteService.save(site);
-		} catch (IdUnusedException e) {
-			throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
+
+			handler.sendMap(request, response, map);
+			
+		} catch (Exception e) {
+			throw new SDataException(500,
 					"Site Not found");
-		} catch (PermissionException e) {
-			throw new SDataException(HttpServletResponse.SC_FORBIDDEN,
-					"Not Allowed to add tool to site");
-		}
+		} 
 
 	}
 
