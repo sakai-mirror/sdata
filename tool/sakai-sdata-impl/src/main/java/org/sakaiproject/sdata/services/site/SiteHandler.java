@@ -265,6 +265,7 @@ public class SiteHandler extends AbstractHandler {
 
 						if (t != null && t.getId() != null) {
 							tool.put("title", conf.getTool().getTitle());
+							tool.put("id", conf.getTool().getId());
 							Set<Object> config = t.getFinalConfig().keySet();
 							tool.put("layouthint", conf.getLayoutHints());
 						} else {
