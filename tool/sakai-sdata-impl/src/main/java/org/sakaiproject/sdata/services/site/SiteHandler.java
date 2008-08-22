@@ -358,6 +358,7 @@ public class SiteHandler extends AbstractHandler {
 			toolOut.put("description", tool.getDescription());
 			toolOut.put("iconclass", "icon-"
 					+ tool.getId().replaceAll("[.]", "-"));
+			toolOut.put("allowMultipleInstances", tool.getRegisteredConfig().getProperty("allowMultipleInstances"));
 			toolsOut.add(toolOut);
 		}
 		return toolsOut;
