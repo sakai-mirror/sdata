@@ -68,7 +68,7 @@ public class SiteAddToolFunction implements SDataFunction {
 			
 		} catch (Exception e) {
 			throw new SDataException(500,
-					"Site Not found");
+					e.getMessage());
 		} 
 
 	}
