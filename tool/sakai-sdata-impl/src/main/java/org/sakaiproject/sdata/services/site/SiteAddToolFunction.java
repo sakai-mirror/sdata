@@ -45,6 +45,7 @@ public class SiteAddToolFunction implements SDataFunction {
 			// harvest inputs
 			String tools = request.getParameter("tools");
 			String[] toolIds = tools.split(",");
+			SitePage pagetosave = null;
 
 			for (String toolId : toolIds) {
 				// get the requested tool

@@ -55,8 +55,7 @@ import org.sakaiproject.tool.api.Tool;
  * 
  * @author
  */
-public class NewSiteBean implements ServiceDefinition
-{
+public class NewSiteBean implements ServiceDefinition {
 
 	private List<Site> mysites;
 
@@ -75,9 +74,9 @@ public class NewSiteBean implements ServiceDefinition
 	 * @param siteService
 	 */
 	public NewSiteBean(SessionManager sessionManager, SiteService siteService,
-			AuthzGroupService authzGroupService, String siteId, String name, String description, boolean writeevent, 
-			HttpServletRequest request, HttpServletResponse response)
-	{
+			AuthzGroupService authzGroupService, String siteId, String name,
+			String description, boolean writeevent, HttpServletRequest request,
+			HttpServletResponse response) {
 		boolean siteExists = true;
 		String status = "900";
 		ArrayList<HashMap<String, Object>> arlpages = new ArrayList<HashMap<String, Object>>();
@@ -85,44 +84,62 @@ public class NewSiteBean implements ServiceDefinition
 		String curUser = sessionManager.getCurrentSessionUserId();
 
 		try {
-		
-			Site site = siteService.addSite(name, "project");
+
+			Site site = siteService.addSite(getPassword(8), "project");
 			site.setTitle(name);
 			site.setDescription(description);
-			
+
 			map2.put("status", "success");
 			map2.put("id", site.getId());
-			
-		} catch (Exception ex){
+
+		} catch (Exception ex) {
 			map2.put("status", "failed");
+			map2.put("message", ex.getMessage());
 		}
 
 	}
 
-	protected class SDataSiteRole
-	{
+	public static String getPassword(int n) {
+		char[] pw = new char[n];
+		int c = 'A';
+		int r1 = 0;
+		for (int i = 0; i < n; i++) {
+			r1 = (int) (Math.random() * 3);
+			switch (r1) {
+			case 0:
+				c = '0' + (int) (Math.random() * 10);
+				break;
+			case 1:
+				c = 'a' + (int) (Math.random() * 26);
+				break;
+			case 2:
+				c = 'A' + (int) (Math.random() * 26);
+				break;
+			}
+			pw[i] = (char) c;
+		}
+		return new String(pw);
+	}
+
+	protected class SDataSiteRole {
 
 		private String id;
 
 		private String description;
 
-		public void setId(String id)
-		{
+		public void setId(String id) {
 			this.id = id;
 		}
 
-		public String getId()
-		{
+		public String getId() {
 			return id;
 		}
 
-		public void setDescription(String description)
-		{
+		public void setDescription(String description) {
 			this.description = description;
 		}
 
-		public String getDescription()
-		{
+		public String getDescription() {
 			return description;
 		}
 
@@ -133,8 +150,7 @@ public class NewSiteBean implements ServiceDefinition
 	 * 
 	 * @param mysites
 	 */
-	public void setMysites(List<Site> mysites)
-	{
+	public void setMysites(List<Site> mysites) {
 		this.mysites = mysites;
 	}
 
@@ -143,8 +159,7 @@ public class NewSiteBean implements ServiceDefinition
 	 * 
 	 * @return
 	 */
-	public List<Site> getMysites()
-	{
+	public List<Site> getMysites() {
 		return mysites;
 	}
 
@@ -153,8 +168,7 @@ public class NewSiteBean implements ServiceDefinition
 	 * 
 	 * @param currentSession
 	 */
-	public void setCurrentSession(Session currentSession)
-	{
+	public void setCurrentSession(Session currentSession) {
 		this.currentSession = currentSession;
 	}
 
@@ -163,8 +177,7 @@ public class NewSiteBean implements ServiceDefinition
 	 * 
 	 * @return
 	 */
-	public Session getCurrentSession()
-	{
+	public Session getCurrentSession() {
 		return currentSession;
 	}
 
@@ -173,8 +186,7 @@ public class NewSiteBean implements ServiceDefinition
 	 * 
 	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinition#getResponseMap()
 	 */
-	public Map<String, Object> getResponseMap()
-	{
+	public Map<String, Object> getResponseMap() {
 
 		return map2;
 	}
@@ -184,8 +196,7 @@ public class NewSiteBean implements ServiceDefinition
 	 * 
 	 * @param myMappedSites
 	 */
-	public void setMyMappedSites(List<Map> myMappedSites)
-	{
+	public void setMyMappedSites(List<Map> myMappedSites) {
 		MyMappedSites = myMappedSites;
 	}
 
@@ -194,8 +205,7 @@ public class NewSiteBean implements ServiceDefinition
 	 * 
 	 * @return
 	 */
-	public List<Map> getMyMappedSites()
-	{
+	public List<Map> getMyMappedSites() {
 		return MyMappedSites;
 	}
 
