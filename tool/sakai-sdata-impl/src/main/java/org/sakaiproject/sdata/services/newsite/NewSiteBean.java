@@ -88,6 +88,7 @@ public class NewSiteBean implements ServiceDefinition {
 			Site site = siteService.addSite(getPassword(8), "project");
 			site.setTitle(name);
 			site.setDescription(description);
+			siteService.save(site);
 
 			map2.put("status", "success");
 			map2.put("id", site.getId());
