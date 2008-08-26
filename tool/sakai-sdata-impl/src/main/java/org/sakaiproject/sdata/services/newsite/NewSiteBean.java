@@ -49,6 +49,7 @@ import org.sakaiproject.site.api.SiteService.SortType;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.tool.api.ToolManager;
 
 /**
  * TODO Javadoc
@@ -74,7 +75,7 @@ public class NewSiteBean implements ServiceDefinition {
 	 * @param siteService
 	 */
 	public NewSiteBean(SessionManager sessionManager, SiteService siteService,
-			AuthzGroupService authzGroupService, String siteId, String name,
+			AuthzGroupService authzGroupService, ToolManager toolManager, String siteId, String name,
 			String description, boolean writeevent, HttpServletRequest request,
 			HttpServletResponse response) {
 		boolean siteExists = true;
@@ -88,6 +89,18 @@ public class NewSiteBean implements ServiceDefinition {
 			Site site = siteService.addSite(getPassword(8), "project");
 			site.setTitle(name);
 			site.setDescription(description);
+			siteService.save(site);
+			
+			Tool tool = toolManager.getTool("sakai.resources");
+
+			// create a page with the same name as the tool and add the tool
+			SitePage page = site.addPage();
+			page.setTitle(tool.getTitle());
+			page.addTool(tool);
+			
+			siteService.save(site);
+			
+			site.removePage(page);
 			siteService.save(site);
 
 			map2.put("status", "success");

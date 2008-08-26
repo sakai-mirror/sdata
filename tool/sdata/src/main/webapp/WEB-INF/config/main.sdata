@@ -73,3 +73,5 @@
 20.baseurl=/mpt
 21.classname=org.sakaiproject.sdata.services.newsite.NewSiteHandler
 21.baseurl=/newsite
+22.classname=org.sakaiproject.sdata.services.comments.CommentsHandler
+22.baseurl=/comments

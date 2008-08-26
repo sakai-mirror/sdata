@@ -19,49 +19,31 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sdata.services.newsite;
+package org.sakaiproject.sdata.services.comments;
 
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.Kernel;
-import org.sakaiproject.authz.api.AuthzGroupService;
+import org.sakaiproject.sdata.tool.api.SDataException;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
-import org.sakaiproject.site.api.SiteService;
-import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.ToolManager;
 
 import java.io.IOException;
 
 /**
- * TODO Javadoc
+ * A Definition Factory for MyRecentChanges
  * 
  * @author
  */
-public class NewSiteServiceDefinitionFactory implements ServiceDefinitionFactory
+public class CommentsServiceDefinitionFactory implements ServiceDefinitionFactory
 {
 
-	private SessionManager sessionManager;
-
-	private SiteService siteService;
-
-	private AuthzGroupService authzGroupService;
-	
-	private ToolManager toolManager;
-
 	/**
-	 * TODO Javadoc
 	 */
-	public NewSiteServiceDefinitionFactory()
+	public CommentsServiceDefinitionFactory()
 	{
-		siteService = Kernel.siteService();
-		authzGroupService = Kernel.authzGroupService();
-		sessionManager = Kernel.sessionManager();
-		toolManager = (ToolManager) Kernel.componentManager().get(
-				ToolManager.class.getName());
 	}
 
 	/*
@@ -71,15 +53,13 @@ public class NewSiteServiceDefinitionFactory implements ServiceDefinitionFactory
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	public ServiceDefinition getSpec(HttpServletRequest request,
-			HttpServletResponse response)
+			HttpServletResponse response) throws SDataException
 	{
+		if (request.getRemoteUser() == null){
+			throw new SDataException(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
+		}
 		
-		boolean writeevent = false;
-		String name = request.getParameter("sitename");
-		String description = request.getParameter("sitedescription");
-
-		String siteId = request.getParameter("siteid");
-		return new NewSiteBean(sessionManager, siteService, authzGroupService, toolManager, siteId, name, description, writeevent, request, response);
+		return new CommentsBean(request, response);
 	}
 
 	/*
