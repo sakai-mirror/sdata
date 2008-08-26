@@ -89,6 +89,7 @@ public class NewSiteBean implements ServiceDefinition {
 			Site site = siteService.addSite(getPassword(8), "project");
 			site.setTitle(name);
 			site.setDescription(description);
+			site.setPublished(true);
 			siteService.save(site);
 			
 			Tool tool = toolManager.getTool("sakai.resources");
