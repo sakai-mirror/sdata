@@ -75,3 +75,5 @@
 21.baseurl=/newsite
 22.classname=org.sakaiproject.sdata.services.comments.CommentsHandler
 22.baseurl=/comments
+23.classname=org.sakaiproject.sdata.services.prfc.PreferencesHandler
+23.baseurl=/prfc
