@@ -87,8 +87,7 @@ import org.sakaiproject.tool.api.Tool;
  * 
  * @author ieb
  */
-public abstract class JCRHandler extends AbstractHandler
-{
+public abstract class JCRHandler extends AbstractHandler {
 	private static final Log log = LogFactory.getLog(JCRHandler.class);
 
 	/**
@@ -124,17 +123,14 @@ public abstract class JCRHandler extends AbstractHandler
 	 * 
 	 * @see org.sakaiproject.sdata.tool.api.Handler#init(java.util.Map)
 	 */
-	public void init(Map<String, String> config)
-	{
+	public void init(Map<String, String> config) {
 		basePath = config.get(BASE_PATH_INIT);
-		if (basePath == null)
-		{
+		if (basePath == null) {
 			this.basePath = DEFAULT_BASE_PATH;
 		}
 
 		baseUrl = config.get(BASE_URL_INIT);
-		if (baseUrl == null)
-		{
+		if (baseUrl == null) {
 			this.baseUrl = DEFAULT_BASE_URL;
 		}
 
@@ -143,14 +139,11 @@ public abstract class JCRHandler extends AbstractHandler
 		resourceFunctionFactory = getResourceFunctionFactory(config);
 
 	}
-	
-	public void destroy() 
-	{
+
+	public void destroy() {
 		resourceDefinitionFactory.destroy();
 		resourceFunctionFactory.destroy();
 	}
-	
-	
 
 	/**
 	 * Creates a resource definition factory suitable for controlling the
@@ -160,8 +153,7 @@ public abstract class JCRHandler extends AbstractHandler
 	 * @return
 	 */
 	protected ResourceDefinitionFactory getResourceDefinitionFactory(
-			Map<String, String> config)
-	{
+			Map<String, String> config) {
 		return new ResourceDefinitionFactoryImpl(config, baseUrl, basePath);
 	}
 
@@ -169,8 +161,8 @@ public abstract class JCRHandler extends AbstractHandler
 	 * @param config
 	 * @return
 	 */
-	private ResourceFunctionFactory getResourceFunctionFactory(Map<String, String> config)
-	{
+	private ResourceFunctionFactory getResourceFunctionFactory(
+			Map<String, String> config) {
 		return new ResourceFunctionFactoryImpl(config);
 	}
 
@@ -180,18 +172,15 @@ public abstract class JCRHandler extends AbstractHandler
 	 * @see org.sakaiproject.sdata.tool.api.Handler#doDelete(javax.servlet.http.HttpServletRequest,
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
-	public void doDelete(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
-	{
-		try
-		{
+	public void doDelete(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		try {
 
 			snoopRequest(request);
 
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
 			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
-			if (n == null)
-			{
+			if (n == null) {
 				response.reset();
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				return;
@@ -199,17 +188,15 @@ public abstract class JCRHandler extends AbstractHandler
 			NodeType nt = n.getPrimaryNodeType();
 
 			long lastModifiedTime = -10;
-			if (JCRConstants.NT_FILE.equals(nt.getName()))
-			{
+			if (JCRConstants.NT_FILE.equals(nt.getName())) {
 
 				Node resource = n.getNode(JCRConstants.JCR_CONTENT);
 				Property lastModified = resource
 						.getProperty(JCRConstants.JCR_LASTMODIFIED);
 				lastModifiedTime = lastModified.getDate().getTimeInMillis();
 
-				if (!checkPreconditions(request, response, lastModifiedTime, String
-						.valueOf(lastModifiedTime)))
-				{
+				if (!checkPreconditions(request, response, lastModifiedTime,
+						String.valueOf(lastModifiedTime))) {
 					return;
 				}
 			}
@@ -219,16 +206,12 @@ public abstract class JCRHandler extends AbstractHandler
 			s.save();
 			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			sendError(request, response, e);
 
 			snoopRequest(request);
 			log.error("Failed  TO service Request ", e);
-		}
-		finally
-		{
+		} finally {
 			request.removeAttribute(Tool.NATIVE_URL);
 		}
 	}
@@ -239,25 +222,20 @@ public abstract class JCRHandler extends AbstractHandler
 	 * 
 	 * @param request
 	 */
-	private void snoopRequest(HttpServletRequest request)
-	{
+	private void snoopRequest(HttpServletRequest request) {
 		boolean snoop = "1".equals(request.getParameter("snoop"));
-		if (snoop)
-		{
+		if (snoop) {
 			StringBuilder sb = new StringBuilder("SData Request :");
 			sb.append("\n\tRequest Path :").append(request.getPathInfo());
 			sb.append("\n\tMethod :").append(request.getMethod());
 			for (Enumeration<?> hnames = request.getHeaderNames(); hnames
-					.hasMoreElements();)
-			{
+					.hasMoreElements();) {
 				String name = (String) hnames.nextElement();
 				sb.append("\n\tHeader :").append(name).append("=[").append(
 						request.getHeader(name)).append("]");
 			}
-			if (request.getCookies() != null)
-			{
-				for (Cookie c : request.getCookies())
-				{
+			if (request.getCookies() != null) {
+				for (Cookie c : request.getCookies()) {
 					sb.append("\n\tCookie:");
 					sb.append("name[").append(c.getName());
 					sb.append("]path[").append(c.getPath());
@@ -276,33 +254,30 @@ public abstract class JCRHandler extends AbstractHandler
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	public void doHead(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
-	{
-		try
-		{
+			throws ServletException, IOException {
+		try {
 			log.info("Doing Head ");
 			snoopRequest(request);
 
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
 			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
-			if (n == null)
-			{
+			if (n == null) {
 				response.reset();
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				return;
 			}
 
 			Node resource = n.getNode(JCRConstants.JCR_CONTENT);
-			Property lastModified = resource.getProperty(JCRConstants.JCR_LASTMODIFIED);
+			Property lastModified = resource
+					.getProperty(JCRConstants.JCR_LASTMODIFIED);
 			Property mimeType = resource.getProperty(JCRConstants.JCR_MIMETYPE);
 			Property content = resource.getProperty(JCRConstants.JCR_DATA);
 
 			response.setContentType(mimeType.getString());
-			if (mimeType.getString().startsWith("text"))
-			{
-				if (resource.hasProperty(JCRConstants.JCR_ENCODING))
-				{
-					Property encoding = resource.getProperty(JCRConstants.JCR_ENCODING);
+			if (mimeType.getString().startsWith("text")) {
+				if (resource.hasProperty(JCRConstants.JCR_ENCODING)) {
+					Property encoding = resource
+							.getProperty(JCRConstants.JCR_ENCODING);
 					response.setCharacterEncoding(encoding.getString());
 				}
 			}
@@ -312,16 +287,12 @@ public abstract class JCRHandler extends AbstractHandler
 			response.setContentLength((int) content.getLength());
 			response.setStatus(HttpServletResponse.SC_OK);
 
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			sendError(request, response, e);
 
 			snoopRequest(request);
 			log.error("Failed  TO service Request ", e);
-		}
-		finally
-		{
+		} finally {
 			request.removeAttribute(Tool.NATIVE_URL);
 		}
 	}
@@ -333,31 +304,25 @@ public abstract class JCRHandler extends AbstractHandler
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	public void doPut(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
-	{
+			throws ServletException, IOException {
 		OutputStream out = null;
-		try
-		{
+		try {
 			snoopRequest(request);
 
 			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
 			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
 			boolean created = false;
-			if (n == null)
-			{
+			if (n == null) {
 				n = jcrNodeFactory.createFile(rp.getRepositoryPath());
 				created = true;
-				if (n == null)
-				{
+				if (n == null) {
 					throw new RuntimeException("Failed to create node at "
-							+ rp.getRepositoryPath() + " type " + JCRConstants.NT_FILE);
+							+ rp.getRepositoryPath() + " type "
+							+ JCRConstants.NT_FILE);
 				}
-			}
-			else
-			{
+			} else {
 				NodeType nt = n.getPrimaryNodeType();
-				if (!JCRConstants.NT_FILE.equals(nt.getName()))
-				{
+				if (!JCRConstants.NT_FILE.equals(nt.getName())) {
 					response.reset();
 					response.sendError(HttpServletResponse.SC_BAD_REQUEST,
 							"Content Can only be put to a file, resource type is "
@@ -368,19 +333,15 @@ public abstract class JCRHandler extends AbstractHandler
 
 			GregorianCalendar gc = new GregorianCalendar();
 			long lastMod = request.getDateHeader(LAST_MODIFIED);
-			if (lastMod > 0)
-			{
+			if (lastMod > 0) {
 				gc.setTimeInMillis(lastMod);
-			}
-			else
-			{
+			} else {
 				gc.setTime(new Date());
 			}
 			String mimeType = ContentTypes.getContentType(n.getName(), request
 					.getContentType());
 			String charEncoding = null;
-			if (mimeType.startsWith("text"))
-			{
+			if (mimeType.startsWith("text")) {
 				charEncoding = request.getCharacterEncoding();
 			}
 
@@ -388,36 +349,24 @@ public abstract class JCRHandler extends AbstractHandler
 			saveStream(n, in, mimeType, charEncoding, gc);
 
 			in.close();
-			if (created)
-			{
+			if (created) {
 				response.setStatus(HttpServletResponse.SC_CREATED);
-			}
-			else
-			{
+			} else {
 				response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 			}
-		}
-		catch (SDataException e)
-		{
+		} catch (SDataException e) {
 			sendError(request, response, e);
 			log.error("Failed  To service Request " + e.getMessage());
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			sendError(request, response, e);
 			snoopRequest(request);
 			log.error("Failed  TO service Request ", e);
-		}
-		finally
-		{
+		} finally {
 			request.removeAttribute(Tool.NATIVE_URL);
 
-			try
-			{
+			try {
 				out.close();
-			}
-			catch (Exception ex)
-			{
+			} catch (Exception ex) {
 			}
 		}
 	}
@@ -426,20 +375,20 @@ public abstract class JCRHandler extends AbstractHandler
 	 * Save the input stream into the JCR storage,
 	 * 
 	 * @param n
-	 *        the target node
+	 *            the target node
 	 * @param in
-	 *        the input stream from the request.
+	 *            the input stream from the request.
 	 * @param mimeType
-	 *        the mime type of the content
+	 *            the mime type of the content
 	 * @param charEncoding
-	 *        the character encoding of the content
+	 *            the character encoding of the content
 	 * @param lastModified
-	 *        the time when the content was last modified
+	 *            the time when the content was last modified
 	 * @throws RepositoryException
 	 */
-	private long saveStream(Node n, InputStream in, String mimeType, String charEncoding,
-			Calendar lastModified) throws RepositoryException
-	{
+	private long saveStream(Node n, InputStream in, String mimeType,
+			String charEncoding, Calendar lastModified)
+			throws RepositoryException {
 		Node resource = n.getNode(JCRConstants.JCR_CONTENT);
 		resource.setProperty(JCRConstants.JCR_LASTMODIFIED, lastModified);
 		resource.setProperty(JCRConstants.JCR_MIMETYPE, mimeType);
@@ -472,164 +421,146 @@ public abstract class JCRHandler extends AbstractHandler
 	 * @see org.sakaiproject.sdata.tool.api.Handler#doGet(javax.servlet.http.HttpServletRequest,
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
-	public void doGet(final HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
-	{
-		OutputStream out = null;
-		InputStream in = null;
-		try
-		{
-			snoopRequest(request);
+	public void doGet(final HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 
+		if (request.getRemoteUser() == null) {
+			response.sendError(401);
+		} else {
 
-			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
-			Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
-			if (n == null)
-			{
-				response.reset();
-				response.sendError(HttpServletResponse.SC_NOT_FOUND);
-				return;
-			}
+			OutputStream out = null;
+			InputStream in = null;
+			try {
+				snoopRequest(request);
 
-			NodeType nt = n.getPrimaryNodeType();
+				ResourceDefinition rp = resourceDefinitionFactory
+						.getSpec(request);
+				Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
+				if (n == null) {
+					response.reset();
+					response.sendError(HttpServletResponse.SC_NOT_FOUND);
+					return;
+				}
 
-			SDataFunction m = resourceFunctionFactory.getFunction(rp
-					.getFunctionDefinition());
-			if (m != null)
-			{
-				m.call(this, request, response, n, rp);
-			}
-			else
-			{
+				NodeType nt = n.getPrimaryNodeType();
 
-				if (JCRConstants.NT_FILE.equals(nt.getName()))
-				{
+				SDataFunction m = resourceFunctionFactory.getFunction(rp
+						.getFunctionDefinition());
+				if (m != null) {
+					m.call(this, request, response, n, rp);
+				} else {
 
-					Node resource = n.getNode(JCRConstants.JCR_CONTENT);
-					Property lastModified = resource
-							.getProperty(JCRConstants.JCR_LASTMODIFIED);
-					Property mimeType = resource.getProperty(JCRConstants.JCR_MIMETYPE);
-					Property content = resource.getProperty(JCRConstants.JCR_DATA);
+					if (JCRConstants.NT_FILE.equals(nt.getName())) {
 
-					response.setContentType(mimeType.getString());
-					if (mimeType.getString().startsWith("text"))
-					{
-						if (resource.hasProperty(JCRConstants.JCR_ENCODING))
-						{
-							Property encoding = resource
-									.getProperty(JCRConstants.JCR_ENCODING);
-							response.setCharacterEncoding(encoding.getString());
+						Node resource = n.getNode(JCRConstants.JCR_CONTENT);
+						Property lastModified = resource
+								.getProperty(JCRConstants.JCR_LASTMODIFIED);
+						Property mimeType = resource
+								.getProperty(JCRConstants.JCR_MIMETYPE);
+						Property content = resource
+								.getProperty(JCRConstants.JCR_DATA);
+
+						response.setContentType(mimeType.getString());
+						if (mimeType.getString().startsWith("text")) {
+							if (resource.hasProperty(JCRConstants.JCR_ENCODING)) {
+								Property encoding = resource
+										.getProperty(JCRConstants.JCR_ENCODING);
+								response.setCharacterEncoding(encoding
+										.getString());
+							}
 						}
-					}
-					response.setDateHeader(LAST_MODIFIED, lastModified.getDate()
-							.getTimeInMillis());
-					setGetCacheControl(response, rp.isPrivate());
+						response.setDateHeader(LAST_MODIFIED, lastModified
+								.getDate().getTimeInMillis());
+						setGetCacheControl(response, rp.isPrivate());
 
-					String currentEtag = String.valueOf(lastModified.getDate()
-							.getTimeInMillis());
-					response.setHeader("ETag", currentEtag);
+						String currentEtag = String.valueOf(lastModified
+								.getDate().getTimeInMillis());
+						response.setHeader("ETag", currentEtag);
 
-					long lastModifiedTime = lastModified.getDate().getTimeInMillis();
+						long lastModifiedTime = lastModified.getDate()
+								.getTimeInMillis();
 
-					if (!checkPreconditions(request, response, lastModifiedTime,
-							currentEtag))
-					{
-						return;
-					}
-					long totallength = content.getLength();
-					long[] ranges = new long[2];
-					ranges[0] = 0;
-					ranges[1] = totallength;
-					if (!checkRanges(request, response, lastModifiedTime, currentEtag,
-							ranges))
-					{
-						return;
-					}
-
-					long length = ranges[1] - ranges[0];
-
-					if (totallength != length)
-					{
-						response.setHeader("Accept-Ranges", "bytes");
-						response.setDateHeader("Last-Modified", lastModifiedTime);
-						response.setHeader("Content-Range", "bytes " + ranges[0] + "-"
-								+ (ranges[1] - 1) + "/" + totallength);
-						response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-
-						log.info("Partial Content Sent "
-								+ HttpServletResponse.SC_PARTIAL_CONTENT);
-					}
-					else
-					{
-						response.setStatus(HttpServletResponse.SC_OK);
-					}
-
-					response.setContentLength((int) length);
-
-					out = response.getOutputStream();
-
-					in = content.getStream();
-					in.skip(ranges[0]);
-					byte[] b = new byte[10240];
-					int nbytes = 0;
-					while ((nbytes = in.read(b)) > 0 && length > 0)
-					{
-						if (nbytes < length)
-						{
-							out.write(b, 0, nbytes);
-							length = length - nbytes;
+						if (!checkPreconditions(request, response,
+								lastModifiedTime, currentEtag)) {
+							return;
 						}
-						else
-						{
-							out.write(b, 0, (int) length);
-							length = 0;
+						long totallength = content.getLength();
+						long[] ranges = new long[2];
+						ranges[0] = 0;
+						ranges[1] = totallength;
+						if (!checkRanges(request, response, lastModifiedTime,
+								currentEtag, ranges)) {
+							return;
 						}
+
+						long length = ranges[1] - ranges[0];
+
+						if (totallength != length) {
+							response.setHeader("Accept-Ranges", "bytes");
+							response.setDateHeader("Last-Modified",
+									lastModifiedTime);
+							response.setHeader("Content-Range", "bytes "
+									+ ranges[0] + "-" + (ranges[1] - 1) + "/"
+									+ totallength);
+							response
+									.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+
+							log.info("Partial Content Sent "
+									+ HttpServletResponse.SC_PARTIAL_CONTENT);
+						} else {
+							response.setStatus(HttpServletResponse.SC_OK);
+						}
+
+						response.setContentLength((int) length);
+
+						out = response.getOutputStream();
+
+						in = content.getStream();
+						in.skip(ranges[0]);
+						byte[] b = new byte[10240];
+						int nbytes = 0;
+						while ((nbytes = in.read(b)) > 0 && length > 0) {
+							if (nbytes < length) {
+								out.write(b, 0, nbytes);
+								length = length - nbytes;
+							} else {
+								out.write(b, 0, (int) length);
+								length = 0;
+							}
+						}
+					} else {
+						setGetCacheControl(response, rp.isPrivate());
+
+						// Property lastModified =
+						// n.getProperty(JCRConstants.JCR_LASTMODIFIED);
+						// response.setHeader("ETag",
+						// String.valueOf(lastModified.getDate()
+						// .getTimeInMillis()));
+
+						JCRNodeMap outputMap = new JCRNodeMap(n, rp.getDepth(),
+								rp);
+						sendMap(request, response, outputMap);
 					}
 				}
-				else
-				{
-					setGetCacheControl(response, rp.isPrivate());
 
-					// Property lastModified =
-					// n.getProperty(JCRConstants.JCR_LASTMODIFIED);
-					// response.setHeader("ETag",
-					// String.valueOf(lastModified.getDate()
-					// .getTimeInMillis()));
+			} catch (SDataException e) {
+				log.error("Failed  To service Request " + e.getMessage());
+				sendError(request, response, e);
+			} catch (Exception e) {
+				log.error("Failed  TO service Request ", e);
+				sendError(request, response, e);
+				snoopRequest(request);
+			} finally {
+				request.removeAttribute(Tool.NATIVE_URL);
 
-					JCRNodeMap outputMap = new JCRNodeMap(n, rp.getDepth(), rp);
-					sendMap(request, response, outputMap);
+				try {
+					out.close();
+				} catch (Exception ex) {
 				}
-			}
-
-		}
-		catch (SDataException e)
-		{
-			log.error("Failed  To service Request " + e.getMessage());
-			sendError(request, response, e);
-		}
-		catch (Exception e)
-		{
-			log.error("Failed  TO service Request ", e);
-			sendError(request, response, e);
-			snoopRequest(request);
-		}
-		finally
-		{
-			request.removeAttribute(Tool.NATIVE_URL);
-
-			try
-			{
-				out.close();
-			}
-			catch (Exception ex)
-			{
-			}
-			try
-			{
-				in.close();
-			}
-			catch (Exception ex)
-			{
+				try {
+					in.close();
+				} catch (Exception ex) {
+				}
 			}
 		}
 	}
@@ -641,42 +572,38 @@ public abstract class JCRHandler extends AbstractHandler
 	 * of the response stream and ranges[1] will be the end byte.
 	 * 
 	 * @param request
-	 *        the request object from the Servlet Container.
+	 *            the request object from the Servlet Container.
 	 * @param response
-	 *        the response object from the servlet container.
+	 *            the response object from the servlet container.
 	 * @param lastModifiedTime
-	 *        the last modified time from target object
+	 *            the last modified time from target object
 	 * @param currentEtag
-	 *        the Etag
+	 *            the Etag
 	 * @param ranges
-	 *        ranges setup to contain the start and end byte offsets
+	 *            ranges setup to contain the start and end byte offsets
 	 * @return true if the response is to contain data, false if not.
 	 * @throws IOException
 	 */
-	private boolean checkRanges(HttpServletRequest request, HttpServletResponse response,
-			long lastModifiedTime, String currentEtag, long[] ranges) throws IOException
-	{
+	private boolean checkRanges(HttpServletRequest request,
+			HttpServletResponse response, long lastModifiedTime,
+			String currentEtag, long[] ranges) throws IOException {
 
 		String range = request.getHeader("range");
 		long ifRangeDate = request.getDateHeader("if-range");
 		String ifRangeEtag = request.getHeader("if-range");
 
-		if (ifRangeDate != -1 && lastModifiedTime > ifRangeDate)
-		{
+		if (ifRangeDate != -1 && lastModifiedTime > ifRangeDate) {
 			// the entity has been modified, ignore and send the whole lot
 			return true;
 		}
-		if (ifRangeEtag != null && !currentEtag.equals(ifRangeEtag))
-		{
+		if (ifRangeEtag != null && !currentEtag.equals(ifRangeEtag)) {
 			// the entity has been modified, ignore and send the whole lot
 			return true;
 		}
 
-		if (range != null)
-		{
+		if (range != null) {
 			String[] s = range.split("=");
-			if (!"bytes".equals(s[0]))
-			{
+			if (!"bytes".equals(s[0])) {
 				response.reset();
 				response
 						.sendError(416,
@@ -685,23 +612,19 @@ public abstract class JCRHandler extends AbstractHandler
 			}
 			range = s[1];
 			String[] r = range.split(",");
-			if (r.length > 1)
-			{
+			if (r.length > 1) {
 				response.reset();
-				response.sendError(416, "System only supports single range responses");
+				response.sendError(416,
+						"System only supports single range responses");
 				return false;
 			}
 			range = range.trim();
-			if (range.startsWith("-"))
-			{
+			if (range.startsWith("-")) {
 				ranges[1] = Long.parseLong(range.substring(1));
-			}
-			else if (range.endsWith("-"))
-			{
-				ranges[0] = Long.parseLong(range.substring(0, range.length() - 1));
-			}
-			else
-			{
+			} else if (range.endsWith("-")) {
+				ranges[0] = Long.parseLong(range.substring(0,
+						range.length() - 1));
+			} else {
 				r = range.split("-");
 				ranges[0] = Long.parseLong(r[0]);
 				ranges[1] = Long.parseLong(r[1]);
@@ -719,37 +642,30 @@ public abstract class JCRHandler extends AbstractHandler
 	 * @throws IOException
 	 */
 	private boolean checkPreconditions(HttpServletRequest request,
-			HttpServletResponse response, long lastModifiedTime, String currentEtag)
-			throws IOException
-	{
+			HttpServletResponse response, long lastModifiedTime,
+			String currentEtag) throws IOException {
 		lastModifiedTime = lastModifiedTime - (lastModifiedTime % 1000);
 		long ifUnmodifiedSince = request.getDateHeader("if-unmodified-since");
-		if (ifUnmodifiedSince > 0 && (lastModifiedTime >= ifUnmodifiedSince))
-		{
+		if (ifUnmodifiedSince > 0 && (lastModifiedTime >= ifUnmodifiedSince)) {
 			response.reset();
 			response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
 			return false;
 		}
 
 		String ifMatch = request.getHeader("if-match");
-		if (ifMatch != null && ifMatch.indexOf(currentEtag) < 0)
-		{
+		if (ifMatch != null && ifMatch.indexOf(currentEtag) < 0) {
 			// ifMatch was present, but the currentEtag didnt match
 			response.reset();
 			response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
 			return false;
 		}
 		String ifNoneMatch = request.getHeader("if-none-match");
-		if (ifNoneMatch != null && ifNoneMatch.indexOf(currentEtag) >= 0)
-		{
-			if ("GET|HEAD".indexOf(request.getMethod()) >= 0)
-			{
+		if (ifNoneMatch != null && ifNoneMatch.indexOf(currentEtag) >= 0) {
+			if ("GET|HEAD".indexOf(request.getMethod()) >= 0) {
 				response.reset();
 				response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
 
-			}
-			else
-			{
+			} else {
 				// ifMatch was present, but the currentEtag didnt match
 				response.reset();
 				response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
@@ -757,8 +673,7 @@ public abstract class JCRHandler extends AbstractHandler
 			return false;
 		}
 		long ifModifiedSince = request.getDateHeader("if-modified-since");
-		if ((ifModifiedSince > 0) && (lastModifiedTime <= ifModifiedSince))
-		{
+		if ((ifModifiedSince > 0) && (lastModifiedTime <= ifModifiedSince)) {
 			response.reset();
 			response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
 			return false;
@@ -771,16 +686,13 @@ public abstract class JCRHandler extends AbstractHandler
 	 * 
 	 * @param response
 	 */
-	private void setGetCacheControl(HttpServletResponse response, boolean isprivate)
-	{
-		if (isprivate)
-		{
+	private void setGetCacheControl(HttpServletResponse response,
+			boolean isprivate) {
+		if (isprivate) {
 			response.addHeader("Cache-Control", "must-revalidate");
 			response.addHeader("Cache-Control", "private");
 			response.addHeader("Cache-Control", "no-store");
-		}
-		else
-		{
+		} else {
 			// response.addHeader("Cache-Control", "must-revalidate");
 			response.addHeader("Cache-Control", "public");
 		}
@@ -798,84 +710,76 @@ public abstract class JCRHandler extends AbstractHandler
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
-	{
-		snoopRequest(request);
-		try
-		{
-			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
-			boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+			throws ServletException, IOException {
+		if (request.getRemoteUser() == null) {
+			response.sendError(401);
+		} else {
+			snoopRequest(request);
+			try {
+				ResourceDefinition rp = resourceDefinitionFactory
+						.getSpec(request);
+				boolean isMultipart = ServletFileUpload
+						.isMultipartContent(request);
 
-			// multiparts are always streamed uploads
-			if (isMultipart)
-			{
-				doMumtipartUpload(request, response, rp);
-			}
-			else
-			{
+				// multiparts are always streamed uploads
+				if (isMultipart) {
+					doMumtipartUpload(request, response, rp);
+				} else {
 
-				Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
+					Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
 
+					SDataFunction m = resourceFunctionFactory.getFunction(rp
+							.getFunctionDefinition());
+					if (m != null) {
+						m.call(this, request, response, n, rp);
+					} else {
+						log.info("NOP Post performed");
+						throw new SDataException(
+								HttpServletResponse.SC_NOT_FOUND,
+								"Method not found ");
+					}
 
-				SDataFunction m = resourceFunctionFactory.getFunction(rp
-						.getFunctionDefinition());
-				if (m != null)
-				{
-					m.call(this, request, response, n, rp);
 				}
-				else
-				{
-					log.info("NOP Post performed");
-					throw new SDataException(HttpServletResponse.SC_NOT_FOUND,"Method not found ");
-				}
+			} catch (SDataException sde) {
+				sendError(request, response, sde);
 
+			} catch (RepositoryException rex) {
+				sendError(request, response, rex);
+			} catch (JCRNodeFactoryServiceException jfe) {
+				sendError(request, response, jfe);
 			}
-		}
-		catch (SDataException sde)
-		{
-			sendError(request, response, sde);
-
-		}
-		catch (RepositoryException rex)
-		{
-			sendError(request, response, rex);
-		}
-		catch (JCRNodeFactoryServiceException jfe)
-		{
-			sendError(request, response, jfe);
 		}
 
 	}
 
 	/**
-	 * Perform a mime multipart upload into the JCR repository based on a location specified by 
-	 * the rp parameter. The parts of the multipart upload are relative to the current request path
+	 * Perform a mime multipart upload into the JCR repository based on a
+	 * location specified by the rp parameter. The parts of the multipart upload
+	 * are relative to the current request path
 	 * 
-	 * @param request the request object of the current request.
-	 * @param response the response object of the current request
-	 * @param rp the resource definition for the current request
+	 * @param request
+	 *            the request object of the current request.
+	 * @param response
+	 *            the response object of the current request
+	 * @param rp
+	 *            the resource definition for the current request
 	 * @throws ServletException
 	 * @throws IOException
 	 */
 	private void doMumtipartUpload(HttpServletRequest request,
-			HttpServletResponse response, ResourceDefinition rp) throws ServletException,
-			IOException
-	{
-		try
-		{
-			try
-			{
+			HttpServletResponse response, ResourceDefinition rp)
+			throws ServletException, IOException {
+		try {
+			try {
 				Node n = jcrNodeFactory.createFolder(rp.getRepositoryPath());
-				if (n == null)
-				{
+				if (n == null) {
 					response.reset();
 					response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-							"Unable to uplaod to location " + rp.getRepositoryPath());
+							"Unable to uplaod to location "
+									+ rp.getRepositoryPath());
 					return;
 				}
-			}
-			catch (Exception ex)
-			{
+			} catch (Exception ex) {
 				sendError(request, response, ex);
 				snoopRequest(request);
 				log.error("Failed  TO service Request ", ex);
@@ -888,70 +792,62 @@ public abstract class JCRHandler extends AbstractHandler
 			ServletFileUpload upload = new ServletFileUpload();
 			List<String> errors = new ArrayList<String>();
 
-
 			// Parse the request
 			FileItemIterator iter = upload.getItemIterator(request);
 			Map<String, Object> responseMap = new HashMap<String, Object>();
 			Map<String, Object> uploads = new HashMap<String, Object>();
 			Map<String, List<String>> values = new HashMap<String, List<String>>();
 			int uploadNumber = 0;
-			while (iter.hasNext())
-			{
+			while (iter.hasNext()) {
 				FileItemStream item = iter.next();
 				log.debug("Got Upload through Uploads");
 				String name = item.getName();
 				String fieldName = item.getFieldName();
 				log.info("    Name is " + name + " field Name " + fieldName);
-				for (String headerName : item.getHeaderNames())
-				{
-					log
-							.info("Header " + headerName + " is "
-									+ item.getHeader(headerName));
+				for (String headerName : item.getHeaderNames()) {
+					log.info("Header " + headerName + " is "
+							+ item.getHeader(headerName));
 				}
 				InputStream stream = item.openStream();
-				if (!item.isFormField())
-				{
-					try
-					{
-						if (name != null && name.trim().length() > 0)
-						{
-							
-							List<String> realNames = values.get(REAL_UPLOAD_NAME);
+				if (!item.isFormField()) {
+					try {
+						if (name != null && name.trim().length() > 0) {
+
+							List<String> realNames = values
+									.get(REAL_UPLOAD_NAME);
 							String finalName = name;
-							if ( realNames != null && realNames.size() > uploadNumber ) {
+							if (realNames != null
+									&& realNames.size() > uploadNumber) {
 								finalName = realNames.get(uploadNumber);
 							}
 
-							String mimeType = ContentTypes.getContentType(finalName, item
-									.getContentType());
+							String mimeType = ContentTypes.getContentType(
+									finalName, item.getContentType());
 							Node target = jcrNodeFactory.createFile(rp
 									.getRepositoryPath(finalName));
 							GregorianCalendar lastModified = new GregorianCalendar();
 							lastModified.setTime(new Date());
-							long size = saveStream(target, stream, mimeType, "UTF-8",
-									lastModified);
+							long size = saveStream(target, stream, mimeType,
+									"UTF-8", lastModified);
 							Map<String, Object> uploadMap = new HashMap<String, Object>();
-							if (size > Integer.MAX_VALUE)
-							{
-								uploadMap.put("contentLength", String.valueOf(size));
-							}
-							else
-							{
+							if (size > Integer.MAX_VALUE) {
+								uploadMap.put("contentLength", String
+										.valueOf(size));
+							} else {
 								uploadMap.put("contentLength", (int) size);
 							}
 							uploadMap.put("name", finalName);
 							uploadMap.put("url", rp.getExternalPath(rp
 									.getRepositoryPath(finalName)));
 							uploadMap.put("mimeType", mimeType);
-							uploadMap.put("lastModified", lastModified.getTime());
+							uploadMap.put("lastModified", lastModified
+									.getTime());
 							uploadMap.put("status", "ok");
 
 							uploads.put(fieldName, uploadMap);
 							uploadMap = new HashMap<String, Object>();
 						}
-					}
-					catch (Exception ex)
-					{
+					} catch (Exception ex) {
 						log.error("Failed to Upload Content", ex);
 						Map<String, Object> uploadMap = new HashMap<String, Object>();
 						uploadMap.put("mimeType", "text/plain");
@@ -961,8 +857,7 @@ public abstract class JCRHandler extends AbstractHandler
 						uploadMap.put("status", "Failed");
 						uploadMap.put("cause", ex.getMessage());
 						List<String> stackTrace = new ArrayList<String>();
-						for (StackTraceElement ste : ex.getStackTrace())
-						{
+						for (StackTraceElement ste : ex.getStackTrace()) {
 							stackTrace.add(ste.toString());
 						}
 						uploadMap.put("stacktrace", stackTrace);
@@ -974,10 +869,10 @@ public abstract class JCRHandler extends AbstractHandler
 				} else {
 					String value = Streams.asString(stream);
 					List<String> valueList = values.get(name);
-					if ( valueList == null ) {
+					if (valueList == null) {
 						valueList = new ArrayList<String>();
-						values.put(name,valueList);
-						
+						values.put(name, valueList);
+
 					}
 					valueList.add(value);
 				}
@@ -987,9 +882,7 @@ public abstract class JCRHandler extends AbstractHandler
 			responseMap.put("uploads", uploads);
 			sendMap(request, response, responseMap);
 			log.info("Response Complete Saved to " + rp.getRepositoryPath());
-		}
-		catch (Throwable ex)
-		{
+		} catch (Throwable ex) {
 			log.error("Failed  TO service Request ", ex);
 			sendError(request, response, ex);
 			return;
@@ -1001,8 +894,7 @@ public abstract class JCRHandler extends AbstractHandler
 	 * 
 	 * @return the basePath
 	 */
-	public String getBasePath()
-	{
+	public String getBasePath() {
 		return basePath;
 	}
 
@@ -1010,10 +902,9 @@ public abstract class JCRHandler extends AbstractHandler
 	 * The base path of the handler
 	 * 
 	 * @param basePath
-	 *        the basePath to set
+	 *            the basePath to set
 	 */
-	public void setBasePath(String basePath)
-	{
+	public void setBasePath(String basePath) {
 		this.basePath = basePath;
 	}
 
@@ -1022,8 +913,8 @@ public abstract class JCRHandler extends AbstractHandler
 	 * 
 	 * @see org.sakaiproject.sdata.tool.api.Handler#setHandlerHeaders(javax.servlet.http.HttpServletResponse)
 	 */
-	public void setHandlerHeaders(HttpServletRequest request, HttpServletResponse response)
-	{
+	public void setHandlerHeaders(HttpServletRequest request,
+			HttpServletResponse response) {
 		response.setHeader("x-sdata-handler", this.getClass().getName());
 		response.setHeader("x-sdata-url", request.getPathInfo());
 	}
