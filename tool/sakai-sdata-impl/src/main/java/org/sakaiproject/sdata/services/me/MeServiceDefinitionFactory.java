@@ -81,9 +81,10 @@ public class MeServiceDefinitionFactory implements ServiceDefinitionFactory
 			HttpServletResponse response) throws SDataException
 	{
 		if (request.getRemoteUser() == null){
-			throw new SDataException(HttpServletResponse.SC_UNAUTHORIZED, "Not Logged In");
+			return new MeBean(request,userLocal, preferencesService, siteService, sessionManager, userDirectoryService, response, false);
+		} else {
+			return new MeBean(request,userLocal, preferencesService, siteService, sessionManager, userDirectoryService, response, true);
 		}
-		return new MeBean(request,userLocal, preferencesService, siteService, sessionManager, userDirectoryService, response);
 	}
 
 	/*

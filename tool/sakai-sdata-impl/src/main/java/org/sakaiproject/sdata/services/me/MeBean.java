@@ -52,12 +52,12 @@ import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 
 /**
- * The MeBean provides a service to get hold of information about the current user.
+ * The MeBean provides a service to get hold of information about the current
+ * user.
  * 
  * @author
  */
-public class MeBean implements ServiceDefinition
-{
+public class MeBean implements ServiceDefinition {
 
 	private static final Log log = LogFactory.getLog(MeBean.class);
 
@@ -69,153 +69,153 @@ public class MeBean implements ServiceDefinition
 
 	/**
 	 * Create a me bean using the request and the injected services.
-	 * @param preferencesService 
-	 * @param userLocal 
+	 * 
+	 * @param preferencesService
+	 * @param userLocal
 	 * 
 	 * @param sessionManager
 	 * @param siteService
-	 * @throws SDataException 
+	 * @throws SDataException
 	 */
-	public MeBean(HttpServletRequest request, UserLocale userLocal, PreferencesService preferencesService, SiteService siteService, SessionManager sessionManager,
-			UserDirectoryService userDirectoryService, HttpServletResponse response) throws SDataException
-	{
-		User user = null;
-		currentSession = sessionManager.getCurrentSession();
+	public MeBean(HttpServletRequest request, UserLocale userLocal,
+			PreferencesService preferencesService, SiteService siteService,
+			SessionManager sessionManager,
+			UserDirectoryService userDirectoryService,
+			HttpServletResponse response, boolean loggedIn)
+			throws SDataException {
+		if (!loggedIn) {
 
-		try
-		{
+			// send the locale back to the user
+			map.put("userLocale", localeToMap(userLocal.getLocale(request
+					.getLocale())));
+			List<Map<String, Object>> localeList = new ArrayList<Map<String, Object>>();
+			for (Enumeration<?> locales = request.getLocales(); locales
+					.hasMoreElements();) {
+				localeList.add(localeToMap((Locale) locales.nextElement()));
+			}
+			map2.put("items", map);
+			
+		} else {
 
-			user = userDirectoryService.getUser(currentSession.getUserId());
-		}
-		catch (UserNotDefinedException e)
-		{
-			log.debug(e);
-		}
+			User user = null;
+			currentSession = sessionManager.getCurrentSession();
 
-		// serialize user object
+			try {
 
-		if (user == null)
-		{
+				user = userDirectoryService.getUser(currentSession.getUserId());
+			} catch (UserNotDefinedException e) {
+				log.debug(e);
+			}
 
-			throw new SDataException(HttpServletResponse.SC_NOT_FOUND,"User not found");
+			// serialize user object
 
-		}
-		else
-		{
+			if (user == null) {
 
-			try
-			{
+				throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
+						"User not found");
 
-				Site myWorkSite = (siteService.getSite(siteService
-						.getUserSiteId(currentSession.getUserId())));
+			} else {
 
-				map.put("workspace", myWorkSite.getId());
+				try {
 
-				List<?> pages = (List<?>) myWorkSite.getOrderedPages();
+					Site myWorkSite = (siteService.getSite(siteService
+							.getUserSiteId(currentSession.getUserId())));
 
-				for (Iterator<?> ipage = pages.iterator(); ipage.hasNext(); )
-				{
-					SitePage page = (SitePage) ipage.next();
+					map.put("workspace", myWorkSite.getId());
 
-					List<?> lst =  page
-							.getTools();
+					List<?> pages = (List<?>) myWorkSite.getOrderedPages();
 
-					for (Iterator<?> iconf = lst.iterator(); iconf.hasNext(); ) 
-					{
-						ToolConfiguration conf = (ToolConfiguration) iconf.next();
-				
-						Tool t = conf.getTool();
+					for (Iterator<?> ipage = pages.iterator(); ipage.hasNext();) {
+						SitePage page = (SitePage) ipage.next();
 
-						if (t != null && t.getId() != null)
-						{
-							if (t.getId().equals("sakai.membership")
-									|| t.getId().equals("sakai.sites"))
-							{
-								map.put("cp", conf.getId());
+						List<?> lst = page.getTools();
+
+						for (Iterator<?> iconf = lst.iterator(); iconf
+								.hasNext();) {
+							ToolConfiguration conf = (ToolConfiguration) iconf
+									.next();
+
+							Tool t = conf.getTool();
+
+							if (t != null && t.getId() != null) {
+								if (t.getId().equals("sakai.membership")
+										|| t.getId().equals("sakai.sites")) {
+									map.put("cp", conf.getId());
+								} else if (t.getId()
+										.equals("sakai.preferences")
+										|| t.getId().equals("sakai.preference")) {
+									map.put("pref", conf.getId());
+								}
 							}
-							else if (t.getId().equals("sakai.preferences")
-									|| t.getId().equals("sakai.preference"))
-							{
-								map.put("pref", conf.getId());
-							}
+
 						}
 
 					}
 
+				} catch (IdUnusedException e) {
+					log.error(e);
 				}
 
-			}
-			catch (IdUnusedException e)
-			{
-				log.error(e);
-			}
-
-			map.put("userid", user.getId());
-			map.put("firstname", user.getFirstName());
-			map.put("lastname", user.getLastName());
-			map.put("displayId", user.getDisplayId());
-			map.put("email", user.getEmail());
-			try
-			{
-				map.put("createdBy", user.getCreatedBy().getDisplayName());
-			}
-			catch (NullPointerException npe)
-			{
-				map.put("createdTime", "na");
-			}
-			try
-			{
-				map.put("createdTime", user.getCreatedTime().toStringLocalFull());
-			}
-			catch (NullPointerException npe)
-			{
-				map.put("createdTime", "na");
-
-			}
-			map.put("userEid", user.getEid());
-
-			Map<String, Object> properties = new HashMap<String, Object>();
-			ResourceProperties p = user.getProperties();
-			for (Iterator<?> i = p.getPropertyNames(); i.hasNext();)
-			{
-
-				String pname = (String) i.next();
-				List<?> l = p.getPropertyList(pname);
-				if (l.size() == 1)
-				{
-					properties.put(pname, l.get(0));
+				map.put("userid", user.getId());
+				map.put("firstname", user.getFirstName());
+				map.put("lastname", user.getLastName());
+				map.put("displayId", user.getDisplayId());
+				map.put("email", user.getEmail());
+				try {
+					map.put("createdBy", user.getCreatedBy().getDisplayName());
+				} catch (NullPointerException npe) {
+					map.put("createdTime", "na");
 				}
-				else if (l.size() > 1)
-				{
-					properties.put(pname, l);
+				try {
+					map.put("createdTime", user.getCreatedTime()
+							.toStringLocalFull());
+				} catch (NullPointerException npe) {
+					map.put("createdTime", "na");
+
 				}
-			}
-			map.put("properties", properties);
-			
-			// send the locale back to the user
-			map.put("userLocale", localeToMap(userLocal.getLocale(request.getLocale())));
-			List<Map<String,Object>> localeList = new ArrayList<Map<String, Object>>();
-			for ( Enumeration<?> locales = request.getLocales(); locales.hasMoreElements(); ) {
-				localeList.add(localeToMap((Locale)locales.nextElement()));
-			}
-			
-			// add the preferences
-			Preferences preferences = preferencesService.getPreferences(user.getId());
-			ResourceProperties rproperties = preferences.getProperties();
-			Map<String, Object> preferenceMap = new HashMap<String, Object>();
-			for ( Iterator<?> pi = rproperties.getPropertyNames(); pi.hasNext(); ) {
-				String pkey = (String) pi.next();
-				preferenceMap.put(pkey, rproperties.get(pkey));
-				
-			}
-			map.put("preferences",preferenceMap);
+				map.put("userEid", user.getEid());
 
-			// map2.put("items", user);
-			map2.put("items", map);
-			
+				Map<String, Object> properties = new HashMap<String, Object>();
+				ResourceProperties p = user.getProperties();
+				for (Iterator<?> i = p.getPropertyNames(); i.hasNext();) {
 
+					String pname = (String) i.next();
+					List<?> l = p.getPropertyList(pname);
+					if (l.size() == 1) {
+						properties.put(pname, l.get(0));
+					} else if (l.size() > 1) {
+						properties.put(pname, l);
+					}
+				}
+				map.put("properties", properties);
+
+				// send the locale back to the user
+				map.put("userLocale", localeToMap(userLocal.getLocale(request
+						.getLocale())));
+				List<Map<String, Object>> localeList = new ArrayList<Map<String, Object>>();
+				for (Enumeration<?> locales = request.getLocales(); locales
+						.hasMoreElements();) {
+					localeList.add(localeToMap((Locale) locales.nextElement()));
+				}
+
+				// add the preferences
+				Preferences preferences = preferencesService
+						.getPreferences(user.getId());
+				ResourceProperties rproperties = preferences.getProperties();
+				Map<String, Object> preferenceMap = new HashMap<String, Object>();
+				for (Iterator<?> pi = rproperties.getPropertyNames(); pi
+						.hasNext();) {
+					String pkey = (String) pi.next();
+					preferenceMap.put(pkey, rproperties.get(pkey));
+
+				}
+				map.put("preferences", preferenceMap);
+
+				// map2.put("items", user);
+				map2.put("items", map);
+
+			}
 		}
-
 	}
 
 	private Map<String, Object> localeToMap(Locale l) {
@@ -237,8 +237,7 @@ public class MeBean implements ServiceDefinition
 	 * 
 	 * @see org.sakaiproject.sdata.tool.api.ServiceDefinition#getResponseMap()
 	 */
-	public Map<String, Object> getResponseMap()
-	{
+	public Map<String, Object> getResponseMap() {
 
 		return map2;
 	}
