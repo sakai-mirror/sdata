@@ -21,9 +21,13 @@
 
 package org.sakaiproject.sdata.services.prfc;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,7 +71,7 @@ public class PreferencesBean implements ServiceDefinition
 		}
 		catch (UserNotDefinedException e)
 		{
-			log.debug(e);
+			log.error(e);
 		}
 
 		map.put("userid", user.getId());
@@ -81,12 +85,26 @@ public class PreferencesBean implements ServiceDefinition
 		String timeZone = props.getProperty(TimeService.TIMEZONE_KEY);
 		if(timeZone != null)
 			map.put("timezone", timeZone);
+		else
+		{
+			map.put("timezone", TimeService.getLocalTimeZone().getID());
+		}
 		props = prefs.getProperties(ResourceLoader.APPLICATION_ID);
 		String locale = props.getProperty(ResourceLoader.LOCALE_KEY);
 		if(locale != null)
 			map.put("locale", locale);
 		else
 			map.put("locale", Locale.getDefault().getDisplayName());
+
+		String[] timeZoneArray = TimeZone.getAvailableIDs();
+		Arrays.sort(timeZoneArray);
+		List timeZones = new ArrayList();
+		for (int i = 0; i < timeZoneArray.length; i++)
+		{
+			timeZones.add(timeZoneArray[i]);
+		}
+
+		map.put("timezonelist", timeZones);
 	}
 
 	public Map<String, Object> getResponseMap() 

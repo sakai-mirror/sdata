@@ -23,9 +23,32 @@ package org.sakaiproject.sdata.services.prfc;
 import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.sakaiproject.sdata.tool.api.ServiceDefinitionFactory;
 import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
+import org.sakaiproject.user.api.PreferencesEdit;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.api.UserAlreadyDefinedException;
+import org.sakaiproject.user.api.UserEdit;
+import org.sakaiproject.user.api.UserLockedException;
+import org.sakaiproject.user.api.UserNotDefinedException;
+import org.sakaiproject.user.api.UserPermissionException;
+import org.sakaiproject.user.cover.UserDirectoryService;
+import org.sakaiproject.util.StringUtil;
+import org.sakaiproject.time.cover.TimeService;
+import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.user.cover.PreferencesService;
+import org.sakaiproject.entity.api.ResourcePropertiesEdit;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.IdUsedException;
+import org.sakaiproject.exception.InUseException;
+import org.sakaiproject.exception.PermissionException;
 
 
 /**
@@ -34,6 +57,8 @@ import org.sakaiproject.sdata.tool.json.JSONServiceHandler;
  */
 public class PreferencesHandler extends JSONServiceHandler
 {
+	private static final Log log = LogFactory.getLog(PreferencesHandler.class);
+	
 	private static final long serialVersionUID = 1L;
 
 	/*
@@ -58,5 +83,115 @@ public class PreferencesHandler extends JSONServiceHandler
 			Map<String, String> config) throws ServletException
 	{
 		return new PreferencesServiceDefinitionFactory();
+	}
+
+	@Override
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException 
+	{
+		String saveMode = request.getParameter("savemode");
+		if(saveMode != null)
+		{
+			if(saveMode.equals("savedetail"))
+			{
+				saveDetail(request);
+			}
+			else if(saveMode.equals("savenoti"))
+			{
+			}
+		}
+	}
+	
+	private void saveDetail(HttpServletRequest request)
+	{
+		UserEdit user = null;
+		Session currentSession = SessionManager.getCurrentSession();
+
+		try
+		{
+			User currentUser = UserDirectoryService.getUser(currentSession.getUserId());
+			user = UserDirectoryService.editUser(currentUser.getId());
+		}
+		catch (UserNotDefinedException unde)
+		{
+			log.error(unde);
+		} 
+		catch (UserPermissionException upe)
+		{
+			log.error(upe);
+		} 
+		catch (UserLockedException ule)
+		{
+			log.error(ule);
+		}
+		
+		String firstname = request.getParameter("firstname");
+		String lastname = request.getParameter("lastname");
+		String emailAddress = request.getParameter("email");
+		String oldPw = request.getParameter("currentpw");
+		String newPw = request.getParameter("newpw");
+		String retypePw = request.getParameter("retypepw");
+		String selectedZone = request.getParameter("selected_zone");
+		
+		user.setFirstName(firstname);
+		user.setLastName(lastname);
+		user.setEmail(emailAddress);
+
+		try
+		{
+			if(user.checkPassword(oldPw) && !StringUtil.different(newPw, retypePw))
+			{
+				user.setPassword(newPw);
+			}
+			UserDirectoryService.commitEdit(user);
+		} 
+		catch (UserAlreadyDefinedException uade)
+		{
+			log.error(uade);
+		}
+
+		PreferencesEdit prefEdit = null;
+		try
+		{
+			prefEdit = (PreferencesEdit) PreferencesService.edit(user.getId());
+			ResourcePropertiesEdit props = prefEdit.getPropertiesEdit(TimeService.APPLICATION_ID);
+			if(props.getProperty(TimeService.TIMEZONE_KEY) != null && 
+					!((String)props.getProperty(TimeService.TIMEZONE_KEY)).equals(selectedZone))
+			{
+				props.removeProperty(TimeService.TIMEZONE_KEY);
+				props.addProperty(TimeService.TIMEZONE_KEY, selectedZone);
+				PreferencesService.commit(prefEdit);				
+			}
+			else if (props.getProperty(TimeService.TIMEZONE_KEY) == null)
+			{
+				props.addProperty(TimeService.TIMEZONE_KEY, selectedZone);
+				PreferencesService.commit(prefEdit);
+			}
+		}
+		catch (IdUnusedException iue)
+		{
+			try
+			{
+				prefEdit = PreferencesService.add(user.getId());
+				ResourcePropertiesEdit props = prefEdit.getPropertiesEdit(TimeService.APPLICATION_ID);
+				props.addProperty(TimeService.TIMEZONE_KEY, selectedZone);
+				PreferencesService.commit(prefEdit);
+			}
+			catch (PermissionException pe1)
+			{
+				log.error(pe1);
+			}
+			catch (IdUsedException ie1)
+			{
+				log.error(ie1);
+			}
+		}
+		catch (PermissionException pe)
+		{
+			log.error(pe);
+		} catch (InUseException ie)
+		{
+			log.error(ie);
+		}
 	}
 }
