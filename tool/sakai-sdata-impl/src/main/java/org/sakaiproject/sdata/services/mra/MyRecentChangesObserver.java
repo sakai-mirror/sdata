@@ -31,6 +31,7 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.Kernel;
+import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.db.api.SqlReader;
 import org.sakaiproject.db.api.SqlService;
 import org.sakaiproject.event.api.Event;
@@ -94,6 +95,7 @@ public class MyRecentChangesObserver implements Observer
 			UsageSession session = Kernel.usageSessionService().getSession(
 					event.getSessionId());
 			SqlService sqlService = Kernel.sqlService();
+			ContentHostingService contentHostingService = Kernel.contentHostingService();
 			String user = session.getUserId();
 			String euser = session.getUserEid();
 
@@ -149,8 +151,22 @@ public class MyRecentChangesObserver implements Observer
 					&& !event.getEvent().equals("content.delete")
 					&& !event.getEvent().equals("content.read"))
 			{
+				// nasty hack to not index dropbox without loading an entity from
+				// the DB
+				String resource = event.getResource();
+				boolean ignore = event.getResource().endsWith("/");
+				ignore = ignore && contentHostingService.isInDropbox(resource);
+				if ( !ignore ) {
+					// filter out assignemt attachements
+					String[] parts = resource.split("/");
+					if (parts.length > 3
+						&& ContentHostingService.ATTACHMENTS_COLLECTION.equals("/"+parts[1]+"/")
+						&& "Assignments".equals(parts[3])) {
+					ignore = true;
+				}
+				}
 				// Ignore collections
-				if (!event.getResource().endsWith("/"))
+				if (!ignore)
 				{
 
 					params[3] = "content";
