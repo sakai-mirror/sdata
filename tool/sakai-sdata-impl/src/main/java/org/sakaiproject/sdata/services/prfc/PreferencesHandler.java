@@ -20,6 +20,7 @@
  **********************************************************************************/
 package org.sakaiproject.sdata.services.prfc;
 
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -39,6 +40,7 @@ import org.sakaiproject.user.api.UserLockedException;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.api.UserPermissionException;
 import org.sakaiproject.user.cover.UserDirectoryService;
+import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.util.StringUtil;
 import org.sakaiproject.time.cover.TimeService;
 import org.sakaiproject.tool.api.Session;
@@ -132,6 +134,7 @@ public class PreferencesHandler extends JSONServiceHandler
 		String newPw = request.getParameter("newpw");
 		String retypePw = request.getParameter("retypepw");
 		String selectedZone = request.getParameter("selected_zone");
+		String selectedLanguage = request.getParameter("seleted_language");
 		
 		user.setFirstName(firstname);
 		user.setLastName(lastname);
@@ -167,6 +170,19 @@ public class PreferencesHandler extends JSONServiceHandler
 				props.addProperty(TimeService.TIMEZONE_KEY, selectedZone);
 				PreferencesService.commit(prefEdit);
 			}
+			props = (ResourcePropertiesEdit) prefEdit.getPropertiesEdit(ResourceLoader.APPLICATION_ID);
+			if(props.getProperty(ResourceLoader.LOCALE_KEY) != null && 
+					!((String)props.getProperty(ResourceLoader.LOCALE_KEY)).equals(selectedLanguage))
+			{
+				props.removeProperty(ResourceLoader.LOCALE_KEY);
+				props.addProperty(ResourceLoader.LOCALE_KEY, selectedLanguage);
+				PreferencesService.commit(prefEdit);				
+			}
+			else if (props.getProperty(ResourceLoader.LOCALE_KEY) == null)
+			{
+				props.addProperty(ResourceLoader.LOCALE_KEY, selectedLanguage);
+				PreferencesService.commit(prefEdit);				
+			}
 		}
 		catch (IdUnusedException iue)
 		{
@@ -175,6 +191,7 @@ public class PreferencesHandler extends JSONServiceHandler
 				prefEdit = PreferencesService.add(user.getId());
 				ResourcePropertiesEdit props = prefEdit.getPropertiesEdit(TimeService.APPLICATION_ID);
 				props.addProperty(TimeService.TIMEZONE_KEY, selectedZone);
+				props.addProperty(ResourceLoader.LOCALE_KEY, selectedLanguage);
 				PreferencesService.commit(prefEdit);
 			}
 			catch (PermissionException pe1)
@@ -189,7 +206,8 @@ public class PreferencesHandler extends JSONServiceHandler
 		catch (PermissionException pe)
 		{
 			log.error(pe);
-		} catch (InUseException ie)
+		} 
+		catch (InUseException ie)
 		{
 			log.error(ie);
 		}

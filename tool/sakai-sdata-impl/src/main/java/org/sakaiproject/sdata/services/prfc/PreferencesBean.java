@@ -105,6 +105,22 @@ public class PreferencesBean implements ServiceDefinition
 		}
 
 		map.put("timezonelist", timeZones);
+		
+		Locale[] localeArray = Locale.getAvailableLocales();
+		String [] languageArray = new String [localeArray.length];
+		for (int i = 0; i < localeArray.length; i++)
+		{
+			languageArray [i] = localeArray[i].getDisplayName();
+		}
+		Arrays.sort(languageArray);
+		List languages = new ArrayList();
+		for (int i = 0; i < languageArray.length; i++)
+		{
+			languages.add(languageArray[i]);
+		}
+		
+		map.put("languages", languages);
+		
 	}
 
 	public Map<String, Object> getResponseMap() 
