@@ -32,12 +32,7 @@ import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.sakaiproject.announcement.api.AnnouncementService;
-import org.sakaiproject.api.app.syllabus.SyllabusService;
-import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.event.cover.NotificationService;
-import org.sakaiproject.mailarchive.api.MailArchiveService;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.time.cover.TimeService;
 import org.sakaiproject.tool.api.Session;
@@ -62,10 +57,7 @@ public class PreferencesBean implements ServiceDefinition
 	
 	private Session currentSession;
 
-	private Map<String, Object> map = new HashMap<String, Object>();
-	
-	public static final String NOTIF_OPTION = "notifOption";
-	public static final String NOTIF_VALUE = "notifValue";
+	private Map<String, Object> map = new HashMap<String, Object>();;
 
 	public PreferencesBean(HttpServletRequest request, HttpServletResponse response, PreferencesService ps, 
 			SessionManager sessionManager, UserDirectoryService userDirectoryService)
@@ -129,132 +121,11 @@ public class PreferencesBean implements ServiceDefinition
 		
 		map.put("languages", languages);
 		
-		// retrieve the user's notification preferences
-		String anncNotifPref = getNotificationPreference(AnnouncementService.APPLICATION_ID, prefs);
-		map.put("anncNotifPref", anncNotifPref);
-
-		String mailArchiveNotifPref = getNotificationPreference(MailArchiveService.APPLICATION_ID, prefs);
-		map.put("mailArchiveNotifPref", mailArchiveNotifPref);
-
-		String resourcesNotifPref = getNotificationPreference(ContentHostingService.APPLICATION_ID, prefs);
-		map.put("resourcesNotifPref", resourcesNotifPref);
-
-		String syllabusNotifPref = getNotificationPreference(SyllabusService.APPLICATION_ID, prefs);
-		map.put("syllabusNotifPref", syllabusNotifPref);
-		
-		// set up the preference possibilities
-		map.put("anncNotifOptions", getAnncNotifOptions());
-		map.put("mailArchiveNotifOptions", getMailArchiveNotifOptions());
-		map.put("resourcesNotifOptions", getResourceNotifOptions());
-		map.put("syllabusNotifOptions", getSyllabusNotifOptions());	
 	}
 
 	public Map<String, Object> getResponseMap() 
 	{
 		return map;
-	}
-	
-	private String getNotificationPreference(String type, Preferences prefs)
-	{
-		// the default value is 3
-		String notifPref = "3";
-		
-		ResourceProperties notifProps = prefs.getProperties(NotificationService.PREFS_TYPE + type);
-		String selNotifProp = notifProps.getProperty(new Integer(NotificationService.NOTI_OPTIONAL).toString());
-		
-		if (selNotifProp != null && selNotifProp.trim().length() > 0) {
-			notifPref = selNotifProp;
-		}
-		
-		return notifPref;
-	}
-	
-	private List<Map<String, String>> getAnncNotifOptions() {
-		// TODO - internationalize this
-		List<Map<String, String>> anncNotifOptions = new ArrayList<Map<String,String>>();
-		Map<String,String> anncOption1 = new HashMap<String,String>();
-		Map<String,String> anncOption2 = new HashMap<String,String>();
-		Map<String,String> anncOption3 = new HashMap<String,String>();
-		
-		anncOption1.put(NOTIF_OPTION, "Send me each notification separately");
-		anncOption1.put(NOTIF_VALUE, "3");
-		anncNotifOptions.add(anncOption1);
-		
-		anncOption2.put(NOTIF_OPTION, "Send me one email per day summarizing all low priority announcements");
-		anncOption2.put(NOTIF_VALUE, "2");
-		anncNotifOptions.add(anncOption2);
-		
-		anncOption3.put(NOTIF_OPTION, "Do not send me low priority announcements");
-		anncOption3.put(NOTIF_VALUE, "1");
-		anncNotifOptions.add(anncOption3);
-		
-		return anncNotifOptions;
-	}
-	
-	private List<Map<String, String>> getResourceNotifOptions() {
-		// TODO - internationalize this
-		List<Map<String, String>> resourcesNotifOptions = new ArrayList<Map<String,String>>();
-		Map<String,String> resourcesOption1 = new HashMap<String,String>();
-		Map<String,String> resourcesOption2 = new HashMap<String,String>();
-		Map<String,String> resourcesOption3 = new HashMap<String,String>();
-		
-		resourcesOption1.put(NOTIF_OPTION, "Send me each resource separately");
-		resourcesOption1.put(NOTIF_VALUE, "3");
-		resourcesNotifOptions.add(resourcesOption1);
-		
-		resourcesOption2.put(NOTIF_OPTION, "Send me one email per day summarizing all low priority resource notifications");
-		resourcesOption2.put(NOTIF_VALUE, "2");
-		resourcesNotifOptions.add(resourcesOption2);
-		
-		resourcesOption3.put(NOTIF_OPTION, "Do not send me low priority resource notifications");
-		resourcesOption3.put(NOTIF_VALUE, "1");
-		resourcesNotifOptions.add(resourcesOption3);
-		
-		return resourcesNotifOptions;
-	}
-	
-	private List<Map<String, String>> getMailArchiveNotifOptions() {
-		// TODO - internationalize this
-		List<Map<String, String>> mailNotifOptions = new ArrayList<Map<String,String>>();
-		Map<String,String> mailOption1 = new HashMap<String,String>();
-		Map<String,String> mailOption2 = new HashMap<String,String>();
-		Map<String,String> mailOption3 = new HashMap<String,String>();
-		
-		mailOption1.put(NOTIF_OPTION, "Send me each mail sent to site separately");
-		mailOption1.put(NOTIF_VALUE, "3");
-		mailNotifOptions.add(mailOption1);
-		
-		mailOption2.put(NOTIF_OPTION, "Send me one email per day summarizing all emails");
-		mailOption2.put(NOTIF_VALUE, "2");
-		mailNotifOptions.add(mailOption2);
-		
-		mailOption3.put(NOTIF_OPTION, "Do not send me emails sent to the site");
-		mailOption3.put(NOTIF_VALUE, "1");
-		mailNotifOptions.add(mailOption3);
-		
-		return mailNotifOptions;
-	}
-	
-	private List<Map<String, String>> getSyllabusNotifOptions() {
-		// TODO - internationalize this
-		List<Map<String, String>> syllNotifOptions = new ArrayList<Map<String,String>>();
-		Map<String,String> syllOption1 = new HashMap<String,String>();
-		Map<String,String> syllOption2 = new HashMap<String,String>();
-		Map<String,String> syllOption3 = new HashMap<String,String>();
-		
-		syllOption1.put(NOTIF_OPTION, "Send me each notification separately");
-		syllOption1.put(NOTIF_VALUE, "3");
-		syllNotifOptions.add(syllOption1);
-		
-		syllOption2.put(NOTIF_OPTION, "Send me one email per day summarizing all notifications");
-		syllOption2.put(NOTIF_VALUE, "2");
-		syllNotifOptions.add(syllOption2);
-		
-		syllOption3.put(NOTIF_OPTION, "Do not send me low priority Syllabus items");
-		syllOption3.put(NOTIF_VALUE, "1");
-		syllNotifOptions.add(syllOption3);
-		
-		return syllNotifOptions;
 	}
 
 }
