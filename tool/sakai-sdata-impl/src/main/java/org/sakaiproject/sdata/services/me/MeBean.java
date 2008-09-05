@@ -190,12 +190,16 @@ public class MeBean implements ServiceDefinition {
 				map.put("properties", properties);
 
 				// send the locale back to the user
-				map.put("userLocale", localeToMap(userLocal.getLocale(request
+				try {
+					map.put("userLocale", localeToMap(userLocal.getLocale(request
 						.getLocale())));
-				List<Map<String, Object>> localeList = new ArrayList<Map<String, Object>>();
-				for (Enumeration<?> locales = request.getLocales(); locales
+					List<Map<String, Object>> localeList = new ArrayList<Map<String, Object>>();
+					for (Enumeration<?> locales = request.getLocales(); locales
 						.hasMoreElements();) {
-					localeList.add(localeToMap((Locale) locales.nextElement()));
+						localeList.add(localeToMap((Locale) locales.nextElement()));
+					}
+				} catch (Exception ex){
+					//ignore
 				}
 
 				// add the preferences

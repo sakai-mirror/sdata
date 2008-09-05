@@ -109,9 +109,11 @@ public class PreferencesHandler extends JSONServiceHandler
 		UserEdit user = null;
 		Session currentSession = SessionManager.getCurrentSession();
 
+		User currentUser = null;
+		
 		try
 		{
-			User currentUser = UserDirectoryService.getUser(currentSession.getUserId());
+			currentUser = UserDirectoryService.getUser(currentSession.getUserId());
 			user = UserDirectoryService.editUser(currentUser.getId());
 		}
 		catch (UserNotDefinedException unde)
@@ -135,6 +137,8 @@ public class PreferencesHandler extends JSONServiceHandler
 		String retypePw = request.getParameter("retypepw");
 		String selectedZone = request.getParameter("selected_zone");
 		String selectedLanguage = request.getParameter("seleted_language");
+		log.error(selectedZone);
+		log.error(selectedLanguage);
 		
 		user.setFirstName(firstname);
 		user.setLastName(lastname);
@@ -176,11 +180,31 @@ public class PreferencesHandler extends JSONServiceHandler
 			{
 				props.removeProperty(ResourceLoader.LOCALE_KEY);
 				props.addProperty(ResourceLoader.LOCALE_KEY, selectedLanguage);
+				Locale[] locale = Locale.getAvailableLocales();
+				Locale toSet = null;
+				for (int i = 0; i < locale.length; i++){
+					Locale current = locale[i];
+					if ((current.getLanguage() + "_" + current.getCountry()).equals(selectedLanguage)){
+						toSet = current;
+					}
+				}
+				currentSession.setAttribute(
+						"sakai.locale." + currentUser.getId(), toSet);
 				PreferencesService.commit(prefEdit);				
 			}
 			else if (props.getProperty(ResourceLoader.LOCALE_KEY) == null)
 			{
 				props.addProperty(ResourceLoader.LOCALE_KEY, selectedLanguage);
+				Locale[] locale = Locale.getAvailableLocales();
+				Locale toSet = null;
+				for (int i = 0; i < locale.length; i++){
+					Locale current = locale[i];
+					if ((current.getLanguage() + "_" + current.getCountry()).equals(selectedLanguage)){
+						toSet = current;
+					}
+				}
+				currentSession.setAttribute(
+						"sakai.locale." + currentUser.getId(), toSet);
 				PreferencesService.commit(prefEdit);				
 			}
 		}

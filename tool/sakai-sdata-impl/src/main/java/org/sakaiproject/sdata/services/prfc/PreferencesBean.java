@@ -94,7 +94,7 @@ public class PreferencesBean implements ServiceDefinition
 		if(locale != null)
 			map.put("locale", locale);
 		else
-			map.put("locale", Locale.getDefault().getDisplayName());
+			map.put("locale", Locale.getDefault().getLanguage() + "_" + Locale.getDefault().getCountry());
 
 		String[] timeZoneArray = TimeZone.getAvailableIDs();
 		Arrays.sort(timeZoneArray);
@@ -107,19 +107,17 @@ public class PreferencesBean implements ServiceDefinition
 		map.put("timezonelist", timeZones);
 		
 		Locale[] localeArray = Locale.getAvailableLocales();
-		String [] languageArray = new String [localeArray.length];
+		ArrayList <Map<String,String>> languageArray = new ArrayList <Map<String,String>>();
+		//Arrays.sort(localeArray);
 		for (int i = 0; i < localeArray.length; i++)
 		{
-			languageArray [i] = localeArray[i].getDisplayName();
-		}
-		Arrays.sort(languageArray);
-		List languages = new ArrayList();
-		for (int i = 0; i < languageArray.length; i++)
-		{
-			languages.add(languageArray[i]);
+			Map<String,String> map = new HashMap<String,String>();
+			map.put("displayName", localeArray[i].getDisplayName());
+			map.put("id", localeArray[i].getLanguage() + "_" + localeArray[i].getCountry());
+			languageArray.add(map);
 		}
 		
-		map.put("languages", languages);
+		map.put("languages", languageArray);
 		
 	}
 
