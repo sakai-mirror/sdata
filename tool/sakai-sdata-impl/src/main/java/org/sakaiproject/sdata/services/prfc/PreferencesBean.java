@@ -23,6 +23,8 @@ package org.sakaiproject.sdata.services.prfc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,13 +113,27 @@ public class PreferencesBean implements ServiceDefinition
 		//Arrays.sort(localeArray);
 		for (int i = 0; i < localeArray.length; i++)
 		{
-			Map<String,String> map = new HashMap<String,String>();
-			map.put("displayName", localeArray[i].getDisplayName());
-			map.put("id", localeArray[i].getLanguage() + "_" + localeArray[i].getCountry());
-			languageArray.add(map);
+			if (localeArray[i].getLanguage() != null && ! localeArray[i].getLanguage().equals("") && localeArray[i].getCountry() != null && ! localeArray[i].getCountry().equals("")){
+				Map<String,String> map = new HashMap<String,String>();
+				map.put("displayName", localeArray[i].getDisplayName());
+				map.put("id", localeArray[i].getLanguage() + "_" + localeArray[i].getCountry());
+				languageArray.add(map);
+			}
 		}
+		Collections.sort(languageArray, new languageSorter());
 		
 		map.put("languages", languageArray);
+		
+	}
+	
+	private class languageSorter implements Comparator {
+
+		public int compare(Object o1, Object o2) {
+			// TODO Auto-generated method stub
+			Map <String,String> map1 = (Map <String,String>)o1;
+			Map <String,String> map2 = (Map <String,String>)o2;
+			return map1.get("displayName").compareTo(map2.get("displayName"));
+		}
 		
 	}
 
