@@ -184,6 +184,7 @@ public class PathSecurityAssertion implements SecurityAssertion
 	 */
 	public void check(String method, String resourceLocation) throws SDataException
 	{
+		
 		if (inTest || entityManager == null )
 		{
 			return;
@@ -199,6 +200,12 @@ public class PathSecurityAssertion implements SecurityAssertion
 		String resourceReference = baseReference
 				+ resourceLocation.substring(baseLocation.length());
 		Reference ref = entityManager.newReference(resourceReference);
+		
+		try {
+			if (resourceLocation.substring(baseLocation.length() + 1).split("/")[0].equals("~" + sessionManager.getCurrentSessionUserId())){
+				return;
+			}
+		} catch (Exception e){}
 		
 		// the main problem here is how do we know if this is a collection or a resource, as the trailing / matters.
 		
