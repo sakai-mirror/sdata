@@ -430,5 +430,6 @@
     <module>commons-fileupload-sdata</module>
     <module>tool</module>
     <module>site-template</module>
+	<module>site</module>
   </modules>
 </project>

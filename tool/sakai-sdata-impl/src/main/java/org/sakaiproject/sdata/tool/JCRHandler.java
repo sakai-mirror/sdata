@@ -435,6 +435,7 @@ public abstract class JCRHandler extends AbstractHandler {
 
 				ResourceDefinition rp = resourceDefinitionFactory
 						.getSpec(request);
+				
 				Node n = jcrNodeFactory.getNode(rp.getRepositoryPath());
 				if (n == null) {
 					response.reset();
