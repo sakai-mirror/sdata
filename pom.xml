@@ -159,6 +159,12 @@
         <version>${sakai.version}</version>
         <scope>provided</scope>
       </dependency>
+   	<dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-coursemanagement-api</artifactId>
+      <version>${sakai.version}</version>
+      <scope>provided</scope>
+   	</dependency>
 <!--org.sakaiprojectsakai-authz-api${sakai.version}provided-->
       <dependency>
         <groupId>org.sakaiproject</groupId>

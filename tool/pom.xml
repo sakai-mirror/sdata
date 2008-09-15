@@ -60,6 +60,12 @@
 <!--org.sakaiprojectsakai-site-api${sakai.version}jar-->
 <!--org.sakaiprojectsakai-authz-api${sakai.version}jar-->
 <!--org.sakaiprojectsakai-content-api${sakai.version}jar-->
+	<dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-coursemanagement-api</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+   	</dependency>
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-announcement-api</artifactId>

@@ -77,3 +77,5 @@
 22.baseurl=/comments
 23.classname=org.sakaiproject.sdata.services.prfc.PreferencesHandler
 23.baseurl=/prfc
+24.classname=org.sakaiproject.sdata.services.cms.CourseManagementHandler
+24.baseurl=/cms
