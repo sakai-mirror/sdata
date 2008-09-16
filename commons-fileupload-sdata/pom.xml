@@ -24,12 +24,12 @@
     -->
     <groupId>org.sakaiproject</groupId>
     <artifactId>sdata</artifactId>
-    <version>SNAPSHOT</version>
+    <version>2.6.0RC1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.sakaiproject.sdata</groupId>
   <artifactId>commons-fileupload-sdata</artifactId>
-  <version>SNAPSHOT</version>
+  <version>2.6.0RC1-SNAPSHOT</version>
   <name>FileUpload</name>
   <organization>
     <name>Apache Software Foundation</name>

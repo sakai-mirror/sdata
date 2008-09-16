@@ -121,6 +121,7 @@ public class CourseManagementBean implements ServiceDefinition
 			{
 				String termEid = request.getParameter("termEid");
 				
+				// 1st tier: Course object
 				String currentUserId = sessionManager.getCurrentSessionUserId();
 				List<CourseObject> courses = prepareCourseAndSectionListing(currentUserId, termEid, cms);
 				for(CourseObject course:courses)
@@ -129,7 +130,7 @@ public class CourseManagementBean implements ServiceDefinition
 					map.put("courseEid", course.getEid());
 					map.put("courseTitle", course.getTitle());
 					
-					// course offerings
+					// 2nd tier: CourseOffering object
 					List<Map> myMappedCourseOfferings = new ArrayList<Map>();
 					List<CourseOfferingObject> courseOfferings = course.getCourseOfferingObjects();
 					for(CourseOfferingObject courseOffering:courseOfferings)
@@ -137,6 +138,21 @@ public class CourseManagementBean implements ServiceDefinition
 						Map<String, Object> coMap = new HashMap<String, Object>();
 						coMap.put("courseOfferingEid", courseOffering.getEid());
 						coMap.put("courseOfferingTitle", courseOffering.getTitle());
+						
+						// 3rd tier: Section object
+						List<Map> myMappedSections = new ArrayList<Map>();
+						List<SectionObject> sections = courseOffering.getSections();
+						for(SectionObject section:sections)
+						{
+							Map<String, Object> sMap = new HashMap<String, Object>();
+							sMap.put("sectionEid", section.getEid());
+							sMap.put("sectionTitle", section.getTitle());
+							sMap.put("sectionCategory", section.getCategory());
+							sMap.put("sectionCategoryDescription", section.getCategoryDescription());
+							sMap.put("sectionAttached", section.getAttached());
+							myMappedSections.add(sMap);
+						}
+						coMap.put("sections", myMappedSections);
 						myMappedCourseOfferings.add(coMap);
 					}
 					map.put("courseOfferings", myMappedCourseOfferings);
