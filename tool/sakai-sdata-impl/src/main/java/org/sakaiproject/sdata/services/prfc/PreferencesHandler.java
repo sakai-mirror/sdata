@@ -96,7 +96,15 @@ public class PreferencesHandler extends JSONServiceHandler
 		{
 			if(saveMode.equals("savedetail"))
 			{
-				saveDetail(request);
+				try
+				{
+					saveDetail(request);
+				} 
+				catch (PreferencesPwException e)
+				{
+					log.error(e.getMessage(), e);
+					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				}
 			}
 			else if(saveMode.equals("savenoti"))
 			{
@@ -104,7 +112,7 @@ public class PreferencesHandler extends JSONServiceHandler
 		}
 	}
 	
-	private void saveDetail(HttpServletRequest request)
+	private void saveDetail(HttpServletRequest request) throws PreferencesPwException
 	{
 		UserEdit user = null;
 		Session currentSession = SessionManager.getCurrentSession();
@@ -115,125 +123,140 @@ public class PreferencesHandler extends JSONServiceHandler
 		{
 			currentUser = UserDirectoryService.getUser(currentSession.getUserId());
 			user = UserDirectoryService.editUser(currentUser.getId());
+			
+			String firstname = request.getParameter("firstname");
+			String lastname = request.getParameter("lastname");
+			String emailAddress = request.getParameter("email");
+			String oldPw = request.getParameter("currentpw");
+			String newPw = request.getParameter("newpw");
+			String retypePw = request.getParameter("retypepw");
+			String selectedZone = request.getParameter("selected_zone");
+			String selectedLanguage = request.getParameter("seleted_language");
+			log.error(selectedZone);
+			log.error(selectedLanguage);
+			
+			user.setFirstName(firstname);
+			user.setLastName(lastname);
+			user.setEmail(emailAddress);
+
+			try
+			{
+				if(user.checkPassword(oldPw) && !StringUtil.different(newPw, retypePw))
+				{
+					user.setPassword(newPw);
+				}
+				else if((oldPw != null && !oldPw.trim().equals(""))
+					|| (newPw != null && !newPw.trim().equals(""))
+					|| (retypePw != null && !retypePw.trim().equals("")))
+				{
+					throw new PreferencesPwException("Invalid password saving.");
+				}
+				UserDirectoryService.commitEdit(user);
+			} 
+			catch (UserAlreadyDefinedException uade)
+			{
+				log.error(uade.getMessage(), uade);
+			}
+
+			PreferencesEdit prefEdit = null;
+			try
+			{
+				prefEdit = (PreferencesEdit) PreferencesService.edit(user.getId());
+				ResourcePropertiesEdit props = prefEdit.getPropertiesEdit(TimeService.APPLICATION_ID);
+				if(props.getProperty(TimeService.TIMEZONE_KEY) != null && 
+						!((String)props.getProperty(TimeService.TIMEZONE_KEY)).equals(selectedZone))
+				{
+					props.removeProperty(TimeService.TIMEZONE_KEY);
+					props.addProperty(TimeService.TIMEZONE_KEY, selectedZone);
+					PreferencesService.commit(prefEdit);				
+				}
+				else if (props.getProperty(TimeService.TIMEZONE_KEY) == null)
+				{
+					props.addProperty(TimeService.TIMEZONE_KEY, selectedZone);
+					PreferencesService.commit(prefEdit);
+				}
+				props = (ResourcePropertiesEdit) prefEdit.getPropertiesEdit(ResourceLoader.APPLICATION_ID);
+				if(props.getProperty(ResourceLoader.LOCALE_KEY) != null && 
+						!((String)props.getProperty(ResourceLoader.LOCALE_KEY)).equals(selectedLanguage))
+				{
+					props.removeProperty(ResourceLoader.LOCALE_KEY);
+					props.addProperty(ResourceLoader.LOCALE_KEY, selectedLanguage);
+					Locale[] locale = Locale.getAvailableLocales();
+					Locale toSet = null;
+					for (int i = 0; i < locale.length; i++){
+						Locale current = locale[i];
+						if ((current.getLanguage() + "_" + current.getCountry()).equals(selectedLanguage)){
+							toSet = current;
+						}
+					}
+					currentSession.setAttribute(
+							"sakai.locale." + currentUser.getId(), toSet);
+					PreferencesService.commit(prefEdit);				
+				}
+				else if (props.getProperty(ResourceLoader.LOCALE_KEY) == null)
+				{
+					props.addProperty(ResourceLoader.LOCALE_KEY, selectedLanguage);
+					Locale[] locale = Locale.getAvailableLocales();
+					Locale toSet = null;
+					for (int i = 0; i < locale.length; i++){
+						Locale current = locale[i];
+						if ((current.getLanguage() + "_" + current.getCountry()).equals(selectedLanguage)){
+							toSet = current;
+						}
+					}
+					currentSession.setAttribute(
+							"sakai.locale." + currentUser.getId(), toSet);
+					PreferencesService.commit(prefEdit);				
+				}
+			}
+			catch (IdUnusedException iue)
+			{
+				try
+				{
+					prefEdit = PreferencesService.add(user.getId());
+					ResourcePropertiesEdit props = prefEdit.getPropertiesEdit(TimeService.APPLICATION_ID);
+					props.addProperty(TimeService.TIMEZONE_KEY, selectedZone);
+					props.addProperty(ResourceLoader.LOCALE_KEY, selectedLanguage);
+					PreferencesService.commit(prefEdit);
+				}
+				catch (PermissionException pe1)
+				{
+					log.error(pe1.getMessage(), pe1);
+				}
+				catch (IdUsedException ie1)
+				{
+					log.error(ie1.getMessage(), ie1);
+				}
+			}
+			catch (PermissionException pe)
+			{
+				log.error(pe.getMessage(), pe);
+			} 
+			catch (InUseException ie)
+			{
+				log.error(ie.getMessage(), ie);
+			}
 		}
 		catch (UserNotDefinedException unde)
 		{
-			log.error(unde);
+			log.error(unde.getMessage(), unde);
 		} 
 		catch (UserPermissionException upe)
 		{
-			log.error(upe);
+			log.error(upe.getMessage(), upe);
 		} 
 		catch (UserLockedException ule)
 		{
-			log.error(ule);
+			log.error(ule.getMessage(), ule);
 		}
 		
-		String firstname = request.getParameter("firstname");
-		String lastname = request.getParameter("lastname");
-		String emailAddress = request.getParameter("email");
-		String oldPw = request.getParameter("currentpw");
-		String newPw = request.getParameter("newpw");
-		String retypePw = request.getParameter("retypepw");
-		String selectedZone = request.getParameter("selected_zone");
-		String selectedLanguage = request.getParameter("seleted_language");
-		log.error(selectedZone);
-		log.error(selectedLanguage);
-		
-		user.setFirstName(firstname);
-		user.setLastName(lastname);
-		user.setEmail(emailAddress);
-
-		try
+	}
+	
+	private class PreferencesPwException extends Exception
+	{
+		public PreferencesPwException(String message) 
 		{
-			if(user.checkPassword(oldPw) && !StringUtil.different(newPw, retypePw))
-			{
-				user.setPassword(newPw);
-			}
-			UserDirectoryService.commitEdit(user);
-		} 
-		catch (UserAlreadyDefinedException uade)
-		{
-			log.error(uade);
-		}
-
-		PreferencesEdit prefEdit = null;
-		try
-		{
-			prefEdit = (PreferencesEdit) PreferencesService.edit(user.getId());
-			ResourcePropertiesEdit props = prefEdit.getPropertiesEdit(TimeService.APPLICATION_ID);
-			if(props.getProperty(TimeService.TIMEZONE_KEY) != null && 
-					!((String)props.getProperty(TimeService.TIMEZONE_KEY)).equals(selectedZone))
-			{
-				props.removeProperty(TimeService.TIMEZONE_KEY);
-				props.addProperty(TimeService.TIMEZONE_KEY, selectedZone);
-				PreferencesService.commit(prefEdit);				
-			}
-			else if (props.getProperty(TimeService.TIMEZONE_KEY) == null)
-			{
-				props.addProperty(TimeService.TIMEZONE_KEY, selectedZone);
-				PreferencesService.commit(prefEdit);
-			}
-			props = (ResourcePropertiesEdit) prefEdit.getPropertiesEdit(ResourceLoader.APPLICATION_ID);
-			if(props.getProperty(ResourceLoader.LOCALE_KEY) != null && 
-					!((String)props.getProperty(ResourceLoader.LOCALE_KEY)).equals(selectedLanguage))
-			{
-				props.removeProperty(ResourceLoader.LOCALE_KEY);
-				props.addProperty(ResourceLoader.LOCALE_KEY, selectedLanguage);
-				Locale[] locale = Locale.getAvailableLocales();
-				Locale toSet = null;
-				for (int i = 0; i < locale.length; i++){
-					Locale current = locale[i];
-					if ((current.getLanguage() + "_" + current.getCountry()).equals(selectedLanguage)){
-						toSet = current;
-					}
-				}
-				currentSession.setAttribute(
-						"sakai.locale." + currentUser.getId(), toSet);
-				PreferencesService.commit(prefEdit);				
-			}
-			else if (props.getProperty(ResourceLoader.LOCALE_KEY) == null)
-			{
-				props.addProperty(ResourceLoader.LOCALE_KEY, selectedLanguage);
-				Locale[] locale = Locale.getAvailableLocales();
-				Locale toSet = null;
-				for (int i = 0; i < locale.length; i++){
-					Locale current = locale[i];
-					if ((current.getLanguage() + "_" + current.getCountry()).equals(selectedLanguage)){
-						toSet = current;
-					}
-				}
-				currentSession.setAttribute(
-						"sakai.locale." + currentUser.getId(), toSet);
-				PreferencesService.commit(prefEdit);				
-			}
-		}
-		catch (IdUnusedException iue)
-		{
-			try
-			{
-				prefEdit = PreferencesService.add(user.getId());
-				ResourcePropertiesEdit props = prefEdit.getPropertiesEdit(TimeService.APPLICATION_ID);
-				props.addProperty(TimeService.TIMEZONE_KEY, selectedZone);
-				props.addProperty(ResourceLoader.LOCALE_KEY, selectedLanguage);
-				PreferencesService.commit(prefEdit);
-			}
-			catch (PermissionException pe1)
-			{
-				log.error(pe1);
-			}
-			catch (IdUsedException ie1)
-			{
-				log.error(ie1);
-			}
-		}
-		catch (PermissionException pe)
-		{
-			log.error(pe);
-		} 
-		catch (InUseException ie)
-		{
-			log.error(ie);
-		}
+			super(message);
+	  }
 	}
 }

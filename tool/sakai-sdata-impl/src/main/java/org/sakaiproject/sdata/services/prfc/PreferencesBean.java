@@ -73,7 +73,7 @@ public class PreferencesBean implements ServiceDefinition
 		}
 		catch (UserNotDefinedException e)
 		{
-			log.error(e);
+			log.error(e.getMessage(), e);
 		}
 
 		map.put("userid", user.getId());
