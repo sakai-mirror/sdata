@@ -46,7 +46,9 @@ import org.sakaiproject.time.cover.TimeService;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.user.cover.PreferencesService;
+import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
+import org.sakaiproject.event.cover.NotificationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.InUseException;
@@ -108,6 +110,7 @@ public class PreferencesHandler extends JSONServiceHandler
 			}
 			else if(saveMode.equals("savenoti"))
 			{
+				saveNotificationPref(request);
 			}
 		}
 	}
@@ -258,5 +261,87 @@ public class PreferencesHandler extends JSONServiceHandler
 		{
 			super(message);
 	  }
+	}
+	
+	private void saveNotificationPref(HttpServletRequest request) 
+	{
+		String anncNotif = request.getParameter("annc_notif");
+		String mailArchiveNotif = request.getParameter("mailarchive_notif");
+		String resourcesNotif = request.getParameter("resources_notif");
+		String syllabusNotif = request.getParameter("syllabus_notif");
+
+		Session currentSession = SessionManager.getCurrentSession();
+		String currUserId = currentSession.getUserId();
+		
+		PreferencesEdit prefEdit;
+
+		try 
+		{
+			prefEdit = (PreferencesEdit) PreferencesService.edit(currUserId);
+			updateAllPreferences(prefEdit, anncNotif, mailArchiveNotif, 
+					resourcesNotif, syllabusNotif);
+		} 
+		catch (IdUnusedException ide) 
+		{
+			// no preferences exist yet for this user, so we need to create them 
+			// before continuing
+			try
+			{
+				prefEdit = PreferencesService.add(currUserId);
+				updateAllPreferences(prefEdit, anncNotif, mailArchiveNotif, 
+						resourcesNotif, syllabusNotif);
+			}
+			catch (PermissionException pe)
+			{
+				log.error(pe.getMessage(), pe);
+			}
+			catch (IdUsedException ie)
+			{
+				log.error(ie.getMessage(), ie);
+			}
+			
+		} 
+		catch (InUseException iue) 
+		{
+			log.error(iue.getMessage(), iue);
+		}
+		catch (PermissionException pe) 
+		{
+			log.error(pe.getMessage(), pe);
+		}
+		
+
+	}
+	
+	private void updateAllPreferences(PreferencesEdit prefEdit, String anncNotif, String mailArchiveNotif, String resourcesNotif, String syllabusNotif)
+	{
+		// note: we are hard-coding the APPLICATION_IDs here to limit dependencies
+		if (anncNotif != null && anncNotif.trim().length() > 0) 
+		{
+			updateNotificationPreference("sakai:announcement", prefEdit, anncNotif);
+		}
+
+		if (mailArchiveNotif != null && mailArchiveNotif.trim().length() > 0) 
+		{
+			updateNotificationPreference("sakai:mailarchive", prefEdit, mailArchiveNotif);
+		}
+
+		if (resourcesNotif != null && resourcesNotif.trim().length() > 0) 
+		{
+			updateNotificationPreference(ContentHostingService.APPLICATION_ID, prefEdit, resourcesNotif);
+		}
+
+		if (syllabusNotif != null && syllabusNotif.trim().length() > 0) 
+		{
+			updateNotificationPreference("sakai:syllabus", prefEdit, syllabusNotif);
+		}
+
+		PreferencesService.commit(prefEdit);
+	}
+
+	private void updateNotificationPreference(String type, PreferencesEdit edit, String updatedValue) 
+	{
+		ResourcePropertiesEdit props = edit.getPropertiesEdit(NotificationService.PREFS_TYPE + type);
+		props.addProperty(Integer.toString(NotificationService.NOTI_OPTIONAL), updatedValue);
 	}
 }
