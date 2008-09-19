@@ -341,13 +341,22 @@ public class SiteHandler extends AbstractHandler {
 	private List<Map<String, Object>> buildAvailableTools(Site site) {
 		// set the category to the site type if site type isn't null
 		HashSet<String> cats = null;
-		if (site.getType() != null) {
-			cats = new HashSet<String>();
-			cats.add(site.getType());
+		cats = new HashSet<String>();
+		
+		if (site.getId().startsWith("~")){
+			cats.add("myworkspace");
+		} else if (site.getId().startsWith("!")){
+			cats.add("sakai.admin");
+		} else if (site.getType().equalsIgnoreCase("project")){
+			cats.add("project");
+		} else if (site.getType().equalsIgnoreCase("course")){
+			cats.add("course");
 		}
 
+		log.error(site.getType());
+		
 		// look up tools based on category (site type)
-		Set<Tool> tools = toolManager.findTools(null, null);
+		Set<Tool> tools = toolManager.findTools(cats, null);
 
 		// create a list of maps that hold tool info
 		List<Map<String, Object>> toolsOut = new ArrayList<Map<String, Object>>();
@@ -360,6 +369,7 @@ public class SiteHandler extends AbstractHandler {
 			toolOut.put("iconclass", "icon-"
 					+ tool.getId().replaceAll("[.]", "-"));
 			toolOut.put("allowMultipleInstances", tool.getRegisteredConfig().getProperty("allowMultipleInstances"));
+			toolOut.put("classification", tool.getRegisteredConfig().getProperty("classification"));
 			toolsOut.add(toolOut);
 		}
 		return toolsOut;

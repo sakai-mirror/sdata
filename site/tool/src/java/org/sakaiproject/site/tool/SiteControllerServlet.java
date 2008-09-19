@@ -68,6 +68,9 @@ public class SiteControllerServlet extends HttpServlet {
 	throws ServletException, IOException
 	{
 		try {
+			
+			response.setContentType("text/html");
+			
 			int level = request.getPathInfo().split("/").length;
 			
 			String site = request.getPathInfo().split("/")[1];
@@ -80,19 +83,16 @@ public class SiteControllerServlet extends HttpServlet {
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 			}
 			
-			log.error("4444444444444444444444444444");
-			log.error(Kernel.sessionManager().getCurrentSessionUserId());
-			log.error("4444444444444444444444444444");
+			boolean loggedIn = true;
 			
 			if (! csite.isAllowed(Kernel.sessionManager().getCurrentSessionUserId(), "site.visit")){
 				if (Kernel.sessionManager().getCurrentSessionUserId() == null){
-					response.sendRedirect("/dev/index.html?url=/site" + URLEncoder.encode(request.getPathInfo()));
+					loggedIn = false;
 				} else {
-					response.sendError(HttpServletResponse.SC_FORBIDDEN);
+					loggedIn = false;
 				}
 			}
 			
-			log.error("site = " + site);
 			Node n = null;
 			try {
 				n = jcrNodeFactory.getNode("/sakai/sdata/" + site);
@@ -104,8 +104,7 @@ public class SiteControllerServlet extends HttpServlet {
 				//e.printStackTrace();
 			}
 			if (n == null) {
-				response.sendError(HttpServletResponse.SC_NOT_FOUND);
-				return;
+				loggedIn = false;
 			}
 			
 			Node pages = null;
@@ -188,12 +187,14 @@ public class SiteControllerServlet extends HttpServlet {
 						
 						String s = read.readLine();
 						while (s != null){
-							if (s.toLowerCase().indexOf("<div id=\"sidebar-content-pages\" class=\"sidebar-content\">") != -1){
-								s = s.replace("<div id=\"sidebar-content-pages\" class=\"sidebar-content\">", "<div id=\"sidebar-content-pages\" class=\"sidebar-content\">" + menu);
-							} else if (s.toLowerCase().indexOf("<div id=\"container\">") != -1){
-								s = s.replace("<div id=\"container\">", "<div id=\"container\">" + noscript);
-							} else if (s.toLowerCase().indexOf("<h1 id=\"sitetitle\">") != -1){
-								s = s.replace("<h1 id=\"sitetitle\">", "<h1 id=\"sitetitle\">" + csite.getTitle());
+							if (loggedIn == true){
+								if (s.toLowerCase().indexOf("<div id=\"sidebar-content-pages\" class=\"sidebar-content\">") != -1){
+									s = s.replace("<div id=\"sidebar-content-pages\" class=\"sidebar-content\">", "<div id=\"sidebar-content-pages\" class=\"sidebar-content\">" + menu);
+								} else if (s.toLowerCase().indexOf("<div id=\"container\">") != -1){
+									s = s.replace("<div id=\"container\">", "<div id=\"container\">" + noscript);
+								} else if (s.toLowerCase().indexOf("<h1 id=\"sitetitle\">") != -1){
+									s = s.replace("<h1 id=\"sitetitle\">", "<h1 id=\"sitetitle\">" + csite.getTitle());
+								}
 							}
 							writer.write(s);
 							s = read.readLine();
@@ -218,12 +219,14 @@ public class SiteControllerServlet extends HttpServlet {
 						
 						String s = read.readLine();
 						while (s != null){
-							if (s.toLowerCase().indexOf("<div id=\"sidebar-content-pages\" class=\"sidebar-content\">") != -1){
-								s = s.replace("<div id=\"sidebar-content-pages\" class=\"sidebar-content\">", "<div id=\"sidebar-content-pages\" class=\"sidebar-content\">" + menu);
-							} else if (s.toLowerCase().indexOf("<div id=\"container\">") != -1){
-								s = s.replace("<div id=\"container\">", "<div id=\"container\">" + noscript);
-							} else if (s.toLowerCase().indexOf("<h1 id=\"sitetitle\">") != -1){
-								s = s.replace("<h1 id=\"sitetitle\">", "<h1 id=\"sitetitle\">" + csite.getTitle());
+							if (loggedIn == true){
+								if (s.toLowerCase().indexOf("<div id=\"sidebar-content-pages\" class=\"sidebar-content\">") != -1){
+									s = s.replace("<div id=\"sidebar-content-pages\" class=\"sidebar-content\">", "<div id=\"sidebar-content-pages\" class=\"sidebar-content\">" + menu);
+								} else if (s.toLowerCase().indexOf("<div id=\"container\">") != -1){
+									s = s.replace("<div id=\"container\">", "<div id=\"container\">" + noscript);
+								} else if (s.toLowerCase().indexOf("<h1 id=\"sitetitle\">") != -1){
+									s = s.replace("<h1 id=\"sitetitle\">", "<h1 id=\"sitetitle\">" + csite.getTitle());
+								}
 							}
 							writer.write(s);
 							if (s.indexOf("<body") != -1){
