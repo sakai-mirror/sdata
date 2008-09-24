@@ -152,6 +152,8 @@ public class PreferencesHandler extends JSONServiceHandler
 					|| (newPw != null && !newPw.trim().equals(""))
 					|| (retypePw != null && !retypePw.trim().equals("")))
 				{
+					// release the UserEdit object
+					UserDirectoryService.cancelEdit(user);
 					throw new PreferencesPwException("Invalid password saving.");
 				}
 				UserDirectoryService.commitEdit(user);
@@ -159,6 +161,13 @@ public class PreferencesHandler extends JSONServiceHandler
 			catch (UserAlreadyDefinedException uade)
 			{
 				log.error(uade.getMessage(), uade);
+				
+			}
+			
+			// close out the UserEdit object in case we didn't make any changes
+			// to it
+			if (user.isActiveEdit()) {
+				UserDirectoryService.cancelEdit(user);
 			}
 
 			PreferencesEdit prefEdit = null;
@@ -210,6 +219,11 @@ public class PreferencesHandler extends JSONServiceHandler
 					currentSession.setAttribute(
 							"sakai.locale." + currentUser.getId(), toSet);
 					PreferencesService.commit(prefEdit);				
+				}
+				
+				// close out the edit in case it wasn't committed above
+				if (prefEdit.isActiveEdit()) {
+					PreferencesService.cancel(prefEdit);
 				}
 			}
 			catch (IdUnusedException iue)

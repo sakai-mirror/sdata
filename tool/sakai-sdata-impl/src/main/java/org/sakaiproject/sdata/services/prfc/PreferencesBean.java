@@ -34,6 +34,7 @@ import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.event.cover.NotificationService;
@@ -65,6 +66,9 @@ public class PreferencesBean implements ServiceDefinition
 	
 	public static final String NOTIF_OPTION = "notifOption";
 	public static final String NOTIF_VALUE = "notifValue";
+	
+	/** Should research/collab specific preferences (no syllabus) be displayed */
+	private static final String PREFS_RESEARCH = "prefs.research.collab";
 
 	public PreferencesBean(HttpServletRequest request, HttpServletResponse response, PreferencesService ps, 
 			SessionManager sessionManager, UserDirectoryService userDirectoryService)
@@ -134,25 +138,33 @@ public class PreferencesBean implements ServiceDefinition
 		// of dependencies for now
 		String anncNotifPref = getNotificationPreference("sakai:announcement", "3", prefs);
 		map.put("anncNotifPref", anncNotifPref);
-
+		// set up the preference possibilities
+		map.put("anncNotifOptions", getAnncNotifOptions());
+		
 		// MailArchiveService.APPLICATION_ID = "sakai:mailarchive" - hard-coded for simplicity
 		// of dependencies for now
 		String mailArchiveNotifPref = getNotificationPreference("sakai:mailarchive", "3", prefs);
 		map.put("mailArchiveNotifPref", mailArchiveNotifPref);
+		// set up the preference possibilities
+		map.put("mailArchiveNotifOptions", getMailArchiveNotifOptions());
 
 		String resourcesNotifPref = getNotificationPreference(ContentHostingService.APPLICATION_ID, "3", prefs);
 		map.put("resourcesNotifPref", resourcesNotifPref);
-
-		// SyllabusService.APPLICATION_ID = "sakai:syllabus" - hard-coded for simplicity
-		// of dependencies for now
-		String syllabusNotifPref = getNotificationPreference("sakai:syllabus", "3", prefs);
-		map.put("syllabusNotifPref", syllabusNotifPref);
-		
 		// set up the preference possibilities
-		map.put("anncNotifOptions", getAnncNotifOptions());
-		map.put("mailArchiveNotifOptions", getMailArchiveNotifOptions());
 		map.put("resourcesNotifOptions", getResourceNotifOptions());
-		map.put("syllabusNotifOptions", getSyllabusNotifOptions());	
+
+		// we need to check sakai.properties to see if syllabus should be
+		// included
+		boolean displaySyllabus = !ServerConfigurationService.getBoolean(PREFS_RESEARCH, false);
+		
+		if (displaySyllabus) {
+			// SyllabusService.APPLICATION_ID = "sakai:syllabus" - hard-coded for simplicity
+			// of dependencies for now
+			String syllabusNotifPref = getNotificationPreference("sakai:syllabus", "3", prefs);
+			map.put("syllabusNotifPref", syllabusNotifPref);	
+			// set up the preference possibilities;
+			map.put("syllabusNotifOptions", getSyllabusNotifOptions());	
+		}
 	}
 	
 	private class languageSorter implements Comparator {
