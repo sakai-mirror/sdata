@@ -21,6 +21,7 @@
 
 package org.sakaiproject.sdata.services.me;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -98,13 +99,27 @@ public class MeBean implements ServiceDefinition {
 		} else {
 
 			User user = null;
+			
 			currentSession = sessionManager.getCurrentSession();
-
+			
+			if (request.getParameter("user") == null){
+			
 			try {
 
 				user = userDirectoryService.getUser(currentSession.getUserId());
 			} catch (UserNotDefinedException e) {
 				log.debug(e);
+			}
+			
+			} else {
+				String usr = request.getParameter("user");
+				try {
+					user = userDirectoryService.getUserByEid(usr);
+				} catch (UserNotDefinedException e) {
+					// TODO Auto-generated catch block
+					throw new SDataException(HttpServletResponse.SC_NOT_FOUND,
+					"User not found");
+				}
 			}
 
 			// serialize user object

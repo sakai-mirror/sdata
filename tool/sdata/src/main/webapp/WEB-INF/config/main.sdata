@@ -79,3 +79,5 @@
 23.baseurl=/prfc
 24.classname=org.sakaiproject.sdata.services.cms.CourseManagementHandler
 24.baseurl=/cms
+25.classname=org.sakaiproject.sdata.services.history.HistoryHandler
+25.baseurl=/history

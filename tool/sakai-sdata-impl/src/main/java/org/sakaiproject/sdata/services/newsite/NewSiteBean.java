@@ -23,22 +23,28 @@ package org.sakaiproject.sdata.services.newsite;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.Kernel;
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.AuthzGroupService;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.event.api.Event;
 import org.sakaiproject.event.api.EventTrackingService;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.jcr.api.JCRConstants;
+import org.sakaiproject.jcr.support.api.JCRNodeFactoryService;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
@@ -67,6 +73,8 @@ public class NewSiteBean implements ServiceDefinition {
 	private Map<String, Object> map2 = new HashMap<String, Object>();;
 
 	private static final Log log = LogFactory.getLog(NewSiteBean.class);
+	
+	private JCRNodeFactoryService jcrNodeFactory = Kernel.jcrNodeFactoryService();
 
 	/**
 	 * TODO Javadoc
@@ -86,11 +94,23 @@ public class NewSiteBean implements ServiceDefinition {
 
 		try {
 
-			Site site = siteService.addSite(siteId, "project");
+			Site site = null;
+			if (request.getParameter("type") != null){
+				site = siteService.addSite(siteId, request.getParameter("type"));
+			} else {
+				site = siteService.addSite(siteId, "project");
+			}
 			site.setTitle(name);
 			site.setDescription(description);
 			site.setPublished(true);
-			siteService.save(site);
+			
+			if (request.getParameter("skin") != null && ! request.getParameter("skin").equals("")){
+				site.setSkin(request.getParameter("skin"));
+			}
+
+			site.addMember(request.getRemoteUser(), "maintain", true, false);
+
+			siteService.save(site);			
 			
 			Tool tool = toolManager.getTool("sakai.resources");
 
@@ -103,15 +123,54 @@ public class NewSiteBean implements ServiceDefinition {
 			
 			site.removePage(page);
 			siteService.save(site);
+			
+			if (request.getParameter("template") != null){
+				String template = request.getParameter("template");
+				Node toCopy = jcrNodeFactory.getNode("/sakai/sdata/" + template);
+				if (toCopy == null){
+					log.warn("Template not found");
+				} else {
+					Node main = jcrNodeFactory.getNode("/sakai/sdata/");
+					Node toGoInto = main.addNode(siteId, "nt:folder");
+					main.save();
+					log.error("++++++++ = " + toGoInto.getPath());
+					doDeepCopy(toGoInto, toCopy);
+				}
+			}
 
 			map2.put("status", "success");
 			map2.put("id", site.getId());
 
 		} catch (Exception ex) {
+			log.error(ex);
 			map2.put("status", "failed");
 			map2.put("message", ex.getMessage());
 		}
 
+	}
+
+	private void doDeepCopy(Node toGoInto, Node toCopy) {
+		try {
+			NodeIterator it = toCopy.getNodes();
+			while (it.hasNext()){
+				Node n = it.nextNode();
+				if (n.getPrimaryNodeType().getName().equals("nt:folder")){
+					Node newNode = toGoInto.addNode(n.getName(),"nt:folder");
+					toGoInto.save();
+					doDeepCopy(newNode,n);
+				} else if (n.getPrimaryNodeType().getName().equals("nt:file")){
+					Node newNode = toGoInto.addNode(n.getName(),"nt:file");
+					Node value = newNode.addNode(JCRConstants.JCR_CONTENT,"nt:resource");
+					value.setProperty(JCRConstants.JCR_DATA, n.getNode(JCRConstants.JCR_CONTENT).getProperty(JCRConstants.JCR_DATA).getString());
+					value.setProperty("jcr:mimeType", "UTF-8");
+					Calendar lastModified = Calendar.getInstance();
+					value.setProperty("jcr:lastModified", lastModified);
+					toGoInto.save();
+				}
+			}
+		} catch (Exception ex){
+			ex.printStackTrace();
+		}
 	}
 
 	public static String getPassword(int n) {

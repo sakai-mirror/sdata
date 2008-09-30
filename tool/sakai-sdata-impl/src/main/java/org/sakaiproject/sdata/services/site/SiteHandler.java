@@ -211,6 +211,9 @@ public class SiteHandler extends AbstractHandler {
 			map2.put("id", site.getId());
 			map2.put("icon", site.getIconUrl());
 			map2.put("skin", site.getSkin());
+			map2.put("owner", site.getCreatedBy().getId());
+			map2.put("pubView", site.isPubView());
+			map2.put("type", site.getType());
 
 			if (!site.isPublished())
 				status = "903";

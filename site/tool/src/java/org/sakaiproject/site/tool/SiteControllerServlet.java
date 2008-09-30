@@ -26,6 +26,8 @@ import org.sakaiproject.jcr.support.api.JCRNodeFactoryService;
 import org.sakaiproject.jcr.support.api.JCRNodeFactoryServiceException;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.cover.UserDirectoryService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -45,6 +47,8 @@ public class SiteControllerServlet extends HttpServlet {
 	private static final long serialVersionUID = 0L;
 	
 	private static final Log log = LogFactory.getLog(SiteControllerServlet.class);
+	
+	private org.sakaiproject.site.api.SiteService siteservice = Kernel.siteService();
 	
 	private JCRNodeFactoryService jcrNodeFactory;
 	
@@ -74,18 +78,19 @@ public class SiteControllerServlet extends HttpServlet {
 			int level = request.getPathInfo().split("/").length;
 			
 			String site = request.getPathInfo().split("/")[1];
+			site = java.net.URLDecoder.decode(site);
 			
 			Site csite = null;
 			try {
 				csite = SiteService.getSite(site);
 			} catch (IdUnusedException e1) {
-				// TODO Auto-generated catch block
-				response.sendError(HttpServletResponse.SC_NOT_FOUND);
+				//response.sendError(HttpServletResponse.SC_NOT_FOUND);
+				//e1.printStackTrace();
 			}
 			
 			boolean loggedIn = true;
 			
-			if (! csite.isAllowed(Kernel.sessionManager().getCurrentSessionUserId(), "site.visit")){
+			if (csite == null || ! csite.isAllowed(Kernel.sessionManager().getCurrentSessionUserId(), "site.visit")){
 				if (Kernel.sessionManager().getCurrentSessionUserId() == null){
 					loggedIn = false;
 				} else {
@@ -102,6 +107,8 @@ public class SiteControllerServlet extends HttpServlet {
 			} catch (JCRNodeFactoryServiceException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
+			} catch (Exception ex){
+				//ex.printStackTrace();
 			}
 			if (n == null) {
 				loggedIn = false;
@@ -116,6 +123,8 @@ public class SiteControllerServlet extends HttpServlet {
 			} catch (RepositoryException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
+			} catch (Exception ex){
+				//ex.printStackTrace();
 			}
 			
 			Node config = null;
@@ -126,6 +135,8 @@ public class SiteControllerServlet extends HttpServlet {
 				//e.printStackTrace();
 			} catch (RepositoryException e) {
 				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			} catch (Exception e){
 				//e.printStackTrace();
 			}
 
@@ -140,6 +151,7 @@ public class SiteControllerServlet extends HttpServlet {
 					String json = content.getString();
 					JSONObject obj = JSONObject.fromObject(json);
 					JSONArray items = obj.getJSONArray("items");
+					menu += "Top pages:<br/><br/>";
 					for (int i = 0; i < items.size(); i++){
 						JSONObject det = (JSONObject) items.get(i);
 						if (det.getBoolean("top")){
@@ -150,7 +162,7 @@ public class SiteControllerServlet extends HttpServlet {
 							}
 						}
 					}
-					menu += "<br/>";
+					menu += "<br/>Non-top pages:<br/><br/>";
 					for (int i = 0; i < items.size(); i++){
 						JSONObject det = (JSONObject) items.get(i);
 						if (det.getBoolean("top") == false){
@@ -168,26 +180,42 @@ public class SiteControllerServlet extends HttpServlet {
 				} catch (RepositoryException e) {
 					// TODO Auto-generated catch block
 					//e.printStackTrace();
+				} catch (Exception ex){
+					//ex.printStackTrace();
 				}
 			}
-			
+					
 			try {
 			
 				if (true) {
+					
+					//log.error(level);
 
 					if (level == 2){
 					
+						//log.error("IK BEN HIER !!!!!!!!!!!");
+						
 						PrintWriter writer = response.getWriter();
 						
-						String noscript = "<div class='container_child'><noscript>Note: Please turn on JavaScript to enjoy all of the features of CamTools. You are seeing a degraded version of this page right now.</noscript></div>";
+						String noscript = "<div class='container_child'><noscript>Note: Please turn on JavaScript to enjoy all of the features of Sakai. You are seeing a degraded version of this page right now.</noscript></div>";
 						
 						
-						File f= new File(request.getRealPath("") + "/../dev/site_home_page2.html");						
+						File f= new File(request.getRealPath("") + "/../dev/site.html");						
 						BufferedReader read = new BufferedReader(new FileReader(f));
 						
 						String s = read.readLine();
 						while (s != null){
 							if (loggedIn == true){
+								
+								log.error("++++++++++++++++++ = " + s.toLowerCase());
+								
+								if (s.toLowerCase().indexOf("<div id=\"initialcontent\">") != -1){
+									String toInsert = "<h1>" + csite.getTitle() + "</h1><hr/>";
+									toInsert += noscript;
+									toInsert += menu;
+									s = s.replace("<div id=\"initialcontent\">", "<div id=\"initialcontent\">" + toInsert);
+								}
+								/*
 								if (s.toLowerCase().indexOf("<div id=\"sidebar-content-pages\" class=\"sidebar-content\">") != -1){
 									s = s.replace("<div id=\"sidebar-content-pages\" class=\"sidebar-content\">", "<div id=\"sidebar-content-pages\" class=\"sidebar-content\">" + menu);
 								} else if (s.toLowerCase().indexOf("<div id=\"container\">") != -1){
@@ -195,6 +223,7 @@ public class SiteControllerServlet extends HttpServlet {
 								} else if (s.toLowerCase().indexOf("<h1 id=\"sitetitle\">") != -1){
 									s = s.replace("<h1 id=\"sitetitle\">", "<h1 id=\"sitetitle\">" + csite.getTitle());
 								}
+								*/
 							}
 							writer.write(s);
 							s = read.readLine();
@@ -210,7 +239,7 @@ public class SiteControllerServlet extends HttpServlet {
 						
 						PrintWriter writer = response.getWriter();
 						
-						File f= new File(request.getRealPath("") + "/../dev/site_home_page2.html");						
+						File f= new File(request.getRealPath("") + "/../dev/site.html");						
 						BufferedReader read = new BufferedReader(new FileReader(f));
 						
 						String noscript = "<div class='container_child'><noscript>Note: Please turn on JavaScript to enjoy all of the features of CamTools. You are seeing a degraded version of this page right now.</noscript>";
@@ -220,6 +249,7 @@ public class SiteControllerServlet extends HttpServlet {
 						String s = read.readLine();
 						while (s != null){
 							if (loggedIn == true){
+								/*
 								if (s.toLowerCase().indexOf("<div id=\"sidebar-content-pages\" class=\"sidebar-content\">") != -1){
 									s = s.replace("<div id=\"sidebar-content-pages\" class=\"sidebar-content\">", "<div id=\"sidebar-content-pages\" class=\"sidebar-content\">" + menu);
 								} else if (s.toLowerCase().indexOf("<div id=\"container\">") != -1){
@@ -227,6 +257,14 @@ public class SiteControllerServlet extends HttpServlet {
 								} else if (s.toLowerCase().indexOf("<h1 id=\"sitetitle\">") != -1){
 									s = s.replace("<h1 id=\"sitetitle\">", "<h1 id=\"sitetitle\">" + csite.getTitle());
 								}
+								*/
+							}
+							if (s.toLowerCase().indexOf("<div id=\"initialcontent\">") != -1){
+								String toInsert = "<h1>" + csite.getTitle() + "</h1><hr/>";
+								toInsert += menu;
+								toInsert += "<hr/>";
+								toInsert += noscript;
+								s = s.replace("<div id=\"initialcontent\">", "<div id=\"initialcontent\">" + toInsert);
 							}
 							writer.write(s);
 							if (s.indexOf("<body") != -1){
@@ -244,7 +282,7 @@ public class SiteControllerServlet extends HttpServlet {
 				//ex.printStackTrace();
 			}
 		} catch (Exception ex){
-			
+			//ex.printStackTrace();
 		}
 		
 	}

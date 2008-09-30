@@ -158,6 +158,7 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 							map.put("url", site.getUrl());
 							map.put("iconUrl", site.getIconUrl());
 							map.put("owner", site.getCreatedBy().getDisplayName());
+							map.put("type", site.getType());
 							try
 							{
 								map.put("creationDate",

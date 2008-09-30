@@ -202,7 +202,7 @@ public class PathSecurityAssertion implements SecurityAssertion
 		Reference ref = entityManager.newReference(resourceReference);
 		
 		try {
-			if (resourceLocation.substring(baseLocation.length() + 1).split("/")[0].equals("~" + sessionManager.getCurrentSessionUserId())){
+			if (resourceLocation.substring(baseLocation.length() + 1,baseLocation.length() + 2).split("/")[0].equals("~")){
 				return;
 			}
 		} catch (Exception e){}
