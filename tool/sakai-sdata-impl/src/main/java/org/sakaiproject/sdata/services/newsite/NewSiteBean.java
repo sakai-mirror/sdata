@@ -107,8 +107,10 @@ public class NewSiteBean implements ServiceDefinition {
 			if (request.getParameter("skin") != null && ! request.getParameter("skin").equals("")){
 				site.setSkin(request.getParameter("skin"));
 			}
+			
+			siteService.save(site);	
 
-			site.addMember(request.getRemoteUser(), "maintain", true, false);
+			site.addMember(request.getRemoteUser(), site.getMaintainRole(), true, false);
 
 			siteService.save(site);			
 			
