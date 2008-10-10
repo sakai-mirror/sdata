@@ -14,5 +14,3 @@ CREATE TABLE sdata_property_index (
 )
 ENGINE = InnoDB
 CHARACTER SET utf8;
-
-

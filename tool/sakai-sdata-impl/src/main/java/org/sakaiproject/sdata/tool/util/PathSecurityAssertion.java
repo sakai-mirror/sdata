@@ -205,6 +205,10 @@ public class PathSecurityAssertion implements SecurityAssertion
 			if (resourceLocation.substring(baseLocation.length() + 1,baseLocation.length() + 2).split("/")[0].equals("~")){
 				return;
 			}
+			log.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! - " + resourceReference);
+			if (resourceReference.split("/")[2].equalsIgnoreCase("public")){
+				return;
+			}
 		} catch (Exception e){}
 		
 		// the main problem here is how do we know if this is a collection or a resource, as the trailing / matters.
