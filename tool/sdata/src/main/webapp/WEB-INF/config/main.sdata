@@ -83,3 +83,7 @@
 25.baseurl=/history
 26.classname=org.sakaiproject.sdata.services.profile.ProfileHandler
 26.baseurl=/profile
+27.classname=org.sakaiproject.sdata.services.messages.MessageHandler
+27.baseurl=/message
+28.classname=org.sakaiproject.sdata.services.connections.ConnectionHandler
+28.baseurl=/connection
