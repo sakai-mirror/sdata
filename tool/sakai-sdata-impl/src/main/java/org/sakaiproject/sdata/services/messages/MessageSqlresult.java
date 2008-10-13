@@ -24,6 +24,9 @@ package org.sakaiproject.sdata.services.messages;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.sakaiproject.sdata.services.profile.ProfileSqlresult;
+import org.sakaiproject.sdata.services.profile.ProfileSqlresult2;
+
 /**
  * 
  * @author
@@ -41,6 +44,7 @@ public class MessageSqlresult
 	private String senderToString = "Unknown";
 	private String datetimeToString;
 	private boolean read;
+	private ProfileSqlresult2 profileinfo;
 	
 	public void setId(int id) {
 		this.id = id;
@@ -126,6 +130,14 @@ public class MessageSqlresult
 
 	public boolean isRead() {
 		return read;
+	}
+
+	public void setProfileinfo(ProfileSqlresult2 profileinfo) {
+		this.profileinfo = profileinfo;
+	}
+
+	public ProfileSqlresult2 getProfileinfo() {
+		return profileinfo;
 	}
 
 }

@@ -16,6 +16,8 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.Kernel;
 import org.sakaiproject.db.api.SqlService;
 import org.sakaiproject.email.cover.EmailService;
+import org.sakaiproject.sdata.services.profile.ProfileSqlreader2;
+import org.sakaiproject.sdata.services.profile.ProfileSqlresult2;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.user.api.User;
@@ -97,18 +99,17 @@ public class MessageBean implements ServiceDefinition
 		
 		Object[] params = new Object[1];
 		params[0] = id;
-		ArrayList <MessageSqlresult> lst = (ArrayList<MessageSqlresult>) sqlService.dbRead("SELECT * FROM sdata_messages WHERE id = ?", params, new MessageSqlreader());
+		List <MessageSqlresult> lst = (List<MessageSqlresult>) sqlService.dbRead("SELECT * FROM sdata_messages WHERE id = ?", params, new MessageSqlreader());
 		
 		try {
 			
 			MessageSqlresult res = lst.get(0);
-			User usr = userDirectoryService.getUser(res.getSender());
 			
-			if (usr.getFirstName() != null || usr.getLastName() != null){
-				res.setSenderToString((usr.getFirstName() + " " + usr.getLastName()).trim());
-			} else {
-				res.setSenderToString(usr.getDisplayName());
-			}
+			Object[] params3 = new Object[1];
+			params3[0] = res.getSender();
+			List <ProfileSqlresult2> lst3 = sqlService.dbRead("SELECT * FROM (SELECT *  FROM SAKAI_USER  LEFT OUTER JOIN sdata_profile ON SAKAI_USER.USER_ID = sdata_profile.userid) as new WHERE new.USER_ID = ?", params3, new ProfileSqlreader2());
+			
+			res.setProfileinfo(lst3.get(0));
 			
 			resultMap.put("item", res);
 			
@@ -117,7 +118,7 @@ public class MessageBean implements ServiceDefinition
 			Object[] params2 = new Object[2];
 			params2[0] = true;
 			params2[1] = id;
-			sqlService.dbWrite("UPDATE sdata_messages SET read = ? WHERE id = ?", params2);
+			sqlService.dbWrite("UPDATE sdata_messages SET isread = ? WHERE id = ?", params2);
 			
 		} catch (Exception ex){
 			try {
@@ -158,29 +159,38 @@ public class MessageBean implements ServiceDefinition
 		ArrayList <String> usersToLookup = new ArrayList<String>();
 		ArrayList <User> lookedUpUsers = new ArrayList<User>();
 		
+		//Look for unique users in the list
+		
 		for (int i = 0; i < lst2.size(); i++){
 			if (! usersToLookup.contains(lst2.get(i).getSender())){
 				usersToLookup.add(lst.get(i).getSender());
-				try {
-					lookedUpUsers.add(userDirectoryService.getUser(lst.get(i).getSender()));
-				} catch (Exception ex){
-					// This user doesn't exists
-				}
 			}
 		}
 		
-		for (int i = 0; i < lst2.size(); i++){
-			MessageSqlresult res = lst2.get(i);
-			for (int ii = 0; ii < lookedUpUsers.size(); ii++){
-				if (lookedUpUsers.get(ii).getId().equalsIgnoreCase(res.getSender())){
-					User usr = lookedUpUsers.get(ii);
-					if (usr.getFirstName() != null && usr.getLastName() != null){
-						res.setSenderToString((usr.getFirstName() + " " + usr.getLastName()).trim());
-					} else {
-						res.setSenderToString(usr.getDisplayName());
+		if (lst2.size() > 0){
+		
+			Object[] params2 = new Object[usersToLookup.size()];
+			String sql = "";
+			for (int i = 0; i < usersToLookup.size(); i++){
+				if (i != 0){
+					sql += " OR";
+				}
+				sql += " new.USER_ID = ?";
+				params2[i] = usersToLookup.get(i);
+			}
+			
+			
+			List <ProfileSqlresult2> lst3 = sqlService.dbRead("SELECT * FROM (SELECT *  FROM SAKAI_USER  LEFT OUTER JOIN sdata_profile ON SAKAI_USER.USER_ID = sdata_profile.userid) as new WHERE" + sql, params2, new ProfileSqlreader2());
+			
+			for (int i = 0; i < lst2.size(); i++){
+				MessageSqlresult res = lst2.get(i);
+				for (int ii = 0; ii < lst3.size(); ii++){
+					if (lst3.get(ii).getUserid().equalsIgnoreCase(res.getSender())){
+						lst2.get(i).setProfileinfo(lst3.get(ii));
 					}
 				}
 			}
+			
 		}
 		
 		resultMap.put("items", lst2);

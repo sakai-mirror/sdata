@@ -55,6 +55,8 @@ public class MessageSqlreader implements SqlReader
 			res.setDateTime(new Date(result.getTimestamp("datetime").getTime()));
 			res.setInvite(result.getBoolean("isinvite"));
 			res.setRead(result.getBoolean("isread"));
+			res.setSender(result.getString("sender"));
+			res.setReceiver(result.getString("receiver"));
 			res.setMessage(result.getString("message"));
 			res.setTitle(result.getString("title"));
 

@@ -132,7 +132,7 @@ public class ConnectionBean implements ServiceDefinition
 			
 			List <ConnectionSqlresult> lst3 = (List<ConnectionSqlresult>) sqlService.dbRead("SELECT * FROM sdata_connections WHERE ((inviter = ? AND receiver = ?)) AND accepted = ?", params3, new ConnectionSqlreader());
 			
-			if (lst2.size() > 0){
+			if (lst3.size() > 0){
 				resultMap.put("status", "invited");
 				return;
 			}
