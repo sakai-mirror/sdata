@@ -201,16 +201,16 @@ public class MessageBean implements ServiceDefinition
 		User fromuser = userDirectoryService.getUser(sender);
 		User touser = userDirectoryService.getUser(receiver);
 		
-		Object[] params = new Object[7];
+		Object[] params = new Object[6];
 		params[0] = sender;
 		params[1] = receiver;
 		params[2] = title;
 		params[3] = message;
-		params[4] = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(d);
-		params[5] = isinvite;
-		params[6] = false;
+		//params[4] = d; //new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(d);
+		params[4] = isinvite;
+		params[5] = false;
 		
-		sqlService.dbWrite("INSERT INTO sdata_messages SET sender = ? AND receiver = ? AND title = ? AND message = ? AND datetime = ? AND isinvite = ? AND read = ?", params);
+		sqlService.dbWrite("INSERT INTO sdata_messages (sender, receiver, title, message, isinvite, isread) VALUES (?, ?, ?, ?, ?, ?)", params);
 		
 		// Send emails
 		

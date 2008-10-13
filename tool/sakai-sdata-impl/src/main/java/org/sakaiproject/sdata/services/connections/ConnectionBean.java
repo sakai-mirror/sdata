@@ -111,12 +111,12 @@ public class ConnectionBean implements ServiceDefinition
 			
 			// Check whether I have invited him
 			
-			Object[] params2 = new Object[5];
+			Object[] params2 = new Object[3];
 			params2[0] = sessionManager.getCurrentSessionUserId();
 			params2[1] = toLookFor;
 			params2[2] = false;
 			
-			List <ConnectionSqlresult> lst2 = (List<ConnectionSqlresult>) sqlService.dbRead("SELECT * FROM sdata_connections WHERE ((inviter = ? AND receiver = ?)) AND accepted = ?", params, new ConnectionSqlreader());
+			List <ConnectionSqlresult> lst2 = (List<ConnectionSqlresult>) sqlService.dbRead("SELECT * FROM sdata_connections WHERE ((inviter = ? AND receiver = ?)) AND accepted = ?", params2, new ConnectionSqlreader());
 			
 			if (lst2.size() > 0){
 				resultMap.put("status", "pending");
@@ -125,12 +125,12 @@ public class ConnectionBean implements ServiceDefinition
 			
 			// Check whether I am invited by him
 			
-			Object[] params3 = new Object[5];
+			Object[] params3 = new Object[3];
 			params3[0] = toLookFor;
 			params3[1] = sessionManager.getCurrentSessionUserId();
 			params3[2] = false;
 			
-			List <ConnectionSqlresult> lst3 = (List<ConnectionSqlresult>) sqlService.dbRead("SELECT * FROM sdata_connections WHERE ((inviter = ? AND receiver = ?)) AND accepted = ?", params, new ConnectionSqlreader());
+			List <ConnectionSqlresult> lst3 = (List<ConnectionSqlresult>) sqlService.dbRead("SELECT * FROM sdata_connections WHERE ((inviter = ? AND receiver = ?)) AND accepted = ?", params3, new ConnectionSqlreader());
 			
 			if (lst2.size() > 0){
 				resultMap.put("status", "invited");
@@ -190,7 +190,7 @@ public class ConnectionBean implements ServiceDefinition
 			params2[2] = connectionType;
 			params2[3] = false;
 			
-			sqlService.dbWrite("INSERT INTO sdata_connections (inviter, receiver, connectiontype, accepted) VALUES (?,?,?,?)", params);
+			sqlService.dbWrite("INSERT INTO sdata_connections (inviter, receiver, connectiontype, accepted) VALUES (?,?,?,?)", params2);
 			
 		}
 		
