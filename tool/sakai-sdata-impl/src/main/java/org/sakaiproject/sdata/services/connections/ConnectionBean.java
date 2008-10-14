@@ -68,6 +68,7 @@ public class ConnectionBean implements ServiceDefinition
 		} catch (Exception ex){
 			try {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				ex.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -242,7 +243,7 @@ public class ConnectionBean implements ServiceDefinition
 		
 		} else if (toShow.equalsIgnoreCase("accepted")){
 			
-			Object[] params = new Object[2];
+			Object[] params = new Object[3];
 			params[0] = sessionManager.getCurrentSessionUserId();
 			params[1] = sessionManager.getCurrentSessionUserId();
 			params[2] = true;
@@ -252,7 +253,7 @@ public class ConnectionBean implements ServiceDefinition
 			
 		} else if (toShow.equalsIgnoreCase("pending")){
 			
-			Object[] params = new Object[2];
+			Object[] params = new Object[3];
 			params[0] = sessionManager.getCurrentSessionUserId();
 			params[1] = sessionManager.getCurrentSessionUserId();
 			params[2] = false;

@@ -16,6 +16,8 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.Kernel;
 import org.sakaiproject.db.api.SqlService;
 import org.sakaiproject.email.cover.EmailService;
+import org.sakaiproject.sdata.services.connections.ConnectionSqlreader;
+import org.sakaiproject.sdata.services.connections.ConnectionSqlresult;
 import org.sakaiproject.sdata.services.profile.ProfileSqlreader2;
 import org.sakaiproject.sdata.services.profile.ProfileSqlresult2;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
@@ -56,14 +58,15 @@ public class MessageBean implements ServiceDefinition
 					doMessage(request, response);
 				}
 			} else if (request.getMethod().equalsIgnoreCase("post")){
-				doPost(request, response);
-			} else if (request.getMethod().equalsIgnoreCase("delete")){
-				if (request.getParameter("id") != null){
+				if (request.getParameter("delete") != null){
 					doDelete(request, response);
+				} else {
+					doPost(request, response);
 				}
 			} 
 		} catch (Exception ex){
 			try {
+				ex.printStackTrace();
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -79,7 +82,7 @@ public class MessageBean implements ServiceDefinition
 			
 			Object[] params = new Object[1];
 			params[0] = id;
-			sqlService.dbWrite("DELETE FROM sdata_profile WHERE id = ?", params);
+			sqlService.dbWrite("DELETE FROM sdata_messages WHERE id = ?", params);
 			
 			resultMap.put("status", "success");
 		
@@ -119,6 +122,22 @@ public class MessageBean implements ServiceDefinition
 			params2[0] = true;
 			params2[1] = id;
 			sqlService.dbWrite("UPDATE sdata_messages SET isread = ? WHERE id = ?", params2);
+			
+			// Check whether he is already a connection
+			
+			Object[] params4 = new Object[5];
+			params4[0] = sessionManager.getCurrentSessionUserId();
+			params4[1] = res.getSender();
+			params4[2] = res.getSender();
+			params4[3] = sessionManager.getCurrentSessionUserId();
+			params4[4] = true;
+			List <ConnectionSqlresult> lst4 = (List<ConnectionSqlresult>) sqlService.dbRead("SELECT * FROM sdata_connections WHERE ((inviter = ? AND receiver = ?) OR (inviter = ? AND receiver = ?)) AND accepted = ?", params4, new ConnectionSqlreader());
+			
+			if (lst4.size() > 0){
+				resultMap.put("status", "connected");
+			} else {
+				resultMap.put("status", "");
+			}
 			
 		} catch (Exception ex){
 			try {
@@ -205,22 +224,25 @@ public class MessageBean implements ServiceDefinition
 		String title = request.getParameter("title");
 		String message = request.getParameter("message");
 		String receiver = request.getParameter("receiver");
-		boolean isinvite = Boolean.getBoolean(request.getParameter("isinvite"));
+		boolean isinvite = false;
+		if (request.getParameter("isinvite").equalsIgnoreCase("true")){
+			isinvite = true;
+		}
 		Date d = new Date();
 		
 		User fromuser = userDirectoryService.getUser(sender);
 		User touser = userDirectoryService.getUser(receiver);
 		
-		Object[] params = new Object[6];
+		Object[] params = new Object[7];
 		params[0] = sender;
 		params[1] = receiver;
 		params[2] = title;
 		params[3] = message;
-		//params[4] = d; //new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(d);
 		params[4] = isinvite;
 		params[5] = false;
+		params[6] = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
 		
-		sqlService.dbWrite("INSERT INTO sdata_messages (sender, receiver, title, message, isinvite, isread) VALUES (?, ?, ?, ?, ?, ?)", params);
+		sqlService.dbWrite("INSERT INTO sdata_messages (sender, receiver, title, message, isinvite, isread, datetime) VALUES (?, ?, ?, ?, ?, ?, ?)", params);
 		
 		// Send emails
 		

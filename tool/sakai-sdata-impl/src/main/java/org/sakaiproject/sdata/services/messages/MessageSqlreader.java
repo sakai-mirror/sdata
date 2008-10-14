@@ -23,6 +23,8 @@ package org.sakaiproject.sdata.services.messages;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
@@ -52,7 +54,11 @@ public class MessageSqlreader implements SqlReader
 		{
 			
 			res.setId(result.getInt("id"));
-			res.setDateTime(new Date(result.getTimestamp("datetime").getTime()));
+			try {
+				res.setDateTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(result.getString("datetime")));
+			} catch (ParseException e) {
+				res.setDateTime(new Date());
+			}
 			res.setInvite(result.getBoolean("isinvite"));
 			res.setRead(result.getBoolean("isread"));
 			res.setSender(result.getString("sender"));

@@ -1,6 +1,6 @@
 create table sdata_messages (
    id int not null AUTO_INCREMENT, 
-   datetime timestamp not null,
+   datetime varchar(255) not null,
    sender varchar(255) not null,
    receiver varchar(255) not null,
    title text,
