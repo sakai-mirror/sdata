@@ -225,7 +225,11 @@ public class ConnectionBean implements ServiceDefinition
 		}
 		int count = 10;
 		if (request.getParameter("count") != null){
-			count = Integer.parseInt(request.getParameter("count"));
+			if (request.getParameter("count").equalsIgnoreCase("all")){
+				count = -1;
+			} else {
+				count = Integer.parseInt(request.getParameter("count"));
+			}
 		}
 		
 		if (request.getParameter("show") != null){
@@ -253,12 +257,19 @@ public class ConnectionBean implements ServiceDefinition
 			
 		} else if (toShow.equalsIgnoreCase("pending")){
 			
-			Object[] params = new Object[3];
+			Object[] params = new Object[2];
 			params[0] = sessionManager.getCurrentSessionUserId();
-			params[1] = sessionManager.getCurrentSessionUserId();
-			params[2] = false;
+			params[1] = false;
 			
-			lst2 = (List<ConnectionSqlresult>) sqlService.dbRead("SELECT * FROM sdata_connections WHERE (receiver = ? OR inviter = ?) AND accepted = ?", params, new ConnectionSqlreader());
+			lst2 = (List<ConnectionSqlresult>) sqlService.dbRead("SELECT * FROM sdata_connections WHERE (inviter = ?) AND accepted = ?", params, new ConnectionSqlreader());
+
+		} else if (toShow.equalsIgnoreCase("waiting")){
+			
+			Object[] params = new Object[2];
+			params[0] = sessionManager.getCurrentSessionUserId();
+			params[1] = false;
+			
+			lst2 = (List<ConnectionSqlresult>) sqlService.dbRead("SELECT * FROM sdata_connections WHERE (receiver = ?) AND accepted = ?", params, new ConnectionSqlreader());
 
 		}
 		
@@ -266,11 +277,21 @@ public class ConnectionBean implements ServiceDefinition
 		
 		resultMap.put("total", lst2.size());
 		
-		for (int i = (page - 1) * count; i < page * count; i++){
-			try {
-				lst3.add(lst2.get(i));
-			} catch (Exception ex){
-				// Continue
+		if (count == -1){
+			for (int i = 0; i < lst2.size(); i++){
+				try {
+					lst3.add(lst2.get(i));
+				} catch (Exception ex){
+					// Continue
+				}
+			}
+		} else {
+			for (int i = (page - 1) * count; i < page * count; i++){
+				try {
+					lst3.add(lst2.get(i));
+				} catch (Exception ex){
+					// Continue
+				}
 			}
 		}
 			

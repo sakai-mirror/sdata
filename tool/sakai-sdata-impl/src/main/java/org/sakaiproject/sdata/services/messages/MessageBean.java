@@ -246,6 +246,7 @@ public class MessageBean implements ServiceDefinition
 		
 		// Send emails
 		
+		/*
 		if (! isinvite){
 			
 			EmailService.send(fromuser.getEmail(), touser.getEmail(), "You have received a connection request on Sakai 3", "Some text and a link to your invitation", null, null, null);
@@ -255,6 +256,7 @@ public class MessageBean implements ServiceDefinition
 			EmailService.send(fromuser.getEmail(), touser.getEmail(), "You have received a message on Sakai 3", "Some text, the message and a link to it", null, null, null);
 			
 		}
+		*/
 		
 	}
 	
