@@ -56,6 +56,8 @@ public class MessageBean implements ServiceDefinition
 					doList(request, response);
 				} else if (request.getParameter("id") != null){
 					doMessage(request, response);
+				} else if (request.getParameter("unreadCount") != null){
+					doUnreadCount(request, response);
 				}
 			} else if (request.getMethod().equalsIgnoreCase("post")){
 				if (request.getParameter("delete") != null){
@@ -73,6 +75,18 @@ public class MessageBean implements ServiceDefinition
 			}
 		}
 	}  
+
+	private void doUnreadCount(HttpServletRequest request, HttpServletResponse response) {
+		
+		Object[] params = new Object[2];
+		params[0] = sessionManager.getCurrentSessionUserId();
+		params[1] = false;
+		
+		List <MessageSqlresult> lst = (List<MessageSqlresult>) sqlService.dbRead("SELECT * FROM sdata_messages WHERE receiver = ? AND isread = ?", params, new MessageSqlreader());
+		
+		resultMap.put("count", lst.size());
+		
+	}
 
 	private void doDelete(HttpServletRequest request, HttpServletResponse response) {
 		
