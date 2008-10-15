@@ -11,5 +11,4 @@ create table sdata_profile (
    primary key  (userid)
 )
 ENGINE = InnoDB
-CHARACTER SET utf8
-COLLATE utf8_unicode_ci;
+CHARACTER SET utf8;
