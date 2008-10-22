@@ -101,9 +101,7 @@ public class PresenceBean implements ServiceDefinition
 		params[1] = sessionManager.getCurrentSessionUserId();
 		
 		List<ConnectionSqlresult> lst = (List<ConnectionSqlresult>) sqlService.dbRead("SELECT * FROM sdata_connections WHERE receiver = ? OR inviter = ?", params, new ConnectionSqlreader());
-		
-		log.error("(((((((( Size of lst = " + lst.size() + ")))))))))))))))");
-		
+
 		if (lst.size() > 0){
 			
 			String sql = "SELECT userid FROM sdata_presence WHERE";
@@ -124,20 +122,22 @@ public class PresenceBean implements ServiceDefinition
 			List lst2 = sqlService.dbRead(sql, params2, null);
 			
 			// Get profiles of these people
+
+			List <ProfileSqlresult2> lst3 = new ArrayList<ProfileSqlresult2>();
 			
-			log.error("(((((((( Size of lst2 = " + lst2.size() + ")))))))))))))))");
-			
-			ArrayList<ProfileSqlresult2> arl = new ArrayList<ProfileSqlresult2>();
-			String sql2 = "SELECT * FROM (SELECT *  FROM SAKAI_USER  LEFT OUTER JOIN sdata_profile ON SAKAI_USER.USER_ID = sdata_profile.userid) as new WHERE";
-			Object[] params3 = new Object[lst2.size()];
-			for (int ii = 0; ii < lst2.size(); ii++){
-				if (ii != 0){
-					sql2 += " OR";
+			if (lst2.size() > 0){
+				ArrayList<ProfileSqlresult2> arl = new ArrayList<ProfileSqlresult2>();
+				String sql2 = "SELECT * FROM (SELECT *  FROM SAKAI_USER  LEFT OUTER JOIN sdata_profile ON SAKAI_USER.USER_ID = sdata_profile.userid) as new WHERE";
+				Object[] params3 = new Object[lst2.size()];
+				for (int ii = 0; ii < lst2.size(); ii++){
+					if (ii != 0){
+						sql2 += " OR";
+					}
+					sql2 += " new.USER_ID = ?";
+					params3[ii] = lst2.get(ii);
 				}
-				sql2 += " new.USER_ID = ?";
-				params3[ii] = lst2.get(ii);
+				lst3 = sqlService.dbRead(sql2, params3, new ProfileSqlreader2());
 			}
-			List <ProfileSqlresult2> lst3 = sqlService.dbRead(sql2, params3, new ProfileSqlreader2());
 			
 			resultMap.put("items", lst3);
 			resultMap.put("total", lst3.size());
