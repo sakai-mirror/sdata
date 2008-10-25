@@ -89,3 +89,5 @@
 28.baseurl=/connection
 29.classname=org.sakaiproject.sdata.services.presence.PresenceHandler
 29.baseurl=/presence
+30.classname=org.sakaiproject.sdata.services.chat.ChatHandler
+30.baseurl=/chat

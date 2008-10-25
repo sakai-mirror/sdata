@@ -55,6 +55,13 @@ public class TimerBean implements Runnable, Serializable {
 	  params[0] = now;
 	  SqlService.dbWrite("DELETE FROM sdata_presence WHERE lastseen < ?", params);
 	  
+	  String s2 = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+	  long now2 = Long.parseLong(s) - (60*60*24);
+	  
+	  Object[] params2 = new Object[1];
+	  params2[0] = now2;
+	  SqlService.dbWrite("DELETE FROM sdata_chat WHERE readwhen < ?", params2);
+	  
 	  log.info("Clean up operation performed");
 	  
   }
