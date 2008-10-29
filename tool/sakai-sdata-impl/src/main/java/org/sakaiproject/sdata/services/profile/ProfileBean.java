@@ -230,8 +230,6 @@ public class ProfileBean implements ServiceDefinition
 	private void doPost (String userId, HttpServletRequest request,
 			HttpServletResponse response) throws Exception
 	{
-	
-		log.error("11111");
 		
 		if (userId == null){
 			userId = sessionManager.getCurrentSessionUserId();
@@ -265,28 +263,25 @@ public class ProfileBean implements ServiceDefinition
 			}
 		}
 		
-		log.error("222222");
-		
 		Object[] params = new Object[1];
 		params[0] = user.getId();
 		List<ProfileSqlresult> list = (List<ProfileSqlresult>) sqlService.dbRead("SELECT * FROM sdata_profile WHERE userid=?", params , new ProfileSqlreader());
-		
-		log.error("33333");
 		
 		if (list.size() == 0){
 			sqlService.dbWrite("INSERT INTO sdata_profile (userid) VALUES (?)", params);
 		}
 		
-		log.error("44444");
-		
 		if (request.getParameter("firstName") != null){
 			edit.setFirstName(request.getParameter("firstName"));
+			userDirectoryService.commitEdit(edit);
 		}
 		if (request.getParameter("lastName") != null){
 			edit.setLastName(request.getParameter("lastName"));
+			userDirectoryService.commitEdit(edit);
 		}
 		if (request.getParameter("email") != null){
 			edit.setEmail(request.getParameter("email"));
+			userDirectoryService.commitEdit(edit);
 		}
 		
 		if (edit.isActiveEdit()) {
@@ -320,28 +315,27 @@ public class ProfileBean implements ServiceDefinition
 			toUpdate.put("picture", request.getParameter("picture"));
 		}
 		
-		log.error("55555");
-		
 		String sqlQuery = "UPDATE sdata_profile SET";
 		Object[] keySet = toUpdate.keySet().toArray();
-		Object[] updateparams = new Object[keySet.length + 1];
-		int index = 0;
-		for (int i = 0; i < keySet.length; i++){
-			sqlQuery += " " + keySet[i] + "=?";
-			updateparams[index] = toUpdate.get(keySet[i]);
-			index++;
-			if (i != keySet.length - 1){
-				sqlQuery += " AND";
+		
+		if (keySet.length > 0){
+			
+			Object[] updateparams = new Object[keySet.length + 1];
+			int index = 0;
+			for (int i = 0; i < keySet.length; i++){
+				sqlQuery += " " + keySet[i] + "=?";
+				updateparams[index] = toUpdate.get(keySet[i]);
+				index++;
+				if (i != keySet.length - 1){
+					sqlQuery += " AND";
+				}
 			}
+			sqlQuery += " WHERE userid=?";
+			updateparams[index] = userId;
+			
+			sqlService.dbWrite(sqlQuery, updateparams);
+		
 		}
-		sqlQuery += " WHERE userid=?";
-		updateparams[index] = userId;
-		
-		log.error("66666");
-		
-		sqlService.dbWrite(sqlQuery, updateparams);
-		
-		log.error("77777");
 		
 	}
 	
