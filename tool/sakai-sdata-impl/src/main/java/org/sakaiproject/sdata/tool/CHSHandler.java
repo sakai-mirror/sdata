@@ -1189,6 +1189,9 @@ public abstract class CHSHandler extends  AbstractHandler
 							}
 							finalName = finalName.replace("\"", "_").replace("'", "_");
 							
+							finalName = finalName.split("/")[finalName.split("/").length - 1];
+							finalName = finalName.split("\\\\")[finalName.split("\\\\").length - 1];
+							
 							String mimeType = ContentTypes.getContentType(finalName, item
 									.getContentType());
 							String resourceName = rp.getRepositoryPath() + "/" + finalName;
