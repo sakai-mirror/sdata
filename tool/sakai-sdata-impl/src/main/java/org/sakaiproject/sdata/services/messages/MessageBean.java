@@ -254,7 +254,7 @@ public class MessageBean implements ServiceDefinition
 		params[3] = message;
 		params[4] = isinvite;
 		params[5] = false;
-		params[6] = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
+		params[6] = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 		
 		sqlService.dbWrite("INSERT INTO sdata_messages (sender, receiver, title, message, isinvite, isread, datetime) VALUES (?, ?, ?, ?, ?, ?, ?)", params);
 		

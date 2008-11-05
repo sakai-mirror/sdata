@@ -55,7 +55,7 @@ public class MessageSqlreader implements SqlReader
 			
 			res.setId(result.getInt("id"));
 			try {
-				res.setDateTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(result.getString("datetime")));
+				res.setDateTime(new SimpleDateFormat("yyyyMMddHHmmss").parse(result.getString("datetime")));
 			} catch (ParseException e) {
 				res.setDateTime(new Date());
 			}
