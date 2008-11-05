@@ -96,11 +96,12 @@ public class PresenceBean implements ServiceDefinition
 		
 		// Get a list of my friends first
 		
-		Object[] params = new Object[2];
+		Object[] params = new Object[3];
 		params[0] = sessionManager.getCurrentSessionUserId();
 		params[1] = sessionManager.getCurrentSessionUserId();
+		params[2] = true;
 		
-		List<ConnectionSqlresult> lst = (List<ConnectionSqlresult>) sqlService.dbRead("SELECT * FROM sdata_connections WHERE receiver = ? OR inviter = ?", params, new ConnectionSqlreader());
+		List<ConnectionSqlresult> lst = (List<ConnectionSqlresult>) sqlService.dbRead("SELECT * FROM sdata_connections WHERE (receiver = ? OR inviter = ?) AND accepted = ?", params, new ConnectionSqlreader());
 
 		if (lst.size() > 0){
 			
