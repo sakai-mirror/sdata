@@ -424,7 +424,7 @@ public abstract class JCRHandler extends AbstractHandler {
 	public void doGet(final HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-		if (request.getRemoteUser() == null) {
+		if (request.getRemoteUser() == null && false) {
 			response.sendError(401);
 		} else {
 

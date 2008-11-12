@@ -160,6 +160,30 @@ public class SiteHandler extends AbstractHandler {
 			sendError(request, response, ex);
 		}
 	}
+	
+	@Override
+	public void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		try {
+			ResourceDefinition rp = resourceDefinitionFactory.getSpec(request);
+			SDataFunction m = resourceFunctionFactory.getFunction(rp
+					.getFunctionDefinition());
+			Reference ref = entityManager.newReference(rp.getRepositoryPath());
+			Site site = (Site) ref.getEntity();
+
+			Map<String, Object> out = null;
+			if (site != null && m != null) {
+				m.call(this, request, response, site, rp);
+			} else {
+				throw new SDataException(HttpServletResponse.SC_BAD_REQUEST,"No function found");
+			}
+			if (out != null) {
+				sendMap(request, response, out);
+			}
+		} catch (Exception ex) {
+			sendError(request, response, ex);
+		}
+	}
 
 	public void destroy() {
 		resourceDefinitionFactory.destroy();
@@ -250,7 +274,7 @@ public class SiteHandler extends AbstractHandler {
 
 					mpages.put("id", page.getId());
 					mpages.put("name", page.getTitle());
-					mpages.put("layout", page.getLayoutTitle());
+					mpages.put("layout", page.getLayout());
 					mpages.put("number", number);
 					mpages.put("popup", page.isPopUp());
 

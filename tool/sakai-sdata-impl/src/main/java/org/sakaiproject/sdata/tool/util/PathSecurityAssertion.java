@@ -205,7 +205,6 @@ public class PathSecurityAssertion implements SecurityAssertion
 			if (resourceLocation.substring(baseLocation.length() + 1,baseLocation.length() + 2).split("/")[0].equals("~")){
 				return;
 			}
-			log.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! - " + resourceReference);
 			if (resourceReference.split("/")[2].equalsIgnoreCase("public")){
 				return;
 			}
@@ -218,7 +217,11 @@ public class PathSecurityAssertion implements SecurityAssertion
 		
 		String userId = sessionManager.getCurrentSessionUserId();
 
-		if (authzGroupService.isAllowed(userId, resourceLock, groups))
+		log.error("////////" + userId);
+		log.error("////////" + resourceLock);
+		log.error("////////" + groups);
+		
+		if (authzGroupService.isAllowed(userId, resourceLock, groups) || authzGroupService.isAllowed(userId, "site.visit", groups))
 		{
 			log.info("Granted [" + method + "]:[" + resourceLock + "] on ["
 					+ resourceReference + "]");

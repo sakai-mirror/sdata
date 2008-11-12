@@ -6,3 +6,4 @@
 1.locks=GET:site.read,PUT:content.revise.any,HEAD:content.read,POST:content.revise.any,DELETE:content.delete.any
 1.function.rp=org.sakaiproject.sdata.services.site.SiteRemovePageFunction
 1.function.at=org.sakaiproject.sdata.services.site.SiteAddToolFunction
+1.function.ro=org.sakaiproject.sdata.services.site.SiteRoleFunction
