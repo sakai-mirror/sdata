@@ -91,6 +91,15 @@ public class NewSiteBean implements ServiceDefinition {
 		ArrayList<HashMap<String, Object>> arlpages = new ArrayList<HashMap<String, Object>>();
 
 		String curUser = sessionManager.getCurrentSessionUserId();
+		
+		try {
+			Site siteCheck = siteService.getSite(siteId);
+			if (siteCheck != null){
+				response.sendError(HttpServletResponse.SC_CONFLICT);
+			}
+		} catch (Exception err){
+			// Ignore
+		}
 
 		try {
 
@@ -110,7 +119,7 @@ public class NewSiteBean implements ServiceDefinition {
 			
 			siteService.save(site);	
 
-			site.addMember(request.getRemoteUser(), site.getMaintainRole(), true, false);
+			site.addMember(curUser, site.getMaintainRole(), true, false);
 
 			siteService.save(site);			
 			
@@ -135,7 +144,6 @@ public class NewSiteBean implements ServiceDefinition {
 					Node main = jcrNodeFactory.getNode("/sakai/sdata/");
 					Node toGoInto = main.addNode(siteId, "nt:folder");
 					main.save();
-					log.error("++++++++ = " + toGoInto.getPath());
 					doDeepCopy(toGoInto, toCopy);
 				}
 			}
