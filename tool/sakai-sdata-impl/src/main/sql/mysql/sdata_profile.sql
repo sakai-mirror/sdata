@@ -8,6 +8,7 @@ create table sdata_profile (
    websites text,
    academic text,
    picture text,
+   talks text,
    primary key  (userid)
 )
 ENGINE = InnoDB
