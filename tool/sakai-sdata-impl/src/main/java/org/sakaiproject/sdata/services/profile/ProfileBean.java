@@ -117,8 +117,8 @@ public class ProfileBean implements ServiceDefinition
 		ArrayList<ProfileSqlresult2> arl = new ArrayList<ProfileSqlresult2>();
 		
 		for (int i = 0; i < toSearchFor.length; i++){
-			Object[] params = new Object[11];
-			for (int ii = 0; ii < 11; ii++){
+			Object[] params = new Object[12];
+			for (int ii = 0; ii < 12; ii++){
 				params[ii] = "%" + toSearchFor[i] + "%";
 			}
 			List <ProfileSqlresult2> lst = sqlService.dbRead("SELECT * FROM (SELECT *  FROM SAKAI_USER  LEFT OUTER JOIN sdata_profile ON SAKAI_USER.USER_ID = sdata_profile.userid) as new WHERE " +
