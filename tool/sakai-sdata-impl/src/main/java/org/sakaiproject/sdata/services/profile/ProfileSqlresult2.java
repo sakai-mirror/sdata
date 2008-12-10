@@ -40,6 +40,7 @@ public class ProfileSqlresult2 implements Comparable<ProfileSqlresult2>
 	private String academic;
 	private String aboutme;
 	private String picture;
+	private String talks;
 	private int count = 0;
 	
 	public ProfileSqlresult2(){
@@ -50,6 +51,7 @@ public class ProfileSqlresult2 implements Comparable<ProfileSqlresult2>
 		websites = "";
 		academic = "";
 		aboutme = "";
+		talks = "";
 	}
 	
 	public void setUserid(String userid) {
@@ -164,6 +166,14 @@ public class ProfileSqlresult2 implements Comparable<ProfileSqlresult2>
 		} else {
 			return 0;
 		}
+	}
+
+	public void setTalks(String talks) {
+		this.talks = talks;
+	}
+
+	public String getTalks() {
+		return talks;
 	}
 
 }

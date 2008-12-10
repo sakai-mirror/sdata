@@ -132,9 +132,8 @@ public class ProfileBean implements ServiceDefinition
 					"UPPER(new.education) LIKE ? OR " + 
 					"UPPER(new.job) LIKE ? OR " + 
 					"UPPER(new.academic) LIKE ? OR " + 
+					"UPPER(new.talks) LIKE ? OR " + 
 					"UPPER(new.websites) LIKE ?", params, new ProfileSqlreader2());
-			
-			log.error("((((((((((((((((((" + lst.size() + "))))))))))))))))))");
 			
 			for (ProfileSqlresult2 p: lst){
 				boolean alreadyIn = false;
@@ -224,6 +223,7 @@ public class ProfileBean implements ServiceDefinition
 		resultMap.put("websites", res.getWebsites());
 		resultMap.put("basic", res.getBasic());
 		resultMap.put("picture", res.getPicture());
+		resultMap.put("talks", res.getTalks());
 
 	}
 	
@@ -313,6 +313,9 @@ public class ProfileBean implements ServiceDefinition
 		}
 		if (request.getParameter("picture") != null){
 			toUpdate.put("picture", request.getParameter("picture"));
+		}
+		if (request.getParameter("talks") != null){
+			toUpdate.put("talks", request.getParameter("talks"));
 		}
 		
 		String sqlQuery = "UPDATE sdata_profile SET";

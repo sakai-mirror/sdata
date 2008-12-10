@@ -37,6 +37,7 @@ public class ProfileSqlresult
 	private String academic;
 	private String aboutme;
 	private String picture;
+	private String talks;
 	
 	public ProfileSqlresult(){
 		basic = "";
@@ -46,6 +47,7 @@ public class ProfileSqlresult
 		websites = "";
 		academic = "";
 		aboutme = "";
+		talks = "";
 	}
 	
 	public void setUserid(String userid) {
@@ -118,6 +120,14 @@ public class ProfileSqlresult
 	
 	public String getPicture() {
 		return picture;
+	}
+
+	public void setTalks(String talks) {
+		this.talks = talks;
+	}
+
+	public String getTalks() {
+		return talks;
 	}
 
 }

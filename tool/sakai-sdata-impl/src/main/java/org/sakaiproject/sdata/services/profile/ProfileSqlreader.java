@@ -59,6 +59,7 @@ public class ProfileSqlreader implements SqlReader
 			res.setBasic(result.getString("basic"));
 			res.setAboutme(result.getString("aboutme"));
 			res.setPicture(result.getString("picture"));
+			res.setTalks(result.getString("talks"));
 
 		}
 		catch (SQLException e)

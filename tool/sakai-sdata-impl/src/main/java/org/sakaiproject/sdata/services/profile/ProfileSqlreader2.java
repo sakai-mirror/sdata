@@ -59,6 +59,7 @@ public class ProfileSqlreader2 implements SqlReader
 			res.setBasic(result.getString("basic"));
 			res.setAboutme(result.getString("aboutme"));
 			res.setPicture(result.getString("picture"));
+			res.setTalks(result.getString("talks"));
 			res.setEmail(result.getString("EMAIL"));
 			res.setFirstName(result.getString("FIRST_NAME"));
 			res.setLastName(result.getString("LAST_NAME"));
