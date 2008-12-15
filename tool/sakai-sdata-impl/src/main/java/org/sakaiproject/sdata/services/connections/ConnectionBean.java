@@ -318,7 +318,7 @@ public class ConnectionBean implements ServiceDefinition
 		List<ProfileSqlresult> lst = new ArrayList<ProfileSqlresult>();
 		
 		if (lst3.size() > 0){
-			lst = sqlService.dbRead("SELECT * FROM (SELECT *  FROM SAKAI_USER  LEFT OUTER JOIN sdata_profile ON SAKAI_USER.USER_ID = sdata_profile.userid) as new WHERE " +
+			lst = sqlService.dbRead("SELECT * FROM (SELECT *  FROM SAKAI_USER  LEFT OUTER JOIN sdata_profile ON SAKAI_USER.USER_ID = sdata_profile.userid ORDER BY LAST_NAME ASC) as new WHERE " +
 				sqlString, params2, new ProfileSqlreader2());
 		}
 		

@@ -121,7 +121,7 @@ public class ProfileBean implements ServiceDefinition
 			for (int ii = 0; ii < 12; ii++){
 				params[ii] = "%" + toSearchFor[i] + "%";
 			}
-			List <ProfileSqlresult2> lst = sqlService.dbRead("SELECT * FROM (SELECT *  FROM SAKAI_USER  LEFT OUTER JOIN sdata_profile ON SAKAI_USER.USER_ID = sdata_profile.userid) as new WHERE " +
+			List <ProfileSqlresult2> lst = sqlService.dbRead("SELECT * FROM (SELECT *  FROM SAKAI_USER  LEFT OUTER JOIN sdata_profile ON SAKAI_USER.USER_ID = sdata_profile.userid ORDER BY LAST_NAME ASC) as new WHERE " +
 					"UPPER(new.USER_ID) LIKE ? OR " + 
 					"UPPER(new.EMAIL) LIKE ? OR " + 
 					"UPPER(new.FIRST_NAME) LIKE ? OR " +
