@@ -217,7 +217,7 @@ public class ConnectionBean implements ServiceDefinition
 		
 		String toShow = "all";
 		List <ConnectionSqlresult> lst2 = null;
-		ArrayList <ConnectionSqlresult> lst3 = new ArrayList<ConnectionSqlresult>();
+		ArrayList <ProfileSqlresult> lst3 = new ArrayList<ProfileSqlresult>();
 		
 		int page = 1;
 		if (request.getParameter("page") != null){
@@ -276,31 +276,13 @@ public class ConnectionBean implements ServiceDefinition
 		// do paging
 		
 		resultMap.put("total", lst2.size());
-		
-		if (count == -1){
-			for (int i = 0; i < lst2.size(); i++){
-				try {
-					lst3.add(lst2.get(i));
-				} catch (Exception ex){
-					// Continue
-				}
-			}
-		} else {
-			for (int i = (page - 1) * count; i < page * count; i++){
-				try {
-					lst3.add(lst2.get(i));
-				} catch (Exception ex){
-					// Continue
-				}
-			}
-		}
 			
 		String sqlString = "";
-		Object[] params2 = new Object[lst3.size()];
+		Object[] params2 = new Object[lst2.size()];
 		
 		boolean started = false;
-		for (int i = 0; i < lst3.size(); i++){
-			ConnectionSqlresult res = lst3.get(i);
+		for (int i = 0; i < lst2.size(); i++){
+			ConnectionSqlresult res = lst2.get(i);
 			if (started){
 				sqlString += " OR";
 			} else {
@@ -317,12 +299,30 @@ public class ConnectionBean implements ServiceDefinition
 	
 		List<ProfileSqlresult> lst = new ArrayList<ProfileSqlresult>();
 		
-		if (lst3.size() > 0){
+		if (lst2.size() > 0){
 			lst = sqlService.dbRead("SELECT * FROM (SELECT *  FROM SAKAI_USER  LEFT OUTER JOIN sdata_profile ON SAKAI_USER.USER_ID = sdata_profile.userid ORDER BY LAST_NAME ASC) as new WHERE " +
 				sqlString, params2, new ProfileSqlreader2());
 		}
 		
-		resultMap.put("items", lst);
+		if (count == -1){
+			for (int i = 0; i < lst.size(); i++){
+				try {
+					lst3.add(lst.get(i));
+				} catch (Exception ex){
+					// Continue
+				}
+			}
+		} else {
+			for (int i = (page - 1) * count; i < page * count; i++){
+				try {
+					lst3.add(lst.get(i));
+				} catch (Exception ex){
+					// Continue
+				}
+			}
+		}
+		
+		resultMap.put("items", lst3);
 		
 	}
 
