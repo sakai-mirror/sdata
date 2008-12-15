@@ -159,6 +159,7 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 							map.put("iconUrl", site.getIconUrl());
 							map.put("owner", site.getCreatedBy().getDisplayName());
 							map.put("type", site.getType());
+							map.put("active", site.isPublished());
 							try
 							{
 								map.put("creationDate",
@@ -198,6 +199,7 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 								map.put("members", site.getMembers().size());
 								map.put("description", site.getDescription());
 								map.put("siteType", site.getType());
+								map.put("active", site.isPublished());
 								getMyMappedSites().add(map);
 							}
 						}
@@ -247,6 +249,7 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 									map.put("members", site.getMembers().size());
 									map.put("description", site.getDescription());
 									map.put("siteType", site.getType());
+									map.put("active", site.isPublished());
 									getMyMappedSites().add(map);
 								}
 							}
@@ -287,6 +290,7 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 								map.put("members", site.getMembers().size());
 								map.put("description", site.getDescription());
 								map.put("siteType", site.getType());
+								map.put("active", site.isPublished());
 								getMyMappedSites().add(map);
 							}
 						}
@@ -349,6 +353,7 @@ public class MyCoursesAndProjectsBean implements ServiceDefinition
 					map.put("url", site.getUrl());
 					map.put("iconUrl", site.getIconUrl());
 					map.put("owner", site.getCreatedBy().getDisplayName());
+					map.put("active", site.isPublished());
 					try
 					{
 						map.put("creationDate", new SimpleDateFormat("dd-MM-yyyy")
