@@ -127,9 +127,6 @@ public class PreferencesHandler extends JSONServiceHandler
 			currentUser = UserDirectoryService.getUser(currentSession.getUserId());
 			user = UserDirectoryService.editUser(currentUser.getId());
 			
-			String firstname = request.getParameter("firstname");
-			String lastname = request.getParameter("lastname");
-			String emailAddress = request.getParameter("email");
 			String oldPw = request.getParameter("currentpw");
 			String newPw = request.getParameter("newpw");
 			String retypePw = request.getParameter("retypepw");
@@ -138,10 +135,6 @@ public class PreferencesHandler extends JSONServiceHandler
 			log.error(selectedZone);
 			log.error(selectedLanguage);
 			
-			user.setFirstName(firstname);
-			user.setLastName(lastname);
-			user.setEmail(emailAddress);
-
 			try
 			{
 				if(user.checkPassword(oldPw) && !StringUtil.different(newPw, retypePw))
