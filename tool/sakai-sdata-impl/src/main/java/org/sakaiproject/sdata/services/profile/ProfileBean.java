@@ -74,7 +74,9 @@ public class ProfileBean implements ServiceDefinition
 			HttpServletResponse response)
 	{
 		if (request.getMethod().equalsIgnoreCase("get")){
-			if (request.getParameter("search") != null){
+			if (request.getParameter("parameter") != null){
+				doParameter(request.getParameter("parameter"), request, response);
+			} else if (request.getParameter("search") != null){
 				doSearch(request.getParameter("search"), request, response);
 			} else {
 				doGet(userId, request, response);
@@ -91,8 +93,80 @@ public class ProfileBean implements ServiceDefinition
 				}
 			}
 		}
+		
 	}
 	
+	private void doParameter(String parameter, HttpServletRequest request,
+			HttpServletResponse response) {
+		
+		int page = 1;
+		if (request.getParameter("page") != null){
+			try {
+				page = Integer.parseInt(request.getParameter("page"));
+			} catch (Exception ex) {
+				// Switch to default parameter
+			};
+		}
+		int items = 5;
+		if (request.getParameter("items") != null){
+			try {
+				items = Integer.parseInt(request.getParameter("items"));
+			} catch (Exception ex) {
+				// Switch to default parameter
+			};
+		}
+		
+		ArrayList<ProfileSqlresult2> arl = new ArrayList<ProfileSqlresult2>();
+		
+		Object[] params = new Object[4];
+		for (int ii = 0; ii < 4; ii++){
+			params[ii] = "%" + parameter.toUpperCase() + "%";
+		}
+		List <ProfileSqlresult2> lst = sqlService.dbRead("SELECT * FROM (SELECT *  FROM SAKAI_USER  LEFT OUTER JOIN sdata_profile ON SAKAI_USER.USER_ID = sdata_profile.userid ORDER BY LAST_NAME ASC) as new WHERE " +
+			"UPPER(new.USER_ID) LIKE ? OR " + 
+			"UPPER(new.EMAIL) LIKE ? OR " + 
+			"UPPER(new.FIRST_NAME) LIKE ? OR " +
+			"UPPER(new.LAST_NAME) LIKE ?",
+			params, new ProfileSqlreader2());
+			
+		for (ProfileSqlresult2 p: lst){
+			boolean alreadyIn = false;
+			for (int iii = 0; iii < arl.size(); iii++){
+				ProfileSqlresult2 a = arl.get(iii);
+				if (a.getUserid().equalsIgnoreCase(p.getUserid())){
+					alreadyIn = true;
+					arl.get(iii).setCount(arl.get(iii).getCount() + 1);
+				}
+			}
+			if (alreadyIn == false){
+				p.setCount(p.getCount() + 1);
+				arl.add(p);
+			}
+		}
+		
+		// Order on count
+		
+		Collections.sort(arl);
+		
+		//Limit to paging
+		
+		HashMap<Integer, ProfileSqlresult2> newarl = new HashMap<Integer, ProfileSqlresult2>();
+		
+		int start = 0;
+		for (int i = (page - 1) * items ; i < page * items ; i++){
+			try {
+				newarl.put(start, arl.get(i));
+				start++;
+			} catch (Exception ex){
+				// This is not a valid result, continue
+			}
+		}
+		
+		resultMap.put("items", newarl);
+		resultMap.put("total", arl.size());
+		
+	}
+
 	private void doSearch(String search, HttpServletRequest request,
 			HttpServletResponse response) {
 	
