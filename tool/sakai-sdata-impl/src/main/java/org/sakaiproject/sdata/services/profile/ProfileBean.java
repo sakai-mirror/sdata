@@ -120,7 +120,9 @@ public class ProfileBean implements ServiceDefinition
 		ArrayList <String> userids = new ArrayList <String>();
 		int total = 0;
 		for (Member m : members){
-			if (total < 15){
+			if (total <= 15 && limit == true){
+				userids.add(m.getUserId());
+			} else if (limit == false){
 				userids.add(m.getUserId());
 			}
 			total++;
