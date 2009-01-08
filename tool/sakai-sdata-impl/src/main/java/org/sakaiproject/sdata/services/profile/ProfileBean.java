@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.Kernel;
 import org.sakaiproject.announcement.api.AnnouncementMessage;
 import org.sakaiproject.announcement.api.AnnouncementService;
+import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.db.api.SqlReader;
@@ -30,6 +31,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.message.api.MessageChannel;
+import org.sakaiproject.sdata.services.connections.ConnectionSqlresult;
 import org.sakaiproject.sdata.tool.api.ServiceDefinition;
 import org.sakaiproject.search.api.SearchList;
 import org.sakaiproject.search.api.SearchResult;
@@ -63,6 +65,8 @@ public class ProfileBean implements ServiceDefinition
 
 	private SessionManager sessionManager = Kernel.sessionManager();
 	
+	private SiteService siteService = Kernel.siteService();
+	
 	private UserDirectoryService userDirectoryService = Kernel.userDirectoryService();
 
 	/**
@@ -78,6 +82,8 @@ public class ProfileBean implements ServiceDefinition
 				doParameter(request.getParameter("parameter"), request, response);
 			} else if (request.getParameter("search") != null){
 				doSearch(request.getParameter("search"), request, response);
+			} else if (request.getParameter("sitemembers") != null ){
+				doSiteMembers(request, response);
 			} else {
 				doGet(userId, request, response);
 			}
@@ -96,6 +102,58 @@ public class ProfileBean implements ServiceDefinition
 		
 	}
 	
+	private void doSiteMembers(HttpServletRequest request, HttpServletResponse response) {
+		String siteid = request.getParameter("siteid");
+		boolean limit = false;
+		if (request.getParameter("limit") != null){
+			limit = true;
+		}
+		Site site = null;
+		try {
+			site = siteService.getSite(siteid);
+		} catch (IdUnusedException e) {
+			try {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND);
+			} catch (IOException e1) {}
+		}
+		Set <Member> members = site.getMembers();
+		ArrayList <String> userids = new ArrayList <String>();
+		int total = 0;
+		for (Member m : members){
+			if (total < 15){
+				userids.add(m.getUserId());
+			}
+			total++;
+		}
+		
+		resultMap.put("total", members.size());
+		
+		String sqlString = "";
+		Object[] params2 = new Object[userids.size()];
+		
+		boolean started = false;
+		for (int i = 0; i < userids.size(); i++){
+			String user = userids.get(i);
+			if (started){
+				sqlString += " OR";
+			} else {
+				started = true;
+			}
+			sqlString += " new.USER_ID = ?";
+			params2[i] = user;
+		}
+	
+		List<ProfileSqlresult> lst = new ArrayList<ProfileSqlresult>();
+		
+		if (userids.size() > 0){
+			lst = sqlService.dbRead("SELECT * FROM (SELECT *  FROM SAKAI_USER  LEFT OUTER JOIN sdata_profile ON SAKAI_USER.USER_ID = sdata_profile.userid ORDER BY LAST_NAME ASC) as new WHERE " +
+				sqlString, params2, new ProfileSqlreader2());
+		}
+		
+		resultMap.put("items", lst);
+		
+	}
+
 	private void doParameter(String parameter, HttpServletRequest request,
 			HttpServletResponse response) {
 		
