@@ -91,3 +91,5 @@
 29.baseurl=/presence
 30.classname=org.sakaiproject.sdata.services.chat.ChatHandler
 30.baseurl=/chat
+31.classname=org.sakaiproject.sdata.services.searchcloud.SearchCloudHandler
+31.baseurl=/searchcloud
