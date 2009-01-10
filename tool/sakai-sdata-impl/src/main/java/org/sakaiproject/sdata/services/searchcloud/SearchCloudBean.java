@@ -102,6 +102,19 @@ public class SearchCloudBean implements ServiceDefinition
 	}
 
 	private void getTagCloud(HttpServletRequest request, HttpServletResponse response) {
+		int count = 25;
+		if (request.getParameter("count") != null){
+			try {
+				count = Integer.parseInt(request.getParameter("count"));
+			} catch (Exception ex){
+				// Ignore this parameter, continue
+			}
+		}
+		String sql = "SELECT * FROM sdata_searchcloud ORDER BY number DESC LIMIT 0," + count;
+		
+		List <SearchCloudSqlresult> lst = sqlService.dbRead(sql,null,new SearchCloudSqlreader());
+		
+		resultMap.put("items", lst);
 		
 	}
 

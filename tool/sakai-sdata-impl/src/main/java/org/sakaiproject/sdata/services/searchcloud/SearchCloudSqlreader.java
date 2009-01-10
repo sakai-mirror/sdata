@@ -53,7 +53,7 @@ public class SearchCloudSqlreader implements SqlReader
 		try
 		{
 			
-			res.setSearchquery(result.getString("searchstring"));
+			res.setSearchquery(result.getString("searchquery"));
 			res.setNumber(result.getInt("number"));
 
 		}
